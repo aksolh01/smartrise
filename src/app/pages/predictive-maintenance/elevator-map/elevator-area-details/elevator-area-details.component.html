@@ -1,0 +1,20 @@
+<nb-card class="card">
+    <nb-card-header class="card-header">
+        <div class="title">{{ details.title }}</div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row details-container">
+            <div *ngFor="let part of details.parts" class="col-lg-12 mb-1">
+                <div class="part-name">
+                    {{ part.name }}
+                </div>
+                <div class="statuses">
+                    <div tooltip="Critical" class="critical status">{{ part.criticalCount }}</div>
+                    <div tooltip="High" class="high status">{{ part.highCount }}</div>
+                    <div tooltip="Medium" class="medium status">{{ part.mediumCount }}</div>
+                    <div tooltip="Low" class="low status">{{ part.lowCount }}</div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

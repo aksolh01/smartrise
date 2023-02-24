@@ -1,0 +1,320 @@
+<div class="row" *ngIf="alert.alertType === faultAlertType">
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Name</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alertName | value }}
+    </div>
+    
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Severity</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getSeverity(alert?.severity) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Description</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext pr-0">
+        {{ alert?.alertDescription }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Type</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getText(alert?.alertType) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Fault</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.fault | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Fault Count</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.faultCount }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Possible Parts Affected</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        <ul class="possible-parts-list">
+            <li class="possible-parts-item" *ngFor="let part of alert.faultPossibleAffectedParts">{{ part }}
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Threshold</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.faultThreshold }}
+    </div>
+
+    <div class="col-8 col-lg-6 form-group"></div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Status</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.faultStatus | value }}
+    </div>
+
+    <div class="actions-bar">
+        <button (click)="onResolveFault(alert)" class="btn btn-success ml-1 float-right">Resolve
+            Alert</button>
+        <button (click)="onResetFaultCounter(alert)" class="btn btn-success float-right">Reset
+            Counter</button>
+    </div>
+</div>
+
+<div class="row" *ngIf="alert.alertType === alarmAlertType">
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Name</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alertName | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Severity</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getSeverity(alert?.severity) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Description</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext pr-0">
+        {{ alert?.alertDescription }}
+    </div>
+
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Type</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getText(alert?.alertType) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alarm</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alarm | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alarm Count</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alarmCount }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Possible Parts Affected</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        <ul class="possible-parts-list">
+            <li class="possible-parts-item" *ngFor="let part of alert.alarmPossibleAffectedParts">{{ part }}
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Threshold</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alarmThreshold }}
+    </div>
+
+    <div class="actions-bar">
+        <button (click)="onResolveAlarm(alert)" class="btn btn-success ml-1 float-right">Resolve
+            Alert</button>
+        <button (click)="onResetAlarmCounter(alert)" class="btn btn-success float-right">Reset
+            Counter</button>
+    </div>
+</div>
+
+<div class="row" *ngIf="alert.alertType === countBasedAlertType">
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Name</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alertName | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Severity</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getSeverity(alert?.severity) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Description</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext pr-0">
+        {{ alert?.alertDescription }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Type</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getText(alert?.alertType) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Part</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.countBasedPart | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Vendor</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.countBasedVendor | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Nb of latches or turns</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.nbOfLatchesOfTurns }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Threshold (Nb of latches or turns)</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.nbOfLatchesOfTurnsThreshold }}
+    </div>
+
+    <div class="actions-bar">
+        <button (click)="onResolveCountBasedPart(alert)" class="btn btn-success ml-1 float-right">Resolve
+            Alert</button>
+        <button (click)="onResetNbOfLatches(alert)" class="btn btn-success float-right">Reset
+            Counter</button>
+    </div>
+</div>
+
+<div class="row" *ngIf="alert.alertType === timeBasedAlertType">
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Name</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alertName | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Severity</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getSeverity(alert?.severity) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Description</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext pr-0">
+        {{ alert?.alertDescription }}
+    </div>
+
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Alert Type</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ getText(alert?.alertType) | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Part</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.timeBasedPart | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Vendor</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.countBasedVendor | value }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Period (Nb of days)</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.nbOfDays }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Threshold (Nb of days)</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.nbOfDaysThreshold }}
+    </div>
+
+    <div class="col-4 col-lg-2 form-group">
+        <label class="col-lg-12 control-label text-right pt-2">Date</label>
+    </div>
+
+    <div class="col-8 col-lg-4 form-group form-control-plaintext">
+        {{ alert?.alertDate | value }}
+    </div>
+
+    <div class="actions-bar">
+        <button tooltip="Resolve Alert" (click)="onResolveTimeBasedPart(alert)"
+            class="btn btn-success ml-1 float-right">Resolve
+            Alert</button>
+        <button tooltip="Reset Date" (click)="onResetNbOfDays(alert)" class="btn btn-success float-right">Reset
+            Date</button>
+    </div>
+</div>

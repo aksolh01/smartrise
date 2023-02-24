@@ -1,0 +1,11 @@
+<div *ngIf="isProcessed && !isSignedIn">
+    <div class="alert alert-success font-weight-bold m-0">
+        {{ message }}
+    </div>
+    <div class="actions text-right mt-4">
+        <button type="button" (click)="onGoToLogin()" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i>
+            Go to Login
+        </button>
+    </div>
+</div>

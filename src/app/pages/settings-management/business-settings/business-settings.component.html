@@ -1,0 +1,62 @@
+<nb-card>
+  <nb-card-header class="default-card-header">
+    <h2 class="card-title">Business Settings</h2>
+  </nb-card-header>
+
+  <nb-card-body>
+    <form [formGroup]="businessSettingsForm" (ngSubmit)="onSubmit()">
+      <div class="border p-4">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6 p-0">
+              <div class="row">
+
+                <div class="col-lg-4 form-group">
+                  <label class="text-md-right control-label required" for="numberOfRecords">
+                    Default Number Of Records
+                  </label>
+                </div>
+
+                <div class="col-lg-8 form-group">
+
+                  <nb-select (click)="onClickNumberOfRecords()" [formControl]="numberOfRecords" id="numberOfRecords" scrollStrategy="close">
+                    <nb-option value="5">5</nb-option>
+                    <nb-option value="10">10</nb-option>
+                    <nb-option value="15">15</nb-option>
+                    <nb-option value="20">20</nb-option>
+                    <nb-option value="25">25</nb-option>
+                  </nb-select>
+
+                  <div class="help-block error" *ngIf="formSubmitted &&
+                      businessSettingsForm.get('numberOfRecords').errors !=
+                        null &&
+                      businessSettingsForm.get('numberOfRecords').errors[
+                        'required'
+                      ] &&
+                      businessSettingsForm.get('numberOfRecords').touched
+                    ">
+                    Number Of Records is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-lg-12 text-right">
+          <ngx-button [isLoading]="isSaving" [disabled]="
+              isSaving ||
+              !businessSettingsForm.valid ||
+              !canUpdateBusinessSettings
+            " type="submit" class="btn btn-lg btn-primary">
+            <i class="fas fa-save"></i>
+            Update
+          </ngx-button>
+        </div>
+      </div>
+
+    </form>
+  </nb-card-body>
+</nb-card>

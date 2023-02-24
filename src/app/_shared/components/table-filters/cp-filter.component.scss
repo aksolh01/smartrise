@@ -1,0 +1,12 @@
+.form-control::-moz-placeholder {
+    transform: translateY(0px) !important;
+    white-space: nowrap !important;
+}
+.form-control:-ms-input-placeholder {
+    transform: translateY(0px)  !important;
+    white-space: nowrap !important;
+}
+.form-control::-webkit-input-placeholder {
+    transform: translateY(0px) !important;
+    white-space: nowrap !important;
+}

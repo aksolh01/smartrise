@@ -1,0 +1,185 @@
+<nb-card>
+  <nb-card-header class="default-card-header">
+    <h2 class="card-title">System Settings</h2>
+  </nb-card-header>
+
+  <nb-card-body>
+    <form [formGroup]="systemSettingsForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-12 d-lg-flex justify-content-between">
+          <div class="border col-lg-5 p-0 rounded">
+            <div class="py-3 text-center text-sm card-title" style="background-color: #f6f6f6;">
+              SMTP
+            </div>
+            <div class="row p-3">
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpHost">Host</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="smtpHost" id="smtpHost" class="form-control" />
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpHost').errors != null &&
+                  systemSettingsForm.get('smtpHost').errors['required'] &&
+                  systemSettingsForm.get('smtpHost').touched
+                ">
+                  Host is required
+                </div>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpPort">Port</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="smtpPort" id="smtpPort" class="form-control" />
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpPort').errors != null &&
+                  systemSettingsForm.get('smtpPort').errors['required'] &&
+                  systemSettingsForm.get('smtpPort').touched
+                ">
+                  Port is required
+                </div>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpSsl">SSL</label>
+              </div>
+              <div class="col-lg-8 form-group checkbox-custom checkbox-default">
+                <nb-toggle id="smtpSsl" formControlName="smtpSsl" class="form-control-plaintext px-2 px-md-0">
+                </nb-toggle>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpUsername">Username</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="smtpUsername" id="smtpUsername"
+                  class="form-control" />
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpUsername').errors != null &&
+                  systemSettingsForm.get('smtpUsername').errors['required'] &&
+                  systemSettingsForm.get('smtpUsername').touched
+                ">
+                  Username is required
+                </div>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpPassword">Password</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="password" maxlength="255" formControlName="smtpPassword" id="smtpPassword"
+                  class="form-control" />
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpPassword').errors != null &&
+                  systemSettingsForm.get('smtpPassword').errors['required'] &&
+                  systemSettingsForm.get('smtpPassword').touched
+                ">
+                  Password is required
+                </div>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpFrom">Email From</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="smtpFrom" id="smtpFrom" class="form-control" />
+
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpFrom').errors != null &&
+                  systemSettingsForm.get('smtpFrom').errors['required'] &&
+                  systemSettingsForm.get('smtpFrom').touched
+                ">
+                  Email From is required
+                </div>
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpFrom').errors != null &&
+                  systemSettingsForm.get('smtpFrom').errors['smartriseEmail'] &&
+                  systemSettingsForm.get('smtpFrom').touched
+                ">
+                  Invalid email
+                </div>
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpFrom').errors != null &&
+                  systemSettingsForm.get('smtpFrom').errors['trimError'] &&
+                  systemSettingsForm.get('smtpFrom').touched
+                ">
+                  This field can't start or end with a blank space
+                </div>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpReplyTo">Reply To</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="smtpReplyTo" id="smtpReplyTo" class="form-control" />
+
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpReplyTo').errors != null &&
+                  systemSettingsForm.get('smtpReplyTo').errors['required'] &&
+                  systemSettingsForm.get('smtpReplyTo').touched
+                ">
+                  Reply To is required
+                </div>
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpReplyTo').errors != null &&
+                  systemSettingsForm.get('smtpReplyTo').errors['smartriseEmail'] &&
+                  systemSettingsForm.get('smtpReplyTo').touched
+                ">
+                  Invalid email
+                </div>
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('smtpReplyTo').errors != null &&
+                  systemSettingsForm.get('smtpReplyTo').errors['trimError'] &&
+                  systemSettingsForm.get('smtpReplyTo').touched
+                ">
+                  This field can't start or end with a blank space
+                </div>
+              </div>
+
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="smtpBccs">Bcc(s)</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="smtpBccs" id="smtpBccs" class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <div class="border col-lg-5 mt-4 mt-lg-0 p-0 rounded">
+            <div class="py-3 text-center text-sm card-title" style="background-color: #f6f6f6;">
+              User Interface
+            </div>
+            <div class="row p-3">
+              <div class="col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-lg-right pt-2 required" for="uiUrl">URL</label>
+              </div>
+              <div class="col-lg-8 form-group">
+                <input type="text" maxlength="255" formControlName="uiUrl" id="uiUrl" class="form-control" />
+                <div class="help-block error" *ngIf="formSubmitted &&
+                  systemSettingsForm.get('uiUrl').errors != null &&
+                  systemSettingsForm.get('uiUrl').errors['required'] &&
+                  systemSettingsForm.get('uiUrl').touched
+                ">
+                  URL is required
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mt-4 row">
+        <div class="col-lg-12 text-right">
+          <ngx-button [isLoading]="isSaving" [disabled]="
+              isSaving ||
+              !canUpdateSystemSettings" type="submit" class="btn btn-lg btn-primary">
+            <i class="fas fa-save"></i>
+            Update
+          </ngx-button>
+        </div>
+      </div>
+
+    </form>
+  </nb-card-body>
+</nb-card>

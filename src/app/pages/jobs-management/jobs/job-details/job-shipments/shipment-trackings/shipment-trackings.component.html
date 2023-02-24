@@ -1,0 +1,10 @@
+<div *ngIf="isSmall && trackings.length == 0" class="no-data-found">
+    <div class="no-data-found-title">
+        Shipment Trackings
+    </div>
+    <div class="text-section">
+        No data found
+    </div>
+</div>
+<ng2-smart-table *ngIf="trackings.length > 0 || !isSmall" class="default-smart-table responsive-design1" #table [settings]="settings" [source]="trackings">
+</ng2-smart-table>    

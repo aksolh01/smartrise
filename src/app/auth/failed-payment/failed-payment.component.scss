@@ -1,0 +1,58 @@
+img {
+    width: 3rem;
+    margin-top: 3px;
+}
+
+p {
+    color: gray;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-group:last-of-type,
+.form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+.icon {
+    font-size: 40px;
+    color: rgb(201, 72, 72);
+}
+
+.payment-messages {
+    list-style: none;
+    padding-left: 2px;
+}
+
+.payment-messages li {
+    color: gray;
+}
+.payment-messages > li:first-child {
+    padding-bottom: 8px;
+}
+.payment-messages > li:nth-child(2) > ul {
+    list-style: disc;
+    padding-left: 18px;
+}
+
+.card-body {
+    padding-top: 0;
+}
+
+.margin-left-12px {
+    margin-left: 12px;
+}
+
+.payment-message {
+    word-break: break-all;
+}
+
+.second-line {
+    color: gray;
+    display:block;
+    margin-top: 5px;
+}

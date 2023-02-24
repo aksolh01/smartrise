@@ -1,0 +1,70 @@
+<nb-card class="in-dialog mb-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Address Details</h2>
+        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onCancel()"
+            style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body class="card-body">
+
+        <div class="row">
+            <div class="col-4 col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-right pt-2">Street</label>
+            </div>
+
+            <div class="col-8 col-lg-8 form-group div-label">
+                <label class="col-lg-12 form-control-plaintext control-label pt-2">
+                    {{ Address?.street | value }}
+                </label>
+            </div>
+       
+            <div class="col-4 col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-right pt-2">City</label>
+            </div>
+
+            <div class="col-8 col-lg-8 form-group div-label">
+                <label class="col-lg-12 form-control-plaintext control-label pt-2">
+                    {{ Address?.city | value }}
+                </label>
+            </div>
+        
+            <div class="col-4 col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-right pt-2">State</label>
+            </div>
+
+            <div class="col-8 col-lg-8 form-group div-label">
+                <label class="col-lg-12 form-control-plaintext control-label pt-2">
+                    {{ Address?.state | value }}
+                </label>
+            </div>
+        
+            <div class="col-4 col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-right pt-2">Zip Code</label>
+            </div>
+
+            <div class="col-8 col-lg-8 form-group div-label">
+                <label class="col-lg-12 form-control-plaintext control-label pt-2">
+                    {{ Address?.zipCode | value }}
+                </label>
+            </div>
+
+        
+            <div class="col-4 col-lg-4 form-group">
+                <label class="col-lg-12 control-label text-right pt-2">Country</label>
+            </div>
+
+            <div class="col-8  col-lg-8 form-group div-label">
+                <label class="col-lg-12 form-control-plaintext control-label pt-2">
+                    {{ Address?.country | value }}
+                </label>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <button (click)="onCancel()" type="button" class="btn btn-secondary">
+            <i class="fas fa-times"></i>
+            Close
+        </button>
+    </nb-card-footer>
+</nb-card>

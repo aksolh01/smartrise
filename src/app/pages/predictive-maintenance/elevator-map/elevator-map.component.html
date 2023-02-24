@@ -1,0 +1,21 @@
+<nb-card (click)="onClickAnyware()">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <div class="col-md">
+            <h2 class="card-title">Elevator Map: 877690-998</h2>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="elevator-dashboard">
+            <div *ngIf="showPanel" [class]="partsDetailsClass">
+                <div class="elevator-area-details-panel">
+                    <ngx-elevator-area-details class="elevator-area-details" [details]="details"></ngx-elevator-area-details>
+                </div>
+            </div>
+            <div (mouseover)="openModel('car-top')"  class="car-top elevator-area"></div>
+            <div (mouseover)="openModel('car-operation-panel')" 
+                class="car-operation-panel elevator-area"></div>
+            <div (mouseover)="openModel('machine-room')" class="machine-room elevator-area">
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

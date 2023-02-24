@@ -1,0 +1,17 @@
+<div *ngIf="breadcrumb$ | async as breadcrumbs" class="breadcrumb-container pl-3">
+    <ng-container *ngIf="breadcrumbs.length > 0">
+        <ol class="breadcrumbs">
+            <li class="home">
+                <a routerLink="/pages/dashboard" tooltip="Dashboard">
+                    <nb-icon icon="grid-outline"></nb-icon>
+                </a>
+            </li>
+            <ng-container *ngIf="breadcrumbs[breadcrumbs.length - 1].isDashboard !== true">
+                <li class="separator">/</li>
+                <li class="pointer">
+                    <xng-breadcrumb></xng-breadcrumb>
+                </li>
+            </ng-container>
+        </ol>
+    </ng-container>
+</div>

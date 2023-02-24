@@ -1,0 +1,36 @@
+.actions button,
+.actions button:focus {
+    border: 0rem;
+    outline: 0rem;
+    background-color: transparent;
+    margin-right: 5px;
+    color: #666;
+    padding: 0;
+}
+
+.actions button:disabled {
+    color: #bbb;
+    background-color: transparent;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spinner-border {
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+}
+
+.fileUploaded {
+    color: green;
+    .actions button:disabled & {
+        opacity: 0.5;
+    }
+}
+
+.fa-trash {
+    color: #dc3545;
+}
+
+.generating::after { 
+    color: #BBB;
+}

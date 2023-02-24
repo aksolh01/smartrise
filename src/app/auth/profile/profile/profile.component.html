@@ -1,0 +1,121 @@
+<div [class]="isDataLoading ? 'row data-loading' : 'row'" [nbSpinner]="isDataLoading" nbSpinnerStatus="primary"
+    nbSpinnerSize="large" nbSpinnerMessage="">
+    <div class="col-sm-12 col-md-4 col-lg-4">
+
+        <ngx-profile-picture [profileLoading]="proflieLoading" [photoGuid]="photoGuid" [(url)]="imageToShow">
+        </ngx-profile-picture>
+
+    </div>
+    <div class="col-lg-8">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+
+                <div class="border col-lg-12 p-0 rounded mb-3">
+
+                    <div class="py-2 text-center card-title">
+                        Personal Info
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="controls mr-5 mb-3">
+
+                            <div class="row form-group">
+                                <label for="fistName" class="col-lg-4 control-label text-lg-right pt-2 required">First
+                                    Name</label>
+                                <div class="col-lg-8 p-lg-0">
+                                    <input type="text" maxlength="255" id="fistName" formControlName="firstName"
+                                        placeholder="First Name" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('firstName').touched &&
+                                        profileForm.get('firstName').errors &&
+                                        profileForm.get('firstName').errors['requiredWithTrim']"
+                                        class="mt-1 help-block error">
+                                        First Name is required
+                                    </div>
+
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('firstName').touched &&
+                                    profileForm.get('firstName').errors &&
+                                    profileForm.get('firstName').errors['trimError']
+                                  " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label for="lastName" class="col-lg-4 control-label text-lg-right pt-2 required">Last
+                                    Name</label>
+
+                                <div class="col-lg-8 p-lg-0">
+                                    <input type="text" maxlength="255" id="lastName" formControlName="lastName"
+                                        placeholder="Last Name" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('lastName').touched &&
+                                    profileForm.get('lastName').errors &&
+                                    profileForm.get('lastName').errors['requiredWithTrim']
+                                  " class="mt-1 help-block error">
+                                        Last Name is required
+                                    </div>
+
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('lastName').touched &&
+                                    profileForm.get('lastName').errors &&
+                                    profileForm.get('lastName').errors['trimError']
+                                  " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label for="title"
+                                    class="col-lg-4 control-label text-lg-right pt-2 required">Title</label>
+                                <div class="col-lg-8 p-lg-0">
+                                    <input type="text" maxlength="255" id="title" formControlName="title"
+                                        placeholder="Title" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('title').touched &&
+                                    profileForm.get('title').errors &&
+                                    profileForm.get('title').errors['trimError']
+                                  " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="border col-lg-12 mb-4 mt-4 mt-lg-0 p-0 rounded">
+                    <div class="py-2 text-center card-title">
+                        Security
+                    </div>
+                    <div class="col-12 col-lg-12 form-group form-control-plaintext pl-4">
+                        <nb-checkbox formControlName="twoFactorAuthentication"
+                            [disabled]="!user?.userProfileInfo?.canChangeTwoFactorAuthentication"
+                            (checkedChange)="checkTwoFactorAuthentication($event)">Two-Factor Authentication
+                        </nb-checkbox>
+                    </div>
+                </div>
+
+                <div [ngClass]="this.addWhiteSpace ? 'actions text-right mb-5' : 'actions text-right'">
+                    <button class="btn btn-secondary mr-2 " (click)="back()" type="button">
+                        <i class="fa fa-times mr-1"></i>
+                        Cancel
+                    </button>
+
+                    <ngx-button [isLoading]="isLoading" class="btn btn-primary"
+                        type="submit">
+                        <i class="fa fa-save"></i>
+                        Update Profile
+                    </ngx-button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

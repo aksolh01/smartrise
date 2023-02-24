@@ -1,0 +1,36 @@
+a {
+    // cursor: pointer;
+    // color: royalblue !important;
+    text-decoration: underline !important;
+}
+
+// a, a:hover {
+//     color: royalblue !important;
+//     text-decoration: underline !important;
+// }
+
+.break-word {
+    word-break: break-all;
+}
+
+a:not([href]):not([tabindex]) {
+    text-decoration: underline !important;
+    color: #1e6bb8;
+    cursor: pointer;
+}
+
+a:not([href]):not([tabindex]):hover {
+    color: #598bff;
+}
+
+.is-default {
+    background-color: #0088cc;
+    color: white;
+}
+
+@media (max-width: 992px) {
+    .is-default {
+        color: #0088cc;
+        background-color: white;
+    }
+}

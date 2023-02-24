@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="labels">
+        <p>
+            {{file.jobName}} ({{file.jobNumber}})
+        </p>
+        <p class="customer-name" *ngIf="displayCustomerName">
+            {{file.customerName}}
+        </p>
+
+    </div>
+
+    <div class="actions">
+        <button data-tooltip="View Details" tooltip="View Details" (click)="goToFileDetail()">
+
+            <i class="fas fa-eye" data-toggle="tooltip" data-original-title="View">
+            </i>
+        </button>
+
+        <button *ngIf="!isDownloading" [disabled]="isDownloading" data-tooltip="Download File" tooltip="Download File"
+            (click)="downloadFile()">
+
+            <i class="fas fa-download" data-toggle="tooltip" data-original-title="Download">
+            </i>
+        </button>
+
+        <button tooltip="{{isCollapsed ? 'Show Details' : 'Hide Details'}}" (click)="onShowHide()"
+            [attr.aria-expanded]="!isCollapsed" [attr.data-tooltip]="collapseShowTooltip">
+            <i class="{{isCollapsed ? 'fas fa-chevron-down' : 'fas fa-chevron-up'}}">
+
+            </i>
+        </button>
+    </div>
+</div>
+
+<div class="detail-container mt-1" id="collapseExample" [ngbCollapse]="isCollapsed">
+    <div class="card p-1">
+        <p class="mt-0 mb-1"><span>File Type:</span> {{ file?.resourceType?.description }}</p>
+        <p *ngIf="isOtherType" class="mt-0 mb-1"><span>File Description:</span> {{file?.fileDescription ?
+            file.fileDescription : 'N/A'}}</p>
+    </div>
+</div>

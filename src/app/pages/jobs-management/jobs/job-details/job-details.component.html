@@ -1,0 +1,34 @@
+<nb-card size="xlarge" class="pb-1 mb-3">
+    <nb-tabset *ngIf="job" (changeTab)="onChangeTab($event)">
+        <nb-tab tabTitle="Job Info" tabIcon="star">
+            <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job" [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
+        </nb-tab>
+        <nb-tab [active]="shipmentsTabSelected" tabTitle="Shipments" tabIcon="car">
+            <ngx-job-shipments [shipments]="job?.shipments"></ngx-job-shipments>
+        </nb-tab>
+        <nb-tab [active]="resurcesTabSelected" tabTitle="Job Files" tabIcon="download">
+            <ngx-job-resources *ngIf="renderJobResources === true" [jobId]="job?.id"
+                [resourceFiles]="job?.resourceFiles" [runGuidingTour]="runGuidingTour">
+            </ngx-job-resources>
+        </nb-tab>
+    </nb-tabset>
+    <ng-template [ngIf]="!job && !isLoading">
+        <div class="col-12 p-4">
+            Job not found.
+        </div>
+    </ng-template>
+</nb-card>
+
+<div class="text-right mb-0 mx-3" *ngIf="!isLoading">
+    <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
+        <i class="fas fa-times"></i>
+        Close
+    </button>
+</div>
+
+<ng-template [ngIf]="isLoading">
+    <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div class="col-12 p-4">
+        </div>
+    </nb-card>
+</ng-template>

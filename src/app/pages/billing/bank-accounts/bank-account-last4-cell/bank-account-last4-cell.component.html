@@ -1,0 +1,15 @@
+<div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center">
+    <div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+    <ng-template [ngIf]="!!value" [ngIfElse]="naOnMobile">
+        <a *ngIf="href" [class.break-word]="options.breakWord" [tooltip]="options.tooltip" (click)="onGoToLink()"
+            (contextmenu)="onGoToLink()">{{ value }}</a>
+        <a *ngIf="!href" [class.break-word]="options.breakWord" [tooltip]="options.tooltip" (click)="onGoToLink()"
+            (contextmenu)="onGoToLink()">{{ value }}</a>
+    </ng-template>
+    <ng-template #naOnMobile>
+        <div class="d-lg-none d-block">N/A</div>
+    </ng-template>
+    <div *ngIf="rowData?.isDefault" class="ml-lg-2 badge badge-pill font-weight-normal is-default">
+        DEFAULT
+    </div>
+</div>

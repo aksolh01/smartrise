@@ -1,0 +1,26 @@
+<div class="actions">
+    <div tooltip="View Details" class="action-tooltip-holder">
+        <button [disabled]="!canViewCustomerDetails" data-tooltip="View Details" (click)="onShowDetails(rowData)">
+      <i class="fas fa-eye" data-toggle="tooltip" data-original-title="View"></i>
+    </button>
+    </div>
+
+    <div tooltip="Manage Users" class="action-tooltip-holder">
+        <button [disabled]="!canCreateAdministratorAccount" data-tooltip="Manage Users" (click)="onOpenCreateAccountModal(rowData)">
+      <i class="fas fa-user-cog" data-original-title=""> </i>
+    </button>
+    </div>
+
+    <div tooltip="Add to Favorite" class="action-tooltip-holder" *ngIf="!this.rowData.isFavorite">
+        <button [disabled]="!canAddToFavorite" data-tooltip="Add to Favorite" (click)="AddToFavorite(rowData)">
+      <i class="far fa-star" data-toggle="tooltip" data-original-title="View"></i>
+    </button>
+    </div>
+
+    <div tooltip="Remove from Favorite" class="action-tooltip-holder" *ngIf="this.rowData.isFavorite">
+        <button [disabled]="!canRemoveFromFavorite" data-tooltip="Remove from Favorite" (click)="RemoveFromFavorite(rowData)">
+      <i class="fas fa-star" data-toggle="tooltip" data-original-title="View"></i>
+    </button>
+    </div>
+
+</div>

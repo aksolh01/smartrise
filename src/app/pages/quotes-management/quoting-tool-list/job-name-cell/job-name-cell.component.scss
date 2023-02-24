@@ -1,0 +1,44 @@
+a {
+    // cursor: pointer;
+    // color: royalblue !important;
+    text-decoration: underline !important;
+}
+
+// a, a:hover {
+//     color: royalblue !important;
+//     text-decoration: underline !important;
+// }
+
+.break-word {
+    word-break: break-all;
+}
+
+a:not([href]):not([tabindex]) {
+    text-decoration: underline !important;
+    color: #1e6bb8;
+    cursor: pointer;
+}
+
+a:not([href]):not([tabindex]):hover {
+    color: #598bff;
+}
+
+.locked-icon {
+    color: #0088cc;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+    &:hover {
+        color: #00a1f2;
+    }
+}
+
+@media (max-width: 992px) {
+    .white {
+        color: white;
+        &:hover {
+            color: white;
+        }
+    }
+}

@@ -1,0 +1,92 @@
+agm-map {
+    height: 300px;
+}
+
+.card {
+    // border:#DDDDDD thin solid;
+}
+
+.myLabel {
+    background-color: orange;
+}
+
+.gm-style-iw {
+    max-width: 230px !important;
+}
+
+.info-row {
+    width: 18em;
+}
+
+.info-label {
+    font-weight: bold;
+    width: 50%;
+    float: left;
+}
+
+.info-value {
+    width: 50%;
+    float: left;
+}
+
+
+.legend-in-fullscreen {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    z-index: 2147483647;
+}
+
+.info-window nb-card {
+    background-color: #ffffff;
+    border: 0 solid #e4e9f2;
+    border-radius: 5px;
+    box-shadow: none;
+    color: #777;
+    font-family: Open Sans, sans-serif;
+    font-size: .75rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    margin-bottom: 0rem;
+    scrollbar-face-color: #e4e9f2;
+    scrollbar-track-color: #f7f9fc;
+}
+
+.info-window nb-card-body {
+    flex: 1;
+    -ms-flex: 1 1 auto;
+    overflow: auto;
+    padding: .7rem;
+    position: relative;
+    scrollbar-face-color: #e4e9f2;
+    scrollbar-track-color: #f7f9fc;
+}
+
+.info-window nb-card nb-card-header.default-card-header {
+    background: #f6f6f6;
+    border-radius: 5px 5px 0 0;
+    padding: 0em .5em .5em .5em;
+    position: relative;
+    border-bottom: 1px solid #82bddd;
+}
+
+.info-window nb-card nb-card-header.default-card-header .card-title {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 0px;
+    padding-top: 9px;
+    text-transform: none;
+    margin: 0;
+    font-weight: 550;
+    color: #0088cc;
+    font-family: "Open Sans", Arial, sans-serif;
+    letter-spacing: -1px;
+}
+
+.info-window .text-sm {
+    font-size: 1.1rem;
+}
+
+.map {
+    width: 900px;
+}

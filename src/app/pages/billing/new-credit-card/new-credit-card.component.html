@@ -1,0 +1,178 @@
+<div class="payment-details">
+    <div class="payment-details-header">
+
+        <div class="cards">
+            <div class="container">
+                <div [class]="selectedCard === 'visa-card' ? 'card-border selected' : 'card-border'">
+                    <img (click)="onSelectCard('visa-card')" class="credit-card visa-card" src="/assets/images/visa-card.png" alt="">
+                </div>
+                <div [class]="selectedCard === 'master-card' ? 'card-border selected' : 'card-border'">
+                    <img (click)="onSelectCard('master-card')" class="credit-card master-card" src="/assets/images/master-card.png" alt="">
+                </div>
+                <div [class]="selectedCard === 'discover-card' ? 'card-border selected' : 'card-border'">
+                    <img (click)="onSelectCard('discover-card')" class="credit-card discover-card" src="/assets/images/discover-card.jpg" alt="">
+                </div>
+                <div [class]="selectedCard === 'pay-pal' ? 'card-border selected' : 'card-border'">
+                    <img (click)="onSelectCard('pay-pal')" class="credit-card pay-pal" src="/assets/images/paypal-card.png" alt="">
+                </div>
+                <div [class]="selectedCard === 'american-express' ? 'card-border selected' : 'card-border'">
+                    <img (click)="onSelectCard('american-express')" class="credit-card american-express" src="/assets/images/americanexpress-card.png" alt="">
+                </div>
+                <!-- <div [class]="selectedCard === 'visa-card' ? 'credit-card visa-card selected' : 'credit-card visa-card'"
+                    (click)="onSelectCard('visa-card')">
+                </div>
+                <div [class]="selectedCard === 'master-card' ? 'credit-card master-card selected' : 'credit-card master-card'"
+                    (click)="onSelectCard('master-card')">
+                </div>
+                <div [class]="selectedCard === 'discover-card' ? 'credit-card discover-card selected' : 'credit-card discover-card'"
+                    (click)="onSelectCard('discover-card')">
+                </div>
+                <div [class]="selectedCard === 'pay-pal' ? 'credit-card pay-pal selected' : 'credit-card pay-pal'"
+                    (click)="onSelectCard('pay-pal')">
+                </div>
+                <div [class]="selectedCard === 'american-express' ? 'credit-card american-express selected' : 'credit-card american-express'"
+                    (click)="onSelectCard('american-express')">
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <form [formGroup]="creditCardForm" (ngSubmit)="onSubmit()">
+        <div class="paymnet-details-body">
+
+            <div class="row">
+                <div class="col-12 col-lg-12 text-left">
+                    <label for="cardNumber" class="control-label">Card Number</label>
+                </div>
+                <div class="col-12 col-lg-12 text-left card-number">
+                    <input (keypress)="restrictCardNumber($event)" formControlName="cardNumber" class="form-control"
+                        placeholder="Valid Card Number" type="text" name="cardNumber" id="cardNumber">
+                    <button class="btn">
+                        <i class="far fa-credit-card"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="errors">
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cardNumber').errors != null &&
+                        creditCardForm.get('cardNumber').errors['requiredWithTrim'] &&
+                        creditCardForm.get('cardNumber').touched
+                          ">
+                    Card Number is required
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cardNumber').errors != null &&
+                        creditCardForm.get('cardNumber').errors['creditCardNumber'] &&
+                        creditCardForm.get('cardNumber').touched
+                          ">
+                    Invalid Card Number
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cardNumber').errors != null &&
+                        creditCardForm.get('cardNumber').errors['trimError'] &&
+                        creditCardForm.get('cardNumber').touched
+                          ">
+                    This field can't start or end with a blank space
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 col-lg-6 text-left">
+                    <label for="expirationDate" class="control-label">Expiration Date</label>
+                </div>
+                <div class="col-1 col-lg-1"></div>
+                <div class="col-5 col-lg-5 text-left">
+                    <label for="" class="control-label">Cv Code</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3 col-lg-3 pr-0 text-left">
+                    <input formControlName="expirationYear" type="text" max="99" placeholder="YY" name="expirationYear"
+                        id="expirationYear" class="form-control" (keypress)="restrictInput($event)">
+                </div>
+                <div class="col-3 col-lg-3 pr-0 text-left">
+                    <input formControlName="expirationMonth" type="text" min="1" max="12" placeholder="MM"
+                        (keypress)="restrictInput($event)" name="expirationMonth" id="expirationMonth"
+                        class="form-control">
+                </div>
+                <div class="col-1 col-lg-1"></div>
+                <div class="col-5 col-lg-5 text-left">
+                    <input formControlName="cvcCode" type="text" placeholder="CVC" name="cvcCode" id="cvcCode"
+                        (keypress)="restrictInput($event)" class="form-control">
+                </div>
+            </div>
+            <div class="errors">
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('expirationYear').errors != null &&
+                        creditCardForm.get('expirationYear').errors['requiredWithTrim'] &&
+                        creditCardForm.get('expirationYear').touched
+                          ">
+                    Expiration Year is required
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('expirationYear').errors != null &&
+                        creditCardForm.get('expirationYear').errors['trimError'] &&
+                        creditCardForm.get('expirationYear').touched
+                          ">
+                    This field can't start or end with a blank space
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('expirationMonth').errors != null &&
+                        creditCardForm.get('expirationMonth').errors['requiredWithTrim'] &&
+                        creditCardForm.get('expirationMonth').touched
+                          ">
+                    Expiration Month is required
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('expirationMonth').errors != null &&
+                        creditCardForm.get('expirationMonth').errors['trimError'] &&
+                        creditCardForm.get('expirationMonth').touched
+                          ">
+                    This field can't start or end with a blank space
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cvcCode').errors != null &&
+                        creditCardForm.get('cvcCode').errors['requiredWithTrim'] &&
+                        creditCardForm.get('cvcCode').touched
+                          ">
+                    CV Code is required
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cvcCode').errors != null &&
+                        creditCardForm.get('cvcCode').errors['trimError'] &&
+                        creditCardForm.get('cvcCode').touched
+                          ">
+                    This field can't start or end with a blank space
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 col-lg-12 text-left">
+                    <label for="cardOwner" class="control-label">Card Owner</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-12 text-left">
+                    <input formControlName="cardOwner" type="text" placeholder="Card Owner Name" name="cardOwner"
+                        id="cardOwner" class="form-control">
+                </div>
+            </div>
+            <div class="errors">
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cardOwner').errors != null &&
+                        creditCardForm.get('cardOwner').errors['requiredWithTrim'] &&
+                        creditCardForm.get('cardOwner').touched
+                          ">
+                    Card Owner is required
+                </div>
+                <div class="help-block error" *ngIf="
+                        creditCardForm.get('cardOwner').errors != null &&
+                        creditCardForm.get('cardOwner').errors['trimError'] &&
+                        creditCardForm.get('cardOwner').touched
+                          ">
+                    This field can't start or end with a blank space
+                </div>
+            </div>
+        </div>
+        <div class="payment-details-submit">
+            <ngx-button class="confirm btn btn-success" type="submit">Confirm</ngx-button>
+        </div>
+    </form>
+</div>

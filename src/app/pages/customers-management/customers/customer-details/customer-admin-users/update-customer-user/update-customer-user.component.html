@@ -1,0 +1,57 @@
+<nb-card>
+  <nb-card-header class="default-card-header">
+    <h2 class="card-title">User Information</h2>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="customerUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady">
+
+      <div class="row">
+
+        <div class="col-12 col-lg-6">
+
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
+            <div class="col-12 col-lg-8">
+              <input readonly type="text" placeholder="First Name" value="{{ customerUser.firstName }}"
+                class="form-control-plaintext" id="firstName">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
+            <div class="col-12 col-lg-8">
+              <input readonly type="text" placeholder="Last Name" value="{{ customerUser.lastName }}"
+                class="form-control-plaintext" id="lastName">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
+            <div class="col-12 col-lg-8">
+              <input readonly type="text" placeholder="Email" value="{{ customerUser.email }}"
+                class="form-control-plaintext" id="email">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-12 col-lg-6">
+          <div class="form-group">
+            <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="roles" [roles]="roles"></ngx-smr-roles-checklist>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-buttons">
+        <button routerLink=".." type="button" class="mr-1 btn btn-lg btn-secondary">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+        <button type="submit" class="mr-1 btn btn-lg btn-primary">
+          <i class="fas fa-save"></i>
+          Update
+        </button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,30 @@
+<div class="text-center">
+    <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center">
+        <div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+        <ng-template [ngIf]="rowData.balance > 0" [ngIfElse]="naOnMobile">
+            <span class="mr-1">
+                ${{ rowData.balance | number: '1.2-2' }}
+            </span>
+        </ng-template>
+        <ng-template #naOnMobile>
+            <!-- <div class="d-lg-none d-block">N/A</div> -->
+        </ng-template>
+        <div *ngIf="rowData.balance === 0">
+            <span
+                [class]="isPillStyle ? 'badge-pill badge text-white amount-paid-cell' : 'badge text-white amount-paid-cell'">Paid
+                In Full</span>
+        </div>
+        <div *ngIf="rowData.balance > 0 && rowData.overDueDays <= 30">
+            <div>
+                <span
+                    [class]="isPillStyle ? 'badge-pill badge text-white amount-current-cell' : 'badge text-white amount-current-cell'">Current</span>
+            </div>
+        </div>
+        <div *ngIf="rowData.balance > 0 && rowData.overDueDays > 30">
+            <div>
+                <span
+                    [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-120-cell' : 'badge text-white amount-overdue-120-cell'">Overdue</span>
+            </div>
+        </div>
+    </div>
+</div>

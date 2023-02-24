@@ -1,0 +1,177 @@
+<nb-card joyrideStep="bankAccountFirstStep" stepPosition="center"
+    [title]="runGuidingTour === true ? 'Bank Accounts' : null" [doneTemplate]="doneButton"
+    [stepContent]="firstCustomContent" (done)="onFinishingTour()">
+
+    <ng-template #firstCustomContent>
+        <div class='joyride-custom-content'>
+            <div style="margin-bottom: 5px;">
+                View the list of your bank accounts.<br />
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <i class="fas fa-eye guiding-tour-action"></i>
+                </div>
+                <div class="col-10 pl-0">
+                    View Bank Account Details
+                </div>
+            </div>
+            <div *ngIf="!isImpersonate" class="row">
+                <div class="col-2">
+                    <i class="fas fa-pencil-alt guiding-tour-action"></i>
+                </div>
+                <div class="col-10 pl-0">
+                    Edit Bank Account
+                </div>
+            </div>
+            <div *ngIf="!isImpersonate" class="row">
+                <div class="col-2">
+                    <i class="fas fa-check guiding-tour-action"></i>
+                </div>
+                <div class="col-10 pl-0">
+                    Verify Bank Account
+                </div>
+            </div>
+            <div *ngIf="!isImpersonate" class="row">
+                <div class="col-2">
+                    <i class="fas fa-chess-king guiding-tour-action"></i>
+                </div>
+                <div class="col-10 pl-0">
+                    Set Bank Account As Default
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <nb-card-header class="default-card-header">
+        <div class="row">
+            <div class="col-md">
+                <h2 class="card-title">Bank Accounts</h2>
+            </div>
+            <div class="col-md text-right">
+                <div class="card-actions">
+                    <a>
+                        <button *ngIf="!isImpersonate" [disabled]="!canCreateBankAccount"
+                            (click)="onCreateBankAccount()" class="btn btn-primary" joyrideStep="bankAccountSecondStep"
+                            stepPosition="left" [prevTemplate]="prevButton" [nextTemplate]="nextButton"
+                            [doneTemplate]="doneButton" [title]="runGuidingTour === true ? 'Bank Accounts' : null"
+                            [stepContent]="secondCustomContent" (done)="onFinishingTour()">
+                            <i class="fas fa-plus-circle"></i>
+                            Add Account
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nb-card-header>
+
+    <nb-card-body>
+
+        <ng-template [ngIf]="isSmall === false">
+            <div class="row mb-3">
+                <div class="col d-flex align-items-center justify-content-start">
+                    <button (click)="onReset()" class="btn btn-primary">
+                        <i class="fas fa-redo-alt"></i>
+                        Reset Filters
+                    </button>
+                </div>
+                <div class="col-auto d-flex align-items-center justify-content-start">
+                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                        (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page>
+                </div>
+            </div>
+        </ng-template>
+
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+            <div filters>
+                <div class="filter-control">
+                    <input type="text" maxlength="255"
+                        placeholder="Account" class="form-control" [(ngModel)]="customerName" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" (keypress)="onlyNumbers($event)" maxlength="255"
+                        placeholder="Account Number (last 4 digits)" class="form-control" [(ngModel)]="last4" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Name on Account" class="form-control"
+                        [(ngModel)]="accountHolderName" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Bank Name" class="form-control"
+                        [(ngModel)]="bankName" />
+                </div>
+                <div class="filter-control">
+                    <nb-select [(ngModel)]="accountType" class="form-control form-control-select">
+                        <nb-option value="">Account Type</nb-option>
+                        <nb-option value="Individual">Individual</nb-option>
+                        <nb-option value="Company">Company</nb-option>
+                    </nb-select>
+                </div>
+                <div class="filter-control">
+                    <nb-select [(ngModel)]="status" class="form-control form-control-select">
+                        <nb-option value="">Status</nb-option>
+                        <nb-option *ngFor="let c of accountStatuses" [value]="c.value">
+                            {{ c.description }}
+                        </nb-option>
+                    </nb-select>
+                </div>
+                <div class="filter-control">
+                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                        (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page>
+                </div>
+            </div>
+            <div actions>
+                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+                <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+                    <i class="fas fa-redo-alt"></i>
+                    Reset Filters
+                </button>
+            </div>
+        </ngx-smr-mobile-filters>
+
+        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+            <div class="col-sm-12" *ngIf="source">
+                <ng2-smart-table class="default-smart-table responsive-design1" [settings]="settings" [source]="source">
+                </ng2-smart-table>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<ng-template #secondCustomContent>
+    <div class='joyride-custom-content'>
+        <div style="margin-bottom: 5px;">
+            Add a new bank account.
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #prevButton>
+    <button class="btn btn-primary">
+        <i class="fas fa-step-backward"></i>
+        Prev
+    </button>
+</ng-template>
+
+<ng-template #nextButton>
+    <button class="btn btn-primary">
+        Next
+        <i class="fas fa-step-forward"></i>
+    </button>
+</ng-template>
+
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

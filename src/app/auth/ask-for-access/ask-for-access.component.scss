@@ -1,0 +1,28 @@
+:host {
+    width: 50vw;
+    display: block;
+    max-width: 440px;
+    min-width: 300px;
+}
+
+.error {
+    color: red;
+}
+
+.link {
+    font-size: 0.9125rem;
+}
+
+@media (max-width: 600px) {
+    .actions button:first-child {
+        margin-right: 0.5rem !important;
+    }
+    .actions button:nth-child(2) {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+}
+
+.button-width {
+    width: 65%;
+}

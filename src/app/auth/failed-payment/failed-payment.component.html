@@ -1,0 +1,42 @@
+<div class="d-flex" [style]="isSmall ? '' : 'width: 500px;'">
+    <div>
+        <i class="fas fa-times-circle icon"></i>
+        <!-- <img src="assets/images/check-mark.png" alt=""> -->
+    </div>
+    <div class="ml-2">
+        <h2 *ngIf="!isSmall" class="card-title">Payment Failed!</h2>
+        <h4 *ngIf="isSmall" class="card-title">Payment Failed!</h4>
+        <span class="payment-message">
+            Duplicate Payment.
+        </span>
+        <span class="second-line">
+            Transaction declined. One of the selected Invoices' Payment has already been completed.
+        </span>
+    </div>
+</div>
+<div class="card-body" [style]="isSmall ? '' : 'width: 500px;'">
+    <div class="row margin-left-12px">
+        <!-- <div class="col-lg-12 col-sm-12">
+            <ul class="payment-messages">
+                <li>Your Payment transaction was declined due to one of the following reasons:</li>
+                <li>
+                    <ul>
+                        <li>Payment transaction has been already done by you on another active session.</li>
+                        <li>Payment transaction has been already done by another user within your Company on different
+                            machine.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div> -->
+        <div class="col-lg-12 col-sm-12 mt-4">
+            <div class="row">
+                <div class="col-lg-12 text-right p-0">
+                    <button class="btn btn-secondary" (click)="onCancel()" type="button">
+                        <i class="fas fa-times"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

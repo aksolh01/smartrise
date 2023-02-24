@@ -1,0 +1,21 @@
+<input [id]="id"
+[placeholder]="fieldLabel" 
+(keydown)="onKeyDown($event)" 
+[nbAutocomplete]="auto"
+type="text"
+[ngClass]="{'quote-input form-control': true, 'error': hasErrors && showErrors}"
+[disabled]="disabled" 
+#i
+scrollStrategy="close"
+min="0"
+/>
+
+<nb-autocomplete
+  scrollStrategy="close"
+ #auto (selectedChange)="onSelectionChange($event)">
+
+    <nb-option *ngFor="let option of options" [value]="option">
+        {{ option[autocompleteDisplayField] }}
+    </nb-option>
+
+</nb-autocomplete>

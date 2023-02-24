@@ -1,0 +1,52 @@
+.amount-overdue-30-cell {
+    color: rgb(250,0,0);
+}
+
+.amount-overdue-60-cell {
+    color: rgb(250,0,0);
+}
+
+.amount-overdue-90-cell {
+    color: rgb(250,0,0);
+}
+
+.amount-overdue-120-cell {
+    color: rgb(250,0,0);
+}
+
+.amount-current-cell {
+    color: rgb(250,0,0);
+}
+
+.amount-future-cell {
+    color: rgb(1, 199, 1);
+}
+
+.cell-value {
+    display: flex;
+    flex-direction: row;
+}
+
+.cell-value {
+}
+
+.overdue {
+    position: relative;
+    margin-left: 6px;
+}
+
+.overdue .overdue-label {
+    position: absolute;
+    top: -14px;
+    left: 14px;
+    width: 100px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.overdue i {
+    color: red;
+}
+
+.current {
+}

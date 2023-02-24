@@ -1,0 +1,10 @@
+<nb-card size="xlarge" class="pb-1 mb-3">
+    <nb-tabset (changeTab)="onChangeTab($event)">
+        <nb-tab [active]="customerActiveTab" class="m-0 p-0" tabTitle="Created By Account" tabIcon="list-outline">
+            <ngx-quoting-tool-list #customerQuotes></ngx-quoting-tool-list>
+        </nb-tab>
+        <nb-tab [active]="smartriseActiveTab" class="m-0 p-0" tabTitle="Created By Smartrise Sales" tabIcon="list-outline">
+            <ngx-open-quotes #smartriseQuotes></ngx-open-quotes>
+        </nb-tab>
+    </nb-tabset>
+</nb-card>

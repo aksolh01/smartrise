@@ -1,0 +1,122 @@
+<nb-card joyrideStep="invoicesFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Invoices' : null"
+    [doneTemplate]="doneButton" [stepContent]="firstCustomContent" (done)="onFinishingTour()">
+
+    <ng-template #firstCustomContent>
+        <div class='joyride-custom-content'>
+            <div style="margin-bottom: 5px;">
+                View a list of invoices associated with your account.
+            </div>
+            <div>
+                <i class="fas fa-eye guiding-tour-action"></i>View Invoice Details
+            </div>
+        </div>
+    </ng-template>
+
+    <nb-card-header class="default-card-header">
+        <div class="row">
+            <div class="col-md">
+                <h2 class="card-title">Invoices</h2>
+            </div>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <ng-template [ngIf]="isSmall === false">
+            <div class="filters-container">
+                <div class="row mb-3">
+                    <div class="col d-flex align-items-center justify-content-start">
+                        <button (click)="onReset()" class="btn btn-primary">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button>
+
+                        <nb-select (click)="onAgedDropDownClick()" scrollStrategy="close" placeholder="Show All" class="ml-2" (selectedChange)="onAgedSelected($event)"
+                            [selected]="aged">
+                            <nb-option value="">Show All</nb-option>
+                            <nb-option value="Current">Current</nb-option>
+                            <nb-option value="Overdue">Overdue</nb-option>
+                            <nb-option value="Paid">Paid In Full</nb-option>
+                        </nb-select>
+
+                    </div>
+                    <div class="col-auto d-flex align-items-center justify-content-start">
+                        <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                            (changed)="onRecordsNumberChanged($event)">
+                        </ngx-smr-records-per-page>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+            <div filters>
+                <div class="filter-control" *ngIf="settings?.columns?.customer">
+                    <input type="text" maxlength="255" placeholder="Account" class="form-control"
+                        [(ngModel)]="customer" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Job Number" class="form-control"
+                        [(ngModel)]="jobNumber" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Invoice Number" (keypress)="onlyNumbers($event)"
+                        class="form-control" [(ngModel)]="invoiceNumber" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="PO Number" class="form-control"
+                        [(ngModel)]="poNumbers" />
+                </div>
+                <div class="filter-control">
+                    <ngx-cp-datepicker class="form-group" memberName="Invoice Date" displayPlaceholder="Invoice Date"
+                        [(selectedDate)]="invoiceDate"></ngx-cp-datepicker>
+                </div>
+                <div class="filter-control">
+                    <input type="number" min="0" maxlength="255" placeholder="Balance" class="form-control"
+                        [(ngModel)]="balance" (keypress)="preventNonNumericalInput($event)" />
+                </div>
+                <div class="filter-control">
+                    <nb-select [(ngModel)]="aged" class="form-control form-control-select">
+                        <nb-option value="">Invoice Status</nb-option>
+                        <nb-option value="Current">Current</nb-option>
+                        <nb-option value="Overdue">Overdue</nb-option>
+                        <nb-option value="Paid">Paid In Full</nb-option>
+                    </nb-select>
+                </div>
+                <div class="filter-control">
+                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                        (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page>
+                </div>
+            </div>
+            <div actions>
+                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+                <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+                    <i class="fas fa-redo-alt"></i>
+                    Reset Filters
+                </button>
+            </div>
+        </ngx-smr-mobile-filters>
+
+        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+            <div class="col-sm-12" *ngIf="source">
+                <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
+                    [source]="source">
+                </ng2-smart-table>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

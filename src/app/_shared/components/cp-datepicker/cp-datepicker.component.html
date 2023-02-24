@@ -1,0 +1,12 @@
+<div class="datepicker-container">
+  <input #input
+         maxlength="255"
+         [nbDatepicker]="datepicker"
+         type="text"
+         [placeholder]="displayPlaceholder"
+         [(ngModel)]="selectedDate"
+         class="col-lg-8 form-control input-style" readonly>
+  <nb-datepicker #datepicker [format]="'MM/dd/yyyy'"></nb-datepicker>
+
+  <i class="clear-icon fas fa-times" *ngIf="!!selectedDate" (click)="clearDate()"></i>
+</div>

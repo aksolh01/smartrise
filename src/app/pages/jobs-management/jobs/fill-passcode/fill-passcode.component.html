@@ -1,0 +1,43 @@
+<nb-card class="in-dialog mb-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Fill Passcode</h2>
+        <button [disabled]="isUpdating" type="button" class="close ml-5" aria-label="Close" tooltip="Close"
+            (click)="onClose()" style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body>
+        <form [formGroup]="fillPasscodeForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-12">
+                    <textarea class="txt-area" 
+                        placeholder="Group X - Car Y - Passcode Z"
+                        formControlName="tempPasscode"></textarea>
+                    <div *ngIf="formSubmitted" class="errors">
+                        <div class="help-block error" *ngIf="fillPasscodeForm.get('tempPasscode').errors != null &&
+                            fillPasscodeForm.get('tempPasscode').errors['whitespace'] &&
+                            fillPasscodeForm.get('tempPasscode').touched">
+                            White spaces are not allowed
+                        </div>
+                        <div class="help-block error" *ngIf="fillPasscodeForm.get('tempPasscode').errors != null &&
+                            fillPasscodeForm.get('tempPasscode').errors['trimError'] &&
+                            fillPasscodeForm.get('tempPasscode').touched">
+                            This field can't start or end with a blank space
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <button (click)="onClose()" [disabled]="isUpdating" type="button" class="btn btn-secondary mr-2">
+            <i class="fas fa-times"></i>
+            Cancel
+        </button>
+        <button type="button" [disabled]="isUpdating" class="btn btn-primary"
+            (click)="onSubmit()">
+            <i class="fas fa-save"></i>
+            Save
+        </button>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,9 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+<div class="center">
+    <ng-template [ngIf]="true" [ngIfElse]="naOnMobile">
+        <nb-checkbox [status]="status" class="bool" [checked]="val" (checkedChange)="onChecked($event)" [disabled]="disable"></nb-checkbox>
+    </ng-template>
+    <ng-template #naOnMobile>
+        <div class="d-lg-none d-block">N/A</div>
+    </ng-template>
+</div>

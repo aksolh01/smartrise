@@ -1,0 +1,5 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">
+    {{ header }}
+</div>
+<div class="badge badge-warning pending-info-cell text-white" *ngIf="isActive === true">Yes</div>
+<div class="badge badge-info pending-info-cell text-white" *ngIf="isActive === false">No</div>

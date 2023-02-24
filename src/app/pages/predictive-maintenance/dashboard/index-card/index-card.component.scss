@@ -1,0 +1,50 @@
+.main {
+    padding: 0.8em;
+}
+
+.count-change {
+    line-height: 1em;
+    font-size: small;
+}
+
+.count-change-red {
+    color: red;
+}
+
+.count-change-green {
+    color: green;
+}
+
+.count {
+    color: black;
+    font-weight: bold;
+    font-size: small;
+}
+
+.title {
+    font-size: small;
+    color: #888888;
+}
+
+.arrow-image {
+    width: 1em;
+    height: 1em;
+}
+
+.card {
+    margin-right: 0.5em !important;
+    width: 12em;
+    border: #dddddd thin solid;
+}
+
+.center {
+    text-align: center;
+}
+
+.text-content {
+    padding: 0.5em;
+}
+
+.adjust-zindex {
+    z-index: 100;
+}

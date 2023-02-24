@@ -1,0 +1,9 @@
+<div *ngIf="showHeader" class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+<ng-template [ngIf]="!!value" [ngIfElse]="naOnMobile">
+  <a *ngIf="href"  [class.break-word]="options?.breakWord" [tooltip]="options?.tooltip" (click)="onGoToLink()" (contextmenu)="onGoToLink()">{{ value }}</a>
+  <a *ngIf="!href" [class.break-word]="options?.breakWord" [tooltip]="options?.tooltip" (click)="onGoToLink()" (contextmenu)="onGoToLink()">{{ value }}</a>
+</ng-template>
+<ng-template #naOnMobile>
+  <div class="d-lg-none d-block">N/A</div>
+</ng-template>
+<i *ngIf="rowData.isLocked" [ngClass]="{'locked-icon ml-2 fas fa-info-circle': true, 'white': !isSmartriseUser}" tooltip="Please contact your Regional Sales Team to edit this quote"></i>

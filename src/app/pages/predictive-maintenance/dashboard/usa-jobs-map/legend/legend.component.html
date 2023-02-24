@@ -1,0 +1,18 @@
+<div class="legends">
+    <div class="legend normal-legend">
+        <div #normal (click)="onClickLegend(2)" class="color"></div>
+        <span (click)="onClickLegend(2)" (mouseover)="onSpanMouseOver(normal)">Normal</span>
+    </div>
+    <div class="legend at-fault-legend">
+        <div #atFault (click)="onClickLegend(0)" class="color"></div>
+        <span (click)="onClickLegend(0)" (mouseover)="onSpanMouseOver(atFault)">At Fault</span>
+    </div>
+    <div class="legend offline-legend">
+        <div #offline (click)="onClickLegend(3)" class="color"></div>
+        <span (click)="onClickLegend(3)" (mouseover)="onSpanMouseOver(offline)">Offline</span>
+    </div>
+    <div class="legend attention-needed-legend">
+        <div #attentionNeeded (click)="onClickLegend(1)" class="color"></div>
+        <span (click)="onClickLegend(1)" (mouseover)="onSpanMouseOver(attentionNeeded)">Attention Needed</span>
+    </div>
+</div>

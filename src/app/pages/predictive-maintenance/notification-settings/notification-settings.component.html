@@ -1,0 +1,86 @@
+<nb-card>
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <div class="col-md">
+            <h2 class="card-title">Notification Settings</h2>
+        </div>
+        <div class="col-md">
+            <div class="card-actions">
+                <div tooltip="View Notification Logs">
+                    <button [disabled]="!canViewLogs" (click)="onViewLogs()" class="btn btn-primary mr-1">
+                        <i class="fas fa-clipboard-list"></i>
+                        View Logs
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+
+        <ng-template [ngIf]="isSmall === false">
+            <div class="row mb-3">
+                <div class="col d-flex align-items-center justify-content-start">
+                    <button (click)="onReset()" class="btn btn-primary">
+                        <i class="fas fa-redo-alt"></i>
+                        Reset Filters
+                    </button>
+                </div>
+                <div class="col-auto d-flex align-items-center justify-content-start">
+                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page>
+                </div>
+            </div>
+        </ng-template>
+
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+            <div filters>
+                <div *ngIf="isSmartriseUser" class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Job Number" class="form-control"
+                        [(ngModel)]="jobNumber" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Job Name" class="form-control"
+                        [(ngModel)]="jobName" />
+                </div>
+                <div class="filter-control">
+                    <input type="text" maxlength="255" placeholder="Alerts Count" class="form-control"
+                        [(ngModel)]="alertsCount" />
+                </div>
+                <div class="filter-control">
+                    <nb-select [(ngModel)]="status" class="form-control">
+                        <nb-option value="">Status</nb-option>
+                        <nb-option *ngFor="let c of alertStatuses" [value]="c.value">
+                            {{ c.title }}
+                        </nb-option>
+                    </nb-select>
+                </div>
+
+                <div class="filter-control">
+                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page>
+                </div>
+            </div>
+            <div actions>
+                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+                <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+                    <i class="fas fa-redo-alt"></i>
+                    Reset Filters
+                </button>
+            </div>
+        </ngx-smr-mobile-filters>
+
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+            <div class="col-lg-12" *ngIf="source">
+                <ng2-smart-table class="default-smart-table responsive-design1" [settings]="settings" [source]="source">
+                </ng2-smart-table>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

@@ -1,0 +1,28 @@
+img {
+    width: 3rem;
+    margin-top: 3px;
+}
+
+p {
+    color: gray;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-group:last-of-type,
+.form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+.icon {
+    font-size: 40px;
+    color: rgb(93, 201, 72);
+}
+
+.payment-message {
+    word-break: break-all;
+}

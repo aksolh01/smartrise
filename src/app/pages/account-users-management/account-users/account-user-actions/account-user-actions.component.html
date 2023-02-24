@@ -1,0 +1,37 @@
+<div class="actions text-center">
+  <div tooltip="Edit Account User" class="action-tooltip-holder">
+    <button [disabled]="!canUpdateAccountUser" data-tooltip="Edit Account User" (click)="onEditUser(this.rowData)">
+      <i class="fas fa-pencil-alt" data-toggle="tooltip" data-original-title="Update"></i>
+    </button>
+  </div>
+  <div tooltip="Login As User" class="action-tooltip-holder">
+    <button [disabled]="!canViewAs" data-tooltip="Login As User"
+      (click)="onImpersonateLogin(rowData)">
+      <i class="fas fa-sign-in-alt" data-toggle="tooltip" data-original-title="Login As User"></i>
+    </button>
+  </div>
+  <div tooltip="Resend Invitation Link" class="action-tooltip-holder">
+    <button [disabled]="!canResendInvitation" data-tooltip="Resend Invitation Link"
+      (click)="onResendInvitation(this.rowData)">
+      <i class="fas fa-share" data-toggle="tooltip" data-original-title="Resend Invitation"></i>
+    </button>
+  </div>
+  <div tooltip="Send Password Reset Request" class="action-tooltip-holder">
+    <button [disabled]="!canResetPassword" data-tooltip="Send Password Reset Request"
+      (click)="onResetPassword(this.rowData)">
+      <i class="fas fa-recycle" data-toggle="tooltip" data-original-title="Send Password Reset Request"></i>
+    </button>
+  </div>
+  <div tooltip="Activate User" class="action-tooltip-holder">
+    <button [disabled]="!canActivateAccountUser" data-tooltip="Activate User" *ngIf="this.rowData.isDeactivated"
+      (click)="onActivateUser(this.rowData)">
+      <i class="fas fa-user-minus" data-toggle="tooltip" data-original-title="Activate User"></i>
+    </button>
+  </div>
+  <div tooltip="Deactivate User" class="action-tooltip-holder">
+    <button [disabled]="!canDeactivateAccountUser" data-tooltip="Deactivate User" *ngIf="!this.rowData.isDeactivated"
+      (click)="onDeactivateUser(this.rowData)">
+      <i class="fas fa-user-check" data-toggle="tooltip" data-original-title="Deactivate User"></i>
+    </button>
+  </div>
+</div>

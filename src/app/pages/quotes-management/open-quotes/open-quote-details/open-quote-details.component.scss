@@ -1,0 +1,23 @@
+label {
+    color: #777;
+    font-size: 0.9375rem;
+}
+
+
+div.form-control-plaintext{
+    font-size: 0.9375rem;
+}
+
+.form-group:last-of-type, .form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+a:not([href]):not([tabindex]) {
+    text-decoration: underline !important;
+    color: #1e6bb8;
+    cursor: pointer;
+}
+
+a:not([href]):not([tabindex]):hover {
+    color: #598bff;
+}

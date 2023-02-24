@@ -1,0 +1,21 @@
+.waiting-info input[readonly='readonly'] {
+    color: #ff0000;
+}
+
+label {
+    color: #777;
+}
+
+.form-group:last-of-type, .form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+.fill-passcode {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+}
+
+.passcode {
+    max-height: 120px;
+    overflow-y: auto;
+}

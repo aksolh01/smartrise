@@ -1,0 +1,5 @@
+<!-- User [checked] instead of [value], since the value property is deprecated -->
+<nb-checkbox checkbox-text-space="0rem" [checked]="checkStatus" *ngIf="!nullIsVisible" [disabled]="disable"
+    (checkedChange)="onOffCheckBoxChanged($event)">{{label}}</nb-checkbox>
+<nb-checkbox checkbox-text-space="0rem" [checked]="'false'" *ngIf="nullIsVisible" [disabled]="disable"
+    [indeterminate]="nullIsVisible" (checkedChange)="nullCheckBoxChanged($event)">{{label}}</nb-checkbox>

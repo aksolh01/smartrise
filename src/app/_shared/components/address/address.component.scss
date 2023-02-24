@@ -1,0 +1,29 @@
+.form-group:last-of-type,
+.form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-weight: 550;
+    color: #0088cc !important;
+}
+
+.card-header {
+    border-bottom: 1px solid #82bddd !important;
+}
+
+label {
+    color: #777 !important;
+}
+
+div.div-label {
+    padding-left: 0px;
+
+    label {
+        color: black !important;
+    }
+}
+
+.control-label{
+    padding-left: 15px !important;
+}

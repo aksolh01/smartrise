@@ -1,0 +1,66 @@
+<div class="header-container">
+    <div class="logo-container">
+        <a routerLink="/pages/dashboard" class="logo">
+            <img src="/assets/images/logo.png" alt="SmartRise Logo" />
+        </a>
+        <div *ngIf="testingEnvironment === true" class="testing">
+            TESTING
+        </div>
+        <div joyrideStep="mobileThirdStep" title="Menu" stepPosition="bottom" class="d-lg-none toggle-sidebar-left" style="margin-right: 15px" (done)="onFinishingHomeTour()" [stepContent]="thirdCustomContent" (click)="toggleSidebar()">
+            <ng-template #thirdCustomContent>
+                <div class='joyride-custom-content'>
+                    Navigate between pages here.
+                </div>
+            </ng-template>
+            <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+        </div>
+    </div>
+</div>
+
+<div class="header-container name-container">
+
+    <nb-actions size="small">
+
+        <nb-action class="user-action" *nbIsGranted="['view', 'user']" style="padding-top: 2px; padding-bottom: 2px;" joyrideStep="secondStep" (done)="onFinishingHomeTour()" [title]="runGuidingTour === true ? 'Customer Portal' : null" stepPosition="bottom" [stepContent]="secondCustomContent">
+            <ng-template #secondCustomContent>
+                <div *ngIf="!impersonationModeIsActivated && (isSmartriseUser || !userHasMoreThanOneAccount)" class='joyride-custom-content'>
+                    Click here to change your password, edit your profile, or logout.
+                </div>
+                <div *ngIf="impersonationModeIsActivated === true" class='joyride-custom-content'>
+                    Click here to go back to administration or logout.
+                </div>
+                <div *ngIf="!impersonationModeIsActivated && !isSmartriseUser && userHasMoreThanOneAccount" class='joyride-custom-content'>
+                    Click here to select account, change your password, edit your profile, or logout.
+                </div>
+            </ng-template>
+
+            <ng-container *ngIf="currentUser$ | async as currentUser">
+                <div class="dropdown ml-3 mr-1" dropdown>
+                    <div class="menu-toggle d-flex flex-row align-items-center" dropdownToggle>
+                        <nb-user size="medium" [name]="currentUser.displayName"> </nb-user>
+                        <i class="ml-3 fas custom-angle"></i>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                        <div class="divider"></div>
+                        <a *ngIf="currentUser.impersonationModeIsActivated" (click)="backToAdministration()" class="dropdown-item">
+                            <i class="fas fa-arrow-left"></i>&nbsp; Back to Administration
+                        </a>
+                        <a *ngIf="!currentUser.impersonationModeIsActivated && !isSmartriseUser && userHasMoreThanOneAccount" (click)="showSelectAccountPopup()" class="dropdown-item">
+                            <i class="fas fa-code-branch"></i>&nbsp; Select Account
+                        </a>
+                        <a *ngIf="!currentUser.impersonationModeIsActivated" (click)="goToChangePassword()" class="dropdown-item">
+                            <i class="fas fa-lock"></i>&nbsp; Change Password
+                        </a>
+                        <a *ngIf="!currentUser.impersonationModeIsActivated" (click)="goToUpdateProfile()" class="dropdown-item">
+                            <i class="fas fa-user-edit"></i>&nbsp; Edit Profile
+                        </a>
+                        <a (click)="logout()" class="dropdown-item">
+                            <i class="fas fa-power-off"></i>&nbsp; Logout
+                        </a>
+                    </div>
+                </div>
+            </ng-container>
+        </nb-action>
+
+    </nb-actions>
+</div>

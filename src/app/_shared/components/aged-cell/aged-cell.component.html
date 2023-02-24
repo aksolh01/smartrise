@@ -1,0 +1,31 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">
+    {{ header }}
+</div>
+<div *ngIf="withSattled">
+    <span *ngIf="rowData.balance === 0"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-paid-cell' : 'badge text-white amount-paid-cell'">Paid
+        In Full</span>
+    <span *ngIf="rowData.balance > 0 && rowData.overDueDays <= 30"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-current-cell' : 'badge text-white amount-current-cell'">Current</span>
+    <span *ngIf="rowData.balance > 0 && rowData.overDueDays >= 31 && rowData.overDueDays <= 60"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-30-cell' : 'badge text-white amount-overdue-30-cell'">30 Days Overdue</span>
+    <span *ngIf="rowData.balance > 0 && rowData.overDueDays >= 61 && rowData.overDueDays <= 90"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-60-cell' : 'badge text-white amount-overdue-60-cell'">60 Days Overdue</span>
+    <span *ngIf="rowData.balance > 0 && rowData.overDueDays >= 91 && rowData.overDueDays <= 120"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-90-cell' : 'badge text-white amount-overdue-90-cell'">90 Days Overdue</span>
+    <span *ngIf="rowData.balance > 0 && rowData.overDueDays >= 121" 
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-120-cell' : 'badge text-white amount-overdue-120-cell'">120
+        Days Overdue</span>
+</div>
+<div *ngIf="!withSattled">
+    <span *ngIf="rowData.overDueDays <= 30" 
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-current-cell' : 'badge text-white amount-current-cell'">Current</span>
+    <span *ngIf="rowData.overDueDays >= 31 && rowData.overDueDays <= 60"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-30-cell' : 'badge text-white amount-overdue-30-cell'">30 Days Overdue</span>
+    <span *ngIf="rowData.overDueDays >= 61 && rowData.overDueDays <= 90"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-60-cell' : 'badge text-white amount-overdue-60-cell'">60 Days Overdue</span>
+    <span *ngIf="rowData.overDueDays >= 91 && rowData.overDueDays <= 120"
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-90-cell' : 'badge text-white amount-overdue-90-cell'">90 Days Overdue</span>
+    <span *ngIf="rowData.overDueDays >= 121" 
+        [class]="isPillStyle ? 'badge-pill badge text-white amount-overdue-120-cell' : 'badge text-white amount-overdue-120-cell'">120 Days Overdue</span>
+</div>

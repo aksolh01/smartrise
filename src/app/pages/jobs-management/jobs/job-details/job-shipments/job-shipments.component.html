@@ -1,0 +1,119 @@
+<ng-template [ngIf]="shipments?.length > 0">
+    <div class="card-body">
+        <nb-accordion *ngFor="let shipment of shipments;let i = index">
+            <nb-accordion-item (collapsedChange)="onShipmentCollapsedExpanded(shipment, $event)" [expanded]="selectedShipmentId === shipment.id" #item>
+                <nb-accordion-item-header>
+                    <div class="w-100 px-4 d-flex justify-content-between align-items-center">
+                        {{ shipment.shipmentType.description }} ({{ shipment.status }})
+
+                        <i *ngIf="i === 0" joyrideStep="subfirstStep" stepPosition="bottom"
+                            text="Click here to check the items inside this shipment" class="mx-2 fas fa-info-circle"
+                            (click)="item.toggle(); showPartsDescription(shipment)"
+                            tooltip="Show Parts Description"></i>
+
+                        <i *ngIf="i != 0" class="mx-2 fas fa-info-circle"
+                            (click)="item.toggle(); showPartsDescription(shipment)"
+                            tooltip="Show Parts Description"></i>
+
+                    </div>
+                </nb-accordion-item-header>
+                <nb-accordion-item-body>
+
+                    <div class="row">
+                        <div class="col-lg-4">
+
+                            <div class="form-group row">
+                                <label class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Tracking Number</label>
+                                <div class="col-12 col-lg-8">
+                                    <div class="form-control-plaintext">
+                                        <a class="shipment" *ngIf="shipment?.carrierWebsite && shipment?.trackingNumber"
+                                            [href]="shipment?.carrierWebsite" tooltip="View Tracking Details"
+                                            target="_blank">{{
+                                            shipment?.trackingNumber | value
+                                            }}</a>
+                                        {{ (!shipment?.carrierWebsite || !shipment?.trackingNumber) ?
+                                        (shipment?.trackingNumber |
+                                        value) : '' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Status</label>
+                                <div class="col-12 col-lg-8">
+                                    <div class="form-control-plaintext">{{ shipment?.status | value }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4">
+
+                            <div class="form-group row">
+                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Carrier</label>
+                                <div class="col-12 col-lg-8">
+                                    <div class="form-control-plaintext">{{ shipment?.carrier | value }}</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Ship
+                                    Address</label>
+                                <div class="col-12 col-lg-8">
+                                    <div class="form-control-plaintext">
+                                        <ngx-address-field [Address]="shipment?.address"
+                                            [FullAddress]="shipment?.addressStr">
+                                        </ngx-address-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <div class="form-group row">
+                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Ship Date</label>
+                                <div class="col-12 col-lg-8">
+                                    <div class="form-control-plaintext">{{ shipment?.shipDate | usdate | value }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <nb-accordion class="shipment-trackings-container mx-3">
+                        <nb-accordion-item (collapsedChange)="onShipmentTrackingsCollapsedExpanded(shipment, $event)" [expanded]="shipment.trackingsExpanded">
+                            <nb-accordion-item-header>
+                                <div class="activity-history-title">
+                                    Activity History
+                                </div>
+                            </nb-accordion-item-header>
+                            <nb-accordion-item-body>
+                                <ngx-shipment-trackings [trackings]="shipment?.shippingTrackingActions">
+
+                                </ngx-shipment-trackings>
+                            </nb-accordion-item-body>
+                        </nb-accordion-item>
+                    </nb-accordion>
+                </nb-accordion-item-body>
+            </nb-accordion-item>
+        </nb-accordion>
+
+        <!-- <div class="text-right">
+            <button class="btn btn-secondary" type="button" (click)="onClose()">
+                <i class="fas fa-times"></i>
+                Close
+            </button>
+        </div> -->
+    </div>
+</ng-template>
+
+<ng-template [ngIf]="!shipments || !shipments.length">
+    <div class="no-data-found">
+        No Data Found
+    </div>
+    <!-- <div class="text-right">
+        <button class="btn btn-secondary" type="button" (click)="onClose()">
+            <i class="fas fa-times"></i>
+            Close
+        </button>
+    </div> -->
+</ng-template>

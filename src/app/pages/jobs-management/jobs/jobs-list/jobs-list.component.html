@@ -1,0 +1,114 @@
+<nb-card joyrideStep="jobFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Jobs' : null"
+  [doneTemplate]="doneButton" [stepContent]="firstCustomContent" (done)="onFinishingTour()">
+
+  <ng-template #firstCustomContent>
+    <div class='joyride-custom-content'>
+      <div style="margin-bottom: 5px;">
+        View a list of jobs associated with your account.<br />
+        Please contact your Sales Representative or <a href="mailto:support@smartrise.us">support@smartrise.us</a> if
+        you are unable to locate a job.
+      </div>
+      <div>
+        <i class="fas fa-eye guiding-tour-action"></i>View Job Details
+      </div>
+      <div *ngIf="canFillPasscode">
+        <i class="fas fa-key guiding-tour-action"></i>Fill Passcode
+      </div>
+    </div>
+  </ng-template>
+
+  <nb-card-header class="default-card-header">
+    <h2 class="card-title">Jobs</h2>
+  </nb-card-header>
+
+  <nb-card-body>
+
+    <ng-template [ngIf]="isSmall === false">
+      <div class="row mb-3">
+        <div class="col d-flex align-items-center justify-content-start">
+          <button (click)="onReset()" class="btn btn-primary">
+            <i class="fas fa-redo-alt"></i>
+            Reset Filters
+          </button>
+        </div>
+        <div class="col-auto d-flex align-items-center justify-content-start">
+          <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+          </ngx-smr-records-per-page>
+        </div>
+      </div>
+    </ng-template>
+
+    <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+      <div filters>
+        <div *ngIf="settings?.columns?.customerName" class="filter-control">
+          <input type="text" maxlength="255" placeholder="Account" class="form-control" [(ngModel)]="customerName" />
+        </div>
+        <div class="filter-control">
+          <input type="text" maxlength="255" placeholder="Job Name" class="form-control" [(ngModel)]="jobName" />
+        </div>
+        <div class="filter-control">
+          <input type="text" maxlength="255" placeholder="Job Number" class="form-control" [(ngModel)]="jobNumber" />
+        </div>
+        <div class="filter-control">
+          <input type="text" maxlength="255" placeholder="PO Number" class="form-control"
+            [(ngModel)]="customerPONumber" />
+        </div>
+        <div class="filter-control">
+          <ngx-cp-datepicker class="form-group" memberName="Desired Ship Date" displayPlaceholder="Desired Ship Date"
+            [(selectedDate)]="shipDate"></ngx-cp-datepicker>
+        </div>
+        <div class="filter-control">
+          <ngx-cp-datepicker class="form-group" memberName="Tentative Ship Date" displayPlaceholder="Tentative Ship Date"
+            [(selectedDate)]="grantedShipDate"></ngx-cp-datepicker>
+        </div>
+        <div class="filter-control">
+          <ngx-cp-datepicker class="form-group" memberName="Actual Ship Date" displayPlaceholder="Actual Ship Date"
+            [(selectedDate)]="actualShipDate"></ngx-cp-datepicker>
+        </div>
+        <div class="filter-control">
+          <nb-select [(ngModel)]="epicorWaitingInfo" style="width: 100%;" class="form-control form-control-select">
+            <nb-option value="">Waiting on Info</nb-option>
+            <nb-option *ngFor="let option of yesNoList" [value]="option.value">
+              {{ option.title }}
+            </nb-option>
+          </nb-select>
+        </div>
+        <div class="filter-control">
+          <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+          </ngx-smr-records-per-page>
+        </div>
+        <!-- <ngx-cp-checkbox class="ml-2" [(checkStatus)]="epicorWaitingInfo"></ngx-cp-checkbox> -->
+      </div>
+      <div actions>
+        <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
+          <i class="fas fa-search"></i>
+          Search
+        </button>
+        <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+          <i class="fas fa-redo-alt"></i>
+          Reset Filters
+        </button>
+      </div>
+    </ngx-smr-mobile-filters>
+
+    <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+      <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+        <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+          <i class="fas fa-filter"></i>
+        </button>
+      </div>
+      <div class="col-sm-12" *ngIf="source">
+        <ng2-smart-table class="default-smart-table responsive-design1" [settings]="settings" [source]="source">
+        </ng2-smart-table>
+      </div>
+    </div>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #doneButton>
+  <button class="btn btn-primary">
+    <i class="clear-icon fas fa-check"></i>
+    OK
+  </button>
+</ng-template>

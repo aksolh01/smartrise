@@ -1,0 +1,57 @@
+.elevator-dashboard {
+    background-image: url("/assets/images/elevator.png");
+    position: relative;
+    height: 57em;
+    width: 63em;
+    background-position: 15em 0em;
+    background-repeat: no-repeat;
+}
+
+.elevator-area-details-panel {
+    border-radius: 0.25em;
+}
+
+.elevator-area {
+    background-color: brown;
+    position: absolute;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 0.75em;
+    border: yellow 0.3em solid;
+}
+
+.car-top {
+    left: 29em;
+    top: 11.3em;
+}
+
+.car-top-panel {
+    position: absolute;
+    left: 29em;
+    top: 13em;
+}
+
+.car-operation-panel {
+    left: 27.2em;
+    top: 17em;
+}
+
+.car-operation-panel-panel {
+    position: absolute;
+    left: 27.2em;
+    top: 18.7em;
+}
+
+.machine-room {
+    left: 35em;
+    top: 37.2em;
+}
+
+.machine-room-panel {
+    position: absolute;
+    left: 35em;
+    top: 38.9em;
+}
+
+.elevator-area-details {
+}

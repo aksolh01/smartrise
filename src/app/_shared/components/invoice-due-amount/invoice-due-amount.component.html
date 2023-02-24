@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="d-md-block d-lg-none p-2 font-weight-bold">
+    {{ header }}
+  </div>
+  <span>
+    {{ val }}
+  </span>
+  <span *ngIf="rowData.overDueDays < 0" class="amount-future-cell">(Future)</span>
+  <span *ngIf="rowData.overDueDays >= 0 && rowData.overDueDays <= 30" class="amount-current-cell">(Current)</span>
+  <span *ngIf="rowData.overDueDays >= 31 && rowData.overDueDays <= 60" class="amount-overdue-30-cell">(Over 30)</span>
+  <span *ngIf="rowData.overDueDays >= 61 && rowData.overDueDays <= 90" class="amount-overdue-60-cell">(Over 60)</span>
+  <span *ngIf="rowData.overDueDays >= 91 && rowData.overDueDays <= 120" class="amount-overdue-90-cell">(Over 90)</span>
+  <span *ngIf="rowData.overDueDays >= 121" class="amount-overdue-120-cell">(Over 120)</span>
+</div>

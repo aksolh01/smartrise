@@ -1,0 +1,30 @@
+<div class="actions">
+
+    <div *ngIf="!isImpersonate" tooltip="Set As Default" class="action-tooltip-holder">
+        <button [disabled]="!canSetDefault || rowData.isDefault || rowData?.status?.value !== active" data-tooltip="Set As Default" (click)="onSetDefault()">
+            <i class="fas fa-chess-king" data-toggle="tooltip" data-original-title="View"></i>
+        </button>
+    </div>
+
+    <ng-template [ngIf]="!isImpersonate">
+        <div tooltip="Verify Bank Account" class="action-tooltip-holder">
+            <button [disabled]="!canVerifyAccount || rowData?.status?.value !== awaitingVerification"
+                data-tooltip="Verify Bank Account" (click)="onVerifyAccount()">
+                <i class="fas fa-check" data-toggle="tooltip" data-original-title="Verify"></i>
+            </button>
+        </div>
+    </ng-template>
+
+    <div *ngIf="!isImpersonate" tooltip="Edit Bank Account" class="action-tooltip-holder">
+        <button [disabled]="!canEditDetails" data-tooltip="Edit Bank Account" (click)="onEdit()">
+            <i class="fas fa-pencil-alt" data-toggle="tooltip" data-original-title="Edit"></i>
+        </button>
+    </div>
+
+    <div tooltip="View Details" class="action-tooltip-holder">
+        <button [disabled]="!canViewDetails" data-tooltip="View Details" (click)="onShowDetails()">
+            <i class="fas fa-eye" data-toggle="tooltip" data-original-title="View"></i>
+        </button>
+    </div>
+
+</div>

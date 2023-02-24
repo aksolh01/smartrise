@@ -1,0 +1,19 @@
+@media (max-width: 768px) {
+    .btn-login {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+}
+
+
+.btn-checkout {
+    background-color: #ffc439;
+    border-color: #ffc439;
+    color: white;
+    width: 100%;
+}
+.btn-checkout:hover {
+    background-color: #f9b513;
+    border-color: #f9b513;
+}

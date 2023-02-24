@@ -1,0 +1,24 @@
+<nb-card size="tiny" style="height: 17.6rem;">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">
+            Recent Accounts
+        </h2>
+    </nb-card-header>
+
+    <nb-card-body class="card-body" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+
+        <div *ngIf="this.data">
+            <nb-list>
+                <nb-list-item class="list-item" *ngFor="let customer of data">
+                    <ngx-customer-list-item [customer]="customer"></ngx-customer-list-item>
+                </nb-list-item>
+            </nb-list>
+        </div>
+
+    </nb-card-body>
+
+    <div class="no-data-container" *ngIf="!isLoading && !this.data">
+        No Customers recently previewed
+    </div>
+
+</nb-card>

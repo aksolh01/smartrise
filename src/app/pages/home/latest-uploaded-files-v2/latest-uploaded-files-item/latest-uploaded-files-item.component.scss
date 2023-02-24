@@ -1,0 +1,61 @@
+p {
+    font-size: 0.85rem !important;
+}
+
+nb-list-item {
+    padding: 0.5rem 1rem 0.5rem 0.5rem !important;
+}
+
+.detail-container div p span {
+    font-weight: bold;
+}
+
+.labels p {
+    margin-bottom: 0;
+}
+
+.customer-name {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 0.8375rem;
+}
+
+.container {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.labels {
+    text-align: left;
+    display: table-cell;
+}
+
+@media (max-width: 767px) {
+    .labels {
+        width: 55%;
+    }
+    .actions {
+        width: 45%;
+    }
+}
+
+.actions {
+    text-align: right;
+    display: table-cell;
+}
+
+.actions button,
+.actions button:focus {
+    border: 0rem;
+    outline: 0rem;
+    background-color: transparent;
+    margin-right: 5px;
+    margin-bottom: 0.2rem;
+    color: #666;
+    padding: 0;
+}
+
+button[disabled="true"] {
+}

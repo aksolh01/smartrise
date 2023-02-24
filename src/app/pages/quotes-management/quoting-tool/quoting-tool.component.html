@@ -1,0 +1,1286 @@
+<nb-card *ngIf="!isLoading" [nbSpinner]="isBusy" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">Quote Details</h2>
+    </nb-card-header>
+
+
+    <nb-card-body class="pb-0">
+
+        <ngx-errors-panel #actionsRequired [disabled]="disableActionsRequired" [collapse]="hideErrorsPanel"
+            [ngStyle]="{'display': hasError ? 'block' : 'none'}" class="position-fixed border errors-panel"
+            [(hasError)]="hasError"></ngx-errors-panel>
+
+        <div class="text-right mb-3">
+            <ngx-actions-bar [status]="quote.status" [isProccessing]="isProccessing" [isSaving]="isSaving"
+                [isGenerating]="isGenerating" (close)="onCancel()" (viewPricing)="onViewPricing()"
+                (saveQuote)="onSaveQuote()" (generateQuote)="onSaveQuote(true)">
+            </ngx-actions-bar>
+        </div>
+
+        <div *ngIf="quote.status === 'Created' && !hideTopMessage" class="alert alert-primary">
+            <i class="fas fa-times float-right close-alert  top-message" tooltip="Close Alert"
+                (click)="onCloseTopMessage()"></i>
+            <p class="mb-0">Fill out the forms below for pricing.</p>
+        </div>
+
+        <div class="row quote-level-info">
+            <div class="col-lg-6">
+
+                <div *ngIf="showAccountName" class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ quote?.customer?.name }}</div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Created Date</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-date [item]="quote" disabled="true" fieldLabel="Date" valueField="creationDate"
+                            type="date">
+                        </ngx-quoting-date>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Status</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                            [dataSource]="lookup.jobStatuses" dataSourceDisplayField="description"
+                            dataSourceValueField="value" selectOptionLabel="Job Status"
+                            [selectOptionValue]="defaultValue" [item]="quote" fieldLabel="Job Status"
+                            valueField="jobStatus">
+                        </ngx-quoting-dropdown>
+                    </div>
+                </div>
+
+                <div class="form-group row" *ngIf="quote?.jobStatus === 'Bidding'">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Bid Date</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-date [item]="quote" fieldLabel="Bid Date" valueField="biddingDate"
+                            (click)="collapseActionsRequired()">
+                        </ngx-quoting-date>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Consultant Name</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-input-text [disabled]="!quote?.consultantNameAvailable" length="50" [item]="quote"
+                            fieldLabel="Consultant Name" valueField="consultantName" type="text">
+                        </ngx-quoting-input-text>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Unknown Consultant</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-checkbox [item]="quote" fieldLabel="" valueField="unknownConsultant">
+                        </ngx-quoting-checkbox>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Modernization</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-checkbox [item]="quote" fieldLabel="" valueField="modernization">
+                        </ngx-quoting-checkbox>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">New Construction</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-checkbox class="just-checkbox" [item]="quote" fieldLabel=""
+                            valueField="newConstruction">
+                        </ngx-quoting-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-input-text length="20" [item]="quote" fieldLabel="Job Name" valueField="jobName"
+                            type="text">
+                        </ngx-quoting-input-text>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Building Type</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-dropdown [item]="quote" fieldLabel="Building Type" valueField="buildingType"
+                            [dataSource]="lookup.buildingTypes" dataSourceDisplayField="description"
+                            dataSourceValueField="value" selectOptionLabel="Building Type"
+                            [selectOptionValue]="defaultValue" type="text">
+                        </ngx-quoting-dropdown>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Location</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-job-location-lookup (locationChanged)="onLocationChanged($event)"
+                            (selectLocation)="onSelectLocation()" (removeLocation)="onRemoveLocation($event)"
+                            (locationRemoved)="onLocationRemoved($event)"
+                            (removingLocationCanceled)="onRemovingLocationCanceled($event)"
+                            (changingLocationCancelled)="onChangingLocationCancelled($event)" fieldLabel="Job Location"
+                            [countries]="lookup.countries" [item]="quote" [jobLocation]="quote.jobLocation"
+                            valueField="jobLocation">
+                        </ngx-job-location-lookup>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Contact</label>
+                    <div class="col-12 col-lg-8 d-flex">
+                        <ngx-quoting-input-text class="contact-input" readonly="true" [ngStyle]="{'flex': 1}"
+                            [item]="quote" fieldLabel="Contact" valueField="contact" type="text">
+                        </ngx-quoting-input-text>
+                        <button tooltip="Search Contact" class="btn btn-primary p-0 pr-2 pl-2 ml-1"
+                            (click)="onSelectContact()">
+                            <i [ngClass]="{'fa fa-search': true}"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-input-text [disabled]="true" [item]="quote" fieldLabel="Email" valueField="email"
+                            type="email" email="true">
+                        </ngx-quoting-input-text>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Phone</label>
+                    <div class="col-12 col-lg-8">
+                        <ngx-quoting-input-text [disabled]="true" [item]="quote" fieldLabel="Phone" valueField="phone"
+                            type="text">
+                        </ngx-quoting-input-text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-header">
+                <div *ngIf="!isSmall" class="extra"></div>
+                <div class="header-title">General Data</div>
+                <div class="add-car-action">
+                    <button joyrideStep="quoteFirstStep" stepPosition="bottom" [doneTemplate]="doneButton"
+                        [title]="runGuidingTour === true ? 'Quote Details' : null" [stepContent]="firstCustomContent"
+                        (done)="onFinishingTour()" [disabled]="isAddingCar" (click)="onAddCar()"
+                        (keydown)="addCarKeyPress($event)" type="button" aria-label="Add Car" tooltip=""
+                        class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i>
+                        Add Car
+                    </button>
+
+                    <ng-template #firstCustomContent>
+                        <div class='joyride-custom-content'>
+                            <div style="margin-bottom: 5px;">
+                                Add a new Car.
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </div>
+            </div>
+
+            <div class="table-container general-1-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Controller Type</th>
+                            <th>Simplex/Group</th>
+                            <th>Car Label</th>
+                            <th>Number Of Cars</th>
+                            <th>Openings</th>
+                            <th>Stops</th>
+                            <th>Number Of Risers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars; let i = index">
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span>
+                                        {{ displayGroup(car.group) }} - {{ car.carLabel }}
+                                    </span>
+                                    <div class="ml-1 car-actions actions d-flex">
+                                        <div tooltip="Clone Car" class="action-tooltip-holder">
+                                            <button (click)="onCloneCar(car)" data-tooltip="Clone Car">
+                                                <i class="fa fa-clone clone-car"></i>
+                                            </button>
+                                        </div>
+                                        <div tooltip="Remove Car" class=" action-tooltip-holder">
+                                            <button [disabled]="i === 0 && quote.cars.length === 1"
+                                                (click)="onDeleteCar(car)" data-tooltip="Remove Car">
+                                                <i class="fa fa-trash remove-car"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)" [item]="car"
+                                    [carRef]="car.ref" [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                    fieldLabel="Controller Type" valueField="controllerType"
+                                    [dataSource]="lookup.controllerTypes" dataSourceDisplayField="description"
+                                    dataSourceValueField="value" selectOptionLabel="Controller Type"
+                                    [selectOptionValue]="defaultValue">
+                                </ngx-quoting-dropdown>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)" [item]="car"
+                                    [carRef]="car.ref" [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                    fieldLabel="Simplex/Group" valueField="group" [dataSource]="lookup.groups"
+                                    dataSourceDisplayField="description" dataSourceValueField="value"
+                                    selectOptionLabel="Simplex/Group" [selectOptionValue]="defaultValue">
+                                </ngx-quoting-dropdown>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-text [item]="car" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" [length]="6" fieldLabel="Car Label" valueField="carLabel"
+                                    type="text">
+                                </ngx-quoting-input-text>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number decimals="0" [item]="car" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel="Number Of Cars"
+                                    valueField="numberOfCars">
+                                </ngx-quoting-input-number>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number decimals="0" [item]="car" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel="Openings"
+                                    valueField="openings">
+                                </ngx-quoting-input-number>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number [item]="car" decimals="0" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel="Stops"
+                                    valueField="stops">
+                                </ngx-quoting-input-number>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)" [item]="car"
+                                    [carRef]="car.ref" [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                    selectOptionLabel="Number Of Risers" fieldLabel="Number Of Risers"
+                                    valueField="numberOfRisersAlternative"
+                                    [dataSource]="lookup.numberOfRisersAlternatives"
+                                    dataSourceDisplayField="description" dataSourceValueField="value"
+                                    [selectOptionValue]="defaultValue">
+                                </ngx-quoting-dropdown>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-header">
+                <div class="header-title">Motor Parameters</div>
+            </div>
+
+            <div class="table-container motor-parameters-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Main Line Voltage</th>
+                            <th>Motor Volts</th>
+                            <th>Speed (FPM)</th>
+                            <th>Capactiy (LBS)</th>
+                            <th>Motor HP</th>
+                            <th>Full Load Amps (FLA)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars; let i = index">
+                            <td class="text-left">{{ displayGroup(car.group) }} - {{
+                                car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)" #mainLineVoltage
+                                    [item]="car" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="Main Line Voltage"
+                                    valueField="mainLineVoltage" [dataSource]="lookup.mainLineVoltages"
+                                    [assumedValue]="208" dataSourceDisplayField="description"
+                                    dataSourceValueField="value" selectOptionLabel="Main Line Voltage"
+                                    [selectOptionValue]="defaultValue" assumeField="mainLineVoltageAssume"
+                                    infoText="Main Line Voltage equals to 208 will be assumed" showAssume="true">
+                                </ngx-quoting-dropdown>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number assumeField="motorVoltsAssume"
+                                    [showAssume]="car.motorVoltsAssumable" [item]="car" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel="Motor Volts"
+                                    [assumedValue]="car.motorVoltsAssumedValue" valueField="motorVolts"
+                                    [infoText]="car.motorVoltsInfoMessage">
+                                </ngx-quoting-input-number>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number #speedFPM [length]="10" assumeField="speedFPMAssume"
+                                    [assumedValue]="car.speedFPMAssumedValue" [showAssume]="car.speedFPMAssumable"
+                                    #speed [item]="car" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="Speed (FPM)" valueField="speedFPM">
+                                </ngx-quoting-input-number>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number [length]="10" #capacity assumeField="capacityAssume"
+                                    [assumedValue]="car.capacityAssumedValue" [showAssume]="car.capacityAssumable"
+                                    [item]="car" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="Capacity (LBS)" valueField="capacity">
+                                </ngx-quoting-input-number>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center">
+                                    <ngx-quoting-input-number class="flex-expand" #motorHP
+                                        [suffixComponent]="motorHPWarning" [decimals]="2" [length]="10"
+                                        assumeField="motorHPAssume" [assumedValue]="car.motorHPAssumedValue"
+                                        [showAssume]="car.motorHPAssumable" [item]="car" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel="Motor HP"
+                                        valueField="motorHP">
+                                    </ngx-quoting-input-number>
+                                </div>
+                                <ng-template #motorHPWarning>
+                                    <i *ngIf="car.motorHPWarningMessage" [tooltip]="car.motorHPWarningMessage"
+                                        class="warning-icon ml-2 fas fa-exclamation-triangle">
+                                    </i>
+                                </ng-template>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-input-number [item]="car" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="Full Load Amps (FLA)"
+                                    valueField="fullLoadAmps" assumeField="fullLoadAmpsAssume"
+                                    [assumedValue]="car.fullLoadAmpsAssumedValue"
+                                    [showAssume]="car.fullLoadAmpsAssumable" [decimals]="2">
+                                </ngx-quoting-input-number>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container" [hidden]="quote.hideHydraulic">
+            <div class="section-header">
+                <div class="header-title">
+                    Hydraulic
+                </div>
+            </div>
+            <div class="table-container hydraulic-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Hydro Evolved</th>
+                            <th>Starter</th>
+                            <th>Motor Leads</th>
+                            <th>Battery Lowering Device</th>
+                            <th>Load Weighing Hydro</th>
+                            <th>Roped Hydro</th>
+                            <th>Dual Soft Starts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars" [hidden]="car.carHydraulicField.hide">
+                            <td class="text-left">{{ displayGroup(car.group) }} - {{
+                                car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carHydraulicField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="hydroEvolved">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                    assumeField="starterAssume" showAssume="true" assumedValue="SprecherAndSchuh"
+                                    [item]="car.carHydraulicField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="Starter" valueField="starter"
+                                    [dataSource]="lookup.starters" dataSourceDisplayField="description"
+                                    dataSourceValueField="value" selectOptionLabel="Starter"
+                                    [selectOptionValue]="defaultValue"
+                                    infoText="The 'Sprecher & Schuh' soft starter will be assumed">
+                                </ngx-quoting-dropdown>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                    assumeField="motorLeadsAssume" showAssume="true" [assumedValue]="6"
+                                    [item]="car.carHydraulicField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="Motor Leads" valueField="motorLeads"
+                                    [dataSource]="lookup.motorLeads" dataSourceDisplayField="description"
+                                    dataSourceValueField="value" selectOptionLabel="Motor Leads"
+                                    [selectOptionValue]="defaultValue"
+                                    infoText="Motor Leads equals to 6 will be assumed">
+                                </ngx-quoting-dropdown>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="batteryLoweringDevice">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="loadWeighingHydro">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carHydraulicField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="ropedHydro">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carHydraulicField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="dualSoftStarts">
+                                </ngx-quoting-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container" [hidden]="quote.hideTraction">
+            <div class="section-header">
+                <div class="header-title">
+                    Traction
+                </div>
+            </div>
+            <div>
+                <div class="table-container traction-table-1 section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>C4</th>
+                                <th>V2 Traction</th>
+                                <th>MX</th>
+                                <th>Drive Model</th>
+                                <th>Motor Type</th>
+                                <th>Motor Location</th>
+                                <th>Battery Rescue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars" [hidden]="car.carTractionField.hide">
+                                <td class="text-left">{{ displayGroup(car.group) }} - {{
+                                    car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.c4Available"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="c4">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.v2Available"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="v2Traction">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.mxAvailable"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="mx">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [item]="car.carTractionField"
+                                        (dropdownopen)="collapseActionsRequired($event)"
+                                        [dataSource]="car.carTractionField.driveModels"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="Drive Model" [selectOptionValue]="defaultValue"
+                                        fieldLabel="Drive Model" valueField="driveModel">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [item]="car.carTractionField"
+                                        (dropdownopen)="collapseActionsRequired($event)"
+                                        [dataSource]="lookup.motorTypes" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Motor Type"
+                                        [selectOptionValue]="defaultValue" fieldLabel="Motor Type"
+                                        valueField="motorType">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [item]="car.carTractionField"
+                                        (dropdownopen)="collapseActionsRequired($event)"
+                                        [dataSource]="lookup.motorLocations" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Motor Location"
+                                        [selectOptionValue]="defaultValue" fieldLabel="Motor Location"
+                                        valueField="motorLocation">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [item]="car.carTractionField"
+                                        (dropdownopen)="collapseActionsRequired($event)"
+                                        [dataSource]="lookup.batteryRescues" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Battery Rescue"
+                                        [selectOptionValue]="defaultValue" fieldLabel="Battery Rescue"
+                                        valueField="batteryRescue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-container traction-table-2 section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>ISO Transformer</th>
+                                <th>Regen Kit</th>
+                                <th>Governor Reset Box</th>
+                                <th>Line Reactor</th>
+                                <th>EMI/RFI Filter</th>
+                                <th>Harmonic Filter</th>
+                                <th>MAD Fixtures</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars" [hidden]="car.carTractionField.hide">
+                                <td class="text-left">{{ displayGroup(car.group) }} - {{
+                                    car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.isoTransformerAvailable"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="isoTransformer">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carTractionField" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="regenKit">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carTractionField" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                        valueField="governorResetBox">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carTractionField" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="lineReactor">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carTractionField" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                        valueField="emirfiFilter">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carTractionField" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                        valueField="harmonicFilter">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.madFixturesAvailable"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="madFixtures">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-container traction-table-2 section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>New Motor Provided By Smartrise</th>
+                                <th>Provider</th>
+                                <th>Mount</th>
+                                <th>Motor RPM</th>
+                                <th>Coupler</th>
+                                <th>Encoder</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars" [hidden]="car.carTractionField.hide">
+                                <td class="text-left">{{ displayGroup(car.group) }} - {{
+                                    car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carTractionField" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                        valueField="newMotorProvidedBySmartrise">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [disabled]="!car.carTractionField.motorProviderAvailable"
+                                        [item]="car.carTractionField" (dropdownopen)="collapseActionsRequired($event)"
+                                        [dataSource]="lookup.motorProviders" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Motor Provider"
+                                        [selectOptionValue]="defaultValue" fieldLabel="Motor Provider"
+                                        valueField="motorProvider">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [disabled]="!car.carTractionField.motorMountAvailable"
+                                        [item]="car.carTractionField" (dropdownopen)="collapseActionsRequired($event)"
+                                        [dataSource]="lookup.motorMounts" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Motor Mount"
+                                        [selectOptionValue]="defaultValue" fieldLabel="Motor Mount"
+                                        valueField="motorMount">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-input-number [disabled]="!car.carTractionField.motorRPMAvailable"
+                                        [item]="car.carTractionField" fieldLabel="Motor RPM" [decimals]="0"
+                                        valueField="motorRPM">
+                                    </ngx-quoting-input-number>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.couplerAvailable"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="coupler">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [disabled]="!car.carTractionField.encoderAvailable"
+                                        [item]="car.carTractionField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" valueField="encoder">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-header">
+                <div class="header-title">
+                    Provided by Smartrise
+                </div>
+            </div>
+
+            <div>
+
+                <div class="table-container provided-by-smartrise-1-table section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Cat-5 Kit</th>
+                                <th>Hall Call Security (Group Only)</th>
+                                <th>Controller Layout</th>
+                                <th>Smart Connect</th>
+                                <th>Hall Arrival Lanterns</th>
+                                <th>Door</th>
+                                <th>Rear Door Present</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-left">{{
+                                    displayGroup(car.group) }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)" [item]="car"
+                                        [carRef]="car.ref" [carLabel]="car.displayName" [carIndex]="car.carIndex"
+                                        selectOptionLabel="Cat-5 Kit" fieldLabel="Cat-5 Kit" valueField="numberOfRisers"
+                                        [dataSource]="lookup.numberOfRisers" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox
+                                        [disabled]="!car.carProvision.v2V3HallCallSecurityCat5Available"
+                                        [item]="car.carProvision" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="" valueField="v2V3HallCallSecurityCat5">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Controller Layout"
+                                        valueField="controllerLayout" [dataSource]="lookup.controllerLayouts"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="Controller Layout" [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Smart Connect" valueField="smartConnect"
+                                        [dataSource]="lookup.smartConnects" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="No Smart Connect"
+                                        [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                        valueField="hallArrivalLanterns">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        assumeField="doorAssume" showAssume="true" assumedValue="Passenger"
+                                        [item]="car.carDoorFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Door" valueField="door"
+                                        [dataSource]="lookup.doors" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Door"
+                                        infoText="The 'Passenger' door will be assumed"
+                                        [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carDoorFeature" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                        valueField="rearDoorPresent">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container provided-by-smartrise-2-table section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+
+                                <th>Load Weighing Device</th>
+                                <th>
+                                    <ng-template #travelerCableTitle [ngIf]="true">
+                                        <div class="travler-cable">
+                                            <span class="mr-1">
+                                                Traveler Cable
+                                            </span>
+                                            <i class="privileges-icon ml-2 fas fa-info-circle"
+                                                tooltip="Show Traveler Cables Info" (click)="openTravelerCablesInfo()">
+                                            </i>
+                                        </div>
+                                    </ng-template>
+                                </th>
+                                <th>Traveler Length</th>
+                                <th>
+                                    <ng-template #hoistwayCableTitle [ngIf]="true">
+                                        <div class="travler-cable">
+                                            <span class="mr-1">
+                                                Hoistway Cable
+                                            </span>
+                                            <i class="privileges-icon ml-2 fas fa-info-circle"
+                                                tooltip="Show Hoistway Cables Info" (click)="openHoistwayCablesInfo()">
+                                            </i>
+                                        </div>
+                                    </ng-template>
+                                </th>
+                                <th>Hoistway Length</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-left">{{
+                                    displayGroup(car.group) }} - {{ car.carLabel }}
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Load Weighing Device Traction"
+                                        [titleTemplate]="loadWeighingDeviceTraction"
+                                        valueField="loadWeighingDeviceTraction"
+                                        [dataSource]="lookup.loadWeighingDeviceTractionDataSource"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="No Weighing Device" [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown [disabled]="!car.carSmartriseFeature.travelerCableAvailable"
+                                        (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Traveler Cable"
+                                        [titleTemplate]="travelerCableTitle" valueField="travelerCable"
+                                        [dataSource]="car.carSmartriseFeature.travelerCables"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="No Traveler Cable" [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-input-number assumeField="travelerLengthAssume" showAssume="true"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Traveler Length" [decimals]="0"
+                                        valueField="travelerLength"
+                                        [assumedValue]="car.carSmartriseFeature.travelerLengthAssumedValue"
+                                        [infoText]="car.carSmartriseFeature.travelerLengthInfoMessage">
+                                    </ngx-quoting-input-number>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex"
+                                        [disabled]="!car.carSmartriseFeature.hoistwayCableAvailable"
+                                        fieldLabel="Hoistway Cable" valueField="hoistwayCable"
+                                        [titleTemplate]="hoistwayCableTitle"
+                                        [dataSource]="car.carSmartriseFeature.hoistwayCables"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="No Hoistway Cable" [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-input-number assumeField="hoistwayLengthAssume" showAssume="true"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="Hoistway Length" [decimals]="0"
+                                        valueField="hoistwayLength"
+                                        [assumedValue]="car.carSmartriseFeature.hoistwayLengthAssumedValue"
+                                        [infoText]="car.carSmartriseFeature.hoistwayLengthInfoMessage">
+                                    </ngx-quoting-input-number>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container provided-by-smartrise-3-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>NEMA Rating</th>
+                                <th>NEMA Location</th>
+                                <th>Landing System Length of Travel (in feet)</th>
+                                <th>Enclosure Legs</th>
+                                <th>Cabinet Air Conditioning</th>
+                                <th>Arc Flash Protection</th>
+                                <th>Dual COP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-left">{{ displayGroup(car.group) }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="NEMA Rating" valueField="nemaRating"
+                                        [dataSource]="lookup.nemaRatings" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="NEMA Rating"
+                                        [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
+                                        [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
+                                        [carIndex]="car.carIndex" fieldLabel="NEMA Location" valueField="nemaLocation"
+                                        [dataSource]="lookup.nemaLocations" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="NEMA Location"
+                                        [selectOptionValue]="defaultValue">
+                                    </ngx-quoting-dropdown>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-input-number assumeField="landingSystemLengthOfTravelAssume"
+                                        showAssume="true" [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" [decimals]="0"
+                                        fieldLabel="Landing System Length Of Travel (in feet)"
+                                        valueField="landingSystemLengthOfTravel"
+                                        [infoText]="car.carSmartriseFeature.landingSystemLengthOfTravelInfoMessage"
+                                        [assumedValue]="car.carSmartriseFeature.landingSystemLengthOfTravelAssumedValue">
+                                    </ngx-quoting-input-number>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                        valueField="enclosureLegs">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                        valueField="cabinetAirConditioning">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                        valueField="arcFlashProtection">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-quoting-checkbox [item]="car.carSmartriseFeature" [carRef]="car.ref"
+                                        [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                        valueField="dualCOP">
+                                    </ngx-quoting-checkbox>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <div class="section-header">
+                <div class="header-title">
+                    Elevator Management Systems
+                </div>
+            </div>
+
+            <div class="table-container elevator-management-systems-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Lobby Monitoring</th>
+                            <th>V2/V3 Machine Room Monitoring</th>
+                            <th>Remote Monitoring</th>
+                            <th>Lift-Net Interface</th>
+                            <th>BACnet Interface</th>
+                            <th>V2/V3 AI Parking</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars">
+                            <td class="text-left">{{
+                                displayGroup(car.group) }} - {{ car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="lobbyMonitoring">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="v2MachineRoomMonitoringInterface"
+                                    [disabled]="!car.carManagementSystem.v2MachineRoomMonitoringInterfaceAvailable">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="remoteMonitoring">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="v2LiftNetReady">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="v2BACnet">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="aiParking" [disabled]="!car.carManagementSystem.aiParkingAvailable">
+                                </ngx-quoting-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container">
+
+            <div class="section-header">
+                <div class="header-title">
+                    Provisions
+                </div>
+            </div>
+
+            <div class="table-container provisions-1-table section mb-3">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Interface To Lobby Panel</th>
+                            <th>Car Call Security</th>
+                            <th>Patient Security</th>
+                            <th>Hospital Service</th>
+                            <th>EMT Service</th>
+                            <th>VIP Service</th>
+                            <th>Sabbath Operation</th>
+                            <th>Interface To Destination Dispatch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars">
+                            <td class="text-left">{{ displayGroup(car.group) }} - {{car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="interfaceToLobbyPanel">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="carCallSecurity">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="patientSecurity">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="hospitalService">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="emtService">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="vipService">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carProvision" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="sabbathOperation">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox
+                                    [disabled]="!car.carProvision.interfaceToDestinationDispatchIsClickable"
+                                    [item]="car.carProvision" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="" valueField="interfaceToDestinationDispatch">
+                                </ngx-quoting-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container">
+
+            <div class="section-header">
+                <div class="header-title">
+                    No Cost Add-Ons
+                </div>
+            </div>
+
+            <div class="table-container no-cost-add-ons-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Enclosure Light</th>
+                            <th>Enclosure GFCI</th>
+                            <th>Fan & Filter</th>
+                            <th>Interface To Emergency Power</th>
+                            <th>Interface To Earthquake Operation</th>
+                            <th>Interface To Voice Annunciator</th>
+                            <th>Brown Out Reset</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars">
+                            <td class="text-left">{{ displayGroup(car.group) }} - {{ car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="enclosureLight">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="enclosureGFCI">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="fanAndFilter">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="interfaceToEmergencyPower">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="interfaceToEarthquakeOperation">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="interfaceToVoiceAnnuciator">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.additionalFeature" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="brownOutReset">
+                                </ngx-quoting-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div [hidden]="quote.hideC4RiserBoards" class="section-container">
+
+            <div class="section-header">
+                <div class="header-title">
+                    Additional C4 Riser Boards
+                </div>
+            </div>
+
+            <div class="table-container additional-c4-riser-boards-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Hall Call Security</th>
+                            <th>Group Interconnect</th>
+                            <th>Emergency Generator Powers Other Groups/Simplex</th>
+                            <th>More Than Two Hall Networks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars" [hidden]="car.carAdditionalC4RiserBoards.hide">
+                            <td class="text-left">{{
+                                displayGroup(car.group) }} - {{ car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carAdditionalC4RiserBoards" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="hallCallSecurity">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carAdditionalC4RiserBoards" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="groupInterconnect">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carAdditionalC4RiserBoards" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="emergencyGeneratorPowersOtherGroupsSimplex">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carAdditionalC4RiserBoards" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="moreThanTwoHallNetworks">
+                                </ngx-quoting-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container">
+
+            <div class="section-header">
+                <div class="header-title">
+                    Additional Features
+                </div>
+            </div>
+
+            <div class="table-container additional-features-table section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Group Redundancy</th>
+                            <th>Cross Registration</th>
+                            <th>Expansion Board</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let car of quote.cars">
+                            <td class="text-left">{{ displayGroup(car.group) }} - {{ car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [disabled]="!car.carSpecialField.groupRedundancyIsClickable"
+                                    [item]="car.carSpecialField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" fieldLabel="" valueField="groupRedundancy">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carSpecialField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="crossRegistration">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [item]="car.carSpecialField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
+                                    valueField="expansionBoard">
+                                </ngx-quoting-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-container mb-3">
+
+            <div class="section-header">
+                <div class="header-title">
+                    Attachments
+                </div>
+            </div>
+
+            <div class="section">
+                <ngx-upload-files (removingAttachment)="onRemovingAttachment()"
+                    (attachmentRemoved)="onAttchmentChanged()" (attachmentAdded)="onAttchmentChanged()"
+                    [files]="quote.attachments" #attachments>
+                </ngx-upload-files>
+            </div>
+        </div>
+
+        <div *ngIf="quote.status === 'Saved' && !hideBottomMessage" class="alert alert-primary">
+            <i class="fas fa-times float-right close-alert bottom-message" tooltip="Close Alert"
+                (click)="onCloseBottomMessage()"></i>
+            <p class="mb-0">Generate Quote for pricing.</p>
+        </div>
+
+        <div class="text-right mb-3">
+            <ngx-actions-bar [status]="quote.status" [isProccessing]="isProccessing" [isSaving]="isSaving"
+                [isGenerating]="isGenerating" (close)="onCancel()" (viewPricing)="onViewPricing()"
+                (saveQuote)="onSaveQuote()" (generateQuote)="onSaveQuote(true)"></ngx-actions-bar>
+        </div>
+
+    </nb-card-body>
+</nb-card>
+
+<ng-template [ngIf]="isLoading">
+    <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div class="col-12 p-4">
+        </div>
+    </nb-card>
+</ng-template>
+
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

@@ -1,0 +1,17 @@
+::ng-deep ngx-account-roles-selection ng2-smart-table-title span {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+@media (max-width: 531px) {
+    ::ng-deep ngx-account-roles-selection ng2-smart-table th {
+        display: none;
+    }
+    ::ng-deep ngx-account-roles-selection ng2-smart-table tr {
+        display: block;
+        margin-bottom: 1rem;
+    }
+    ::ng-deep ngx-account-roles-selection ng2-smart-table tr td {
+        display: block;
+    }
+}

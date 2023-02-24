@@ -1,0 +1,31 @@
+<nb-card size="xlarge" class="pb-1 mb-3">
+    <nb-tabset *ngIf="invoice">
+        <nb-tab tabTitle="Invoice Info" tabIcon="file-text">
+            <ngx-invoice-basic-info [invoice]="invoice" [displayAccountName]="displayAccountName"
+                [isSmartriseUser]="isSmartriseUser"></ngx-invoice-basic-info>
+        </nb-tab>
+        <nb-tab tabTitle="Payments Summary" tabIcon="credit-card">
+            <ngx-invoice-payments [paypalPayments]="invoice?.paypalPaymentTransactions"
+                [stripePayments]="invoice?.stripePaymentTransactions"></ngx-invoice-payments>
+        </nb-tab>
+    </nb-tabset>
+    <ng-template [ngIf]="!invoice && !isLoading">
+        <div class="col-12 p-4">
+            Invoice not found.
+        </div>
+    </ng-template>
+</nb-card>
+
+<div *ngIf="!isLoading" class="text-right mb-0 mx-3">
+    <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
+        <i class="fas fa-times"></i>
+        Close
+    </button>
+</div>
+
+<ng-template [ngIf]="isLoading">
+    <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div class="col-12 p-4">
+        </div>
+    </nb-card>
+</ng-template>

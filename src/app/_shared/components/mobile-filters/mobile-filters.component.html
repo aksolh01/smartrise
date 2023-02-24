@@ -1,0 +1,16 @@
+<div class="mobile-filters">
+  <div class="backdrop" (click)="onClose()"></div>
+  <div class="filters-container">
+    <div class="filters">
+      <ng-content select="[filters]"></ng-content>
+    </div>
+    <hr />
+    <div class="filter-actions">
+      <ng-content select="[actions]"></ng-content>
+      <button class="btn btn-block btn-secondary" (click)="onClose()">
+        <i class="fas fa-times"></i>
+        Close
+      </button>
+    </div>
+  </div>
+</div>

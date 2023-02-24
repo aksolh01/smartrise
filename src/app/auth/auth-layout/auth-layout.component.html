@@ -1,0 +1,19 @@
+<div class="auth-layout-component d-flex flex-column">
+    <div class="align-items-center d-flex flex-grow-1 justify-content-center auth-layout-container">
+        <div class="auth-layout-form-wrapper p-3 d-flex flex-column">
+            <div class="auth-layout-form-header">
+                <img class="logo" src="assets/images/logo-borderless.png" alt="Smartrise Logo" />
+                <div class="title my-3">{{ pageTitle }}</div>
+                <hr class="mb-3" />
+            </div>
+            <div id="auth-container" class="auth-layout-content flex-grow-1 d-flex flex-column">
+                <router-outlet (activate)="onRouteChanged($event)"></router-outlet>
+            </div>
+        </div>
+    </div>
+    <div class="auth-layout-footer" *ngIf="showPolicy !== false">
+        <div class="footer-links">
+            <a routerLink="policy">Privacy Policy</a>
+        </div>
+    </div>
+</div>

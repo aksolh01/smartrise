@@ -1,0 +1,38 @@
+<nb-card size="tiny" style="height: 17.6rem;">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">
+            Recent Jobs
+        </h2>
+    </nb-card-header>
+
+    <nb-card-body class="card-body" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div *ngIf="this.data">
+            <nb-list>
+                <nb-list-item class="list-item" *ngFor="let job of data">
+                    <div class="container">
+                        <div class="labels">
+                            <p>
+                                {{job.jobName}} ({{job.jobNumber }})
+                            </p>
+                            <p class="customer-name" *ngIf="displayCustomerName">
+                                {{job.customerName}}
+                            </p>
+                        </div>
+
+                        <div class="actions">
+                            <button data-tooltip="View Details" tooltip="View Details"
+                                (click)="goToJobDetail(job.jobId)">
+                                <i class="fas fa-eye" data-toggle="tooltip" data-original-title="View"></i>
+                            </button>
+                        </div>
+                    </div>
+                </nb-list-item>
+            </nb-list>
+        </div>
+
+    </nb-card-body>
+    <div class="no-data-container" *ngIf="!this.isLoading && !this.data">
+        No Jobs recently previewed
+    </div>
+
+</nb-card>

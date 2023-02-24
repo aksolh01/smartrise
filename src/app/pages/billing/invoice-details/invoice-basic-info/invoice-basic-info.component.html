@@ -1,0 +1,104 @@
+<div class="invoice-status">
+    <ngx-aged-cell [rowData]="invoice" withSattled="true" isPillStyle="true"></ngx-aged-cell>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group row" *ngIf="!isSmartriseUser">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Number</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.jobNumber | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row" *ngIf="!isSmartriseUser">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.jobName | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row" *ngIf="displayAccountName">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.customer | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row" *ngIf="isSmartriseUser">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Number</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.jobNumber | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row" *ngIf="isSmartriseUser">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.jobName | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Invoice Number</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.invoiceNumber | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">PO Number</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.poNumbers | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row" *ngIf="!isSmartriseUser">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Invoice Date</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.invoiceDate | usdate | value }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group row" *ngIf="isSmartriseUser">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Invoice Date</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.invoiceDate | usdate | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Due Date</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.dueDate | usdate | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Payment Date</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.paymentDate | usdate | value }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Amount</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">${{ invoice?.amount | number: '1.2-2' }}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Balance</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">${{ invoice?.balance | number: '1.2-2' }}</div>
+                <div *ngIf="invoice?.paymentMessage">
+                    <div class="alert alert-danger message mt-3">
+                        {{ invoice?.paymentMessage }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

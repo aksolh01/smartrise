@@ -1,0 +1,134 @@
+<nb-card class="in-dialog mb-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Traveler Cables Info</h2>
+        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onCancel()"
+            style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="d-flex table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>TRAVELER CABLE #1</th>
+                        <th>TRAVELER CABLE #2</th>
+                        <th>TRAVELER CABLE #3</th>
+                        <th>TRAVELER CABLE #4</th>
+                        <th>TRAVELER CABLE #5</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CUSTOM LABELING</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td># OF CONDUCTORS</td>
+                        <td>26</td>
+                        <td>33</td>
+                        <td>43</td>
+                        <td>27</td>
+                        <td>69</td>
+                    </tr>
+                    <tr>
+                        <td>CORE</td>
+                        <td>Jute</td>
+                        <td>Steel</td>
+                        <td>Steel</td>
+                        <td>Jute</td>
+                        <td>Steel</td>
+                    </tr>
+                    <tr>
+                        <td>DIAMETER</td>
+                        <td>1.04"</td>
+                        <td>1.19"</td>
+                        <td>1.37"</td>
+                        <td>.94"</td>
+                        <td>1.57"</td>
+                    </tr>
+                    <tr>
+                        <td># OF 14 AWC</td>
+                        <td>4</td>
+                        <td>4</td>
+                        <td>4</td>
+                        <td>3</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td># OF 18 AWC</td>
+                        <td>14</td>
+                        <td>20</td>
+                        <td>23</td>
+                        <td>20</td>
+                        <td>40</td>
+                    </tr>
+                    <tr>
+                        <td># OF 20 AWC SHIELD</td>
+                        <td>4</td>
+                        <td>4</td>
+                        <td>7</td>
+                        <td>2</td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td>COAXIAL (RG/6U)</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>APPROVALS/BOTH</td>
+                        <td colspan="5">UL Type ETT, NEC Compliant, CSA Type ETT, CSA FT1</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td colspan="5">
+                            All Smartrise traveler cables come with Kellems &reg; grips
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="ml-2">
+                <span>Traveler Cable Tech Specs</span>
+                <ul>
+                    <li>Composite conductor</li>
+                    <li>Textile braid</li>
+                    <li>PVC jacket</li>
+                    <li>Shielded pairs are jacketed</li>
+                </ul>
+    
+                <span>Traveler Cable Construction</span>
+                <ul>
+                    <li>Nylon binder with an open spiral wrap</li>
+                    <li>100% textile braid coverage</li>
+                    <li>.085" jacket. Nominal wall black PVC</li>
+                    <li>Cabling core with jute fillers in the interstices</li>
+                </ul>
+            </div>        
+        </div>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <button (click)="onCancel()" type="button" class="footer-btn btn btn-secondary">
+            <i class="clear-icon fas fa-times"></i>
+            Close
+        </button>
+        <!-- <button
+        (click)="onOk()"
+        type="button"
+        class="footer-btn btn btn-primary ml-2"
+      >
+      <i class="clear-icon fas fa-check"></i>
+        OK
+      </button> -->
+    </nb-card-footer>
+</nb-card>

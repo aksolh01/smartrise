@@ -1,0 +1,13 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">
+    {{ header }}
+</div>
+<div class="badge text-white quote-status-created" *ngIf="quoteStatus === created">Created</div>
+<div class="badge text-white quote-status-saved" *ngIf="quoteStatus === saved">Saved</div>
+<div class="badge text-white quote-status-generated" *ngIf="quoteStatus === generated">Generated</div>
+<div class="badge text-white quote-status-generated" *ngIf="quoteStatus === 'Submitted'">Submitted</div>
+<ng-template [ngIf]="quoteStatus !== null" [ngIfElse]="naOnMobile">
+    <div class="d-lg-none d-block badge badge-info text-white" *ngIf="quoteStatus === null">N/A</div>
+</ng-template>
+<ng-template #naOnMobile>
+    <div class="d-lg-none d-block">N/A</div>
+</ng-template>

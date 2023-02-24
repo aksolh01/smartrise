@@ -1,0 +1,45 @@
+<div class="d-flex">
+    
+
+    <!-- <input [id]="id" 
+    [placeholder]="fieldLabel" 
+    [(ngModel)]="item[valueField]"
+    (ngModelChange)="valueChanged($event, item);" 
+    type="checkbox"
+    [ngClass]="{'error': hasErrors && showErrors}"
+    [disabled]="disabled"  
+    #field="ngModel" #i 
+    /> -->
+    <nb-checkbox 
+        [id]="id" 
+        [disabled]="disabled"  
+        [(ngModel)]="item[valueField]" 
+        [ngClass]="{'error': hasErrors && showErrors}"
+        (checkedChange)="onCheckBoxChanged($event)"
+        #field="ngModel" #i>
+    </nb-checkbox>
+    
+    <!-- <label class="checkbox-label" [for]="id">{{ fieldLabel }}</label> -->
+    
+    <i class="privileges-icon fas fa-info-circle" *ngIf="infoText" [tooltip]="infoText"></i>
+    <nb-toggle [(ngModel)]="item[assumeField]" tooltip="Assume Value" *ngIf="showAssume" (checkedChange)="onAssumeChange($event)">
+    </nb-toggle>
+</div>
+
+<div *ngIf="isInlineErrors">
+    <div *ngIf="field.invalid">
+
+        <div class="error" *ngIf="field.errors && field.errors['requiredWithTrim']">
+            Value is required.
+        </div>
+
+        <div class="error" *ngIf="field.errors && field.errors['trimError']">
+            This field can't start or end with a blank space
+        </div>
+    </div>
+    <div *ngIf="(errors && errors.length > 0)">
+        <div class="error" *ngFor="let error of errors">
+            {{ error }}
+        </div>
+    </div>
+</div>

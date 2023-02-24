@@ -1,0 +1,8 @@
+<div class="text pb-3">You're unauthorized to access this page.</div>
+<button *ngIf="isLoggedIn" class="btn btn-primary" (click)="goToHomePage()">
+    <i class="fas fa-chevron-left"></i>
+    Back to Dashboard</button>
+<button *ngIf="!isLoggedIn" class="btn btn-primary" (click)="goToHomePage()">
+    <i class="fas fa-chevron-left"></i>
+    Back To Login
+</button>

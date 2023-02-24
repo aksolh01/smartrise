@@ -1,0 +1,13 @@
+<div class="actions">
+    <div tooltip="Choose Account" class="action-tooltip-holder">
+        <label class="sr-radio">
+            <input 
+            (click)="onSelect(rowData.id)" 
+            type="radio" 
+            name="activeBankAccount" 
+            [value]="rowData.id" 
+            [checked]="rowData.selected">
+            <span></span>
+        </label>
+    </div>
+</div>

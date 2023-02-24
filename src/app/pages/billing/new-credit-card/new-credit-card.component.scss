@@ -1,0 +1,180 @@
+.card-header {
+    text-align: center;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.payment-details {
+    padding: 0px;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.payment-details-header {
+    background-color: rgb(247, 247, 247);
+    /* padding-top: 30px; */
+    border-bottom: 1px solid lightgray;
+}
+
+.payment-details-header .title {
+    color: black;
+    font-size: 26px;
+}
+
+.paymnet-details-body {
+    padding: 15px 15px;
+}
+
+.paymnet-details-body .control-label {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.paymnet-details-body .card-number {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.paymnet-details-body .card-number input {
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border-right: 0px;
+}
+
+.paymnet-details-body .card-number button {
+    background-color: rgb(247, 247, 247);
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+    border-color: #ced4da;
+    color: black;
+    cursor: default;
+}
+
+// .paymnet-details-body .card-number button:hover {
+//     background-color: rgb(237, 237, 237);
+// }
+
+// .paymnet-details-body .card-number button:active {
+//     background-color: rgb(227, 227, 227);
+// }
+
+.payment-details-submit {
+    background-color: rgb(247, 247, 247);
+    border-top: 1px solid lightgray;
+    padding: 10px 15px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.cards {
+    display: flex;
+    padding: 15px 0px;
+}
+
+.cards .credit-card {
+    background-repeat: no-repeat;
+    width: 60px;
+    height: 39px;
+    background-size: 100%;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.cards .card-border {
+    border: 1px solid #0000007d;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+.cards .credit-card:hover {
+    transform: translateY(-2px);
+}
+
+.cards .card-border.selected {
+    border: 3px solid #0000007d;
+}
+
+// .visa-card {
+//     background-image: url(/assets/images/visa-card.png);
+//     background-position-y: -8px;
+// }
+
+// .master-card {
+//     background-image: url(/assets/images/master-card.png);
+//     background-position-y: 2px;
+// }
+// .discover-card {
+//     background-image: url(/assets/images/discover-card.png);
+//     background-position-y: -10px;
+// }
+
+// .pay-pal {
+//     background-image: url(/assets/images/paypal-card.png);
+//     background-position-y: -9px;
+// }
+
+// .american-express {
+//     background-image: url(/assets/images/americanexpress-card.png);
+//     background-position-y: -11px;
+// }
+
+.selected-card {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 2px 2px 1px #dddddd;
+}
+
+.selected-card span {
+    text-transform: uppercase;
+    color: black;
+    margin-left: 5px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.selected-card .card-type {
+    width: 50px;
+    height: 25px;
+    background-size: 76%;
+    background-repeat: no-repeat;
+    position: relative;
+    margin-top: 5px;
+    opacity: 0.6;
+    margin-right: 7px;
+}
+
+.selected-card .card-type button {
+    background-color: transparent;
+    border: none;
+    margin-left: 35px;
+    margin-top: 2px;
+}
+
+.errors {
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+}
+
+.error {
+    color: red;
+}
+
+@media (max-width: 991.98px) {
+    .payment-details {
+        width: auto;
+    }
+}

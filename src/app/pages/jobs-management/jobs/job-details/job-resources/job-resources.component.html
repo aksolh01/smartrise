@@ -1,0 +1,42 @@
+<div class="card-body" joyrideStep="jobResourceFirstStep" stepPosition="center"
+  [title]="runGuidingTour === true ? 'Job Files' : null" [stepContent]="jobResourcesCustomContent"
+  [doneTemplate]="doneButton" (done)="onFinishingTour()">
+
+  <ng-template #jobResourcesCustomContent>
+    <div class='joyride-custom-content'>
+      <div *ngIf="canGenerateFiles" style="margin-bottom: 5px;">
+        Request and download job documents and software.
+      </div>
+      <div *ngIf="!canGenerateFiles" style="margin-bottom: 5px;">
+        Download job documents and software.
+      </div>
+      <div *ngIf="canGenerateFiles">
+        <i class="fas fa-plus-circle guiding-tour-action"></i>Generate Request to Download Job File
+      </div>
+      <div>
+        <i class="fas fa-download guiding-tour-action"></i>Download Job File
+      </div>
+    </div>
+  </ng-template>
+
+  <div [nbSpinner]="isRefreshing" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+
+    <ng2-smart-table class="default-smart-table responsive-design1 w-100" #table [settings]="settings"
+      [source]="source">
+    </ng2-smart-table>
+  </div>
+  <!-- <div class="text-right mt-2 mb-1">
+    <button class="btn btn-secondary" type="button" (click)="onClose()">
+      <i class="fas fa-times"></i>
+      Close
+    </button>
+  </div> -->
+
+</div>
+
+<ng-template #doneButton>
+  <button class="btn btn-primary">
+    <i class="clear-icon fas fa-check"></i>
+    OK
+  </button>
+</ng-template>

@@ -1,0 +1,42 @@
+p {
+    font-size: 0.85rem !important;
+}
+
+.container {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.customer-name {
+    text-align: left;
+    display: table-cell;
+}
+
+.actions {
+    text-align: right;
+    display: table-cell;
+}
+
+@media (max-width: 767px) {
+    .labels {
+        width: 65%;
+    }
+    .actions {
+        width: 35%;
+    }
+    .actions button {
+        text-align: right !important;        
+    }
+}
+
+.actions button,
+.actions button:focus {
+    border: 0rem;
+    outline: 0rem;
+    background-color: transparent;
+    margin-right: 5px;
+    color: #666;
+    padding: 0;
+}

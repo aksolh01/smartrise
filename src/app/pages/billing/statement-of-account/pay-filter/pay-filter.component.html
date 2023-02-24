@@ -1,0 +1,6 @@
+<div class="center">
+    <nb-checkbox checkbox-text-space="0rem" [checked]="checkStatus" *ngIf="!nullIsVisible"
+        (checkedChange)="onOffCheckBoxChanged($event)"></nb-checkbox>
+    <nb-checkbox checkbox-text-space="0rem" [checked]="'false'" *ngIf="nullIsVisible" [indeterminate]="nullIsVisible"
+        (checkedChange)="nullCheckBoxChanged($event)"></nb-checkbox>
+</div>

@@ -1,0 +1,33 @@
+@media (min-width: 992px) {
+    :host {
+        width: 70vw;
+        max-width: 800px;
+    }
+}
+
+.card-body {
+    padding: 0;
+}
+
+nb-card {
+    margin-bottom: 0;
+    max-height: 32rem;
+}
+
+nb-list-item {
+    padding: 0rem 0rem 0rem 0rem !important;
+}
+
+.container {
+    border-bottom: 0.2px solid rgb(210, 210, 210);
+}
+
+.bank-name {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 0.8375rem;
+}
+
+:host ::ng-deep ng2-smart-table tbody > tr > td:first-child {
+    text-align: center;
+}

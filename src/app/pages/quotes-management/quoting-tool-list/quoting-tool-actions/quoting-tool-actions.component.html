@@ -1,0 +1,22 @@
+<div class="actions">
+    <div *ngIf="canViewQuote" tooltip="View Details" class="action-tooltip-holder">
+        <button (click)="onViewQuote()" data-tooltip="View Details">
+            <i class="fas fa-eye"></i>
+        </button>
+    </div>
+    <div *ngIf="!isImpersonate && canEditQuote && !rowData.isLocked" tooltip="Edit Quote" class="action-tooltip-holder">
+        <button (click)="onEditQuote()" data-tooltip="Edit Quote">
+            <i class="fas fa-pencil-alt"></i>
+        </button>
+    </div>
+    <div tooltip="View Activity History" class="action-tooltip-holder">
+        <button [disabled]="isLoadingActivityHistory" (click)="onViewHistory()" data-tooltip="View Activity History">
+            <i class="fas fa-history"></i>
+        </button>
+    </div>
+    <div tooltip="View Quote" class="action-tooltip-holder">
+        <button [disabled]="rowData.status.value !== 'Generated'" (click)="onViewPricing()" data-tooltip="View Quote">
+            <i class="fas fa-file-alt"></i>
+        </button>
+    </div>
+</div>
