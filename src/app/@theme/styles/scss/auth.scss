@@ -1,0 +1,77 @@
+*{
+  line-height: normal;
+}
+.auth-layout{
+  height: 100vh;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--primary-color-blue);
+  overflow: auto;
+  justify-content: center;
+  .auth-layout-title{
+
+  }
+  .auth-layout-container{
+    background-color: var(--primary-color-white);
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    border-radius: 8px;
+    margin-top: 20px;
+    .auth-layout-container-left-section{
+      width: 40%;
+      border-radius: 8px 0 0 8px;
+      .auth-layout-container-left-section-image{
+        height: 100%;
+        width: 100%;
+        border-radius: 8px 0 0 8px;
+        img{
+          height: 100%;
+          width: 100%;
+          border-radius: 8px 0 0 8px;
+          object-fit: cover;
+        }
+      }
+    }
+    .auth-layout-container-right-section{
+      width: 60%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      .auth-layout-container-right-section-content{
+        width: 90%;
+        height: 100%;
+      .auth-layout-container-right-section-content-title{
+        font-size: 24px;
+        color: var(--primary-color-black);
+        font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+
+@media (max-width:1281px) {
+  .auth-layout {
+    .auth-layout-container{
+      // max-width: 100%;
+    }
+  }
+}
+@media (max-width:641px) {
+  .auth-layout {
+    .auth-layout-container{
+      .auth-layout-container-left-section{
+        display: none;
+      }
+      .auth-layout-container-right-section{
+        width: 100%;
+      }
+    }
+  }
+}

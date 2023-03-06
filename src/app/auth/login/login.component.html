@@ -1,50 +1,48 @@
-<form [formGroup]="loginForm" *ngIf="loginForm" (ngSubmit)="onSubmit()">
-    <div class="alert alert-danger" *ngIf="warnUserAboutAccountLock">Your account will be locked after continued
+<form class="form-container" [formGroup]="loginForm" *ngIf="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-container-hint">
+      <div class="form-container-hint-label"  *ngIf="warnUserAboutAccountLock">Your account will be locked after continued
         incorrect login attempts</div>
-    <div class="alert alert-info" *ngIf="sessionExpired">Your session has been expired</div>
-    <div class="controls">
-        <div class="form-group">
-            <input type="text" id="email" formControlName="email" placeholder="Email Address" class="form-control"
+      <div class="form-container-hint-label" *ngIf="sessionExpired">Your session has been expired</div>
+    </div>
+    <div class="input-container">
+        <div class="input-item">
+            <input type="text" id="email" formControlName="email" placeholder="Email Address"
                 (keydown.space)="$event.preventDefault()" />
-            <div *ngIf="formSubmitted && loginForm.get('email').touched && loginForm.get('email').errors && loginForm.get('email').errors['requiredWithTrim']"
-                class="mt-1 help-block error">
+            <div class="input-error" *ngIf="formSubmitted && loginForm.get('email').touched && loginForm.get('email').errors && loginForm.get('email').errors['requiredWithTrim']">
                 Email Address is required
             </div>
-            <div *ngIf="formSubmitted && loginForm.get('email').touched && loginForm.get('email').errors && loginForm.get('email').errors['trimError']"
-                class="mt-1 help-block error">
+            <div class="input-error" *ngIf="formSubmitted && loginForm.get('email').touched && loginForm.get('email').errors && loginForm.get('email').errors['trimError']">
                 This field can't start or end with a blank space
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="input-item">
             <ngx-smr-password-input id="password" formControlName="password" placeholder="Password">
             </ngx-smr-password-input>
-            <div *ngIf="formSubmitted && loginForm.get('password').touched && loginForm.get('password').errors && loginForm.get('password').errors['required']"
-                class="mt-1 help-block error">
+            <div class="input-error" *ngIf="formSubmitted && loginForm.get('password').touched && loginForm.get('password').errors && loginForm.get('password').errors['required']">
                 Password is required
             </div>
         </div>
 
     </div>
 
-    <div class="actions pt-3" style="display: flex;flex-wrap: wrap;">
-        <div class="flex-item-left pt-3">
-            <a class="forgot-pass" routerLink="../forgotpassword">
+    <div class="form-action">
+        <div class="form-action-left-section">
+            <a  routerLink="../forgotpassword">
                 Forgot Password?
             </a>
         </div>
-        <div class="text-right flex-item-right">
-            <ngx-button [isLoading]="isLoading" 
-                class="btn btn-primary btn-login py-2 px-3" type="submit">
+        <div class="form-action-right-section">
+            <ngx-button class="main-button" [isLoading]="isLoading" type="submit">
                 <i class="fas fa-sign-in-alt"></i>
                 Sign in
             </ngx-button>
         </div>
     </div>
 
-    <hr>
 
-    <div class="form-group access-container text-center">
+
+    <div class="form-link-helper">
         No account? <a routerLink="../askforaccess">Request Access!</a>
 
     </div>

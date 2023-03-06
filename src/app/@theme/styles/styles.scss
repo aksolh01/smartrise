@@ -16,6 +16,18 @@
 @import "./overrides";
 @import "./material/material-overrides";
 @import "./breadcrumb";
+
+
+// custom css
+@import "./scss/variables.scss";
+@import "./scss/form.scss";
+@import "./scss/auth.scss";
+@import "./scss/components/button.scss";
+
+
+
+
+
 // install the framework and custom global styles
 @include nb-install() {
     @include angular-material();
@@ -1282,3 +1294,6 @@ input::placeholder {
 .account-info-modal {
     min-width: none;
 }
+
+
+

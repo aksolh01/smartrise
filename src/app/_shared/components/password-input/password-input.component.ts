@@ -4,16 +4,14 @@ import { ControlContainer, ControlValueAccessor, UntypedFormControl, FormControl
 @Component({
   selector: 'ngx-smr-password-input',
   template: `
-    <div class="input-holder">
-      <input type="password" [id]="id" [placeholder]="placeholder" class="form-control" #input [formControl]="control"
+      <input type="password" [id]="id" [placeholder]="placeholder" #input [formControl]="control"
              [maxlength]="maxLength" (focus)="showVals()" (blur)="hideVals()"/>
       <i class="toggle-icon far" *ngIf="!!control.value?.trim()" [tooltip]="tooltip" [class]="eyeIcon"
          (click)="toggleShowPassword()"></i>
-    </div>
-    <fieldset *ngIf="showValidations === true && validationShown" class="validations-container">
-      <ul class="m-0 list-unstyled">
+    <fieldset *ngIf="showValidations === true && validationShown">
+      <ul>
         <li *ngFor="let val of passwordValidations">
-            <span class="d-inline-block validation-check">
+            <span>
               <i class="fas fa-check text-success" *ngIf="validateRule(val, val.rule | smrRegexText:control.value); else otherwise"></i>
               <ng-template #otherwise>
                 <i class="fas fa-times text-danger"></i>
