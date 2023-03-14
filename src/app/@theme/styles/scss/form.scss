@@ -6,6 +6,14 @@
   &.mx-w-400{
     max-width: 400px;
   }
+  &.for-filter{
+    margin-top: 0;
+    .input-container{
+      .input-item{
+        min-height: unset;
+      } 
+    }
+  }
   .form-container-hint{
     font-size: 14px;
     .form-container-hint-label{
@@ -119,6 +127,7 @@
     }
     ng2-smart-table thead tr.ng2-smart-filters th {
       padding-bottom: 25px;
+      padding-top: 0;
     }
   }
 }

@@ -9,15 +9,20 @@ import { allowOnlyNumbers } from '../../functions';
 
 @Component({
     template: `
-    <input
-      #number
-      [ngClass]="inputClass"
-      [formControl]="inputControl"
-      class="form-control"
-      (keypress)="onKeyPress($event)"
-      (paste)="processInput($event)"
-      [placeholder]="column.title"
-      type="text">
+    <div class="form-container for-filter">
+    <div class="input-container">
+      <div class="input-item">
+        <input
+        #number
+        [ngClass]="inputClass"
+        [formControl]="inputControl"
+        (keypress)="onKeyPress($event)"
+        (paste)="processInput($event)"
+        [placeholder]="column.title"
+        type="text">
+      </div>
+    </div>
+  </div>
   `,
     styleUrls: ['./cp-filter.component.scss']
 })
