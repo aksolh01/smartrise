@@ -1,96 +1,114 @@
-<nb-card joyrideStep="userActivitiesFirstStep" stepPosition="center"
+<div class="page-header-container">
+  <div class="page-header-title">User Activities</div>
+  <div class="form-container mx-w-400">
+    <div class="input-container">
+      <div class="input-item">
+        <input type="text" placeholder="Search">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <nb-card joyrideStep="userActivitiesFirstStep" stepPosition="center"
   [title]="runGuidingTour === true ? 'User Activities' : null" [stepContent]="firstCustomContent"
   (done)="onFinishingTour()" [doneTemplate]="doneButton">
 
   <ng-template #firstCustomContent>
-    <div class='joyride-custom-content'>
+    <div>
       View a log of Activities per User.
     </div>
   </ng-template>
 
-  <nb-card-header class="default-card-header">
+  <!-- <nb-card-header class="default-card-header">
     <h2 class="card-title">User Activities</h2>
-  </nb-card-header>
+  </nb-card-header> -->
   <nb-card-body>
     <ng-template [ngIf]="isSmall === false">
-      <div class="row mb-3">
-        <div class="col d-flex align-items-center justify-content-start">
-          <button (click)="onReset()" class="btn btn-primary">
+      <div class="table-header">
+        <div>
+          <button class="main-button" (click)="onReset()">
             <i class="fas fa-redo-alt"></i>
             Reset Filters
           </button>
         </div>
-        <div class="col-auto d-flex align-items-center justify-content-start">
+        <div>
           <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
           </ngx-smr-records-per-page>
         </div>
       </div>
     </ng-template>
 
-    <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-      <div filters>
-        <div *ngIf="settings?.columns?.customerName" class="filter-control">
-          <input type="text" maxlength="255" placeholder="Account" class="form-control" [(ngModel)]="customerName" />
-        </div>
-        <div class="filter-control">
-          <input type="text" maxlength="255" placeholder="User" class="form-control" [(ngModel)]="userDisplayName" />
-        </div>
-        <div class="filter-control">
-          <input type="text" maxlength="255" placeholder="View As User" class="form-control"
-            [(ngModel)]="impersonationUserDisplayName" />
-        </div>
-        <div class="filter-control">
-          <nb-select [(ngModel)]="action" class="form-control form-control-select">
-            <nb-option value="">Action</nb-option>
-            <nb-option *ngFor="let c of actions" [value]="c.value">
-              {{ c.description }}
-            </nb-option>
-          </nb-select>
-        </div>
-        <div class="filter-control">
-          <nb-select [(ngModel)]="objectType" class="form-control form-control-select">
-            <nb-option value="">Type</nb-option>
-            <nb-option *ngFor="let c of objectTypes" [value]="c.value">
-              {{ c.description }}
-            </nb-option>
-          </nb-select>
-        </div>
-        <div class="filter-control">
-          <input type="text" maxlength="255" placeholder="Identifier" class="form-control"
-            [(ngModel)]="objectDisplayMember" />
-        </div>
-        <div class="filter-control">
-          <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-          </ngx-smr-records-per-page>
+    <div class="table-content">
+      <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+        <div class="form-container" filters>
+          <div class="input-container" >
+            <div class="input-item" *ngIf="settings?.columns?.customerName">
+              <input type="text" maxlength="255" placeholder="Account"  [(ngModel)]="customerName" />
+            </div>
+            <div class="input-item">
+              <input type="text" maxlength="255" placeholder="User" [(ngModel)]="userDisplayName" />
+            </div>
+            <div class="input-item">
+              <input type="text" maxlength="255" placeholder="View As User" 
+                [(ngModel)]="impersonationUserDisplayName" />
+            </div>
+            <div class="input-item">
+              <nb-select [(ngModel)]="action">
+                <nb-option value="">Action</nb-option>
+                <nb-option *ngFor="let c of actions" [value]="c.value">
+                  {{ c.description }}
+                </nb-option>
+              </nb-select>
+            </div>
+            <div class="input-item">
+              <nb-select [(ngModel)]="objectType">
+                <nb-option value="">Type</nb-option>
+                <nb-option *ngFor="let c of objectTypes" [value]="c.value">
+                  {{ c.description }}
+                </nb-option>
+              </nb-select>
+            </div>
+            <div class="input-item">
+              <input type="text" maxlength="255" placeholder="Identifier"
+                [(ngModel)]="objectDisplayMember" />
+            </div>
+            <div class="w-100">
+              <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+              </ngx-smr-records-per-page>
+            </div>
+          </div>
+        
+        <div class="form-action" actions>
+          <button class="main-button"  (click)="onSearch(); toggleFilters()">
+            <i class="fas fa-search"></i>
+            Search
+          </button>
+          <button class="main-button" (click)="onReset(); toggleFilters()">
+            <i class="fas fa-redo-alt"></i>
+            Reset Filters
+          </button>
         </div>
       </div>
-      <div actions>
-        <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-          <i class="fas fa-search"></i>
-          Search
-        </button>
-        <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
-          <i class="fas fa-redo-alt"></i>
-          Reset Filters
-        </button>
-      </div>
-    </ngx-smr-mobile-filters>
+      </ngx-smr-mobile-filters>
+    </div>
 
-    <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-      <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-        <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+    <div  [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+      <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
           <i class="fas fa-filter"></i>
         </button>
       </div>
-      <div class="col-sm-12" *ngIf="source">
-        <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings" [source]="source">
+      <div class="table-content" *ngIf="source">
+        <ng2-smart-table #table [settings]="settings" [source]="source">
         </ng2-smart-table>
       </div>
     </div>
   </nb-card-body>
 </nb-card>
+</div>
 <ng-template #doneButton>
-  <button class="btn btn-primary">
+  <button >
     <i class="clear-icon fas fa-check"></i>
     OK
   </button>

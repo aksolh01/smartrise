@@ -24,9 +24,9 @@ and use it on the div that is the scrollable div in our solution.
     </nb-sidebar>
 
     <nb-layout-column class="content-column">
-        <div class="content-header">
+        <!-- <div class="content-header">
             <ngx-section-header> </ngx-section-header>
-        </div>
+        </div> -->
         <div [ngClass]="{'content-wrapper':true, 'disable-scroll': scrollDisabled}" (scroll)="onScroll($event)">
             <div class="content-main">
                 <div class="content-container">

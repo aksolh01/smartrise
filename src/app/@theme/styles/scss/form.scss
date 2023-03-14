@@ -3,6 +3,9 @@
   flex-direction: column;
   width: 100%;
   margin-top: 20px;
+  &.mx-w-400{
+    max-width: 400px;
+  }
   .form-container-hint{
     font-size: 14px;
     .form-container-hint-label{
@@ -31,6 +34,10 @@
             font-weight: 400;
           }
         }
+        nb-select{
+          width: 100%;
+          max-width: unset;
+        }
       }
       .input-error{
         font-size: 11px;
@@ -55,7 +62,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
+      margin-top: 16px;
       width: 100%;
       flex-wrap: wrap;
       gap: 8px;
@@ -71,4 +78,86 @@
         }
       }
     }
+}
+
+.page-header-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  .page-header-title{
+    font-size: 24px;
+    color: var(--primary-color-black);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+}
+.table-container{
+  margin-top: 24px;
+  .table-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-content{
+    margin-top: 20px;
+    tbody{
+      background-color: var(--primary-color-white) !important;
+      tr{
+        background-color: var(--primary-color-white) !important;
+      }
+      td {
+        border-left: unset !important;
+        border-right: unset !important;
+      }
+    }
+    .ng2-smart-th{
+      border: 0 !important;
+    }
+    .ng2-smart-sort-link{
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+}
+@media (max-width: 992px) {
+  .table-container{
+    .table-content{
+      tr{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-bottom: 1px solid #edf1f7;
+        padding-bottom: 10px;
+        td{
+          padding: 0;
+          border: unset !important;
+          width: 100%;
+          ng2-smart-table-cell{
+            width: 100%;
+            table-cell-view-mode{
+              width: 100%;
+              div[ng-reflect-ng-switch="custom"] {
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
+      .ng-star-inserted{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .ng2-smart-titles {
+        display: none !important;
+    }   
+      .ng2-smart-filters{
+        display: none !important;
+      }
+      ngx-smr-ng2-table-cell{
+        width: 100%;
+      }
+    }
+  }
 }
