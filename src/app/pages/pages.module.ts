@@ -9,6 +9,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { JoyrideModule } from 'ngx-joyride';
 import { MenuService } from '../services/menu.service';
 import { SharedModule } from '../_shared/shared.module';
+import { ImageService } from '../services/image.service';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { SharedModule } from '../_shared/shared.module';
   declarations: [PagesComponent],
   providers: [
     MenuService,
+    ImageService
   ]
 })
 export class PagesModule {}

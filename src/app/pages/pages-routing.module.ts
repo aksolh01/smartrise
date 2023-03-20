@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../@core/guards/auth.guard';
 import { PermissionGuard } from '../@core/guards/permission.guard';
+import { PreventImpersonateGuard } from '../@core/guards/prevent-impersonate.guard';
+import { ProfileComponent } from '../auth/profile/profile/profile.component';
 import { PagesComponent } from './pages.component';
 
 const routes: Routes = [
@@ -18,6 +21,12 @@ const routes: Routes = [
         path: 'jobs-management',
         loadChildren: () => import('./jobs-management/jobs-management.module').then((m) => m.JobsManagementModule),
         data: { breadcrumb: { label: 'Jobs Management', skip: true } },
+      },
+      {
+        path: 'edit-profile',
+        component: ProfileComponent, // <---
+        canActivate: [AuthGuard, PreventImpersonateGuard],
+        data: { title: 'Profile' }
       },
       {
         path: 'quotes-management',
