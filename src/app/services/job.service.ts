@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { JobSearchByCustomerParams, JobSearchParams, PredictiveJobBaseParams } from '../_shared/models/jobParams';
 import { IPagination } from '../_shared/models/pagination';
 import { map } from 'rxjs/operators';
-import { IJob, IJobLookup, IRecentJob } from '../_shared/models/job';
+import { IJob, IRecentJob } from '../_shared/models/job';
 import { Observable, of } from 'rxjs';
 import { AlertStatus } from '../_shared/models/alertStatus';
 
@@ -43,14 +43,14 @@ export class JobService {
     return this.http.get<IRecentJob[]>(`${this.baseUrl}jobs/customer/recent/${customerId}`);
   }
 
-  getJobsLookup(filter: string) {
-    return this.http.post<IJobLookup[]>(this.baseUrl + 'jobs/lookup',
-      { nameFilter: filter },
-      { observe: 'response' })
-      .pipe(
-        map((response) => response.body),
-      );
-  }
+  // getJobsLookup(filter: string) {
+  //   return this.http.post<IJobLookup[]>(this.baseUrl + 'jobs/lookup',
+  //     { nameFilter: filter },
+  //     { observe: 'response' })
+  //     .pipe(
+  //       map((response) => response.body),
+  //     );
+  // }
 
   fillPasscode(passcode: any) {
     return this.http.put(this.baseUrl + 'jobs/passcode/update', passcode)

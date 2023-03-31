@@ -23,12 +23,6 @@ const routes: Routes = [
         data: { breadcrumb: { label: 'Jobs Management', skip: true } },
       },
       {
-        path: 'edit-profile',
-        component: ProfileComponent, // <---
-        canActivate: [AuthGuard, PreventImpersonateGuard],
-        data: { title: 'Profile' }
-      },
-      {
         path: 'quotes-management',
         loadChildren: () => import('./quotes-management/quotes-management.module').then((m) => m.QuotesManagementModule),
         data: { breadcrumb: { label: 'Quotes Management', skip: 'true' } },
@@ -78,6 +72,12 @@ const routes: Routes = [
         path: 'account-users-management',
         loadChildren: () => import('./account-users-management/account-users-management.module').then((m) => m.AccountUsersManagementModule),
         data: { breadcrumb: { label: 'Account Users', skip: 'true' } },
+      },
+      {
+        path: 'edit-profile',
+        component: ProfileComponent, // <---
+        canActivate: [AuthGuard, PreventImpersonateGuard],
+        data: { title: 'Profile' }
       },
       {
         path: '**',

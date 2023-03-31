@@ -139,7 +139,7 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
@@ -195,7 +195,7 @@ return null;
   ngOnInit(): void {
     this.enableCreateSmartriseUser();
     this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {

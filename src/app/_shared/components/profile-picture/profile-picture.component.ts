@@ -17,7 +17,7 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
   @Input() url: any;
   @Input() photoGuid: string;
 
-  uploadPictureText = 'Upload Profile Picture';
+  uploadPictureText = 'Edit Photo';
   uploader: FileUploader;
   hasDragOver = false;
   baseUrl = environment.apiUrl;
@@ -25,7 +25,7 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
   fileName = 'No file selected';
   uploading: boolean;
   refernceUrl = '/assets/profile-placeholder.png';
-  changeProfileTooltip = 'Upload Profile Picture';
+  changeProfileTooltip = 'Edit Photo';
 
   public previewPath: any;
   modalRef: any;
@@ -51,7 +51,7 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
         switch (propName) {
           case 'url': {
             if (this.url && this.url !== this.refernceUrl) {
-              this.uploadPictureText = 'Change Profile Picture';
+              this.uploadPictureText = 'Edit Photo';
             }
           }
         }
@@ -95,7 +95,7 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
         const photo = JSON.parse(response);
         this.photoGuid = photo.photoGuid;
         this.uploading = false;
-        this.uploadPictureText = 'Change Profile Picture';
+        this.uploadPictureText = 'Edit Photo';
         this.messageService.showSuccessMessage('Profile Picture has been uploaded successfully');
       }
     };
@@ -143,7 +143,7 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
       this.accountService.deleteProfilePhoto(this.photoGuid).subscribe(() => {
         this.photoGuid = null;
         this.url = this.refernceUrl;
-        this.uploadPictureText = 'Upload Profile Picture';
+        this.uploadPictureText = 'Edit Photo';
         this.messageService.showSuccessMessage('Profile Picture has been removed successfully');
       },
         () => {

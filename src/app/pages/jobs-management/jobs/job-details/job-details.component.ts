@@ -9,6 +9,7 @@ import { Tab } from '../../../../_shared/models/jobTabs';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { MiscellaneousService } from '../../../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
+import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 
 @Component({
   selector: 'ngx-job-details',
@@ -21,12 +22,13 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
   isLoading = true;
   isSmartriseUser: boolean;
   displayAccountName: boolean;
-
+  isSmall?: boolean = null;
   shipmentsTabSelected = false;
   resurcesTabSelected = false;
   jobTabSelected = false;
   renderJobResources = false;
   prevUrl: string;
+  responsiveService: any;
 
   constructor(
     private jobService: JobService,
@@ -70,6 +72,7 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
   }
 
   loadJob() {
+  
     const jobId = +this.activatedRoute.snapshot.paramMap.get('id');
 
     if (!isFinite(jobId)) {
@@ -107,10 +110,14 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
 
           this.bcService.set('@jobNumber', this.job.jobNumber === '' ? 'N/A' : this.job.jobNumber);
           this.bcService.set('@jobNumber', { skip: false });
+          
           this.isLoading = false;
+          this.renderJobResources = true;
         },
+        
         (error) => {
           this.isLoading = false;
+         
           this.router.navigateByUrl('pages/jobs-management/jobs');
         }
       );

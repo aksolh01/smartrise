@@ -13,7 +13,7 @@
           <div class="form-group row">
             <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
             <div class="col-12 col-lg-8">
-              <input type="text" placeholder="First Name" formControlName="firstName" class="form-control"
+              <input type="text" #firstName placeholder="First Name" formControlName="firstName" class="form-control"
                 id="firstName">
               <div *ngIf="formSubmitted">
                 <div class="help-block error" *ngIf="
@@ -103,15 +103,15 @@
         </div>
 
       </div>
-      <div class="form-buttons">
+      <div class="form-buttons mt-2">
         <button routerLink=".." type="button" class="btn btn-secondary">
           <i class="fas fa-times"></i>
           Cancel
         </button>
-        <button type="submit" class="btn btn-primary">
+        <ngx-button [isLoading]="isSaving" type="submit" class="btn btn-primary">
           <i class="fas fa-plus-circle"></i>
           Create
-        </button>
+        </ngx-button>
       </div>
     </form>
   </nb-card-body>

@@ -5,4 +5,5 @@ export class CustomerUsersParams extends BaseParams {
     lastName: string;
     email: string;
     roles: string;
+    customerId?: number;
 }

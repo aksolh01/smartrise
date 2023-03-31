@@ -1,91 +1,99 @@
-<nb-card joyrideStep="accountUserFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Users' : null"
-    [stepContent]="firstCustomContent" (done)="onFinishingTour()" [nextTemplate]="nextButton">
-
-    <nb-card-header class="default-card-header">
-        <div class="row">
-            <div class="col-md">
-                <h2 class="card-title">Account Users</h2>
-            </div>
-            <div class="col-md">
-                <div class="card-actions text-right">
-                    <a>
-                        <button [disabled]="!canCreateAccountUser" (click)="onCreateUser()" class="btn btn-primary"
-                            joyrideStep="accountUserSecondStep" stepPosition="left" [prevTemplate]="prevButton"
-                            [nextTemplate]="nextButton" [doneTemplate]="doneButton"
-                            [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="secondCustomContent"
-                            (done)="onFinishingTour()">
-                            <i class="fas fa-plus-circle"></i>
-
-                            Create User
-                        </button>
-                    </a>
-                </div>
+<div class="page-header-container">
+    <div class="page-header-title">Account Users</div>
+    <div class="form-container mx-w-400" style="width: 40%;" *ngIf="!isSmall">
+        <div class="input-container">
+            <div class="input-item">
+                <input type="text" placeholder="Search">
             </div>
         </div>
-    </nb-card-header>
-    <nb-card-body>
-        <ng-template [ngIf]="isSmall === false">
-            <div class="filters-container">
-                <div class="row mb-3">
+        
+    </div>
+    
+    <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+</div>
+<div class="avatar-btn-container">
+    <div class="avatar-btn">
+        <a>
+            <button [disabled]="!canCreateAccountUser" (click)="onCreateUser()" class="btn btn-primary"
+                joyrideStep="accountUserSecondStep" stepPosition="left" [prevTemplate]="prevButton"
+                [nextTemplate]="nextButton" [doneTemplate]="doneButton"
+                [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="secondCustomContent"
+                (done)="onFinishingTour()">
+                <i class="fas fa-user-plus"></i>
+            </button>
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <nb-card joyrideStep="accountUserFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Users' : null"
+        [stepContent]="firstCustomContent" (done)="onFinishingTour()" [nextTemplate]="nextButton">
+
+  
+
+        <nb-card-body>
+            <ng-template [ngIf]="isSmall === false">
+                <div class="table-header">
                     <div class="col d-flex align-items-center justify-content-start">
-                        <button (click)="onReset()" class="btn btn-primary">
+
+                    </div>
+                    <div class="col-auto d-flex align-items-center justify-content-start">
+                        <button (click)="onReset()" class="main-button">
                             <i class="fas fa-redo-alt"></i>
                             Reset Filters
                         </button>
                     </div>
-                    <div class="col-auto d-flex align-items-center justify-content-start">
-                        <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
-                            (changed)="onRecordsNumberChanged($event)">
-                        </ngx-smr-records-per-page>
+                </div>
+            </ng-template>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="First Name"
+                                    [(ngModel)]="firstName" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Last Name"
+                                    [(ngModel)]="lastName" />
+                            </div>
+                            <div class="input-item">
+                                <input type="email" maxlength="255" placeholder="Email"
+                                    [(ngModel)]="email" />
+                            </div>
+                            <div class="input-item">
+                                <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                                    (changed)="onRecordsNumberChanged($event)">
+                                </ngx-smr-records-per-page>
+                            </div>
+                        </div>
                     </div>
+                    <div class="form-action"  actions>
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                        <button (click)="onReset(); toggleFilters()" class="main-button">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button>
+                    </div>
+                </ngx-smr-mobile-filters>
+            </div>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table  #table [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
                 </div>
             </div>
-        </ng-template>
-        
-        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-            <div filters>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="First Name" class="form-control"
-                        [(ngModel)]="firstName" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Last Name" class="form-control"
-                        [(ngModel)]="lastName" />
-                </div>
-                <div class="filter-control">
-                    <input type="email" maxlength="255" placeholder="Email" class="form-control" [(ngModel)]="email" />
-                </div>
-                <div class="filter-control">
-                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page>
-                </div>
-            </div>
-            <div actions>
-                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-                    <i class="fas fa-search"></i>
-                    Search
-                </button>
-                <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
-                    <i class="fas fa-redo-alt"></i>
-                    Reset Filters
-                </button>
-            </div>
-        </ngx-smr-mobile-filters>
-
-        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
-                    <i class="fas fa-filter"></i>
-                </button>
-            </div>
-            <div class="col-sm-12" *ngIf="source">
-                <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
-                    [source]="source">
-                </ng2-smart-table>
-            </div>
-        </div>
-    </nb-card-body>
-</nb-card>
+        </nb-card-body>
+    </nb-card>
+</div>
 
 <ng-template #firstCustomContent>
     <div class='joyride-custom-content'>
@@ -93,7 +101,10 @@
             Manage Account users.
         </div>
         <div>
-            <i class="fas fa-pencil-alt guiding-tour-action"></i>Update User Information
+            <i class="fas fa-pencil-alt guiding-tour-action"></i>Update Account Roles
+        </div>
+        <div>
+            <i class="fas fa-sign-in-alt guiding-tour-action"></i>Login As User
         </div>
         <div>
             <i class="fas fa-share guiding-tour-action"></i>Resend Invitation
@@ -124,12 +135,14 @@
         Prev
     </button>
 </ng-template>
+
 <ng-template #nextButton>
     <button class="btn btn-primary">
         Next
         <i class="fas fa-step-forward"></i>
     </button>
 </ng-template>
+
 <ng-template #doneButton>
     <button class="btn btn-primary">
         <i class="clear-icon fas fa-check"></i>

@@ -1,6 +1,6 @@
 <nb-card size="xlarge" *ngIf="bankAccount">
     <nb-card-header class="default-card-header">
-        <h2 class="card-title">Bank Account Details</h2>
+        <h2 class="card-title">Bank Account Details - {{ bankAccount?.customer.name | value }}</h2>
     </nb-card-header>
     <nb-card-body [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
         <div *ngIf="bankAccount?.isDefault" class="badge badge-pill float-right font-weight-normal is-default mr-1">

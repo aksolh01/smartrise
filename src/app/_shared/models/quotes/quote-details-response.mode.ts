@@ -4,9 +4,6 @@ import { EnumValueResponse, IEnumValue, IEnumValueResponse } from '../enumValue.
 import { ICarDetailsResponse, IQuoteAttachmentDetailsResponse, ICarManagementSystemDetailsResponse, ICarDoorFeatureDetailsResponse, ICarAdditionalFeatureDetailsResponse, ICarSmartriseFeatureDetailsResponse, ICarHydraulicFieldDetailsResponse, ICarProvisionDetailsResponse, ICarSpecialFieldDetailsResponse, IQuoteDetailsResponse, IQuoteJobLocationReponse, ICarTractionFieldDetailsResponse, ICarAdditionalC4RiserBoardsDetailsResponse } from './quote-details-response-i.mode';
 
 export class QuoteDetailsResponse implements IQuoteDetailsResponse {
-    customerId(customerId: any) {
-      throw new Error('Method not implemented.');
-    }
 
     constructor(props?: Partial<QuoteDetailsResponse>) {
         if(props) {
@@ -45,6 +42,7 @@ export class QuoteDetailsResponse implements IQuoteDetailsResponse {
     jobName?: string;
     @AutoMap()
     contactId?: number;
+    customerId?: number;
     @AutoMap()
     contact?: string;
     @AutoMap()

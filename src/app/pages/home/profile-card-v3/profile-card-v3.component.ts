@@ -62,7 +62,7 @@ export class ProfileCardV3Component implements OnInit, OnDestroy, AfterContentIn
   }
 
   goToEditProfilePage() {
-    this.router.navigateByUrl('auth/profile');
+    this.router.navigateByUrl('/pages/edit-profile');
   }
 
   _loadUserData() {
@@ -132,7 +132,7 @@ this.modelRef.hide();
 
     const dialogData: InfoDialogData = {
       title: `User Privileges`,
-      content: isSmartriseUser ? this.user.rolesPrivileges : this._getSortedAccountPrivilages(this.user.accounts),
+      content: isSmartriseUser ? this._getSmartrisePrivilages(this.user.accounts) : this._getAccountUserPrivilagesGroupedByAccount(this.user.accounts),
       dismissButtonLabel: 'Close',
       showDismissButton: true,
       showAsBulltes: true,
@@ -142,7 +142,11 @@ this.modelRef.hide();
     });
   }
 
-  private _getSortedAccountPrivilages(accounts: IUserAccountLookup[]): { title: string; list: string[]; }[] {
+  private _getSmartrisePrivilages(accounts: IUserAccountLookup[]): string | string[] | { title: string; list: string[]; }[] {
+    return accounts[0].privileges;
+  }
+
+  private _getAccountUserPrivilagesGroupedByAccount(accounts: IUserAccountLookup[]): { title: string; list: string[]; }[] {
     accounts.sort((a, b) => {
       if (a.name < b.name) {
         return -1;

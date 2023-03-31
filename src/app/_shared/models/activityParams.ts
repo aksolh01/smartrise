@@ -7,7 +7,7 @@ export class ActivityParams extends BaseParams {
     createdDate?: Date;
     userDisplayName: string;
     impersonationUserDisplayName: string;
-    customerName: string;
+    account: string;
     isSmartrise: boolean;
 }
 

@@ -74,7 +74,7 @@ export class QuotingToolService {
       .get<IQuoteDetailsResponse>(this.baseUrl + 'quotes/get/' + quoteId, {
         observe: 'response',
       })
-      .pipe(map((response) => new QuoteDetailsResponse(response.body)));
+      .pipe(map((response) => new QuoteDetailsResponse()));
   }
 
   getQuote(id: number): Observable<IQuoteResponse> {

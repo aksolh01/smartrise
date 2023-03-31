@@ -3,7 +3,7 @@ import { BaseParams } from './baseParams';
 
 export class JobSearchParams extends BaseParams {
   epicorWaitingInfo?: boolean;
-  customerName: string;
+  account: string;
   jobName: string;
   jobNumber: string;
   grantedShipDate?: Date;

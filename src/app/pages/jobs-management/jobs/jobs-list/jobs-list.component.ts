@@ -1,14 +1,9 @@
 import { AfterContentInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
 import { Subscription } from 'rxjs';
-import { AccountService } from '../../../../services/account.service';
-import { BaseComponentService } from '../../../../services/base-component.service';
 import { JobTabService } from '../../../../services/job-tabs.service';
 import { JobService } from '../../../../services/job.service';
-import { MiscellaneousService } from '../../../../services/miscellaneous.service';
-import { MultiAccountsService } from '../../../../services/multi-accounts-service';
 import { ResponsiveService } from '../../../../services/responsive.service';
 import { SettingService } from '../../../../services/setting.service';
 import { HLinkTableCellComponent } from '../../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
@@ -16,18 +11,26 @@ import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-
 import { CpDateFilterComponent } from '../../../../_shared/components/table-filters/cp-date-filter.component';
 import { CpFilterComponent } from '../../../../_shared/components/table-filters/cp-filter.component';
 import { CpListFilterComponent } from '../../../../_shared/components/table-filters/cp-list-filter.component';
-import { CommonValues } from '../../../../_shared/constants';
 import { BaseServerDataSource } from '../../../../_shared/datasources/base-server.datasource';
 import { JobSearchByCustomerParams, JobSearchParams } from '../../../../_shared/models/jobParams';
 import { Tab } from '../../../../_shared/models/jobTabs';
 import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
-import { BaseComponent } from '../../../base.component';
-import * as guidingTourGlobal from '../../../guiding.tour.global';
+import { BaseComponentService } from '../../../../services/base-component.service';
+import { MiscellaneousService } from '../../../../services/miscellaneous.service';
+import { CommonValues, URLs } from '../../../../_shared/constants';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { FillPasscodeComponent } from '../fill-passcode/fill-passcode.component';
-import { AccountNameCellComponent } from '../../../../_shared/components/account-name-cell/account-name-cell.component';
+import { AccountService } from '../../../../services/account.service';
+import { MultiAccountsService } from '../../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
+import { MatLine } from '@angular/material/core';
+import { tap } from 'rxjs/operators';
+import { ListTitleService } from '../../../../services/list-title.service';
+import { BaseComponent } from '../../../base.component';
 import { PendingInfoCellComponent } from './pending-info-cell.component';
 import { JobActionsComponent } from './job-actions/job-actions.component';
+import * as guidingTourGlobal from '../../../guiding.tour.global';
 
 @Component({
   selector: 'ngx-jobs-list',
@@ -45,7 +48,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   showFilters = false;
   runGuidingTour = true;
   actualShipDate?: Date;
-  customerName: string;
+  account: string;
   jobName: string;
   jobNumber: string;
   customerPONumber: string;
@@ -54,7 +57,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   // orderDate?: Date = null;
   shipDate?: Date = null;
   epicorWaitingInfo: string;
-
+  jobsListTitle: string;
   yesNoList: { value?: boolean; title: string }[];
 
   settings: any = {
@@ -69,11 +72,15 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
         width: '15%',
@@ -229,6 +236,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     private miscellaneousService: MiscellaneousService,
     private multiAccountService: MultiAccountsService,
     private accountInfoService: AccountInfoService,
+    private listTitleService: ListTitleService,
     baseService: BaseComponentService,
   ) {
     super(baseService);
@@ -259,7 +267,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber,
+      perPage: this.recordsNumber || 25,
     };
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
@@ -295,7 +303,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
       const jobParams = params as JobSearchParams;
 
       if (this.isSmall) {
-        jobParams.customerName = this.customerName;
+        jobParams.account = this.account;
         jobParams.jobName = this.jobName;
         jobParams.jobNumber = this.jobNumber;
         jobParams.epicorWaitingInfo = this.epicorWaitingInfo
@@ -323,6 +331,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
         return this.jobService.searchJobsByCustomerUser(jobParams);
       }
     };
+
     this.source.dataLoading.subscribe((result) => {
       this.isLoading = result;
       setTimeout(
@@ -334,19 +343,17 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
           : guidingTourGlobal.wideScreenSuspensionTimeInterval
       );
     });
-    this.source.setSort(
-      [
-        { field: 'jobName', direction: 'asc' }, // primary sort
-      ],
-      false
-    );
+
+    this.source.setSort([
+      { field: 'jobName', direction: 'asc' }  // primary sort
+    ], false);
   }
 
-  ngOnInit(): void {
-    this.canFillPasscode =
-      this.accountService.loadedUser.roles.indexOf('SmartriseSupport') > -1;
+  async ngOnInit() {
+    this.canFillPasscode = this.accountService.loadedUser.roles.indexOf('SmartriseSupport') > -1;
+    this.jobsListTitle = await this.listTitleService.buildTitle('Jobs');
     this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription =
         this.responsiveService.currentBreakpoint$.subscribe((w) => {
@@ -371,7 +378,11 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     this.yesNoList = this.populateYesNo();
   }
 
-  onJobFilterChange() {}
+  private _loadUserAccounts() {
+    return this.accountService.loadCurrentUser().toPromise();
+  }
+
+  onJobFilterChange() { }
 
   onSearch() {
     this.source.setPage(1, false);
@@ -391,7 +402,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   onReset() {
-    this.customerName = null;
+    this.account = null;
     this.jobName = null;
     this.jobNumber = null;
     this.createDate = null;
@@ -413,7 +424,15 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     this.recordsNumber = value;
     this.source.setPaging(1, value);
   }
-
+  goToJobs() {
+    this.router.navigateByUrl('/pages/jobs-management/jobs');
+  }
+  goToShipments() {
+    this.router.navigateByUrl('/pages/jobs-management/shipments');
+  }
+  goToJobsFile() {
+    this.router.navigateByUrl('/pages/jobs-management/job-files');
+  }
   onLoad(value: any) {
     console.log(value);
   }
@@ -438,6 +457,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
 
     this.stopGuidingTour();
     this.joyrideService = null;
+    this.accountInfoService.closePopup();
   }
 
   startGuidingTour() {

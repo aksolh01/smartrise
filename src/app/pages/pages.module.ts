@@ -11,6 +11,7 @@ import { MenuService } from '../services/menu.service';
 import { SharedModule } from '../_shared/shared.module';
 import { ImageService } from '../services/image.service';
 
+
 @NgModule({
   imports: [
     PagesRoutingModule,

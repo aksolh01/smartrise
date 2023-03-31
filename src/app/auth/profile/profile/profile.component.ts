@@ -184,7 +184,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   back() {
-    if (this.pUrl.indexOf('auth/login') > -1 || this.pUrl.indexOf('auth/profile') > -1 || this.pUrl === '/') {
+    if (this.pUrl.indexOf('auth/login') > -1 || this.pUrl === '/') {
         this.router.navigateByUrl('pages/dashboard');
     } else {
 this.router.navigateByUrl(this.pUrl);

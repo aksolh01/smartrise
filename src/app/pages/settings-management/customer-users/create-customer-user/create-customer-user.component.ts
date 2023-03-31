@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
-import { AccountRolesSelectionService } from '../../../../services/account-roles-selection.service';
-import { AccountService } from '../../../../services/account.service';
-import { MessageService } from '../../../../services/message.service';
 import { SmartriseValidators } from '../../../../_shared/constants';
-import { IAccountUserRoles } from '../../../../_shared/models/account-selection.model';
 import { IRole } from '../../../../_shared/models/role';
+import { MessageService } from '../../../../services/message.service';
+import { IAccountUserRoles } from '../../../../_shared/models/account-selection.model';
+import { forkJoin } from 'rxjs';
+import { ICustomerUserPayload } from '../../../../_shared/models/customer-user-by-customer-admin.model';
+import { AccountService } from '../../../../services/account.service';
+import { AccountsWithoutMatchingContactsComponent } from '../../../account-users-management/accounts-without-matching-contacts/accounts-without-matching-contacts.component';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { trimValidator } from '../../../../_shared/validators/trim-validator';
+import { AccountRolesSelectionService } from '../../../../services/account-roles-selection.service';
 
 @Component({
   selector: 'ngx-create-customer-user',
@@ -22,14 +25,16 @@ export class CreateCustomerUserComponent implements OnInit {
   isLoadingForm = true;
   formSubmitted = false;
   rolesTouched: boolean;
-  isSaving = false;
+  isSaving: boolean = false;
+  @ViewChild('firstName') firstName: ElementRef;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private accountService: AccountService,
     private messageService: MessageService,
-    private accountRolesSelectionService: AccountRolesSelectionService
+    private accountRolesSelectionService: AccountRolesSelectionService,
+    private modalService: BsModalService
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +70,7 @@ export class CreateCustomerUserComponent implements OnInit {
 
     this.formSubmitted = true;
     if (this.customerUserForm.invalid) {
+      this._goToTheTopOfPage();
       return;
     }
 
@@ -73,14 +79,59 @@ export class CreateCustomerUserComponent implements OnInit {
     this.isSaving = true;
 
     const newCustomerUser = this._generateCustomerUserObjectFromForm();
-    this.accountService.createCustomerUserByCustomerAdmin(newCustomerUser).subscribe(() => {
-      this.isLoading = false;
-      this.messageService.showSuccessMessage('Customer user has been created successfully');
-      this.router.navigate(['..'], { relativeTo: this.route });
-    }, () => {
-      this.isLoading = false;
-      this.isSaving = false;
-    });
+    this.accountService.createCustomerUserByCustomerAdmin(newCustomerUser).subscribe(
+      (response) => this._onCreateUserSuccess(response),
+      (error) => this._onCreatedUserFailed(error)
+    );
+  }
+
+  private _goToTheTopOfPage() {
+    this.firstName.nativeElement.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  private _onCreatedUserFailed(error: any): void {
+    this.isLoading = false;
+    this.isSaving = false;
+    if (error?.error?.failedResult && error.error.failedResult.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnFailedScenario(error.error.failedResult);
+    }
+  }
+
+  private _showAccountsWithoutMatchingContactsOnFailedScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'failed',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Failed to create Account User.',
+        topMessage: `The Account User could not be linked to the following Account(s):`,
+        bottomMessage: 'Please contact your Regional Sales Team for support.'
+      }
+    }).onHide;
+  }
+
+  private _onCreateUserSuccess(response) {
+    this.isLoading = false;
+    this.isSaving = false;
+    if (response.accountsWithoutMatchingContacts.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnSuccessScenario(response.accountsWithoutMatchingContacts).subscribe(() => {
+        this.router.navigate(['..'], { relativeTo: this.route });
+      });
+      return;
+    }
+    this.messageService.showSuccessMessage('Account User has been created successfully');
+    this.router.navigate(['..'], { relativeTo: this.route });
+  }
+
+  private _showAccountsWithoutMatchingContactsOnSuccessScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'success',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Account User has been created successfully.',
+        topMessage: `The Account User could not be linked to the following Account(s):`,
+        bottomMessage: 'Please contact your Regional Sales Team for support.'
+      }
+    }).onHide;
   }
 
   createCustomerUserForm() {

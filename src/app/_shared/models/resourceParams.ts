@@ -1,9 +1,9 @@
 import { BaseParams } from './baseParams';
 
 export class ResourceParams extends BaseParams {
-    jobName = '';
-    customerName = '';
-    customerMessage = '';
+    jobName: string = '';
+    account: string = '';
+    customerMessage: string = '';
     resourceType: string = null;
     status: string;
     fileDescription = '';

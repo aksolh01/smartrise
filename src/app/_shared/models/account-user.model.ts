@@ -30,9 +30,14 @@ export interface IAccountUserLookup {
     lastName: string;
     userName: string;
     email: string;
+    accounts: IAccountUserLookupAccount[];
     isDeactivated: boolean;
     twoFactorEnabled: boolean;
-    roles: IAccountUserRoleLookup[];
+}
+
+export interface IAccountUserLookupAccount {
+    accountId: number;
+    name: string;
 }
 
 export interface IAccountUserRoleLookup {

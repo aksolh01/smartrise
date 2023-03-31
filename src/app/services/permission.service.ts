@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { of, ReplaySubject } from 'rxjs';
 import { URLs } from '../_shared/constants';
-import { IUserAccountLookup } from '../_shared/models/IUser';
-import { IAccoutPermissions, IPermission } from '../_shared/models/permission.model';
+import { IAccoutPermissions } from '../_shared/models/permission.model';
 
 @Injectable()
 export class PermissionService {
@@ -35,18 +34,11 @@ export class PermissionService {
     }
 
     hasPermissionInAccount(permission: string, accountId: number): boolean {
-        return this.permissions.some(acc => acc.permissions.some(p => p === permission) && acc.accountId === accountId);
+        const m = this.permissions.some(acc => acc.permissions.some(p => p === permission) && acc.accountId === accountId);
+        return m;
     }
 
     getDefaultRoute() {
         return URLs.HomeURL;
-        // if (this.checkPermission(PERMISSIONS.JobsListing)) {
-        //     return URLs.JobsURL;
-        // } else if (this.checkPermission(PERMISSIONS.CustomerListing)) {
-        //     return URLs.ViewCustomersURL;
-        // } else if (this.checkPermission(PERMISSIONS.SmartriseUsersListing)) {
-        //     return URLs.SmartriseUsersURL;
-        // }
-        // return '';
     }
 }

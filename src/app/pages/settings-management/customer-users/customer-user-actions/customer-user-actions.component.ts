@@ -3,6 +3,8 @@ import { PERMISSIONS } from '../../../../_shared/constants';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { PermissionService } from '../../../../services/permission.service';
 import { BaseComponent } from '../../../base.component';
+import { TokenService } from '../../../../services/token.service';
+import { ICustomerUserLookup } from '../../../../_shared/models/ICustomerUserLookup';
 
 @Component({
   selector: 'ngx-customer-user-actions',
@@ -13,8 +15,6 @@ export class CustomerUserActionsComponent extends BaseComponent implements OnIni
 
   editUser = new EventEmitter<any>();
   resetPassword = new EventEmitter<any>();
-  activateUser = new EventEmitter<any>();
-  deactivateUser = new EventEmitter<any>();
   resendInvitation = new EventEmitter<any>();
 
   value: string | number;
@@ -23,66 +23,40 @@ export class CustomerUserActionsComponent extends BaseComponent implements OnIni
   canUpdateCustomerUser = true;
   canResendInvitationLink = true;
   canSendResetPasswordRequest = true;
-  canActivateUser = true;
-  canDeactivateUser = true;
-  canActivateUser2FA = true;
-  canDeactivateUser2FA = true;
 
   constructor(
     baseService: BaseComponentService,
     private permissionService: PermissionService,
-    ) {
+    private tokenService: TokenService
+  ) {
     super(baseService);
+  }
+
+  get recordBelongsToLoggedInUser() {
+    return this._isLoggedInUser();
   }
 
   ngOnInit(): void {
     this.enableUpdateCustomerUser();
     this.enableSendResetPasswordRequest();
     this.enableResendInvitationLink();
-    this.enableActivateUser();
-    this.enableDeactivateUser();
-    this.enableActivateUser2FA();
-    this.enableDeactivateUser2FA();
-  }
-
-  enableDeactivateUser2FA() {
-    this.canDeactivateUser2FA = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersDeactivate2FA);
-  }
-
-  enableActivateUser2FA() {
-    this.canActivateUser2FA = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersActivate2FA);
   }
 
   enableUpdateCustomerUser() {
-    this.canUpdateCustomerUser = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersUpdate);
+    this.canUpdateCustomerUser = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersUpdate)
+      && this.rowData.canUpdateUser === true;
   }
 
   enableResendInvitationLink() {
-    if (!this.permissionService.hasPermission(PERMISSIONS.CustomerUsersResendInvitationLink)) {
-this.canResendInvitationLink = false;
-} else if (this.rowData.emailConfirmed) {
-this.canResendInvitationLink = false;
-} else {
-this.canResendInvitationLink = true;
-}
+    this.canResendInvitationLink = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersResendInvitationLink)
+      && this.rowData.emailConfirmed === false
+      && this.rowData.canTakeAction === true;
   }
 
   enableSendResetPasswordRequest() {
-    if (!this.permissionService.hasPermission(PERMISSIONS.CustomerUsersResetPassword)) {
-      this.canSendResetPasswordRequest = false;
-    } else if (!this.rowData.emailConfirmed) {
-      this.canSendResetPasswordRequest = false;
-    } else {
-      this.canSendResetPasswordRequest = true;
-    }
-  }
-
-  enableActivateUser() {
-    this.canActivateUser = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersActivate);
-  }
-
-  enableDeactivateUser() {
-    this.canDeactivateUser = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersDeactivate);
+    this.canSendResetPasswordRequest = this.permissionService.hasPermission(PERMISSIONS.CustomerUsersResetPassword)
+      && this.rowData.emailConfirmed === true
+      && this.rowData.canTakeAction === true;
   }
 
   onEditUser(data: any) {
@@ -91,14 +65,6 @@ this.canResendInvitationLink = true;
 
   onResetPassword(data: any) {
     this.resetPassword.emit(data);
-  }
-
-  onActivateUser(data: any) {
-    this.activateUser.emit(data);
-  }
-
-  onDeactivateUser(data: any) {
-    this.deactivateUser.emit(data);
   }
 
   onResendInvitation(data: any) {
@@ -121,5 +87,9 @@ return 'true';
       return 'true';
     }
     return null;
+  }
+
+  private _isLoggedInUser(): boolean {
+    return this.rowData.id === this.tokenService.getProperty("UserId");
   }
 }

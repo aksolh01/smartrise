@@ -1,13 +1,14 @@
 <nb-card *ngIf="!isLoading" [nbSpinner]="isAddingCar" nbSpinnerStatus="primary" nbSpinnerSize="giant">
     <nb-card-header class="default-card-header">
-        <h2 class="card-title">Quote Details</h2>
+        <h2 class="card-title">Quote Details - {{quote?.createdByAccount}}</h2>
     </nb-card-header>
 
     <nb-card-body class="pb-0">
 
         <div class="text-right mb-3">
             <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked" (cancel)="onCancel()"
-                (edit)="onEdit()" (viewPricing)="onViewPricing()" [canEditQuote]="canEditQuote"></ngx-detail-actions-bar>
+                (edit)="onEdit()" (viewPricing)="onViewPricing()"
+                [canEditQuote]="canEditQuote"></ngx-detail-actions-bar>
         </div>
 
         <div class="row quote-level-info">
@@ -907,7 +908,8 @@
                                 </svg>
                             </div>
                             <div class="info">
-                                <h4 class="name" tooltip="{{file?.originalFileName}}" data-tooltip="{{file?.originalFileName }}">
+                                <h4 class="name" tooltip="{{file?.originalFileName}}"
+                                    data-tooltip="{{file?.originalFileName }}">
                                     {{ file?.originalFileName }}
                                 </h4>
                                 <p class="size">

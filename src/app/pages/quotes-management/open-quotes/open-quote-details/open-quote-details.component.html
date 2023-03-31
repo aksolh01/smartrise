@@ -1,7 +1,7 @@
 <nb-card size="xlarge" *ngIf="openQuote">
 
     <nb-card-header class="default-card-header">
-        <h2 class="card-title">Open Quote Details</h2>
+        <h2 class="card-title">Open Quote Details - {{ openQuote?.customer}}</h2>
     </nb-card-header>
     <nb-card-body [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
         <div *ngIf="openQuote?.isDeleted"
@@ -42,7 +42,7 @@
                         <div class="form-control-plaintext">
                             <a tooltip="View Contact Details" *ngIf="openQuote.contact" (click)="onShowContact()">{{
                                 openQuote?.contact?.name | value }}</a>
-                            {{ !openQuote?.contact ? 'N/A' : '' }}    
+                            {{ !openQuote?.contact ? 'N/A' : '' }}
                         </div>
                     </div>
                 </div>

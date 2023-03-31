@@ -16,16 +16,4 @@
       <i class="fas fa-recycle" data-toggle="tooltip" data-original-title="Reset Password"></i>
     </button>
   </div>
-  <div tooltip="Activate User" class="action-tooltip-holder">
-    <button [disabled]="!canActivateUser || customerIsDeleted" data-tooltip="Activate User" *ngIf="rowData.isDeactivated"
-      (click)="onActivateUser(this.rowData)">
-      <i class="fas fa-user-minus" data-toggle="tooltip" data-original-title="Activate User"></i>
-    </button>
-  </div>
-  <div tooltip="Deactivate User" class="action-tooltip-holder">
-    <button [disabled]="!canDeactivateUser || customerIsDeleted" data-tooltip="Deactivate User" *ngIf="!rowData.isDeactivated"
-      (click)="onDeactivateUser(this.rowData)">
-      <i class="fas fa-user-check" data-toggle="tooltip" data-original-title="Deactivate User"></i>
-    </button>
-  </div>
 </div>

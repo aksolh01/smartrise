@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BusinessSettingsComponent } from './business-settings/business-settings.component';
-import { CompanyInfoComponent } from './company-info/company-info.component';
+import { CompanyInfoComponent } from './company-info/company-info-details/company-info.component';
+import { CompanyInfoListComponent } from './company-info/company-info-list/company-info-list.component';
 import { CreateCustomerUserComponent } from './customer-users/create-customer-user/create-customer-user.component';
 import { CustomerUsersComponent } from './customer-users/customer-users.component';
 import { UpdateCustomerUserComponent } from './customer-users/update-customer-user/update-customer-user.component';
@@ -61,6 +62,22 @@ const routes: Routes = [
         ],
     },
     {
+        path: 'accounts',
+        data: { breadcrumb: { label: 'Accounts' } },
+        children: [
+            {
+                path: '',
+                component: CompanyInfoListComponent,
+                data: { title: 'Accounts' }
+            },
+            {
+                path: ':id',
+                component: CompanyInfoComponent,
+                data: { title: 'Account Details', breadcrumb: { alias: 'companyName' } },
+            },
+        ],
+    },
+    {
         path: 'customer-users',
         data: { breadcrumb: { label: 'Account Users' } },
         children: [
@@ -78,17 +95,6 @@ const routes: Routes = [
                 path: ':id',
                 component: UpdateCustomerUserComponent,
                 data: { title: 'Update User', breadcrumb: { alias: 'userName' } }
-            },
-        ],
-    },
-    {
-        path: 'company-info',
-        data: { breadcrumb: { label: 'Company Info' } },
-        children: [
-            {
-                path: '',
-                component: CompanyInfoComponent,
-                data: { title: 'Company Info' }
             },
         ],
     },

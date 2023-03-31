@@ -1,4 +1,4 @@
-<div class="card-body" joyrideStep="jobResourceFirstStep" stepPosition="center"
+<div class="" joyrideStep="jobResourceFirstStep" stepPosition="center"
   [title]="runGuidingTour === true ? 'Job Files' : null" [stepContent]="jobResourcesCustomContent"
   [doneTemplate]="doneButton" (done)="onFinishingTour()">
 
@@ -21,7 +21,7 @@
 
   <div [nbSpinner]="isRefreshing" nbSpinnerStatus="primary" nbSpinnerSize="giant">
 
-    <ng2-smart-table class="default-smart-table responsive-design1 w-100" #table [settings]="settings"
+    <ng2-smart-table class="default-smart-table  w-100" #table [settings]="settings"
       [source]="source">
     </ng2-smart-table>
   </div>

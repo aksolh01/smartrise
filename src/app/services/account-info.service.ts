@@ -10,7 +10,7 @@ export class AccountInfoService {
     constructor(
         private customerService: CustomerService,
         private modalService: BsModalService
-        ) {
+    ) {
 
     }
 
@@ -18,6 +18,12 @@ export class AccountInfoService {
         this.customerService.getCompayInfoByAccountId(accountId).subscribe(companyInfo => {
             this._showAccountInfoPopup(companyInfo);
         });
+    }
+
+    closePopup() {
+        if (this.modalService.getModalsCount() > 0) {
+            this.modalService.hide();
+        }
     }
 
     private _showAccountInfoPopup(companyInfo: ICustomerDetails) {

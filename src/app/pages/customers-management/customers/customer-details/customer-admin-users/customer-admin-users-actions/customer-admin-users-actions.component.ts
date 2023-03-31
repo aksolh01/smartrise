@@ -12,12 +12,8 @@ export class CustomerAdminUsersActionsComponent implements OnInit, ViewCell {
 
   resetPassword = new EventEmitter<any>();
   resendInvitationEmail = new EventEmitter<any>();
-  activateUser = new EventEmitter<any>();
-  deactivateUser = new EventEmitter<any>();
   editUser = new EventEmitter<any>();
 
-  canActivateUser = true;
-  canDeactivateUser = true;
   canResendInvitationLink = true;
   canResetAdminAccountPassword = true;
   canUpdateCustomerUser = true;
@@ -32,8 +28,6 @@ export class CustomerAdminUsersActionsComponent implements OnInit, ViewCell {
   ngOnInit(): void {
     this.enableResendInvitationLink();
     this.enableResetAdminAccountPassword();
-    this.enableActivateUser();
-    this.enableDeactivateUser();
     this.enableEditUser();
   }
 
@@ -51,14 +45,6 @@ export class CustomerAdminUsersActionsComponent implements OnInit, ViewCell {
       !this.rowData.customerIsDeleted;
   }
 
-  enableActivateUser() {
-    this.canActivateUser = this.permissionService.hasPermission(PERMISSIONS.AdministratorAccountActivate);
-  }
-
-  enableDeactivateUser() {
-    this.canDeactivateUser = this.permissionService.hasPermission(PERMISSIONS.AdministratorAccountDeactivate);
-  }
-
   enableEditUser() {
     this.canUpdateCustomerUser = this.permissionService.hasPermission(PERMISSIONS.AdministratorAccountUpdate);
   }
@@ -69,14 +55,6 @@ export class CustomerAdminUsersActionsComponent implements OnInit, ViewCell {
 
   onResendInvitationEmail(rowData) {
     this.resendInvitationEmail.emit(rowData);
-  }
-
-  onActivateUser(data: any) {
-    this.activateUser.emit(data);
-  }
-
-  onDeactivateUser(data: any) {
-    this.deactivateUser.emit(data);
   }
 
   onEditUser(data: any) {

@@ -82,7 +82,7 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
 
     this.canCreateCustomerUser = this.permissionService.hasPermission(PERMISSIONS.AdministratorAccountCreate);
     this.settingService.getBusinessSettings().subscribe(r => {
-      this.recordsNumber = r.numberOfRecords;
+      this.recordsNumber = r.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription = this.reponsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -104,7 +104,7 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
 
     this.source = new BaseServerDataSource();
@@ -245,12 +245,6 @@ roles = _roles[0].displayName;
     actions.resetPassword.subscribe((row) => {
       this.resetPassword(row);
     });
-    actions.activateUser.subscribe(user => {
-      this.onActivateUser(user);
-    });
-    actions.deactivateUser.subscribe(user => {
-      this.onDeactivateUser(user);
-    });
     actions.editUser.subscribe(user => {
       this.router.navigateByUrl(`pages/customers-management/customers/${this.customer.id}/users/${user.id}`, {
         state: {
@@ -258,22 +252,6 @@ roles = _roles[0].displayName;
         }
       });
     });
-  }
-
-  onActivateUser(user: any) {
-    this.miscellaneousService.openConfirmModal(
-      'Are you sure you want to activate this user?',
-      () => {
-        this._sendActivateUser(user);
-      });
-  }
-
-  onDeactivateUser(user: any) {
-    this.miscellaneousService.openConfirmModal(
-      'Are you sure you want to deactivate this user?',
-      () => {
-        this._sendDeactivateUser(user);
-      });
   }
 
   onResendInvitationEmail(customer: ICustomerAdminUser) {
@@ -365,23 +343,5 @@ roles = _roles[0].displayName;
       (error) => {
       }
     );
-  }
-
-  private _sendActivateUser(user: any) {
-    this.accountService.activateUser(user.id).subscribe(() => {
-      this.messageService.showSuccessMessage('User has been activated successfully');
-      this.source.refresh();
-    }, error => {
-      this.source.refresh();
-    });
-  }
-
-  private _sendDeactivateUser(user: any) {
-    this.accountService.deactivateUser(user.id).subscribe(() => {
-      this.messageService.showSuccessMessage('User has been deactivated successfully');
-      this.source.refresh();
-    }, error => {
-      this.source.refresh();
-    });
   }
 }

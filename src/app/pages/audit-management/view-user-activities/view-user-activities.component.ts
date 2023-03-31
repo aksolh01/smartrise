@@ -25,10 +25,11 @@ import { IEnumValue } from '../../../_shared/models/enumValue.model';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
-import { CommonValues } from '../../../_shared/constants';
+import { CommonValues, URLs } from '../../../_shared/constants';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
-import { AccountNameCellComponent } from '../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
+import { ListTitleService } from '../../../services/list-title.service';
 
 @Component({
   selector: 'ngx-view-user-activities',
@@ -38,11 +39,11 @@ import { AccountInfoService } from '../../../services/account-info.service';
 export class ViewUserActivitiesComponent extends BaseComponent implements OnInit, OnDestroy {
 
   source: BaseServerDataSource;
-  runGuidingTour = true;
-
+  runGuidingTour: boolean = true;
+  title: string;
   isSmall?: boolean = null;
-  showFilters = false;
-  customerName: string;
+  showFilters: boolean = false;
+  account: string;
   userDisplayName: string;
   impersonationUserDisplayName: string;
   action: string;
@@ -62,13 +63,19 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
+        show: false,
         filter: {
           type: 'custom',
           component: CpFilterComponent,
@@ -204,6 +211,7 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
     baseService: BaseComponentService,
     private joyrideService: JoyrideService,
     private accountInfoService: AccountInfoService,
+    private listTitleService: ListTitleService,
     private multiAccountService: MultiAccountsService) {
     super(baseService);
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
@@ -213,7 +221,7 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
@@ -240,7 +248,7 @@ return null;
     this.source.serviceCallBack = (params) => {
       const activityParams = params as ActivityParams;
       if (this.isSmall) {
-        activityParams.customerName = this.customerName;
+        activityParams.account = this.account;
         activityParams.userDisplayName = this.userDisplayName;
         activityParams.impersonationUserDisplayName = this.impersonationUserDisplayName;
         activityParams.action = this.isEmpty(this.action) ? null : this.action;
@@ -288,11 +296,13 @@ return null;
 
   async ngOnInit() {
 
+    this.title = await this.listTitleService.buildTitle('User Activities');
+
     this.objectTypes = await this.activityService.getObjectTypes().toPromise();
     this.actions = await this.activityService.getActions().toPromise();
 
     this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.originRecordsNumber = rep.numberOfRecords;
       this.activityParams.pageSize = +this.recordsNumber;
       this.initializeCustomersLookup();
@@ -324,7 +334,7 @@ return null;
 
   onReset() {
 
-    this.customerName = null;
+    this.account = null;
     this.userDisplayName = null;
     this.impersonationUserDisplayName = null;
     this.action = '';
@@ -419,5 +429,6 @@ return null;
     this.responsiveSubscription.unsubscribe();
     this.stopGuidingTour();
     this.joyrideService = null;
+    this.accountInfoService.closePopup();
   }
 }

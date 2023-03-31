@@ -11,5 +11,5 @@ export interface ISystemSettings {
 }
 
 export interface IBusinessSettings {
-    numberOfRecords: number;
+    numberOfRecords: number | 25 ;
 }

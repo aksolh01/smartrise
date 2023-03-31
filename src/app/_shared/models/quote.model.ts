@@ -29,7 +29,7 @@ export interface IOpenQuote {
 }
 
 export class QouteSearchParams extends BaseParams {
-  customer: string;
+  account: string;
   jobName: string;
   quoteNumber: string;
   controllerType: string;
@@ -45,7 +45,7 @@ export class OpenQuoteByCustomerSearchParams extends QouteSearchParams {
 }
 
 export class QuoteToolParams extends BaseParams {
-  customer: string;
+  account: string;
   jobName: string;
   controllerType: string;
   neededPriceBy?: Date;

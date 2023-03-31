@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { AccountService } from '../../../../services/account.service';
-import { MessageService } from '../../../../services/message.service';
-import { SmartriseValidators } from '../../../../_shared/constants';
-import { IAccountUserRoles } from '../../../../_shared/models/account-selection.model';
-import {
-  ICustomerUserPayload,
-  ICustomerUserResponse
-} from '../../../../_shared/models/customer-user-by-customer-admin.model';
+import { FormGroup, FormControl, Validators, UntypedFormGroup } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { IRole } from '../../../../_shared/models/role';
+import { MessageService } from '../../../../services/message.service';
+import { BreadcrumbService } from 'xng-breadcrumb';
+import { forkJoin } from 'rxjs';
+import { SmartriseValidators, URLs } from '../../../../_shared/constants';
+import { IAccountUserRoles } from '../../../../_shared/models/account-selection.model';
+import { ICustomerUserPayload, ICustomerUserResponse } from '../../../../_shared/models/customer-user-by-customer-admin.model';
+import { AccountService } from '../../../../services/account.service';
+import { AccountsWithoutMatchingContactsComponent } from '../../../account-users-management/accounts-without-matching-contacts/accounts-without-matching-contacts.component';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { MultiAccountsService } from '../../../../services/multi-accounts-service';
 
 @Component({
   selector: 'ngx-update-customer-user',
@@ -34,8 +34,10 @@ export class UpdateCustomerUserComponent implements OnInit {
     private route: ActivatedRoute,
     private accountService: AccountService,
     private messageService: MessageService,
-    private bcService: BreadcrumbService
-  ) {}
+    private bcService: BreadcrumbService,
+    private modalService: BsModalService,
+    private multiAccountsService: MultiAccountsService
+  ) { }
 
   ngOnInit(): void {
     this.isFormReady = false;
@@ -47,27 +49,63 @@ export class UpdateCustomerUserComponent implements OnInit {
       this.accountService.getLinkedAccounts(),
       this.accountService.getCustomerRoles(),
       this.accountService.getCustomerUserByCustomerAdmin(userId),
-    ]).subscribe(
-      ([linkedAccounts, roles, user]) => {
-        this.oldRoles = roles;
-        this.roles = roles;
-        this.customerUser = user;
-        this.bcService.set(
-          '@userName',
-          this.customerUser.firstName + ' ' + this.customerUser.lastName
-        );
-        this.bcService.set('@userName', { skip: false });
-        this._fillCustomerUserForm(user, linkedAccounts);
-        this.isFormReady = true;
-      },
-      () => {
-        this.router.navigateByUrl('pages/settings-management/customer-users');
+    ]).subscribe(([linkedAccounts, roles, user]) => {
+      
+      if (this.multiAccountsService.hasManyAccountsAndOneSelectedAccount()) {
+        const hasAccess = user.accounts.some(account => account.accountId == this.multiAccountsService.getSelectedAccount());
+
+        if (hasAccess == false) {
+          this.router.navigateByUrl(URLs.HomeURL);
+        }
       }
-    );
+
+      this.oldRoles = roles;
+      this.roles = roles;
+      this.customerUser = user;
+
+      this.bcService.set('@userName', this.customerUser.firstName + ' ' + this.customerUser.lastName);
+      this.bcService.set('@userName', { skip: false });
+      this._fillCustomerUserForm(user, linkedAccounts);
+      this.isFormReady = true;
+    }, (error) => {
+      this.router.navigateByUrl('pages/settings-management/customer-users');
+    });
   }
 
   onRoleChanged() {
     this.rolesChanged = true;
+  }
+
+  private _createCustomerUserForm() {
+    this.customerUserForm = new FormGroup({
+      firstName: new FormControl('', Validators.required),
+      lastName: new FormControl('', Validators.required),
+      email: new FormControl('', [SmartriseValidators.requiredWithTrim, Validators.email]),
+      accounts: new FormControl([], Validators.required)
+    });
+    this.rolesTouched = true;
+    this.customerUserForm.markAllAsTouched();
+  }
+
+  private _fillCustomerUserForm(user: ICustomerUserResponse, linkedAccounts: IAccountUserRoles[]) {
+    this.customerUserForm.patchValue({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      accounts: this._generateAccounts(linkedAccounts, user)
+    });
+  }
+
+  private _generateAccounts(linkedAccounts: IAccountUserRoles[], user: ICustomerUserResponse): any {
+    const accounts = linkedAccounts.map(la => { return { ...la, roles: [] } });
+    user.accounts.forEach(acc => {
+      const account = accounts.find(a => a.accountId === acc.accountId);
+      if (account) {
+        account.isSelected = acc.roles.length > 0;
+        account.roles = acc.roles;
+      }
+    });
+    return accounts;
   }
 
   onSubmit() {
@@ -75,17 +113,13 @@ export class UpdateCustomerUserComponent implements OnInit {
       return;
     }
 
-    if (!this._atLeastOneAccountIsSelected()) {
-      this.messageService.showErrorMessage(
-        'At least one account must be selected'
-      );
-      return;
-    }
+    // if (!this._atLeastOneAccountIsSelected()) {
+    //   this.messageService.showErrorMessage('At least one account must be selected');
+    //   return;
+    // }
 
     if (this._noRoleIsSelected()) {
-      this.messageService.showErrorMessage(
-        'All accounts must have at least one role'
-      );
+      this.messageService.showErrorMessage('Selected accounts must have at least one role');
       return;
     }
 
@@ -100,60 +134,53 @@ export class UpdateCustomerUserComponent implements OnInit {
       userId: this.customerUser.id,
       accounts: this._getSelectedAccounts(),
     };
-    this.accountService
-      .updateCustomerUserByCustomerAdmin(customerUser)
-      .subscribe(
-        () => {
-          this.messageService.showSuccessMessage(
-            'Customer user has been updated successfully'
-          );
-          this.router.navigate(['..'], { relativeTo: this.route });
-        },
-        () => {
-          this.isSaving = false;
-        }
-      );
+    this.accountService.updateCustomerUserByCustomerAdmin(customerUser).subscribe(
+      (response) => this._onUserUpdatedSuccessfully(response),
+      (error) => this._onUpdatedUserFailed(error)
+    );
   }
 
-  private _createCustomerUserForm() {
-    this.customerUserForm = new UntypedFormGroup({
-      firstName: new UntypedFormControl('', Validators.required),
-      lastName: new UntypedFormControl('', Validators.required),
-      email: new UntypedFormControl('', [
-        SmartriseValidators.requiredWithTrim,
-        Validators.email,
-      ]),
-      accounts: new UntypedFormControl([], Validators.required),
-    });
-    this.rolesTouched = true;
-    this.customerUserForm.markAllAsTouched();
+  private _onUpdatedUserFailed(error: any) {
+    this.isSaving = false;
+    if (error?.error?.failedResult && error.error.failedResult.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnFailedScenario(error.error.failedResult).subscribe(() => { });
+    }
   }
 
-  private _fillCustomerUserForm(
-    user: ICustomerUserResponse,
-    linkedAccounts: IAccountUserRoles[]
-  ) {
-    this.customerUserForm.patchValue({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      accounts: this._generateAccounts(linkedAccounts, user),
-    });
-  }
-
-  private _generateAccounts(
-    linkedAccounts: IAccountUserRoles[],
-    user: ICustomerUserResponse
-  ): any {
-    const accounts = linkedAccounts.map((la) => ({ ...la, roles: [] }));
-    user.accounts.forEach((acc) => {
-      const account = accounts.find((a) => a.accountId === acc.accountId);
-      if (account) {
-        account.isSelected = true;
-        account.roles = acc.roles;
+  private _showAccountsWithoutMatchingContactsOnFailedScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'failed',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Failed to update Account User.',
+        topMessage: 'The Account User could not be linked to the following Account(s):',
+        bottomMessage: 'Please contact your Regional Sales Team for support.'
       }
-    });
-    return accounts;
+    }).onHide;
+  }
+
+  private _onUserUpdatedSuccessfully(response) {
+    this.isSaving = false;
+    if (response.accountsWithoutMatchingContacts.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnSuccessScenario(response.accountsWithoutMatchingContacts).subscribe(() => {
+        this.router.navigate(['..'], { relativeTo: this.route });
+      });
+      return;
+    }
+    this.messageService.showSuccessMessage('Account User has been updated successfully');
+    this.router.navigate(['..'], { relativeTo: this.route });
+  }
+
+  private _showAccountsWithoutMatchingContactsOnSuccessScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'success',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Account User has been updated successfully.',
+        topMessage: 'The Account User could not be linked to the following Account(s):',
+        bottomMessage: 'Please contact your Regional Sales Team for support.'
+      }
+    }).onHide;
   }
 
   private _getSelectedAccounts() {

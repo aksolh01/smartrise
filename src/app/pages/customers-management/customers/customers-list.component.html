@@ -1,101 +1,111 @@
-<nb-card joyrideStep="customerFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Accounts' : null"
-    [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">
-
-    <nb-card-header class="default-card-header">
-        <h2 class="card-title">Accounts</h2>
-    </nb-card-header>
-    <nb-card-body>
-
-        <ng-template [ngIf]="isSmall === false">
-
-            <div class="row mb-3">
-                <div class="col d-flex justfiy-content-start align-items-center">
-                    <button (click)="onReset()" class="btn btn-primary">
-                        <i class="fas fa-redo-alt"></i>
-                        Reset Filters
-                    </button>
-
-                    <div class="ml-3">
-                        <ngx-cp-checkbox [label]="'Has Logged In'" (checkStatusChange)="onHasLoginChecked($event)"
-                            [(checkStatus)]="this.hasLogin" [disable]="isLoading" class="pr-2">
-                        </ngx-cp-checkbox>
-                        <ngx-cp-checkbox [label]="'Is Favorite'" (checkStatusChange)="onIsFavoriteChecked($event)"
-                            [(checkStatus)]="this.isFavorite" [disable]="isLoading">
-                        </ngx-cp-checkbox>
-
-                    </div>
-                </div>
-                <div class="col-auto d-flex justfiy-content-start align-items-center">
-                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page>
-                </div>
-            </div>
-        </ng-template>
-
-        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-            <div filters>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="ID" class="form-control"
-                        [(ngModel)]="epicorCustomerId" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Name" class="form-control" [(ngModel)]="name" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Phone" class="form-control" [(ngModel)]="phone" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Fax" class="form-control" [(ngModel)]="fax" />
-                </div>
-                <!-- <div class="filter-control">
-          <ngx-cp-datepicker
-            class="form-group"
-            memberName="Last Login"
-            displayPlaceholder = "Last Login"
-            [(selectedDate)]="lastLogin"
-          ></ngx-cp-datepicker>
-        </div> -->
-                <div class="filter-control">
-                    <ngx-cp-checkbox [label]="'Has Logged In'" [(checkStatus)]="this.hasLogin" class="pr-2">
-                    </ngx-cp-checkbox>
-                </div>
-                <div class="filter-control">
-                    <ngx-cp-checkbox [label]="'Is Favorite'" [(checkStatus)]="this.isFavorite" class="pr-2">
-                    </ngx-cp-checkbox>
-                </div>
-                <div class="filter-control">
-                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page>
-                </div>
-            </div>
-            <div actions>
-                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-                    <i class="fas fa-search"></i>
-                    Search
-                </button>
-                <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
-                    <i class="fas fa-redo-alt"></i>
-                    Reset Filters
-                </button>
-            </div>
-        </ngx-smr-mobile-filters>
-
-        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
-                    <i class="fas fa-filter"></i>
-                </button>
-            </div>
-            <div class="col-sm-12" *ngIf="source">
-                <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
-                    [source]="source">
-                </ng2-smart-table>
+<div class="page-header-container">
+    <div class="page-header-title">Accounts</div>
+    <div class="form-container mx-w-400" style="width: 40%;" *ngIf="!isSmall">
+        <div class="input-container">
+            <div class="input-item">
+                <input type="text" placeholder="Search">
             </div>
         </div>
+    </div>
+    <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+</div>
+<div class="table-container">
+    <nb-card joyrideStep="customerFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Accounts' : null"
+        [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">
 
-    </nb-card-body>
-</nb-card>
+        <nb-card-body>
+            <ng-template [ngIf]="isSmall === false">
+                <div class="table-header">
+                    <div class="col d-flex justfiy-content-start align-items-center">
+                    </div>
+                    <div class="col-auto d-flex justfiy-content-start align-items-center">
+                        <button (click)="onReset()" class="main-button">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button>
 
+                        <div class="ml-3">
+                            <ngx-cp-checkbox [label]="'Has Logged In'" (checkStatusChange)="onHasLoginChecked($event)"
+                                [(checkStatus)]="this.hasLogin" [disable]="isLoading" class="pr-2">
+                            </ngx-cp-checkbox>
+                            <ngx-cp-checkbox [label]="'Is Favorite'" (checkStatusChange)="onIsFavoriteChecked($event)"
+                                [(checkStatus)]="this.isFavorite" [disable]="isLoading">
+                            </ngx-cp-checkbox>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="ID"
+                                    [(ngModel)]="epicorCustomerId" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Name"
+                                    [(ngModel)]="name" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Phone"
+                                    [(ngModel)]="phone" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Fax"
+                                    [(ngModel)]="fax" />
+                            </div>
+                            <!-- <div class="filter-control">
+                            <ngx-cp-datepicker
+                                class="form-group"
+                                memberName="Last Login"
+                                displayPlaceholder = "Last Login"
+                                [(selectedDate)]="lastLogin"
+                            ></ngx-cp-datepicker>
+                            </div> -->
+                            <div class="input-item">
+                                <ngx-cp-checkbox [label]="'Has Logged In'" [(checkStatus)]="this.hasLogin" class="pr-2">
+                                </ngx-cp-checkbox>
+                            </div>
+                            <div class="input-item">
+                                <ngx-cp-checkbox [label]="'Is Favorite'" [(checkStatus)]="this.isFavorite" class="pr-2">
+                                </ngx-cp-checkbox>
+                            </div>
+                            <div class="input-item">
+                                <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                                    (changed)="onRecordsNumberChanged($event)">
+                                </ngx-smr-records-per-page>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-action" actions>
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                        <button (click)="onReset(); toggleFilters()" class="main-button">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button>
+                    </div>
+                </ngx-smr-mobile-filters>
+            </div>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table  #table [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
+                </div>
+            </div>
+
+        </nb-card-body>
+    </nb-card>
+</div>
 <ng-template #doneButton>
     <button class="btn btn-primary">
         <i class="clear-icon fas fa-check"></i>

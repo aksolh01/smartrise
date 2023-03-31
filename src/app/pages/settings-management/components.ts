@@ -1,5 +1,7 @@
 import { BusinessSettingsComponent } from './business-settings/business-settings.component';
-import { CompanyInfoComponent } from './company-info/company-info.component';
+import { CompanyInfoComponent } from './company-info/company-info-details/company-info.component';
+import { CompanyActionInfoComponent } from './company-info/company-info-list/company-action-info/company-action-info.component';
+import { CompanyInfoListComponent } from './company-info/company-info-list/company-info-list.component';
 import { CreateCustomerUserComponent } from './customer-users/create-customer-user/create-customer-user.component';
 import { CustomerUserActionsComponent } from './customer-users/customer-user-actions/customer-user-actions.component';
 import { CustomerUsersComponent } from './customer-users/customer-users.component';
@@ -40,6 +42,7 @@ export const routedComponents = [
     ...routedBusinessSettings,
     ...routedCustomerUsersSettings,
     ...routedSmartriseUsersSettings,
-
+    CompanyInfoListComponent,
+    CompanyActionInfoComponent,
     CompanyInfoComponent,
 ];

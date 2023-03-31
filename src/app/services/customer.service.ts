@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { ICustomerDetails } from '../_shared/models/customer-details';
 import { IAccountLookup, ICustomerLookup, ICustomerRecord, IRecentCustomer } from '../_shared/models/customer-lookup';
-import { CustomerParams } from '../_shared/models/CustomerParams';
-import { Pagination } from '../_shared/models/pagination';
+import { debounceTime, delay, map, tap } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { IPagination, Pagination } from '../_shared/models/pagination';
+import { CustomerParams, searchCompanyInfoParams } from '../_shared/models/CustomerParams';
+import { ICustomerDetails } from '../_shared/models/customer-details';
 
 @Injectable()
 export class CustomerService {
@@ -124,9 +124,9 @@ export class CustomerService {
       );
   }
 
-  getCompayInfo() {
+  searchCompanyInfo(searchParams: searchCompanyInfoParams) {
     return this.http
-      .get<ICustomerDetails>(this.baseUrl + 'customer/companyinfo', { observe: 'response' })
+      .post<IPagination>(this.baseUrl + 'customer/search/companyInfo', searchParams, { observe: 'response' })
       .pipe(
         map((response) => response.body)
       );

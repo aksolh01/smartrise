@@ -4,6 +4,14 @@
 
 <div class="row">
     <div class="col-lg-6">
+        
+        <div class="form-group row" *ngIf="displayAccountName">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+            <div class="col-12 col-lg-8">
+                <div class="form-control-plaintext">{{ invoice?.customer | value }}</div>
+            </div>
+        </div>
+
         <div class="form-group row" *ngIf="!isSmartriseUser">
             <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Number</label>
             <div class="col-12 col-lg-8">
@@ -15,13 +23,6 @@
             <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
             <div class="col-12 col-lg-8">
                 <div class="form-control-plaintext">{{ invoice?.jobName | value }}</div>
-            </div>
-        </div>
-
-        <div class="form-group row" *ngIf="displayAccountName">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.customer | value }}</div>
             </div>
         </div>
 

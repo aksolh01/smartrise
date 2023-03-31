@@ -1,8 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { NbMenuItem } from '@nebular/theme';
 import { MENU_ITEMS } from '../pages/pages-menu';
-import { PERMISSIONS } from '../_shared/constants';
-import { MiscellaneousService } from './miscellaneous.service';
 import { MultiAccountsService } from './multi-accounts-service';
 import { PermissionService } from './permission.service';
 
@@ -14,7 +12,6 @@ export class MenuService {
 
     constructor(
         private permissionService: PermissionService,
-        private miscellaneousService: MiscellaneousService,
         private multiAccountService: MultiAccountsService
     ) {
     }

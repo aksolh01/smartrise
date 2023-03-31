@@ -10,3 +10,10 @@ export class CustomerParams extends BaseParams {
     lastLogin?: Date;
     favoriteCustomer?: boolean = true;
 }
+
+export class searchCompanyInfoParams extends BaseParams {
+    name: string;
+    phone: string;
+    fax: string;
+    email: string;
+  }

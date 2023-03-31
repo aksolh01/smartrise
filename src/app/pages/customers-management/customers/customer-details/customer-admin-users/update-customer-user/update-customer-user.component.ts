@@ -94,6 +94,12 @@ export class UpdateCustomerUserBySmartriseComponent implements OnInit, OnDestroy
     }
 
     this.formSubmitted = true;
+
+    if (!this._atLeastOneRoleIsSelected()) {
+      this.messageService.showErrorMessage('At least one role must be selected');
+      return;
+    }
+
     if (this.customerUserForm.invalid) {
       return;
     }
@@ -106,17 +112,23 @@ export class UpdateCustomerUserBySmartriseComponent implements OnInit, OnDestroy
     };
     this.accountService.updateCustomerUserBySmartrise(customerUser).subscribe(
       () => {
-        this.messageService.showSuccessMessage('Customer user has been updated successfully');
+        this.messageService.showSuccessMessage('Account User has been updated successfully');
         this.router.navigateByUrl(this.router.url.substring(0, this.router.url.lastIndexOf('users') - 1), {
           state: {
             tab: 'users'
           }
         });
       },
-      () => {
+      (error) => {
         this.isSaving = false;
       }
     );
+  }
+
+  private _atLeastOneRoleIsSelected() {
+    //The condition is checking the length to be greater than one because 
+    //there is CustomerNothing role already selected by default
+    return this.customerUserForm.value.roles.length > 1;
   }
 
   onCancel() {

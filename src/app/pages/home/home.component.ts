@@ -283,7 +283,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
       sortDirection: SortDirection.Desc,
       createDate: null,
       customerMessage: '',
-      customerName: '',
+      account: '',
       epicorWaitingInfo: null,
       fileDescription: '',
       grantedShipDate: null,
@@ -407,6 +407,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
     localStorage.removeItem('GuidingTourInvoices');
     localStorage.removeItem('GuidingTourBankAccount');
     localStorage.removeItem('GuidingTourAccountUsers');
+    localStorage.removeItem('GuidingTourCompanyInfo');
 
     this._manageStartGuidingTour();
   }

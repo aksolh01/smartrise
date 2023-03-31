@@ -12,29 +12,30 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Jobs & Tracking',
     icon: 'options-outline',
-    children: [
-      {
-        title: 'Jobs',
-        link: URLs.JobsURL,
-        data: PERMISSIONS.JobsListing,
-        pathMatch: 'prefix'
-      },
-      {
-        title: 'Shipments',
-        link: URLs.TrackingURL,
-        data: PERMISSIONS.TrackingListing,
-      },
-      {
-        title: 'Job Files',
-        link: URLs.ViewResourcesURL,
-        data: PERMISSIONS.ViewResourcesList,
-      },
-      {
-        title: 'Invoices',
-        link: URLs.ViewInvoicesURL,
-        data: PERMISSIONS.ViewInvoicesList,
-      },
-    ],
+    link: URLs.JobsURL,
+    // children: [
+    //   {
+    //     title: 'Jobs',
+    //     link: URLs.JobsURL,
+    //     data: PERMISSIONS.JobsListing,
+    //     pathMatch: 'prefix',
+    //   },
+    //   {
+    //     title: 'Shipments',
+    //     link: URLs.TrackingURL,
+    //     data: PERMISSIONS.TrackingListing,
+    //   },
+    //   {
+    //     title: 'Job Files',
+    //     link: URLs.ViewResourcesURL,
+    //     data: PERMISSIONS.ViewResourcesList,
+    //   },
+    //   {
+    //     title: 'Invoices',
+    //     link: URLs.ViewInvoicesURL,
+    //     data: PERMISSIONS.ViewInvoicesList,
+    //   },
+    // ],
   },
   {
     title: 'Open Quotes',
@@ -54,24 +55,24 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'book-open-outline',
     children: [
       {
-        title: 'Statement Of Account',
-        link: URLs.ViewStatementOfAccountURL,
-        data: PERMISSIONS.StatementOfAccount,
-        pathMatch: 'prefix'
+        title: 'Bank Accounts',
+        link: URLs.ViewBankAccountsURL,
+        data: PERMISSIONS.ManageBankAccounts,
+        pathMatch: 'prefix',
       },
       {
         title: 'Invoices',
         link: URLs.ViewBillingInvoicesURL,
         data: PERMISSIONS.InvoicesListing,
-        pathMatch: 'prefix'
+        pathMatch: 'prefix',
       },
       {
-        title: 'Bank Accounts',
-        link: URLs.ViewBankAccountsURL,
-        data: PERMISSIONS.ManageBankAccounts,
-        pathMatch: 'prefix'
-      },
-    ],
+        title: 'Statement Of Account',
+        link: URLs.ViewStatementOfAccountURL,
+        data: PERMISSIONS.StatementOfAccount,
+        pathMatch: 'prefix',
+      }
+    ]
   },
   {
     title: 'Accounts',
@@ -85,6 +86,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'people-outline',
     link: URLs.ViewAccountUsersURL,
     data: PERMISSIONS.AccountUsersListing,
+    pathMatch: 'prefix'
+  },
+  {
+    title: 'Accounts',
+    icon: 'people',
+    link: URLs.CompanyInfoURL,
+    data: PERMISSIONS.CompanyInfoDisplay,
+    pathMatch: 'prefix'
+  },
+  {
+    title: 'Account Users',
+    icon: 'people-outline',
+    link: URLs.CustomerUsersURL,
+    data: PERMISSIONS.CustomerUsersListing,
     pathMatch: 'prefix'
   },
   {
@@ -106,19 +121,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'Manage Smartrise Users',
         link: URLs.SmartriseUsersURL,
         data: PERMISSIONS.SmartriseUsersListing,
-        pathMatch: 'prefix'
-      },
-      {
-        title: 'Account Users',
-        link: URLs.CustomerUsersURL,
-        data: PERMISSIONS.CustomerUsersListing,
-        pathMatch: 'prefix'
-      },
-      {
-        title: 'Company Info',
-        link: URLs.CompanyInfoURL,
-        data: PERMISSIONS.CompanyInfoDisplay,
-      },
+        pathMatch: 'prefix',
+      }
     ],
   },
   {
@@ -129,7 +133,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'View User Activities',
         link: URLs.ViewUserActivities,
         data: PERMISSIONS.UserActivitiesListing,
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
     ],
   },
@@ -141,13 +145,13 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'Dashboard',
         link: URLs.ViewPMDashboardURL,
         data: PERMISSIONS.JobsListing,
-        pathMatch: 'prefix'
+        pathMatch: 'prefix',
       },
       {
         title: 'Jobs',
         link: URLs.ViewPMJobsURL,
         data: PERMISSIONS.JobsListing,
-        pathMatch: 'prefix'
+        pathMatch: 'prefix',
       },
       // {
       //   title: 'Parts',
@@ -165,13 +169,13 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'Alert Settings',
         link: URLs.ViewPMAlertSettingsURL,
         data: PERMISSIONS.JobsListing,
-        pathMatch: 'prefix'
+        pathMatch: 'prefix',
       },
       {
         title: 'Notification Settings',
         link: URLs.ViewPMNotificationSettingsURL,
         data: PERMISSIONS.JobsListing,
-        pathMatch: 'prefix'
+        pathMatch: 'prefix',
       },
     ],
   },

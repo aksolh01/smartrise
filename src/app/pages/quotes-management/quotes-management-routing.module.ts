@@ -8,7 +8,6 @@ import { LeaveGuard } from '../../@core/guards/leave.guard';
 import { CreateOpenQuoteComponent } from './create-open-quote/create-open-quote.component';
 import { QuotesComponent } from './quotes/quotes.component';
 import { TaskSyncronizerService } from '../../services/task-syncronizer.service';
-import { PromptAccountSelection } from './guards/prompt-account-selection.guard';
 
 const routes: Routes = [
     {
@@ -31,6 +30,9 @@ const routes: Routes = [
                         children: [{
                             path: ':id',
                             component: OpenQuoteDetailsComponent,
+                            data: {
+                                breadcrumb: { alias: 'quoteName' }
+                            }
                         }
                         ]
                     },
@@ -56,7 +58,6 @@ const routes: Routes = [
             {
                 path: 'request-quote',
                 component: CreateOpenQuoteComponent,
-                canActivate: [PromptAccountSelection],
                 data: { title: 'Create Quote', breadcrumb: { label: 'New Quote', } },
             }
         ]

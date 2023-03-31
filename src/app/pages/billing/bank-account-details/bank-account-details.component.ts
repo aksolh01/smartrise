@@ -9,6 +9,7 @@ import { MessageService } from '../../../services/message.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { ResponsiveService } from '../../../services/responsive.service';
+import { StorageConstants, URLs } from '../../../_shared/constants';
 import { IBankAccountDetails } from '../../../_shared/models/bank-account.model';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponent } from '../../base.component';
@@ -45,8 +46,15 @@ export class BankAccountDetailsComponent extends BaseComponent implements OnInit
   }
 
   ngOnDestroy(): void {
-    this.responsiveSubscription.unsubscribe();
+    this._disposeAccountID();
+    this.responsiveSubscription?.unsubscribe();
     this.modalService.hide();
+  }
+
+  private _disposeAccountID() {
+    if (this.router.url !== URLs.ViewBankAccountsURL) {
+      sessionStorage.removeItem(StorageConstants.AddBankAccountSelectedAccount);
+    }
   }
 
   async ngOnInit() {

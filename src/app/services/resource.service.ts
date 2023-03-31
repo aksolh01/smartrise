@@ -124,50 +124,6 @@ export class ResourceService {
         });
     }
 
-
-    // downloadResourceFile(resourceFileId: number) {
-    //     const headers = new HttpHeaders();
-    //     // headers = headers.set('Accept', 'application/pdf');
-    //     this.downloadStatus.emit({ status: ProgressStatusEnum.START });
-    //     this.httpClient.get(this.baseUrl + 'resources/download/' + resourceFileId.toString(), {
-    //         observe: 'events',
-    //         headers: headers,
-    //         responseType: 'blob',
-    //         reportProgress: true,
-    //     }).subscribe(response => {
-    //         switch (response.type) {
-    //             case HttpEventType.DownloadProgress:
-    //                 this.downloadStatus.emit({ status: ProgressStatusEnum.IN_PROGRESS,
-    //                     percentage: Math.round((response.loaded / response.total) * 100) });
-    //                 break;
-    //             case HttpEventType.Response:
-    //                 const fileName = this.getFileNameFromHttpResponse(response);
-    //                 this.downloadStatus.emit({ status: ProgressStatusEnum.COMPLETE });
-    //                 this.createDownloadFileUserActivity(resourceFileId);
-    //                 const downloadedFile = new Blob([response.body], { type: response.body.type });
-    //                 const a = document.createElement('a');
-    //                 a.setAttribute('style', 'display:none;');
-    //                 document.body.appendChild(a);
-    //                 a.download = fileName;
-    //                 a.href = URL.createObjectURL(downloadedFile);
-    //                 a.target = '_blank';
-    //                 a.click();
-    //                 document.body.removeChild(a);
-    //                 break;
-    //         }
-    //     }, error => {
-    //         this.downloadStatus.emit({ status: ProgressStatusEnum.ERROR, error: error });
-    //     });
-    //     // .subscribe(response => {
-    //     //     let fileName = this.getFileNameFromHttpResponse(response);
-    //     //     this.downLoadFile(response.body, fileName);
-    //     //     console.log(response.headers);
-    //     // }, error => {
-    //     //     console.log('ERROR ON DOWNLOAD');
-    //     //     console.log(error);
-    //     // });
-    // }
-
     getFileNameFromHttpResponse(httpResponse: HttpResponse<any>) {
         const contentDispositionHeader = httpResponse.headers.get('Content-Disposition');
         const result = contentDispositionHeader.split(';')[1].trim().split('=')[1];

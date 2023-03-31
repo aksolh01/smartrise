@@ -71,9 +71,9 @@
 
         <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
             <div filters>
-                <div class="filter-control" *ngIf="settings?.columns?.customer">
+                <div class="filter-control" *ngIf="settings?.columns?.account">
                     <input type="text" maxlength="255" placeholder="Account" class="form-control"
-                        [(ngModel)]="customer" />
+                        [(ngModel)]="account" />
                 </div>
                 <div class="filter-control">
                     <input type="text" maxlength="255" placeholder="Job Name" class="form-control"

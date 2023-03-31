@@ -32,6 +32,7 @@ export class RecordsPerPageComponent implements OnDestroy {
   list: number[] = [5, 10, 15, 20, 25];
   @Output() changed = new EventEmitter<number>();
 
+
   @Input() set recordsNumber(number: number) {
     this.selected = number;
     this._cdr.markForCheck();

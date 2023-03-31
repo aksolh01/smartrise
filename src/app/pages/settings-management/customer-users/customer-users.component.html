@@ -1,15 +1,32 @@
 <nb-card joyrideStep="customerUserFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Users' : null"
     [stepContent]="firstCustomContent" (done)="onFinishingTour()" [nextTemplate]="nextButton">
 
+    <ng-template #firstCustomContent>
+        <div class='joyride-custom-content'>
+            <div style="margin-bottom: 5px;">
+                Manage Account users.
+            </div>
+            <div>
+                <i class="fas fa-pencil-alt guiding-tour-action"></i>Update Account Roles
+            </div>
+            <div>
+                <i class="fas fa-share guiding-tour-action"></i>Resend Invitation
+            </div>
+            <div>
+                <i class="fas fa-recycle guiding-tour-action"></i>Send Password Reset Request
+            </div>
+        </div>
+    </ng-template>
+    
     <nb-card-header class="default-card-header">
         <div class="row">
             <div class="col-md">
-                <h2 class="card-title">Account Users</h2>
+                <h2 class="card-title">{{ title }}</h2>
             </div>
             <div class="col-md">
                 <div class="card-actions">
                     <a>
-                        <button [disabled]="!canCreateCustomerUser" (click)="onCreateUser()" class="btn btn-primary"
+                        <button *ngIf="canCreateCustomerUser" (click)="onCreateUser()" class="btn btn-primary"
                             joyrideStep="customerUserSecondStep" stepPosition="left" [prevTemplate]="prevButton"
                             [nextTemplate]="nextButton" [doneTemplate]="doneButton"
                             [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="secondCustomContent"
@@ -81,29 +98,6 @@
         </div>
     </nb-card-body>
 </nb-card>
-
-<ng-template #firstCustomContent>
-    <div class='joyride-custom-content'>
-        <div style="margin-bottom: 5px;">
-            Manage Account users.
-        </div>
-        <div>
-            <i class="fas fa-pencil-alt guiding-tour-action"></i>Edit User Information
-        </div>
-        <div>
-            <i class="fas fa-share guiding-tour-action"></i>Resend Invitation
-        </div>
-        <div>
-            <i class="fas fa-recycle guiding-tour-action"></i>Send Password Reset Request
-        </div>
-        <div>
-            <i class="fas fa-user-minus guiding-tour-action"></i>Reactivate User
-        </div>
-        <div>
-            <i class="fas fa-user-check guiding-tour-action"></i>Deactivate User
-        </div>
-    </div>
-</ng-template>
 
 <ng-template #secondCustomContent>
     <div class='joyride-custom-content'>

@@ -7,7 +7,7 @@ import { ContactService } from '../../../services/contact.service';
 import { BaseComponent } from '../../base.component';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { forkJoin } from 'rxjs';
-import { FunctionConstants, SmartriseValidators, URLs } from '../../../_shared/constants';
+import { FunctionConstants, PERMISSIONS, SmartriseValidators, StorageConstants, URLs } from '../../../_shared/constants';
 import { MessageService } from '../../../services/message.service';
 import { Router } from '@angular/router';
 import { TokenService } from '../../../services/token.service';
@@ -23,11 +23,13 @@ import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { AccountService } from '../../../services/account.service';
 import { tap } from 'rxjs/operators';
 import { IUserAccountLookup } from '../../../_shared/models/IUser';
+import { SelectAccountComponent } from '../../../@theme/components/select-account/select-account.component';
 
 @Component({
   selector: 'ngx-create-open-quote',
   templateUrl: './create-open-quote.component.html',
-  styleUrls: ['./create-open-quote.component.scss']
+  styleUrls: ['./create-open-quote.component.scss'],
+  providers: [BsModalService]
 })
 export class CreateOpenQuoteComponent extends BaseComponent implements OnInit, OnDestroy {
   form: UntypedFormGroup;
@@ -50,26 +52,26 @@ export class CreateOpenQuoteComponent extends BaseComponent implements OnInit, O
 
   public set accountName(value: string) {
     if (value == null) {
-      sessionStorage.removeItem('CreateQuoteSelectedAccountName');
+      sessionStorage.removeItem(StorageConstants.CreateQuoteSelectedAccountName);
       return;
     }
-    sessionStorage.setItem('CreateQuoteSelectedAccountName', value);
+    sessionStorage.setItem(StorageConstants.CreateQuoteSelectedAccountName, value);
   }
 
   public get accountName(): string {
-    return sessionStorage.getItem('CreateQuoteSelectedAccountName');
+    return sessionStorage.getItem(StorageConstants.CreateQuoteSelectedAccountName);
   }
 
   set accountId(value: number | null) {
     if (value == null) {
-      sessionStorage.removeItem('CreateQuoteSelectedAccount');
+      sessionStorage.removeItem(StorageConstants.CreateQuoteSelectedAccount);
       return;
     }
-    sessionStorage.setItem('CreateQuoteSelectedAccount', value.toString());
+    sessionStorage.setItem(StorageConstants.CreateQuoteSelectedAccount, value.toString());
   }
 
   get accountId(): number | null {
-    const accountId = sessionStorage.getItem('CreateQuoteSelectedAccount');
+    const accountId = sessionStorage.getItem(StorageConstants.CreateQuoteSelectedAccount);
     return +accountId;
   }
 
@@ -107,8 +109,113 @@ export class CreateOpenQuoteComponent extends BaseComponent implements OnInit, O
 
   async ngOnInit() {
     this._initializeForm();
-    this._initializeLookups();
-    this._setAccountName(this.accountName);
+    this._tryAccessThisPage().then((canAccess: boolean) => {
+      if (canAccess) {
+        this._initializeLookups();
+        this._setAccountName(this.accountName);
+      } else {
+        this.router.navigateByUrl(URLs.ViewOpenQuotesURL);
+      }
+    });
+  }
+
+  private async _tryAccessThisPage() {
+
+    if (this._accountIdAlreadySelected()) {
+      return true;
+    }
+
+    if (this.multiAccountsService.hasMultipleAccounts()) {
+      await this._loadUserAccounts();
+      const authorizedAccounts = this._getAccountsWithSaveOnlineQuotePermission();
+
+      if (authorizedAccounts.length === 1) {
+        const account = authorizedAccounts[0];
+        this._saveAccountInfoToStorage(account.accountId);
+        return true;
+      }
+
+      if (authorizedAccounts.length === 0) {
+        return false;
+      }
+
+      const selectedAccount = await this._promptAccountSelection(authorizedAccounts);
+      if (selectedAccount) {
+        this._saveAccountInfoToStorage(selectedAccount);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    if (!await this._selectedAccountHasSaveOnlineQuotePermission()) {
+      return false;
+    }
+
+    this._saveAccountInfoToStorage(this.multiAccountsService.getSelectedAccount());
+    return true;
+  }
+
+  private _accountIdAlreadySelected() {
+    if (sessionStorage.getItem('CreateQuoteSelectedAccount')) {
+      return true;
+    }
+    return false;
+  }
+
+  private _promptAccountSelection(authorizedAccounts: IUserAccountLookup[]): Promise<number | null> {
+    return new Promise((resolve, reject) => {
+
+      const modelRef = this._showSelectAccountPopup(authorizedAccounts);
+      modelRef.onHide.subscribe(() => {
+        if (modelRef.content.selectionChangeApplied()) {
+          resolve(modelRef.content.selectedAccount);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  }
+
+  private _showSelectAccountPopup(authorizedAccounts: IUserAccountLookup[]) {
+    return this.modalService.show<SelectAccountComponent>(SelectAccountComponent, {
+      initialState: {
+        hideAllOption: true,
+        accounts: authorizedAccounts
+      }
+    });
+  }
+
+  private _saveAccountInfoToStorage(accountId: number) {
+    sessionStorage.setItem('CreateQuoteSelectedAccount', accountId.toString());
+    sessionStorage.setItem('CreateQuoteSelectedAccountName', this._getAccountNameFromId(accountId));
+  }
+
+  private _getAccountNameFromId(accountId: number): string {
+    return this.accounts.find(ac => ac.accountId === accountId)?.name;
+  }
+
+  private async _selectedAccountHasSaveOnlineQuotePermission() {
+    const selectedAccountId = this.multiAccountsService.getSelectedAccount();
+    await this._loadUserAccounts();
+    const account = this._getAccountById(selectedAccountId);
+    return account.permissions.some(p => p === PERMISSIONS.SaveOnlineQuote);
+  }
+
+  private _getAccountById(accountId: number) {
+    return this.accounts.find(acc => acc.accountId === accountId);
+  }
+
+  private _loadUserAccounts() {
+    return this.accountService
+      .loadCurrentUser()
+      .pipe(
+        tap(user => this.accounts = user.accounts)
+      ).toPromise();
+  }
+
+  private _getAccountsWithSaveOnlineQuotePermission() {
+    return this.accounts.filter(acc => acc.permissions.some(p => p === PERMISSIONS.SaveOnlineQuote));
   }
 
   private _setAccountName(name: string) {
@@ -137,14 +244,6 @@ export class CreateOpenQuoteComponent extends BaseComponent implements OnInit, O
       this._fillValues();
       this.isLoading = false;
     });
-  }
-
-  private _loadUserAccounts() {
-    return this.accountService
-      .loadCurrentUser(this.tokenService.getToken())
-      .pipe(
-        tap(user => this.accounts = user.accounts)
-      ).toPromise();
   }
 
   private _initializeForm() {

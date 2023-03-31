@@ -1,85 +1,72 @@
 <ng-template [ngIf]="shipments?.length > 0">
-    <div class="card-body">
+    <div class="shipments-body">
         <nb-accordion *ngFor="let shipment of shipments;let i = index">
             <nb-accordion-item (collapsedChange)="onShipmentCollapsedExpanded(shipment, $event)" [expanded]="selectedShipmentId === shipment.id" #item>
                 <nb-accordion-item-header>
-                    <div class="w-100 px-4 d-flex justify-content-between align-items-center">
-                        {{ shipment.shipmentType.description }} ({{ shipment.status }})
-
-                        <i *ngIf="i === 0" joyrideStep="subfirstStep" stepPosition="bottom"
-                            text="Click here to check the items inside this shipment" class="mx-2 fas fa-info-circle"
+                    <div class="w-100  d-flex justify-content-between align-items-center">
+                        <div>
+                            {{ shipment.shipmentType.description }} 
+                        
+                            <i *ngIf="i === 0" joyrideStep="subfirstStep" stepPosition="bottom"
+                            text="Click here to check the items inside this shipment"  class="fas fa-info-circle"
                             (click)="item.toggle(); showPartsDescription(shipment)"
                             tooltip="Show Parts Description"></i>
-
-                        <i *ngIf="i != 0" class="mx-2 fas fa-info-circle"
+                       
+                            <i *ngIf="i != 0" class="fas fa-info-circle"
                             (click)="item.toggle(); showPartsDescription(shipment)"
                             tooltip="Show Parts Description"></i>
+                        </div>
+                        <div class="status status-{{ shipment.status }}">
+                            {{ shipment.status }}
+                        </div>
+
+                        
+
+                        
 
                     </div>
                 </nb-accordion-item-header>
                 <nb-accordion-item-body>
 
-                    <div class="row">
-                        <div class="col-lg-4">
+                    <div class="main-card">
+                        <div class="card-container">
 
-                            <div class="form-group row">
-                                <label class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Tracking Number</label>
-                                <div class="col-12 col-lg-8">
-                                    <div class="form-control-plaintext">
-                                        <a class="shipment" *ngIf="shipment?.carrierWebsite && shipment?.trackingNumber"
-                                            [href]="shipment?.carrierWebsite" tooltip="View Tracking Details"
-                                            target="_blank">{{
-                                            shipment?.trackingNumber | value
-                                            }}</a>
-                                        {{ (!shipment?.carrierWebsite || !shipment?.trackingNumber) ?
-                                        (shipment?.trackingNumber |
-                                        value) : '' }}
-                                    </div>
+                            <div class="card-container-data">
+                                <div class="label">Tracking Number</div>
+                                <div class="content">
+                                    <a style="color:var(--primary-color-black);text-decoration: none;" *ngIf="shipment?.carrierWebsite && shipment?.trackingNumber"
+                                        [href]="shipment?.carrierWebsite" tooltip="View Tracking Details"
+                                        target="_blank">{{
+                                        shipment?.trackingNumber | value
+                                        }}</a>
+                                    {{ (!shipment?.carrierWebsite || !shipment?.trackingNumber) ?
+                                    (shipment?.trackingNumber |
+                                    value) : '' }}
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Status</label>
-                                <div class="col-12 col-lg-8">
-                                    <div class="form-control-plaintext">{{ shipment?.status | value }}</div>
-                                </div>
+                            <div class="card-container-data">
+                                <div class="label">Carrier</div>
+                                <div class="content">{{ shipment?.carrier | value }}</div>
                             </div>
 
                         </div>
-                        <div class="col-lg-4">
-
-                            <div class="form-group row">
-                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Carrier</label>
-                                <div class="col-12 col-lg-8">
-                                    <div class="form-control-plaintext">{{ shipment?.carrier | value }}</div>
+                        <div class="card-container">
+                            <div class="card-container-data">
+                                <div class="label">Shipm Address</div>
+                                <div class="content">
+                                    <ngx-address-field [Address]="shipment?.address"
+                                        [FullAddress]="shipment?.addressStr">
+                                    </ngx-address-field>
                                 </div>
                             </div>
-
-                            <div class="form-group row">
-                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Ship
-                                    Address</label>
-                                <div class="col-12 col-lg-8">
-                                    <div class="form-control-plaintext">
-                                        <ngx-address-field [Address]="shipment?.address"
-                                            [FullAddress]="shipment?.addressStr">
-                                        </ngx-address-field>
-                                    </div>
-                                </div>
+                            <div class="card-container-data">
+                                <div class="label">Ship Date</div>
+                                <div class="content">{{ shipment?.shipDate | usdate | value }}</div>
                             </div>
-                        </div>
-
-                        <div class="col-lg-4">
-
-                            <div class="form-group row">
-                                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Ship Date</label>
-                                <div class="col-12 col-lg-8">
-                                    <div class="form-control-plaintext">{{ shipment?.shipDate | usdate | value }}</div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-                    <nb-accordion class="shipment-trackings-container mx-3">
+                    <nb-accordion class="shipment-trackings-container">
                         <nb-accordion-item (collapsedChange)="onShipmentTrackingsCollapsedExpanded(shipment, $event)" [expanded]="shipment.trackingsExpanded">
                             <nb-accordion-item-header>
                                 <div class="activity-history-title">

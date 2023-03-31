@@ -18,9 +18,9 @@ import { AgedRecievablesActionsComponent } from './statement-of-account-actions/
 import { NavigationStart, Router } from '@angular/router';
 import { NumberTableCellComponent } from '../../../_shared/components/number-table-cell/number-table-cell.component';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
-import { PERMISSIONS } from '../../../_shared/constants';
+import { PERMISSIONS, StorageConstants, URLs } from '../../../_shared/constants';
 import { BooleanCellComponent } from '../../../_shared/components/boolean-cell/boolean-cell.component';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { IInvoiceInfo } from '../../../_shared/models/initiate-payment-request.model';
 import { HLinkTableCellComponent } from '../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
 import { JoyrideService } from 'ngx-joyride';
@@ -31,8 +31,10 @@ import { InvoiceAgedCellComponent } from '../../../_shared/components/invoice-ag
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { MessageService } from '../../../services/message.service';
-import { AccountNameCellComponent } from '../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
+import { IUserAccountLookup } from '../../../_shared/models/IUser';
+import { ListTitleService } from '../../../services/list-title.service';
 
 @Component({
   selector: 'ngx-statement-of-account',
@@ -41,8 +43,17 @@ import { AccountInfoService } from '../../../services/account-info.service';
 })
 export class StatementOfAccountComponent extends BaseComponent implements OnInit, OnDestroy {
 
-  runGuidingTour = true;
-  customer: string;
+  private sub = this.router.events
+    .pipe(
+      filter(event => event instanceof NavigationStart),
+      map(event => event as NavigationStart)
+    )
+    .subscribe(() =>
+      this.invoiceService.deleteToBePaidInvoices()
+    );
+
+  runGuidingTour: boolean = true;
+  account: string;
   invoiceNumber: string;
   poNumbers: string;
   invoiceDate: Date;
@@ -89,13 +100,19 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
+        show: false,
         filter: {
           type: 'custom',
           component: CpFilterComponent,
@@ -213,13 +230,34 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
   canMakePayment = false;
   aged = '';
   allowedCustomerIds: number[] = [];
+  accounts: IUserAccountLookup[];
+  showSelectAccount: boolean = this.multiAccountService.hasMultipleAccounts();
+  hasMultipleAccounts: boolean = this.multiAccountService.hasMultipleAccounts();
 
-  private sub = this.router.events
-    .pipe(
-      filter((event) => event instanceof NavigationStart),
-      map((event) => event as NavigationStart)
-    )
-    .subscribe(() => this.invoiceService.deleteToBePaidInvoices());
+  get accountSelected(): boolean {
+    return this.accountId ? true : false;
+  }
+
+  set accountId(value: number | null) {
+    if (value == null) {
+      sessionStorage.removeItem(StorageConstants.StatementOfAccountSelectedAccount);
+      return;
+    }
+    sessionStorage.setItem(StorageConstants.StatementOfAccountSelectedAccount, value.toString());
+  }
+
+  get accountId(): number | null {
+    const accountId = sessionStorage.getItem(StorageConstants.StatementOfAccountSelectedAccount);
+
+    return accountId == null ? null : +accountId;
+  }
+
+  // private sub = this.router.events
+  //   .pipe(
+  //     filter((event) => event instanceof NavigationStart),
+  //     map((event) => event as NavigationStart)
+  //   )
+  //   .subscribe(() => this.invoiceService.deleteToBePaidInvoices());
 
   constructor(
     private permissionService: PermissionService,
@@ -234,19 +272,25 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     private messageService: MessageService,
     private accountInfoService: AccountInfoService,
     baseService: BaseComponentService,
-  ) {
+    ) {
     super(baseService);
   }
 
   async ngOnInit(): Promise<void> {
-    this.canMakePayment = this.permissionService.hasPermission(
-      PERMISSIONS.MakePayment
-    );
+
+
+    await this._loadUserAccounts();
+
+    if (this.accounts.length === 1) {
+      this._handleSingleAccount();
+    }
+
+    this.canMakePayment = this.permissionService.hasPermission(PERMISSIONS.MakePayment);
     this.showList = true;
     this.markedAsPay = this.invoiceService.releaseToBePaidInvoices();
 
     this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription =
         this.responsiveService.currentBreakpoint$.subscribe((w) => {
@@ -269,10 +313,35 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     });
   }
 
+  private _handleSingleAccount() {
+    this.accountId = this.accounts[0].accountId;
+    this.showSelectAccount = false;
+  }
+
   ngOnDestroy(): void {
     this.sub.unsubscribe();
     this.stopGuidingTour();
     this.joyrideService = null;
+    this.accountInfoService.closePopup();
+    this._disposeAccountID();
+  }
+
+  private _disposeAccountID() {
+    if (!this.router.url.startsWith(URLs.ViewStatementOfAccountURL)) {
+      this.accountId = null;
+    }
+  }
+
+  private _loadUserAccounts() {
+    return this.accountService
+      .loadCurrentUser()
+      .pipe(
+        tap(user => this.accounts = this._getAuthorizedAccounts(user.accounts))
+      ).toPromise();
+  }
+
+  private _getAuthorizedAccounts(accounts: IUserAccountLookup[]) {
+    return accounts.filter(acc => acc.permissions.some(p => p === PERMISSIONS.InvoicesListing));
   }
 
   onActionsInit(actions: AgedRecievablesActionsComponent) {
@@ -291,6 +360,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
   }
 
   initializeSource() {
+
     this.agedOptions = this._generateAgedOptions();
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
     this.isImpersonate = this.miscellaneousService.isImpersonateMode();
@@ -298,14 +368,14 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
       delete this.settings.columns.pay;
     }
 
-    if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
+    if (this.isSmartriseUser === false && this.multiAccountService.hasOneAccount()) {
       delete this.settings.columns.account;
     }
 
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber,
+      perPage: this.recordsNumber || 25,
     };
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
@@ -342,14 +412,18 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
       })
     );
     this.source.serviceCallBack = (params) => {
+
+      if (this.isSmartriseUser === false && this.hasMultipleAccounts && !this.accountSelected) {
+        return this.emptyData();
+      }
+
       const sParam = params as AgedRecievablesSearchParams;
       sParam.aged = this.isEmpty(this.aged) ? null : this.aged;
 
       if (this.isSmall) {
-        sParam.customer = this.customer;
+        sParam.account = this.account;
         sParam.invoiceNumber = this.invoiceNumber;
         sParam.poNumbers = this.poNumbers;
-        sParam.customer = this.customer;
         sParam.invoiceDate = this.invoiceDate;
         sParam.dueDate = this.dueDate;
         sParam.amount = this.amount;
@@ -358,10 +432,8 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
       sParam.invoiceDate = this.mockUtcDate(sParam.invoiceDate);
       sParam.dueDate = this.mockUtcDate(sParam.dueDate);
 
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.invoiceService.getAgedRecievablesBySmartriseUser(
-          params as AgedRecievablesSearchParams
-        );
+      if (this.isSmartriseUser) {
+        return this.invoiceService.getAgedRecievablesBySmartriseUser(params as AgedRecievablesSearchParams);
       } else {
         const searchParameters =
           sParam as AgedRecievablesByCustomerSearchParams;
@@ -394,7 +466,8 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
 
   onReset() {
     if (this.isSmall) {
-      this.customer = null;
+
+      this.account = null;
       this.invoiceNumber = null;
       this.poNumbers = null;
       this.invoiceDate = null;
@@ -431,6 +504,16 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onFilterPay(checkStatus: boolean | null) {
     this.source.refresh();
+  }
+
+  onAccountSelected(event) {
+    this.accountId = event;
+    this._saveAccountInfoToStorage(this.accountId);
+    this.onSearch();
+  }
+
+  private _saveAccountInfoToStorage(accountId: number) {
+    sessionStorage.setItem(StorageConstants.StatementOfAccountSelectedAccount, accountId.toString());
   }
 
   onPay() {
@@ -479,6 +562,47 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
         e.preventDefault();
       }
     }
+  }
+
+  private _canPay(rowData: any): boolean {
+    return rowData.invoiceCanBePaid &&
+      (
+        (this.isSmartriseUser === false && this.permissionService.hasPermissionInAccount("MakePayment", +rowData.customerId))
+      );
+  }
+
+  // private _markInvoiceToBePaid(invoice) {
+  //   this.markedAsPay.push(invoice);
+  //   this.invoiceService.holdToBePaidInvoices(this.markedAsPay);
+  // }
+
+  // private _unmarkInvoiceToBePiad(rowData) {
+  //   const indexOfItem = this.markedAsPay.indexOf(this.markedAsPay.filter(y => y.invoiceId === rowData.id)[0]);
+  //   this.markedAsPay.splice(indexOfItem, 1);
+  //   this.invoiceService.holdToBePaidInvoices(this.markedAsPay);
+  // }
+
+  // private _canPay(rowData: any): boolean {
+  //   return (
+  //     rowData.invoiceCanBePaid &&
+  //     (!this.miscellaneousService.isSmartriseUser() ||
+  //       (this.miscellaneousService.isSmartriseUser() &&
+  //         this.allowedCustomerIds.findIndex((x) => x === rowData.customerId) >
+  //           -1))
+  //   );
+  // }
+
+  private _markInvoiceToBePaid(invoice) {
+    this.markedAsPay.push(invoice);
+    this.invoiceService.holdToBePaidInvoices(this.markedAsPay);
+  }
+
+  private _unmarkInvoiceToBePiad(rowData) {
+    const indexOfItem = this.markedAsPay.indexOf(
+      this.markedAsPay.filter((y) => y.invoiceId === rowData.id)[0]
+    );
+    this.markedAsPay.splice(indexOfItem, 1);
+    this.invoiceService.holdToBePaidInvoices(this.markedAsPay);
   }
 
   startGuidingTour() {
@@ -567,26 +691,5 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     ];
   }
 
-  private _canPay(rowData: any): boolean {
-    return (
-      rowData.invoiceCanBePaid &&
-      (!this.miscellaneousService.isSmartriseUser() ||
-        (this.miscellaneousService.isSmartriseUser() &&
-          this.allowedCustomerIds.findIndex((x) => x === rowData.customerId) >
-            -1))
-    );
-  }
 
-  private _markInvoiceToBePaid(invoice) {
-    this.markedAsPay.push(invoice);
-    this.invoiceService.holdToBePaidInvoices(this.markedAsPay);
-  }
-
-  private _unmarkInvoiceToBePiad(rowData) {
-    const indexOfItem = this.markedAsPay.indexOf(
-      this.markedAsPay.filter((y) => y.invoiceId === rowData.id)[0]
-    );
-    this.markedAsPay.splice(indexOfItem, 1);
-    this.invoiceService.holdToBePaidInvoices(this.markedAsPay);
-  }
 }

@@ -34,14 +34,15 @@ import {
   CommonValues,
   PERMISSIONS,
   TaskStatusConstants,
+  URLs,
 } from '../../../../_shared/constants';
 import { HttpEventType } from '@angular/common/http';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 import { PermissionService } from '../../../../services/permission.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
-import { AccountInfoService } from '../../../../services/account-info.service';
-import { AccountNameCellComponent } from '../../../../_shared/components/account-name-cell/account-name-cell.component';
+import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
+import { ListTitleService } from '../../../../services/list-title.service';
 
 @Component({
   selector: 'ngx-job-files-list',
@@ -50,7 +51,7 @@ import { AccountNameCellComponent } from '../../../../_shared/components/account
 })
 export class JobFilesListComponent extends BaseComponent implements OnInit, OnDestroy {
   recordsNumber: number;
-
+  title: string;
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
   isLoading = true;
@@ -60,7 +61,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   public source: BaseServerDataSource;
   runGuidingTour = true;
 
-  customerName: string;
+  account: string;
   jobName: string;
   jobNumber: string;
   resourceType: string;
@@ -94,7 +95,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     private modalService: BsModalService,
     private permissionService: PermissionService,
     private multiAccountService: MultiAccountsService,
-    private accountInfoService: AccountInfoService
+    private listTitleService: ListTitleService
     // private timerService: TimerService
   ) {
     super(baseService);
@@ -113,13 +114,19 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
+        show: false,
         filter: {
           type: 'custom',
           component: CpFilterComponent,
@@ -257,7 +264,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber,
+      perPage: this.recordsNumber || 25,
     };
 
     this.isImpersonateMode = this.miscellaneousService.isImpersonateMode();
@@ -314,7 +321,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       }
 
       if (this.isSmall) {
-        resourceParams.customerName = this.customerName;
+        resourceParams.account = this.account;
         resourceParams.jobName = this.jobName;
         resourceParams.jobNumber = this.jobNumber;
         resourceParams.message = this.message;
@@ -524,18 +531,15 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   }
 
   async ngOnInit() {
-    this.canGenerateFile = this.permissionService.hasPermission(
-      PERMISSIONS.GenerateResourceFile
-    );
-    this.canManageFiles = this.permissionService.hasPermission(
-      PERMISSIONS.ManageJobFiles
-    );
-    this.resourceTypes = await this.resourceService
-      .getResourceTypes()
-      .toPromise();
+    
+    this.title = await this.listTitleService.buildTitle('Job Files');
+
+    this.canGenerateFile = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
+    this.canManageFiles = this.permissionService.hasPermission(PERMISSIONS.ManageJobFiles);
+    this.resourceTypes = await this.resourceService.getResourceTypes().toPromise();
     this.statuses = await this.resourceService.getStatuses().toPromise();
     this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription =
         this.responsiveService.currentBreakpoint$.subscribe((w) => {
@@ -575,7 +579,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   }
 
   onReset() {
-    this.customerName = null;
+    this.account = null;
     this.jobName = null;
     this.jobNumber = null;
     this.resourceType = '';
@@ -740,7 +744,15 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       })
     );
   }
-
+  goToJobs() {
+    this.router.navigateByUrl('/pages/jobs-management/jobs');
+  }
+  goToShipments() {
+    this.router.navigateByUrl('/pages/jobs-management/shipments');
+  }
+  goToJobsFile() {
+    this.router.navigateByUrl('/pages/jobs-management/job-files');
+  }
   private _removeUploadedFile(f: any) {
     this.resourceService.removeUploadedFile(f.resourceFileId).subscribe(
       () => {

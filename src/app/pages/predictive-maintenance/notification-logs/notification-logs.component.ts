@@ -181,7 +181,7 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingService.getBusinessSettings().subscribe(bs => {
-      this.recordsNumber = bs.numberOfRecords;
+      this.recordsNumber = bs.numberOfRecords || 25;
       this.onRecordsNumberChanged(bs.numberOfRecords);
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {

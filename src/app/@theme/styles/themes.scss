@@ -21,6 +21,7 @@ $nb-themes: nb-register-theme(
         slide-out-background: #f7f9fc,
         slide-out-shadow-color: 0 4px 14px 0 #8f9bb3,
         slide-out-shadow-color-rtl: 0 4px 14px 0 #8f9bb3,
+       
     ),
     default,
     default
@@ -55,6 +56,7 @@ $nb-themes: nb-register-theme(
         footer-text-font-size: 0.9rem,
         header-padding: 0,
         header-height: 60px,
+        header-background-color:#003656,
         sidebar-width: 275px,
         sidebar-width-compact: 73px,
         layout-background-color: #ecedf0,

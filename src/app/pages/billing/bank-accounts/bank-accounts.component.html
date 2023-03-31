@@ -1,56 +1,16 @@
 <nb-card joyrideStep="bankAccountFirstStep" stepPosition="center"
     [title]="runGuidingTour === true ? 'Bank Accounts' : null" [doneTemplate]="doneButton"
-    [stepContent]="firstCustomContent" (done)="onFinishingTour()">
-
-    <ng-template #firstCustomContent>
-        <div class='joyride-custom-content'>
-            <div style="margin-bottom: 5px;">
-                View the list of your bank accounts.<br />
-            </div>
-            <div class="row">
-                <div class="col-2">
-                    <i class="fas fa-eye guiding-tour-action"></i>
-                </div>
-                <div class="col-10 pl-0">
-                    View Bank Account Details
-                </div>
-            </div>
-            <div *ngIf="!isImpersonate" class="row">
-                <div class="col-2">
-                    <i class="fas fa-pencil-alt guiding-tour-action"></i>
-                </div>
-                <div class="col-10 pl-0">
-                    Edit Bank Account
-                </div>
-            </div>
-            <div *ngIf="!isImpersonate" class="row">
-                <div class="col-2">
-                    <i class="fas fa-check guiding-tour-action"></i>
-                </div>
-                <div class="col-10 pl-0">
-                    Verify Bank Account
-                </div>
-            </div>
-            <div *ngIf="!isImpersonate" class="row">
-                <div class="col-2">
-                    <i class="fas fa-chess-king guiding-tour-action"></i>
-                </div>
-                <div class="col-10 pl-0">
-                    Set Bank Account As Default
-                </div>
-            </div>
-        </div>
-    </ng-template>
+    [stepContent]="firstCustomContent" (done)="onFinishingTour()" [nextTemplate]="nextButton">
 
     <nb-card-header class="default-card-header">
         <div class="row">
             <div class="col-md">
                 <h2 class="card-title">Bank Accounts</h2>
             </div>
-            <div class="col-md text-right">
+            <div class="col-md">
                 <div class="card-actions">
                     <a>
-                        <button *ngIf="!isImpersonate" [disabled]="!canCreateBankAccount"
+                        <button *ngIf="!isImpersonate && (accountSelected || isSmartriseUser)" [disabled]="!canCreateBankAccount"
                             (click)="onCreateBankAccount()" class="btn btn-primary" joyrideStep="bankAccountSecondStep"
                             stepPosition="left" [prevTemplate]="prevButton" [nextTemplate]="nextButton"
                             [doneTemplate]="doneButton" [title]="runGuidingTour === true ? 'Bank Accounts' : null"
@@ -66,7 +26,15 @@
 
     <nb-card-body>
 
-        <ng-template [ngIf]="isSmall === false">
+        <div *ngIf="showSelectAccount" class="d-flex mb-2 flex-column flex-md-row align-items-md-center">
+            <span class="pr-2">Account</span>
+            <nb-select class="select-account" placeholder="Select Account" [(ngModel)]="accountId"
+                (selectedChange)="onAccountSelected($event)">
+                <nb-option [value]="account.accountId" *ngFor="let account of accounts">{{ account.name }}</nb-option>
+            </nb-select>
+        </div>
+
+        <ng-template [ngIf]="isSmall === false && (accountSelected || isSmartriseUser)">
             <div class="row mb-3">
                 <div class="col d-flex align-items-center justify-content-start">
                     <button (click)="onReset()" class="btn btn-primary">
@@ -82,11 +50,11 @@
             </div>
         </ng-template>
 
-        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters && (accountSelected || isSmartriseUser)" (close)="toggleFilters()">
             <div filters>
-                <div class="filter-control">
-                    <input type="text" maxlength="255"
-                        placeholder="Account" class="form-control" [(ngModel)]="customerName" />
+                <div class="filter-control" *ngIf="settings?.columns?.account">
+                    <input type="text" maxlength="255" placeholder="Account" class="form-control"
+                        [(ngModel)]="account" />
                 </div>
                 <div class="filter-control">
                     <input type="text" (keypress)="onlyNumbers($event)" maxlength="255"
@@ -133,7 +101,7 @@
             </div>
         </ngx-smr-mobile-filters>
 
-        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div *ngIf="accountSelected || isSmartriseUser" class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
             <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
                 <button type="button" class="btn btn-primary" (click)="toggleFilters()">
                     <i class="fas fa-filter"></i>
@@ -146,6 +114,46 @@
         </div>
     </nb-card-body>
 </nb-card>
+
+<ng-template #firstCustomContent>
+    <div class='joyride-custom-content'>
+        <div style="margin-bottom: 5px;">
+            View the list of your bank accounts.<br />
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <i class="fas fa-eye guiding-tour-action"></i>
+            </div>
+            <div class="col-10 pl-0">
+                View Bank Account Details
+            </div>
+        </div>
+        <div *ngIf="!isImpersonate" class="row">
+            <div class="col-2">
+                <i class="fas fa-pencil-alt guiding-tour-action"></i>
+            </div>
+            <div class="col-10 pl-0">
+                Edit Bank Account
+            </div>
+        </div>
+        <div *ngIf="!isImpersonate" class="row">
+            <div class="col-2">
+                <i class="fas fa-check guiding-tour-action"></i>
+            </div>
+            <div class="col-10 pl-0">
+                Verify Bank Account
+            </div>
+        </div>
+        <div *ngIf="!isImpersonate" class="row">
+            <div class="col-2">
+                <i class="fas fa-chess-king guiding-tour-action"></i>
+            </div>
+            <div class="col-10 pl-0">
+                Set Bank Account As Default
+            </div>
+        </div>
+    </div>
+</ng-template>
 
 <ng-template #secondCustomContent>
     <div class='joyride-custom-content'>

@@ -193,7 +193,7 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
 
   ngOnInit(): void {
     this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.onRecordsNumberChanged(rep.numberOfRecords);
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -213,7 +213,7 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
 
     this.source.serviceCallBack = (params) => {

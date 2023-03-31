@@ -14,7 +14,8 @@ import { SettingsManagementRoutingModule } from './settings-management-routing.m
     ThemeModule,
   ],
   declarations: [
-    ...routedComponents
+    ...routedComponents,
+    
   ],
 })
 export class SettingsManagementModule {}

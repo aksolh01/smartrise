@@ -6,7 +6,6 @@ import * as guidingTourGlobal from '../../guiding.tour.global';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { AccountUsersParams, IAccountUserLookup, IAccountUserRoleLookup } from '../../../_shared/models/account-user.model';
 import { Subscription } from 'rxjs';
-import { AccountService } from '../../../services/account.service';
 import { SettingService } from '../../../services/setting.service';
 import { MessageService } from '../../../services/message.service';
 import { ResponsiveService } from '../../../services/responsive.service';
@@ -21,6 +20,12 @@ import { BaseComponent } from '../../base.component';
 import { URLs } from '../../../_shared/constants';
 import { AppComponent } from '../../../app.component';
 import { TokenService } from '../../../services/token.service';
+import { AccountsListCellComponent } from './accounts-list-cell/accounts-list-cell.component';
+import { map } from 'rxjs/operators';
+import { count } from 'console';
+import { AccountService } from '../../../services/account.service';
+import { InfoDialogData } from '../../../_shared/components/info-dialog/info-dialog-data';
+import { InfoDialogComponent } from '../../../_shared/components/info-dialog/info-dialog.component';
 
 @Component({
   selector: 'ngx-account-users',
@@ -28,7 +33,6 @@ import { TokenService } from '../../../services/token.service';
   styleUrls: ['./account-users.component.scss']
 })
 export class AccountUsersComponent extends BaseComponent implements OnInit {
-
   source: BaseServerDataSource;
   runGuidingTour = true;
 
@@ -94,19 +98,36 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
           component: CpFilterComponent,
         },
       },
+      accounts: {
+        title: 'Accounts',
+        type: 'custom',
+        renderComponent: AccountsListCellComponent,
+        onComponentInitFunction: (instance: AccountsListCellComponent) => {
+          instance.setHeader('Accounts');
+          instance.clicked.subscribe(accountId => {
+            this.router.navigateByUrl(`pages/customers-management/customers/${accountId}`);
+          });
+          instance.showAccountInfo.subscribe(account => {
+            this._showAccountRoles(account);
+          });
+        },
+        filter: false,
+        sort: false,
+       
+      },
       actionsCol: {
         filter: false,
         sort: false,
         title: 'Actions',
         type: 'custom',
-        width: '110px',
-        class: 'minw-100px',
+        width: '15%',
         renderComponent: AccountUserActionsComponent,
         onComponentInitFunction: this.onComponentInitFunction.bind(this),
       }
     },
   };
   responsiveSubscription: Subscription;
+  showAccountRolesDialog: any;
 
   constructor(
     private router: Router,
@@ -129,7 +150,7 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
@@ -191,7 +212,7 @@ return null;
       .subscribe((response) => {
         this.tokenService.saveToken(response.body.token);
         this.appComponent.loadCurrentUser(() => {
-          this.permissionService.notifyPermissionsChanged();
+          //this.permissionService.notifyPermissionsChanged();
           this.router.navigate(['/', 'pages', 'dashboard']);
         });
       }, (error) => {
@@ -201,7 +222,7 @@ return null;
   ngOnInit(): void {
     this.enableCreateAccountUser();
     this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -387,5 +408,24 @@ roles = roleNames[0].displayName;
     }
     this.stopGuidingTour();
     this.joyrideService = null;
+  }
+
+  private _showAccountRoles(account: any) {
+    const roles = [];
+    let showAsBulltes = true;
+    if (account.roles && account.roles.length > 0) {
+      roles.push(...account.roles);
+    } else {
+      roles.push('No roles found');
+      showAsBulltes = false;
+    }
+    this.showAccountRolesDialog = this.modalService.show<InfoDialogData>(InfoDialogComponent, {
+      initialState: {
+        title: 'Roles',
+        content: roles.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0)),
+        showAsBulltes: showAsBulltes,
+        dismissButtonLabel: 'Close'
+      }
+    });
   }
 }

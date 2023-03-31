@@ -101,11 +101,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   goToChangePassword() {
-    this.router.navigateByUrl('auth/changepassword');
+    this.router.navigateByUrl('/pages/edit-profile');
   }
 
   goToUpdateProfile() {
-    this.router.navigateByUrl('auth/profile');
+    this.router.navigateByUrl('/pages/edit-profile');
   }
 
   logout() {

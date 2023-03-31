@@ -26,3 +26,8 @@ export interface IUserAccountLookup {
     permissions: string[];
     privileges: string[];
 }
+
+export interface ISelectableAccountInfo {
+    accountId: number;
+    name: string;
+}

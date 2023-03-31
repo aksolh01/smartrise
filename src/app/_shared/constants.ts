@@ -93,9 +93,10 @@ export const URLs = {
   ViewUserActivities: '/pages/audit-management/user-activities',
   RequestPasswordURL: '/auth/request-password',
   ResetPasswordURL: '/auth/reset-password',
-  CompanyInfoURL: '/pages/settings-management/company-info',
+  CompanyInfoURL: '/pages/settings-management/accounts',
   ViewJobFilesURL: '/pages/support-management/job-files',
   HomeURL: '/pages/dashboard',
+  EditProfile: '/pages/edit-profile',
   ViewPMDashboardURL: '/pages/predictive-maintenance/dashboard',
   ViewPMJobsURL: '/pages/predictive-maintenance/jobs-list',
   ViewPMPartsURL: '/pages/predictive-maintenance/parts-review',
@@ -326,6 +327,11 @@ export const StorageConstants = {
   IsPreventOnLogin: 'IsPreventOnLogin',
   IsPreventOnLogout: 'IsPreventOnLogout',
   SelectedAccount: 'SelectedAccount',
+  AddBankAccountSelectedAccount: 'AddBankAccountSelectedAccount',
+  AddBankAccountSelectedAccountName: 'AddBankAccountSelectedAccountName',
+  CreateQuoteSelectedAccount: 'CreateQuoteSelectedAccount',
+  CreateQuoteSelectedAccountName: 'CreateQuoteSelectedAccountName',
+  StatementOfAccountSelectedAccount: 'StatementOfAccountSelectedAccount'
 };
 
 export const BankAccountStatusConstants = {

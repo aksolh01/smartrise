@@ -1,7 +1,7 @@
 <nb-card *ngIf="!isLoading" [nbSpinner]="isBusy" nbSpinnerStatus="primary" nbSpinnerSize="giant">
 
     <nb-card-header class="default-card-header">
-        <h2 class="card-title">Quote Details</h2>
+        <h2 class="card-title">Quote Details - {{ quote?.customer?.name }}</h2>
     </nb-card-header>
 
 

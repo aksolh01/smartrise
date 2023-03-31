@@ -25,11 +25,12 @@ import { CpNumberFilterComponent } from '../../../_shared/components/table-filte
 import { Tab } from '../../../_shared/models/jobTabs';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
-import { FunctionConstants, URLs } from '../../../_shared/constants';
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
-import { AccountNameCellComponent } from '../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
+import { URLs } from '../../../_shared/constants';
+import { QuotingToolService } from '../../../services/quoting-tool.service';
 
 @Component({
   selector: 'ngx-open-quotes',
@@ -41,9 +42,9 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
   mRef: BsModalRef;
   source: BaseServerDataSource;
   isSmall?: boolean = null;
-  showFilters = false;
-  runGuidingTour = true;
-  customerName: string;
+  showFilters: boolean = false;
+  runGuidingTour: boolean = true;
+  account: string;
   jobName: string;
   quoteNumber: string;
   controllerType: string;
@@ -67,13 +68,19 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'account.id'
+            ]
           });
         },
+        width: '15%',
+        show: false,
         filter: {
           type: 'custom',
           component: CpFilterComponent,
@@ -243,6 +250,7 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
     private router: Router,
     private jobTabService: JobTabService,
     private quoteService: QuoteService,
+    private quotingToolService: QuotingToolService,
     private settingService: SettingService,
     private joyrideService: JoyrideService,
     private responsiveService: ResponsiveService,
@@ -265,13 +273,14 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
     this.stopGuidingTour();
     this.joyrideService = null;
     this.mRef?.hide();
+    this.accountInfoService.closePopup();
   }
 
   initializeSource() {
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
 
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
@@ -302,7 +311,7 @@ return null;
     this.source.serviceCallBack = (params) => {
       const quoteParams = params as QouteSearchParams;
       if (this.isSmall) {
-        quoteParams.customer = this.customerName;
+        quoteParams.account = this.account;
         quoteParams.jobName = this.jobName;
         quoteParams.quoteNumber = this.quoteNumber;
         quoteParams.controllerType = this.controllerType;
@@ -375,7 +384,7 @@ quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
   async ngOnInit() {
     // this.controllerTypes = await this.quoteService.getControllerTypes().toPromise();
     const settings = await this.settingService.getBusinessSettings().toPromise();
-    this.recordsNumber = settings.numberOfRecords;
+    this.recordsNumber = settings.numberOfRecords || 25;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
       if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -401,13 +410,9 @@ quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
     this.source?.refresh();
   }
 
-  onCreateQuote() {
-    this.router.navigateByUrl('pages/quotes-management/open-quotes/create');
-  }
-
   onReset() {
 
-    this.customerName = null;
+    this.account = null;
     this.jobName = null;
     this.quoteNumber = null;
     this.quoteCreated = null;

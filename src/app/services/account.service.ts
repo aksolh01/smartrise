@@ -473,7 +473,7 @@ export class AccountService {
   updateAccountUserBySmartrise(accountUser: IAccountUserPayload) {
     return this.http
       .put(this.baseUrl + 'account/accountUserBySmartrise', accountUser, {
-        observe: 'response',
+        observe: 'body',
       })
       .pipe(map((response) => response));
   }
@@ -593,7 +593,7 @@ export class AccountService {
   updateCustomerUserByCustomerAdmin(customerUser: ICustomerUserPayload) {
     return this.http
       .put(this.baseUrl + 'account/customerUser', customerUser, {
-        observe: 'response',
+        observe: 'body',
       })
       .pipe(map((response) => response));
   }

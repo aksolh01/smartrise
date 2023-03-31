@@ -16,10 +16,6 @@
     align-items: center;
 
     @include media-breakpoint-down(md) {
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), color-stop(45%, #ffffff));
-      background-image: linear-gradient(#f6f6f6 0%, #ffffff 45%);
-      border-bottom: 1px solid #e9e9e6;
-      border-top: 3px solid #ededed;
       width: 100%;
       justify-content: space-between;
     }
@@ -38,6 +34,15 @@
     height: auto;
     display: flex;
     align-content: center;
+    padding: 0px;
+
+    
+  }
+  nb-action {
+    border-left: none !important;
+  }
+  nb-action:last-child {
+    border-left: var(--actions-divider-width) var(--actions-divider-style) var(--actions-divider-color)  !important;
   }
 
   nb-user {
@@ -53,6 +58,7 @@
     align-items: center;
     width: auto;
     min-height: 60px;
+    background-color: #003656;
 
     .sidebar-toggle {
       @include nb-ltr(margin-right, 1.25rem);
@@ -65,10 +71,22 @@
     }
 
     .logo {
-      margin: 10px 0 0 15px;
+      //margin: 10px 0 0 15px;
       img {
-        max-height: 44px;
+        //max-height: 44px;
+        max-height: 50px;
       }
+    }
+    .notification-container{
+      font-size: 20px;
+      color: white;
+      padding-right: 18px;
+    }
+    .toggle-container{
+      font-size: 20px;
+      color: white;
+      padding-right: 18px;
+      padding-top: 6px;
     }
   }
 
@@ -82,13 +100,13 @@
       .menu-toggle {
         cursor: pointer;
         > i {
-          color: #000011;
+          color: white;
           font-size: 16px;
           font-weight: bold;
         }
 
         ::ng-deep .user-name {
-          color: #000011;
+          color:white;
           font-size: 12.8px;
           font-size: 0.8rem;
           line-height: 17.6px;
@@ -102,6 +120,7 @@
         .menu-toggle {
           position: relative;
           z-index: 993;
+          color: #7d7d7d;
           .custom-angle:before {
             content: "\f106";
           }
@@ -114,11 +133,13 @@
           box-sizing: content-box;
           left: -11px !important;
           padding: 45px 10px 0;
-          top: -10px !important;
+          top: -5px !important;
           -webkit-transform: none !important;
           transform: none !important;
           width: 100%;
           z-index: 992;
+          background-color: white;
+          color:#7d7d7d;
           .divider {
             height: 1px;
             margin: 9px 0 5px;

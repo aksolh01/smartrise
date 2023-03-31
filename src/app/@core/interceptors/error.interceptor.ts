@@ -121,8 +121,8 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   private _canShowMessage(url: string): boolean {
-    const lenth = environment.apiUrl.length;
-    const pUrl = url.substring(lenth, url.length);
+    const length = environment.apiUrl.length;
+    const pUrl = url.substring(length, url.length);
     const hideToastMessageUrls = [
       'account/tokenValidity',
     ];

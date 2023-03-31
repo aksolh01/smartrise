@@ -6,9 +6,12 @@ import { SharedModule } from '../../_shared/shared.module';
 import { routedComponents } from './components';
 import { JoyrideModule } from 'ngx-joyride';
 import { ThemeModule } from '../../@theme/theme.module';
+import { AccountsListCellComponent } from './account-users/accounts-list-cell/accounts-list-cell.component';
+import { AccountsWithoutMatchingContactsComponent } from './accounts-without-matching-contacts/accounts-without-matching-contacts.component';
+import { SearchAccountsLookupComponent } from './search-accounts-lookup/search-accounts-lookup.component';
 
 @NgModule({
-  declarations: [...routedComponents],
+  declarations: [...routedComponents, AccountsListCellComponent, AccountsWithoutMatchingContactsComponent, SearchAccountsLookupComponent],
   imports: [
     JoyrideModule.forChild(),
     CommonModule,

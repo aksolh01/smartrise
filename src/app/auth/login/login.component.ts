@@ -63,49 +63,61 @@ export class LoginComponent extends BaseComponent implements OnInit, IAuthPageCo
     this.isLoading = true;
     this.warnUserAboutAccountLock = false;
     this.accountService.login(this.loginForm.value).subscribe(
-      (user) => {
-
-        if (user.twoStepVerificationActivated) {
-          sessionStorage.setItem('2FAIsActivated', '1');
-        }
-
-        if (user.is2StepVerificationRequired) {
-          sessionStorage.setItem('verification-success-message', '1');
-          sessionStorage.setItem('allow-verification', '1');
-          this.router.navigate(
-            ['/auth/verification-code'],
-            {
-              queryParams: {
-                returnUrl: this.returnUrl,
-                provider: user.provider,
-                email: this.loginForm.value.email,
-              }
-            }
-          );
-        } else {
-
-          localStorage.setItem(StorageConstants.LOGIN, Date.now().toString());
-          this.accountService.loadCurrentUser(user.token).subscribe((currentUser: IUser) => {
-            if (this.multiAccountService.hasOneAccount()) {
-              this.multiAccountService.setSelectedAccount(currentUser?.accounts[0]?.accountId);
-            }
-            this.permissionService.setPermissions(currentUser.accounts);
-            this._setLinkedAccounts(currentUser);
-            this.router.navigateByUrl(this.returnUrl);
-          },
-          (error) => {
-            this.isLoading = false;
-          });
-        }
-      },
-      (error) => {
-        this.warnUserAboutAccountLock = error?.error?.failedResult?.warnUserAboutAccountLock;
-        this.isLoading = false;
-      }
+      (user) => this._loginResponseReadyCallback(user),
+      (error) => this._handleLoginError(error)
     );
   }
 
+  private _loginResponseReadyCallback(user: IUser) {
+
+    if (user.twoStepVerificationActivated) {
+      sessionStorage.setItem('2FAIsActivated', '1');
+    }
+
+    if (user.is2StepVerificationRequired) {
+      this._handle2FAIsRequired(user);
+    } else {
+      this._handleLoggedIn(user);
+    }
+  }
+
+  private _handleLoggedIn(user: IUser) {
+    localStorage.setItem(StorageConstants.LOGIN, Date.now().toString());
+    this.accountService.loadCurrentUser(user.token).subscribe(
+      (currentUser) => this._currentUserLoadedCallback(currentUser),
+      (error) => { this.isLoading = false; });
+  }
+
+  private _currentUserLoadedCallback(currentUser: IUser) {
+    this._setLinkedAccounts(currentUser);
+    if (this.multiAccountService.hasOneAccount()) {
+      this.multiAccountService.setSelectedAccount(currentUser?.accounts[0]?.accountId);
+    }
+    this.permissionService.setPermissions(currentUser.accounts);
+    this.router.navigateByUrl(this.returnUrl);
+  }
+
+  private _handle2FAIsRequired(user: IUser) {
+    sessionStorage.setItem('verification-success-message', '1');
+    sessionStorage.setItem('allow-verification', '1');
+    this.router.navigate(
+      ['/auth/verification-code'],
+      {
+        queryParams: {
+          returnUrl: this.returnUrl,
+          provider: user.provider,
+          email: this.loginForm.value.email,
+        }
+      }
+    );
+  }
+  
+  private _handleLoginError(error: any) {
+    this.warnUserAboutAccountLock = error?.error?.failedResult?.warnUserAboutAccountLock;
+    this.isLoading = false;
+  }
+
   private _setLinkedAccounts(user: IUser) {
-    this.multiAccountService.setAccounts(user?.accounts?.map(account => account.accountId));
+    this.multiAccountService.setAccounts(user?.accounts);
   }
 }

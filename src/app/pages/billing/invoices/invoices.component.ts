@@ -21,8 +21,10 @@ import { InvoiceAgedCellComponent } from '../../../_shared/components/invoice-ag
 import { SelectHelperService } from '../../../services/select-helper.service';
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
-import { AccountNameCellComponent } from '../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
+import { URLs } from '../../../_shared/constants';
+import { ListTitleService } from '../../../services/list-title.service';
 
 @Component({
   selector: 'ngx-invoices',
@@ -30,7 +32,7 @@ import { AccountInfoService } from '../../../services/account-info.service';
   styleUrls: ['./invoices.component.scss']
 })
 export class InvoicesComponent extends BaseComponent implements OnInit, OnDestroy {
-  customer: string;
+  account: string;
   invoiceNumber: string;
   jobNumber: string;
   poNumbers: string;
@@ -55,13 +57,19 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
+        show: false,
         filter: {
           type: 'custom',
           component: CpFilterComponent,
@@ -160,6 +168,7 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
   balance: number;
   agedOptions: { value: string; title: string }[];
   isSmartriseUser: boolean;
+  title: any;
 
   constructor(
     private miscellaneousService: MiscellaneousService,
@@ -172,13 +181,15 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
     private multiAccountService: MultiAccountsService,
     private accountInfoService: AccountInfoService,
     baseService: BaseComponentService,
-  ) {
+    private listTitleService: ListTitleService
+    ) {
     super(baseService);
   }
 
   ngOnDestroy(): void {
     this.stopGuidingTour();
     this.joyrideService = null;
+    this.accountInfoService.closePopup();
   }
 
   onlyNumbers(event) {
@@ -200,9 +211,11 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
     this.showFilters = !this.showFilters;
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.title = await this.listTitleService.buildTitle('Invoices');
+    
     this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -230,7 +243,7 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
@@ -252,7 +265,7 @@ return null;
       const sParam = params as BillingInvoiceParams;
       sParam.aged = this.isEmpty(this.aged) ? null : this.aged;
       if (this.isSmall) {
-        sParam.customer = this.customer;
+        sParam.account = this.account;
         sParam.invoiceNumber = this.invoiceNumber;
         sParam.jobNumber = this.jobNumber;
         sParam.poNumbers = this.poNumbers;
@@ -293,7 +306,7 @@ return null;
   onReset() {
     if (this.isSmall) {
 
-      this.customer = null;
+      this.account = null;
       this.invoiceNumber = null;
       this.jobNumber = null;
       this.poNumbers = null;

@@ -7,7 +7,7 @@ import {
 import { LocalDataSource } from 'ng2-smart-table';
 import { JoyrideService } from 'ngx-joyride';
 import { Ng2TableCellComponent } from '../../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
-import { PERMISSIONS, TaskStatusConstants } from '../../../../../_shared/constants';
+import { CommonValues, PERMISSIONS, TaskStatusConstants } from '../../../../../_shared/constants';
 import { IJobResource } from '../../../../../_shared/models/job';
 import { MessageService } from '../../../../../services/message.service';
 import { ResourceService } from '../../../../../services/resource.service';
@@ -17,6 +17,8 @@ import * as guidingTourGlobal from '../../../../guiding.tour.global';
 import { BaseComponentService } from '../../../../../services/base-component.service';
 import { PermissionService } from '../../../../../services/permission.service';
 import { Router } from '@angular/router';
+import { ResourceTaskStatusCellComponent } from '../../../../../_shared/components/business/status.component';
+import { CpListFilterComponent } from '../../../../../_shared/components/table-filters/cp-list-filter.component';
 
 
 @Component({
@@ -51,6 +53,7 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
   settings = {
     mode: 'external',
     hideSubHeader: true,
+    hideHeader:true,
     actions: {
       position: 'right',
       add: false,
@@ -62,33 +65,30 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
     },
     columns: {
       resourceType: {
-        title: 'File Type',
+        title: '',
         type: 'custom',
         renderComponent: Ng2TableCellComponent,
-        onComponentInitFunction: (instance: Ng2TableCellComponent) => {
-          instance.setHeader('File Type');
-        },
+      
         valuePrepareFunction: this.getEnumDescription.bind(this),
         filter: false,
         sort: false,
-        width: '90%',
+        width: '80%',
       },
-      // customerMessage: {
-      //   title: 'Message',
-      //   type: 'custom',
-      //   renderComponent: Ng2TableCellComponent,
-      //   onComponentInitFunction: (instance: Ng2TableCellComponent) => {
-      //     instance.setHeader('Message');
-      //   },
-      //   filter: false,
-      //   sort: false,
-      //   width: '60%',
-      // },
+      status: {
+        title: '',
+        type: 'custom',
+        renderComponent: ResourceTaskStatusCellComponent,
+        
+        filter: false,
+        sort: false,
+        width: '10%',
+      },
       actionsCol: {
         filter: false,
         sort: false,
-        title: 'Actions',
+        title: '',
         type: 'custom',
+        
         renderComponent: JobResourcesActionsComponent,
         onComponentInitFunction: this.onActionsInit.bind(this),
       },
@@ -193,8 +193,8 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
           (error) => {
             this.resourceService.refreshResource(row).subscribe((obj) => {
               this.updateRecord(row, obj.response);
-              actions.refreshChanged.emit(false);
               actions.enableGenerateFile();
+              //actions.refreshChanged.emit(false);
             });
           }
         );

@@ -1,6 +1,6 @@
-<form [formGroup]="twoStepForm" autocomplete="off" novalidate (ngSubmit)="loginUser(twoStepForm.value)">
-    <div class="controls">
-        <div class="form-group">
+<form [formGroup]="twoStepForm" autocomplete="off" novalidate (ngSubmit)="loginUser(twoStepForm.value)" class="form-container">
+    <div class="input-container">
+        <div class="input-item">
             <!--<ng-template [ngIf]="errorMessage">
                 <div class="alert alert-danger font-weight-bold">
                     {{ errorMessage }}
@@ -10,7 +10,7 @@
                 <div [innerHTML]="succuessMessage" class="alert alert-success font-weight-bold">
                 </div>
             </ng-template>-->
-            <div class=mb-5>
+            <div class=mb-3>
                 <span class="label-default txt-xl">
                     To access the Portal, please enter the Security Code below.
                 </span>
@@ -22,7 +22,7 @@
                     </span>
                 </div>
                 <div>
-                    <input style="display: inline !important;width: auto !important;" type="text"
+                    <input style="display: inline !important;width: auto !important;"  type="text"
                         placeholder="Security Code" id="twoFactorCode"
                         formControlName="twoFactorCode" class="form-control" />
 
@@ -36,7 +36,7 @@
                         {{ timeToGenerateCode }}
                     </button>
                 </div>
-                <div class="mt-2 ml-1">
+                <div class="mt-2 ml-1 mb-3">
                     <span class="label-default txt-base">
                         Enter the 6-digit code sent to {{email}}
                     </span>
@@ -52,8 +52,8 @@
             </div>
         </div>
     </div>
-    <div *ngIf="!isSmall" class="actions mt-4 text-right">
-        <ngx-button [isLoading]="isLoading" class="btn btn-lg btn-primary px-5"
+    <div *ngIf="!isSmall">
+        <ngx-button [isLoading]="isLoading" class="main-button px-5"
             type="submit">
             <i class="fas fa-check"></i>
             Verify
@@ -65,7 +65,7 @@
         <div>
             <div [ngClass]="{'col-lg-12': true, 'pr-0': isSmall}">
                 <ngx-button [isLoading]="isLoading" [disabled]="twoStepForm.invalid"
-                    class="btn btn-lg btn-primary button-width" type="submit">
+                    class="main-button" type="submit">
                     <i class="fas fa-check"></i>
                     Verify
                 </ngx-button>

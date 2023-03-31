@@ -20,3 +20,9 @@
     top: 0px;
     left: 0px;
 }
+
+@media (min-width: 576px) {
+    .select-account {
+        min-width: 300px !important;
+    }
+}

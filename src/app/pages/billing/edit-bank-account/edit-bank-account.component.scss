@@ -10,12 +10,12 @@ label {
 
 a:not([href]):not([tabindex]) {
     text-decoration: underline !important;
-    color: #1e6bb8;
+    color:var(--primary-color-gray);
     cursor: pointer;
 }
 
 a:not([href]):not([tabindex]):hover {
-    color: #598bff;
+    color:var(--primary-color-gray);
 }
 
 // .control-label,

@@ -13,8 +13,8 @@
                     <div class="form-group row">
                         <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
                         <div class="col-12 col-lg-8">
-                            <input type="text" placeholder="First Name" formControlName="firstName" class="form-control"
-                                id="firstName">
+                            <input type="text" #firstName placeholder="First Name" formControlName="firstName"
+                                class="form-control" id="firstName">
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
     customerUserForm.get('firstName').errors != null &&
@@ -101,37 +101,26 @@
                     <div class="row">
 
                         <div class="col-12">
-                            <input #selectedAccountInput type="text"
-                                (input)="debounceTimeSearchAccounts.next($event.target.value)"
-                                (focus)="onSearchAccounts($event.target.value)" placeholder="Search Accounts..."
-                                class="form-control" [nbAutocomplete]="customerAutocomplete" scrollStrategy="close" />
-
-                            <nb-autocomplete #customerAutocomplete (selectedChange)="onSelectionChange($event)">
-
-                                <nb-option *ngFor="let option of filteredAccounts" [value]="option">
-                                    {{ option.name }}
-                                </nb-option>
-
-                            </nb-autocomplete>
+                            <ngx-search-accounts-lookup (accountSelected)="onSelectionChange($event)"></ngx-search-accounts-lookup>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-12 mb-2">
-                    <ngx-account-roles-selection #accounts [roles]="roles"
-                        formControlName="accounts"></ngx-account-roles-selection>
-                </div>
-
             </div>
-            <div class="form-buttons">
+
+            <div class="col-12 mb-2 px-0">
+                <ngx-account-roles-selection #accounts [roles]="roles"
+                    formControlName="accounts"></ngx-account-roles-selection>
+            </div>
+
+            <div [ngClass]="{'form-buttons': true, 'mt-3': customerUserForm.get('accounts')?.value?.length}">
                 <button routerLink=".." type="button" class="btn btn-secondary">
                     <i class="fas fa-times"></i>
                     Cancel
                 </button>
-                <button type="submit" class="btn btn-primary">
+                <ngx-button [isLoading]="isSaving" type="submit" class="btn btn-primary">
                     <i class="fas fa-plus-circle"></i>
                     Create
-                </button>
+                </ngx-button>
             </div>
         </form>
     </nb-card-body>

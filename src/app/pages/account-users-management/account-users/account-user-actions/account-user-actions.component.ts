@@ -67,13 +67,8 @@ this.canResendInvitation = true;
   }
 
   enableResetPasswordRequest() {
-    if (!this.permissionService.hasPermission('AccountUsersResetPassword')) {
-      this.canResetPassword = false;
-    } else if (!this.rowData.emailConfirmed) {
-      this.canResetPassword = false;
-    } else {
-      this.canResetPassword = true;
-    }
+    this.canResetPassword = this.permissionService.hasPermission('AccountUsersResetPassword') && 
+    this.rowData.emailConfirmed === true;
   }
 
   enableActivateAccountUser() {

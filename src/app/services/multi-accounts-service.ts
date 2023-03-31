@@ -1,13 +1,18 @@
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 import { StorageConstants } from "../_shared/constants";
+import { ISelectableAccountInfo } from "../_shared/models/IUser";
 
 Injectable()
 export class MultiAccountsService {
 
-    private accounts: number[];
+    private accounts: ISelectableAccountInfo[];
 
-    setAccounts(accountIds: number[]) {
-        this.accounts = accountIds;
+    accountSelectionChangedSubject = new Subject<number | null>();
+    accountSelectionChanged$ = this.accountSelectionChangedSubject.asObservable();
+
+    setAccounts(accounts: ISelectableAccountInfo[]) {
+        this.accounts = accounts;
     }
 
     hasSelectedAccount(): boolean {
@@ -19,10 +24,11 @@ export class MultiAccountsService {
             return;
         }
 
-        if (this.accounts.includes(accountId) == false) {
+        if (this.accounts.some(acc => acc.accountId === accountId) == false) {
             throw new Error(`Account Id ${accountId} is not found in the list`);
         }
 
+        this.accountSelectionChangedSubject.next(accountId);
         localStorage.setItem(StorageConstants.SelectedAccount, accountId.toString());
     }
 
@@ -37,7 +43,7 @@ export class MultiAccountsService {
 
         const selectedValue = +selectedAccountValue;
 
-        if (this.accounts.includes(selectedValue) == false) {
+        if (this.accounts.some(acc => acc.accountId === selectedValue) == false) {
             this.clearSelectedAccount();
             return null;
         }
@@ -77,5 +83,11 @@ export class MultiAccountsService {
 
     hasManyAccountsAndNoSelectedAccount(): boolean {
         return this.accounts != null && this.accounts.length > 1 && this.getSelectedAccount() == null;
+    }
+
+    getSelectedAccountName() {
+        const selectedAccountId = this.getSelectedAccount();
+        const selectedAccount = this.accounts.find(acc => acc.accountId === selectedAccountId);
+        return selectedAccount?.name;
     }
 }

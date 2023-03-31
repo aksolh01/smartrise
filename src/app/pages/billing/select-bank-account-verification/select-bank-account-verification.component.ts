@@ -12,6 +12,7 @@ export class SelectBankAccountVerificationComponent implements OnInit {
   connect = new EventEmitter<void>();
   loading = new EventEmitter<any>();
   isLoading = false;
+  creationMode: string;
 
   constructor(
     private router: Router,
@@ -29,10 +30,12 @@ export class SelectBankAccountVerificationComponent implements OnInit {
   }
 
   onManual() {
-    this.router.navigateByUrl('pages/billing/bank-accounts/add');
+    this.creationMode = 'Manual';
+    this.ref.hide();
   }
 
   onConnect() {
-    this.connect.next();
+    this.creationMode = 'Connect';
+    this.ref.hide();
   }
 }

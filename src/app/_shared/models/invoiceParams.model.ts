@@ -9,7 +9,7 @@ export interface InvoiceParams extends BaseParams {
 }
 
 export interface AgedRecievablesSearchParams extends BaseParams {
-    customer: string;
+    account: string;
     balance?: number;
     invoiceNumber: string;
     poNumbers: string;
@@ -25,7 +25,7 @@ export interface AgedRecievablesByCustomerSearchParams extends AgedRecievablesSe
 
 export interface BillingInvoiceParams extends BaseParams {
     jobNumber: string;
-    customer: string;
+    account: string;
     balance?: number;
     invoiceNumber: string;
     poNumbers: string;

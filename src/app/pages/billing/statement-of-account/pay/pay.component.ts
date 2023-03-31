@@ -17,6 +17,7 @@ import { ResponsiveService } from '../../../../services/responsive.service';
 import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 import { MiscellaneousService } from '../../../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
+import { StorageConstants } from '../../../../_shared/constants';
 
 @Component({
   selector: 'ngx-pay',
@@ -323,7 +324,8 @@ export class PayComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   goToCreateBankAccount() {
-    this.router.navigateByUrl('pages/billing/bank-accounts?createBankAccount=true');
+    const accountId = sessionStorage.getItem(StorageConstants.StatementOfAccountSelectedAccount);
+    this.router.navigateByUrl(`pages/billing/bank-accounts?createBankAccount=true&accountID=${accountId}`);
   }
 
   goToBankAccounts() {

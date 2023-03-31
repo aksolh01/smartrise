@@ -35,11 +35,12 @@ import { IEnumValue } from '../../../../_shared/models/enumValue.model';
 import { Tab } from '../../../../_shared/models/jobTabs';
 import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../../services/base-component.service';
-import { CommonValues } from '../../../../_shared/constants';
+import { CommonValues, URLs } from '../../../../_shared/constants';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
 import { MiscellaneousService } from '../../../../services/miscellaneous.service';
-import { AccountNameCellComponent } from '../../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
+import { ListTitleService } from '../../../../services/list-title.service';
 
 @Component({
   selector: 'ngx-shipments-list',
@@ -66,7 +67,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   showFilters = false;
   runGuidingTour = true;
   yesNoList: { value?: boolean; title: string }[];
-  customerName: string;
+  account: string;
   jobName: string;
   jobNumber: string;
   shipmentType: string;
@@ -88,13 +89,18 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
         show: false,
         filter: {
           type: 'custom',
@@ -254,6 +260,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     },
   };
   responsiveSubscription: Subscription;
+  title: string;
 
   constructor(
     baseService: BaseComponentService,
@@ -266,6 +273,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     private multiAccountService: MultiAccountsService,
     private miscellaneousService: MiscellaneousService,
     private accountInfoService: AccountInfoService,
+    private listTitleService: ListTitleService
     ) {
     super(baseService);
 
@@ -285,7 +293,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber,
+      perPage: this.recordsNumber || 25,
     };
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
@@ -316,7 +324,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     this.source.serviceCallBack = (params) => {
       const shipmentParams = params as ShipmentParams;
       if (this.isSmall) {
-        shipmentParams.customerName = this.customerName;
+        shipmentParams.account = this.account;
         shipmentParams.jobName = this.jobName;
         shipmentParams.jobNumber = this.jobNumber;
         shipmentParams.shipmentType = this.isEmpty(this.shipmentType)
@@ -367,14 +375,15 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   }
 
   async ngOnInit() {
-    this.shipmentTypes = await this.shipmentService
-      .getShipmentTypes()
-      .toPromise();
-    this.statuses = await this.shipmentService
-      .getShipmentStatuses()
-      .toPromise();
+
+    this.title = await this.listTitleService.buildTitle('Shipments');
+
+    this.shipmentTypes = await this.shipmentService.getShipmentTypes().toPromise();
+
+    this.statuses = await this.shipmentService.getShipmentStatuses().toPromise();
+    
     this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription =
         this.responsiveService.currentBreakpoint$.subscribe((w) => {
@@ -417,7 +426,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   }
 
   onReset() {
-    this.customerName = null;
+    this.account = null;
     this.jobName = null;
     this.jobNumber = null;
     this.shipmentType = '';
@@ -445,6 +454,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
 
     this.stopGuidingTour();
     this.joyrideService = null;
+    this.accountInfoService.closePopup();
   }
 
   startGuidingTour() {
@@ -482,7 +492,15 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     localStorage.setItem('GuidingTourShipments', '1');
     this.runGuidingTour = false;
   }
-
+  goToJobs() {
+    this.router.navigateByUrl('/pages/jobs-management/jobs');
+  }
+  goToShipments() {
+    this.router.navigateByUrl('/pages/jobs-management/shipments');
+  }
+  goToJobsFile() {
+    this.router.navigateByUrl('/pages/jobs-management/job-files');
+  }
   populateLookupForDropShipment() {
     return [
       {

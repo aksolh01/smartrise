@@ -110,6 +110,9 @@ export class AskForAccessComponent implements OnInit, IAuthPageComponent {
     this.form = new UntypedFormGroup({
       firstName: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),
       lastName: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),
+      title: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),
+      businessAddress: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),
+      zipCode: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),
       companyName: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),
       phoneNumber: new UntypedFormControl('', [this._phoneRequired.bind(this), trimValidator, SmartriseValidators.requiredWithTrim]),
       country: new UntypedFormControl('', [Validators.required, trimValidator, SmartriseValidators.requiredWithTrim]),

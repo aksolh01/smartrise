@@ -8,10 +8,14 @@ import {
   Validator
 } from '@angular/forms';
 import { LocalDataSource } from 'ng2-smart-table';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
 import { AccountRolesSelectionService } from '../../../services/account-roles-selection.service';
+import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { IAccountUserRoles } from '../../models/account-selection.model';
 import { IRole } from '../../models/role';
+import { InfoDialogData } from '../info-dialog/info-dialog-data';
+import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { RemoveAccountCellComponent } from '../remove-account-cell/remove-account-cell.component';
 import { RolesChecklistCellComponent } from '../roles-checklist-cell/roles-checklist-cell.component';
 import { SelectableAccountCellComponent } from '../selectable-account-cell/selectable-account-cell.component';
@@ -35,11 +39,31 @@ import { SelectableAccountCellComponent } from '../selectable-account-cell/selec
   ],
 })
 export class AccountRolesSelectionComponent implements Validator, ControlValueAccessor, OnDestroy, OnInit {
-  @Input() validationEnabled = false;
-  @Input() allowAccountsSelection = false;
-  @Input() allowRemoveAccount = true;
 
+  accounts: IAccountUserRoles[] = [];
+  private _onChanged: any;
+  private _onTouched: any;
+  private _changeSubscription: Subscription;
+  private _roles: IRole[] = [];
   isDisabled: boolean;
+
+  @Input() validationEnabled: boolean = false;
+  private _removeAccountSubscription: Subscription;
+  modelRef: any;
+
+  @Input()
+  set roles(value: IRole[]) {
+    this._roles = value;
+    this.accountRolesSelectionService.roles$.next(value);
+  }
+
+  get roles(): IRole[] {
+    return this._roles;
+  }
+
+  @Input() allowAccountsSelection: boolean = false;
+  @Input() allowRemoveAccount: boolean = true;
+
   accountsSource: LocalDataSource;
   accountsSettings: any = {
     hideSubHeader: true,
@@ -87,31 +111,27 @@ export class AccountRolesSelectionComponent implements Validator, ControlValueAc
     },
   };
 
-  private _accounts: IAccountUserRoles[] = [];
-  private _onChanged: any;
-  private _onTouched: any;
-  private _changeSubscription: Subscription;
-  private _roles: IRole[] = [];
-  private _removeAccountSubscription: Subscription;
-
   constructor(
-    private accountRolesSelectionService: AccountRolesSelectionService
-  ) {}
-
-  get roles(): IRole[] {
-    return this._roles;
-  }
-
-  @Input()
-  set roles(value: IRole[]) {
-    this._roles = value;
-    this.accountRolesSelectionService.roles$.next(value);
-  }
+    private accountRolesSelectionService: AccountRolesSelectionService,
+    private miscellaneousService: MiscellaneousService,
+    private modalService: BsModalService
+  ) { }
 
   ngOnInit(): void {
     if (!this.allowRemoveAccount) {
       delete this.accountsSettings.columns.remove;
     }
+  }
+  // ngOnInit(): void {
+  //   throw new Error('Method not implemented.');
+  // }
+  registerOnValidatorChange?(fn: () => void): void {
+    throw new Error('Method not implemented.');
+  }
+
+
+  writeValue(obj: any): void {
+    this.accounts = obj;
     this._refreshSource();
     this._changeSubscription =
       this.accountRolesSelectionService.change$.subscribe(() => {
@@ -125,16 +145,30 @@ export class AccountRolesSelectionComponent implements Validator, ControlValueAc
       );
   }
 
-  ngOnDestroy(): void {
-    this._changeSubscription?.unsubscribe();
-    this._removeAccountSubscription?.unsubscribe();
+
+
+  isRoleSelected(account: IAccountUserRoles, role: IRole) {
+    return account.roles.some(r => role.name === r);
   }
 
-  registerOnValidatorChange?(): void {}
+  roleChecked(checked: boolean, account: IAccountUserRoles, role: IRole) {
+    if (checked) {
+      account.roles.push(role.name);
+    } else {
+      this._removeRoleFromAccount(account, role.name);
+    }
+    this._notifyFormAboutChange();
+  }
 
-  writeValue(obj: any): void {
-    this._accounts = obj;
-    this._refreshSource();
+  onRemove(account) {
+    this.miscellaneousService.openConfirmModal('Are you sure you want to remove this account?', () => {
+      this._removeAccount(account);
+    });
+  }
+
+  private _removeRoleFromAccount(account: IAccountUserRoles, role: string) {
+    const indexOfRole = account.roles.indexOf(role);
+    account.roles.splice(indexOfRole, 1);
   }
 
   registerOnChange(fn: any): void {
@@ -158,7 +192,7 @@ export class AccountRolesSelectionComponent implements Validator, ControlValueAc
     if (this.allowAccountsSelection) {
       return this._noAccountSelected();
     }
-    for (const account of this._accounts) {
+    for (let account of this.accounts) {
       const error = this._noRoleSelected(account);
       if (error) {
         return error;
@@ -168,12 +202,12 @@ export class AccountRolesSelectionComponent implements Validator, ControlValueAc
   }
 
   private _refreshSource() {
-    this.accountsSource = new LocalDataSource(this._accounts);
+    this.accountsSource = new LocalDataSource(this.accounts);
   }
 
   private _noAccountSelected() {
-    if (!this._accounts.some((a) => a.isSelected)) {
-      return { noAccountSelceted: true };
+    if (!this.accounts.some(a => a.isSelected)) {
+      return { 'noAccountSelceted': true };
     }
     return null;
   }
@@ -188,9 +222,8 @@ export class AccountRolesSelectionComponent implements Validator, ControlValueAc
   private _notifyFormAboutChange() {
     if (this._onTouched) {
       this._onTouched();
-    }
-    if (this._onChanged) {
-      this._onChanged(this._accounts);
+      if (this._onChanged)
+        this._onChanged(this.accounts);
     }
   }
 
@@ -201,7 +234,39 @@ export class AccountRolesSelectionComponent implements Validator, ControlValueAc
   }
 
   private _removeAccountFromArray(account: IAccountUserRoles) {
-    const indexOfAccount = this._accounts.indexOf(account);
-    this._accounts.splice(indexOfAccount, 1);
+    const indexOfAccount = this.accounts.indexOf(account);
+    this.accounts.splice(indexOfAccount, 1);
+  }
+
+  showPrivileges(role: IRole): void {
+    const dialogData: InfoDialogData = {
+      title: `${role.displayName} Role Privileges`,
+      content: (role.rolesPrivileges || '').split('\n').sort((a, b) => a < b ? -1 : a > b ? 1 : 0),
+      dismissButtonLabel: 'Close',
+      showDismissButton: true,
+      showAsBulltes: true
+    };
+
+    this.modelRef = this.modalService.show<InfoDialogData>(InfoDialogComponent, {
+      initialState: dialogData
+    });
+  }
+
+  onSelectUnSelect(value: boolean, account: IAccountUserRoles) {
+    account.isSelected = value;
+    if (!value) {
+      this._unSelectRoles(account);
+    }
+    this._notifyFormAboutChange();
+  }
+
+  private _unSelectRoles(account: IAccountUserRoles) {
+    account.roles = [];
+  }
+
+  ngOnDestroy(): void {
+    this.modalService.hide();
+    this._changeSubscription?.unsubscribe();
+    this._removeAccountSubscription?.unsubscribe();
   }
 }

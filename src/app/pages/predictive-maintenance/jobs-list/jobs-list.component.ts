@@ -131,7 +131,7 @@ export class JobsListComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.onRecordsNumberChanged(rep.numberOfRecords);
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {

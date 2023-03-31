@@ -1,6 +1,6 @@
 nb-accordion-item-header {
     position: relative;
-    background-color: #f6f6f6;
+    //background-color: #f6f6f6;
 }
 
 label {
@@ -23,7 +23,7 @@ label {
 ::ng-deep ngx-job-shipments .shipment-trackings-container {
 
     nb-accordion-item-header {
-        padding: .5rem !important;
+        // padding: .5rem !important;
         nb-icon {
             margin-right: -0.16rem;
         }

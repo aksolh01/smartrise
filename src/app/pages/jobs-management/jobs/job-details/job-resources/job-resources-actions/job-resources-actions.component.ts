@@ -29,7 +29,7 @@ export class JobResourcesActionsComponent implements ViewCell, OnInit {
   constructor(private changeDetectorRef: ChangeDetectorRef, private permissionService: PermissionService) {
     // this.ref.detectChanges();
   }
-
+  
   onCreateNewRequest(rowData) {
     this.createNewRequest.emit(rowData);
   }
@@ -52,7 +52,9 @@ export class JobResourcesActionsComponent implements ViewCell, OnInit {
     });
     this.rowChanged.subscribe((row) => {
       this.rowData = row;
+      
     });
+    
   }
 
   enableDownloadFile() {

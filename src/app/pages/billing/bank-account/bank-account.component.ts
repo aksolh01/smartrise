@@ -6,8 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { AccountService } from '../../../services/account.service';
 import { BankAccountService } from '../../../services/bank-account.service';
 import { MessageService } from '../../../services/message.service';
-import { MultiAccountsService } from '../../../services/multi-accounts-service';
-import { SmartriseValidators } from '../../../_shared/constants';
+import { SmartriseValidators, StorageConstants, URLs } from '../../../_shared/constants';
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { trimValidator } from '../../../_shared/validators/trim-validator';
 
@@ -22,17 +21,46 @@ export class BankAccountComponent implements OnInit {
   isLoading = false;
   formSubmitted: boolean;
 
+  set accountId(value: number | null) {
+    if (value == null) {
+      sessionStorage.removeItem(StorageConstants.AddBankAccountSelectedAccount);
+      return;
+    }
+    sessionStorage.setItem(StorageConstants.AddBankAccountSelectedAccount, value.toString());
+  }
+
+  get accountId(): number | null {
+    const accountId = sessionStorage.getItem(StorageConstants.AddBankAccountSelectedAccount);
+    return +accountId;
+  }
+
   constructor(
     private accountService: AccountService,
     private route: ActivatedRoute,
     private router: Router,
     private messageService: MessageService,
     private bankAccountService: BankAccountService,
-    private multiAccountService: MultiAccountsService
   ) { }
+
+  ngOnDestroy(): void {
+    this._disposeAccountId();
+  }
+  
+  private _disposeAccountId() {
+    if (this.router.url !== URLs.ViewBankAccountsURL) {
+      this.accountId = null;
+    }
+  }
 
   ngOnInit(): void {
     this.createBankAccountForm();
+    if (!this._accountIsSelected()) {
+      this.router.navigateByUrl(URLs.ViewBankAccountsURL);
+    }
+  }
+
+  private _accountIsSelected() {
+    return this.accountId > 0;
   }
 
   createBankAccountForm() {
@@ -83,7 +111,7 @@ export class BankAccountComponent implements OnInit {
 
       this.bankAccountService.createBankAccount({
         bankAccountToken: result.token.id,
-        customerId: this.multiAccountService.getSelectedAccount()
+        customerId: this.accountId
       }).subscribe(() => {
         this.messageService.showSuccessMessage('Bank Account has been added successfully');
         this.router.navigate(['..'], { relativeTo: this.route });

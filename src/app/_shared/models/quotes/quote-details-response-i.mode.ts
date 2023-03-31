@@ -8,6 +8,7 @@ export interface IQuoteDetailsResponse {
     status?: IEnumValue;
     jobName?: string;
     contactId?: number;
+    customerId?: number;
     contact?: string;
     phone?: string;
     createdByAccount?: string;

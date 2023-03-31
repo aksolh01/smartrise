@@ -207,7 +207,7 @@ export class PartsReviewComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingsService.getBusinessSettings().subscribe(bs => {
-      this.recordsNumber = bs.numberOfRecords;
+      this.recordsNumber = bs.numberOfRecords || 25;
       this.onRecordsNumberChanged(bs.numberOfRecords);
     });
     this.pParts = this.populateLookupAsFilterList(Part);

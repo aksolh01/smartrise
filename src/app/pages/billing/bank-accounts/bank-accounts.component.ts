@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
-import { Subscription } from 'rxjs';
+import { map, Subscription, tap } from 'rxjs';
 import { BankAccountService } from '../../../services/bank-account.service';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MessageService } from '../../../services/message.service';
@@ -18,7 +18,7 @@ import { SettingService } from '../../../services/setting.service';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
 import { CpListFilterComponent } from '../../../_shared/components/table-filters/cp-list-filter.component';
-import { CommonValues } from '../../../_shared/constants';
+import { CommonValues, PERMISSIONS, StorageConstants, URLs } from '../../../_shared/constants';
 import { BaseServerDataSource } from '../../../_shared/datasources/base-server.datasource';
 import { BankAccountParams } from '../../../_shared/models/bank-account.model';
 import { IEnumValue } from '../../../_shared/models/enumValue.model';
@@ -33,9 +33,11 @@ import { PlaidService } from '../../../services/plaid.service';
 import { AccountService } from '../../../services/account.service';
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
-import { AccountNameCellComponent } from '../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../services/account-info.service';
 import { VerifyBankAccountComponent } from './verify-bank-account/verify-bank-account.component';
+import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
+import { IBusinessSettings } from '../../../_shared/models/settings';
+import { IUserAccountLookup } from '../../../_shared/models/IUser';
 
 
 @Component({
@@ -59,6 +61,12 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
 
   yesNoList: { value?: boolean; title: string }[];
 
+  get accountSelected(): boolean {
+    return this.accountId ? true : false;
+  }
+
+  showSelectAccount: boolean = this.multiAccountService.hasMultipleAccounts() && this.miscellaneousService.isCustomerUser();
+
   settings: any = {
     mode: 'external',
     actions: {
@@ -71,13 +79,19 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
+        show: false,
         filter: {
           type: 'custom',
           component: CpFilterComponent,
@@ -182,7 +196,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   accountTypes: { value: any; title: string }[] = [];
   accountStatuses: IEnumValue[];
 
-  customerName: string;
+  account: string;
   accountType: string;
   accountHolderName: string;
   last4: string;
@@ -192,6 +206,25 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   sbavRef: BsModalRef<SelectBankAccountVerificationComponent>;
   plaidExitSub: Subscription;
   plaidSuccessSub: Subscription;
+  accountsWithSaveOnlineQuotePermission: any[];
+  accounts: IUserAccountLookup[];
+
+  private _isCreatingBankAccount: boolean = false;
+  hasMultipleAccounts: boolean = this.multiAccountService.hasMultipleAccounts();
+
+  set accountId(value: number | null) {
+    if (value == null) {
+      sessionStorage.removeItem(StorageConstants.AddBankAccountSelectedAccount);
+      return;
+    }
+    sessionStorage.setItem(StorageConstants.AddBankAccountSelectedAccount, value.toString());
+  }
+
+  get accountId(): number | null {
+    const accountId = sessionStorage.getItem(StorageConstants.AddBankAccountSelectedAccount);
+
+    return accountId == null ? null : +accountId;
+  }
 
   constructor(
     private router: Router,
@@ -207,9 +240,15 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     private accountInfoService: AccountInfoService,
     baseService: BaseComponentService,
     private route: ActivatedRoute,
-    private multiAccountService: MultiAccountsService
+    private multiAccountService: MultiAccountsService,
   ) {
     super(baseService);
+  }
+
+  ngAfterViewInit(): void {
+    if (this._accountIdSelected()) {
+      //this.onAccountSelected(this.accountId);
+    }
   }
 
   onActionsInit(actions: BankAccountActionsComponent) {
@@ -284,7 +323,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber,
+      perPage: this.recordsNumber || 25,
     };
 
     this.settings.columns.status.filter.config.list = this.accountStatuses.map(
@@ -309,13 +348,16 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     this.source.serviceErrorCallBack = () => {};
 
     this.source.serviceCallBack = (params) => {
+
+      if (this.hasMultipleAccounts && !this.accountSelected) {
+        return this.emptyData();
+      }
+
       const bankAccountParams = params as BankAccountParams;
 
       if (this.isSmall) {
-        bankAccountParams.customerName = this.customerName;
-        bankAccountParams.accountType = this.isEmpty(this.accountType)
-          ? null
-          : this.accountType;
+        bankAccountParams.account = this.account;
+        bankAccountParams.accountType = this.isEmpty(this.accountType) ? null : this.accountType;
         bankAccountParams.accountHolderName = this.accountHolderName;
         bankAccountParams.bankName = this.bankName;
         bankAccountParams.status = this.isEmpty(this.status)
@@ -350,6 +392,23 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   async ngOnInit() {
+    await this._loadUserAccounts();
+    if (this.accounts.length === 1) {
+      this._handleSingleAccount();
+    }
+    await this._init();
+  }
+
+  private _handleSingleAccount() {
+    this.accountId = this.accounts[0].accountId;
+    this.showSelectAccount = false;
+  }
+
+  private _accountIdSelected() {
+    return this.accountId > 0;
+  }
+
+  private async _init() {
     this.isImpersonate = this.miscellaneousService.isImpersonateMode();
     this.settings.columns.actionsCol.title = this.isImpersonate
       ? 'View Details'
@@ -360,7 +419,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
       .toPromise();
 
     this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription =
         this.responsiveService.currentBreakpoint$.subscribe((w) => {
@@ -422,7 +481,6 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
       this.route.snapshot.queryParamMap.get('oauth_state_id');
 
     if (receivedRedirectUri != null) {
-      console.log('here we go');
       this.plaidService.reInitializePlaidLink();
     }
   }
@@ -455,7 +513,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   onReset() {
-    this.customerName = null;
+    this.account = null;
     this.accountType = '';
     this.accountHolderName = null;
     this.bankName = null;
@@ -488,12 +546,22 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
       this.responsiveSubscription?.unsubscribe();
     }
 
-    this.modelService.hide();
-    this.plaidExitSub.unsubscribe();
-    this.plaidSuccessSub.unsubscribe();
-    this.plaidService.close();
+    if (this.modelService.getModalsCount() > 0) {
+      this.modelService.hide();
+    }
+    this.plaidExitSub?.unsubscribe();
+    this.plaidSuccessSub?.unsubscribe();
+    this.plaidService?.close();
     this.stopGuidingTour();
     this.joyrideService = null;
+    this._disposeAccountID();
+    this.accountInfoService.closePopup();
+  }
+
+  private _disposeAccountID() {
+    if (!this.router.url.startsWith(URLs.ViewBankAccountsURL)) {
+      this.accountId = null;
+    }
   }
 
   startGuidingTour() {
@@ -542,18 +610,72 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     this.runGuidingTour = false;
   }
 
-  onCreateBankAccount() {
-    this.sbavRef =
-      this.modelService.show<SelectBankAccountVerificationComponent>(
-        SelectBankAccountVerificationComponent,
-        {
-          initialState: {},
-        }
-      );
-    this.sbavRef.content.connect.subscribe(() => {
-      this.sbavRef.content.loading.next(true);
-      this.onCreateLink();
+  onAccountSelected(event) {
+    this.accountId = event;
+    this._saveAccountInfoToStorage(this.accountId);
+    this.onSearch();
+  }
+
+  async onCreateBankAccount() {
+
+    if (this._isCreatingBankAccount) {
+      return;
+    }
+    this._isCreatingBankAccount = true;
+
+    this._showSelectBankAccountVerificationPopup()
+      .subscribe(this._bankAccountVerificationSelectedCallback.bind(this));
+  }
+
+  private _bankAccountVerificationSelectedCallback(component: SelectBankAccountVerificationComponent) {
+    this._isCreatingBankAccount = false;
+    if (component.creationMode === 'Connect') {
+      this._handleConnectMode(component);
+    } else if (component.creationMode === 'Manual') {
+      this._handleManualMode();
+    }
+  }
+
+  private _handleManualMode() {
+    sessionStorage.setItem(StorageConstants.AddBankAccountSelectedAccount, this.accountId.toString());
+    this.router.navigateByUrl(`pages/billing/bank-accounts/add`);
+  }
+
+  private _handleConnectMode(component: SelectBankAccountVerificationComponent) {
+    component.loading.next(true);
+    this.onCreateLink();
+  }
+
+  private _showSelectBankAccountVerificationPopup() {
+    this.sbavRef = this.modelService.show<SelectBankAccountVerificationComponent>(SelectBankAccountVerificationComponent, {
+      initialState: {}
     });
+    return this.sbavRef.onHide.pipe(
+      map(() => this.sbavRef.content)
+    );
+  }
+
+  private _getAuthorizedAccounts(accounts: IUserAccountLookup[]) {
+    return accounts.filter(acc => acc.permissions.some(p => p === PERMISSIONS.ManageBankAccounts));
+  }
+
+  private _saveAccountInfoToStorage(accountId: number) {
+    sessionStorage.setItem(StorageConstants.AddBankAccountSelectedAccount, accountId.toString());
+    sessionStorage.setItem(StorageConstants.AddBankAccountSelectedAccountName, this._getAccountNameFromId(accountId));
+  }
+
+  private _getAccountNameFromId(accountId: number): string {
+    return this.accounts.find(ac => ac.accountId === accountId)?.name;
+  }
+
+  private _loadUserAccounts() {
+    return this.accountService
+      .loadCurrentUser()
+      .pipe(
+        tap(user => {
+          this.accounts = this._getAuthorizedAccounts(user.accounts);
+        })
+      ).toPromise();
   }
 
   private _getAccountTypes(): { value: any; title: string }[] {

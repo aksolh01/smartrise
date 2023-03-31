@@ -3,11 +3,16 @@
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+    margin-bottom: 16px;
+    
     .page-header-title{
       font-size: 24px;
       color: var(--primary-color-black);
       font-weight: 600;
       flex-shrink: 0;
+      span{
+        color: var(--primary-color-blue);
+      }
     }
   }
   .table-container{
@@ -16,6 +21,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 32px;
+      .table-record{
+        font-size: 14px;
+      }
+    }
+    a {
+      color:var(--primary-color-gray) !important;
+      text-decoration: none;
     }
     .table-content{
       tbody{
@@ -35,6 +48,22 @@
         font-weight: 600;
         font-size: 14px;
       }
+      .ng2-smart-title{
+        color:var(--primary-color-gray);
+      }
+      a:not([href]):not([tabindex]) {
+        text-decoration: none !important;
+        color:var(--primary-color-gray);
+        cursor: pointer;
+        min-width: 200px;
+        display: inline-block;
+        margin-top: 10px;
+        margin-left: 8px;
+      }
+      a:not([href]):not([tabindex]):hover {
+        color:var(--primary-color-gray);
+       }
+    
       ng2-smart-table thead tr.ng2-smart-filters th {
         padding-bottom: 25px;
         padding-top: 0;
@@ -69,7 +98,7 @@
         .ng-star-inserted{
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          //justify-content: space-between;
         }
         .ng2-smart-titles {
           display: none !important;

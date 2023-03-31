@@ -17,7 +17,8 @@ import { PermissionService } from './services/permission.service';
 import { TitleService } from './services/title.service';
 import { TokenService } from './services/token.service';
 import { RoutingService } from './services/routing.service';
-import { StorageConstants } from './_shared/constants';
+import { StorageConstants, URLs } from './_shared/constants';
+import { IUser } from './_shared/models/IUser';
 
 @Component({
   selector: 'ngx-app',
@@ -42,7 +43,6 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-
     this.titleService.updatePageTitle();
     this.shareSessionStorageAmongTabs();
     const userLoggedIn = await this.accountService.isLoggedInV2().toPromise();
@@ -53,50 +53,59 @@ export class AppComponent implements OnInit {
   }
 
   loadCurrentUser(callback?: () => void) {
-
     const token = this.tokenService.getToken();
 
     if (token) {
       this.accountService
         .loadCurrentUser(token)
-        .pipe(
-          tap(user => this._setUserAccounts(user.accounts)),
-        )
         .subscribe(
-          (perms) => {
+          (user) => this._onCurrentUserReady(user, callback),
+          (error) => this._onCurrentUserError(error),
+        );
+    }
+  }
 
-            this.permissionService.setPermissions(perms.accounts);
+  private _onCurrentUserReady(user: IUser, callback?: () => void) {
+    this._setUserAccounts(user.accounts);
+    this.permissionService.setPermissions(user.accounts);
 
             if (callback && typeof callback === 'function') {
               callback();
             }
 
-            this.accountService.changeUser();
-          },
-          (error) => {
-            if (error.status === 500) {
-              this.tokenService.clearToken();
-              this.router.navigateByUrl('auth/login');
-            }
-          },
-        );
+    this.accountService.changeUser();
+  }
+
+  private _onCurrentUserError(error) {
+    if (error.status === 500) {
+      this.tokenService.clearToken();
+      this.router.navigateByUrl('auth/login');
     }
   }
 
   private _setUserAccounts(accounts: any): void {
-    this.multiAccountService.setAccounts(accounts?.map(acc => acc.accountId));
+    this.multiAccountService.setAccounts(accounts);
   }
 
-  shareSessionStorageAmongTabs(): void {
+  shareSessionStorageAmongTabs() {
     // source: http://blog.guya.net/2015/06/12/sharing-sessionstorage-between-tabs-for-secure-multi-tab-authentication/
-
-    if (!sessionStorage.length) {
-      // New tab opened with remember me set to false
-      localStorage.setItem(StorageConstants.GetSessionStorage, Date.now().toString());
+    if (this._isNewTab()) {
+      this._requestSessionData();
     } else {
       this.loadCurrentUser();
     }
+    this._registerStorageEvents();
+  }
 
+  private _requestSessionData() {
+    localStorage.setItem(StorageConstants.GetSessionStorage, Date.now().toString());
+  }
+
+  private _isNewTab() {
+    return !sessionStorage.length;
+  }
+
+  private _registerStorageEvents() {
     fromEvent(window, 'storage')
       .pipe(
         filter((event: StorageEvent) => event.key === StorageConstants.GENERATEFILE)
@@ -112,8 +121,7 @@ export class AppComponent implements OnInit {
 
     fromEvent(window, 'storage')
       .pipe(
-        filter((event: StorageEvent) =>
-          event.key === StorageConstants.GetSessionStorage ||
+        filter((event: StorageEvent) => event.key === StorageConstants.GetSessionStorage ||
           event.key === StorageConstants.SessionStorage ||
           event.key === StorageConstants.SessionExpired ||
           event.key === StorageConstants.SelectedAccount ||
@@ -129,7 +137,6 @@ export class AppComponent implements OnInit {
             // if (location.pathname.indexOf('auth/login') >= 0) {
             //   this.router.navigate(['/', 'pages', 'dashboard']);
             // }
-
             if (this.tokenService.getProperty('RolesChanged')) {
               location.reload();
             }
@@ -151,7 +158,7 @@ export class AppComponent implements OnInit {
     }
 
     if (event.key === StorageConstants.SelectedAccount) {
-      this.routingService.reloadCurrentRoute();
+      this._handleOnAccountSelected();
       return;
     }
 
@@ -201,5 +208,10 @@ this.router.navigateByUrl('auth/logout');
         callback();
       }
     }
+  }
+
+  private _handleOnAccountSelected() {
+    this.permissionService.notifyPermissionsChanged();
+    this.router.navigateByUrl(URLs.HomeURL);
   }
 }

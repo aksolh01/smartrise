@@ -13,7 +13,6 @@ import { CustomerUsersParams } from '../../../_shared/models/customerUsersParams
 import { ICustomerUserRoleLookup } from '../../../_shared/models/ICustomerUserRoleLookup';
 import { ICustomerUserLookup } from '../../../_shared/models/ICustomerUserLookup';
 import { IGetCustomerUser } from '../../../_shared/models/IGetCustomerUser';
-import { AccountService } from '../../../services/account.service';
 import { MessageService } from '../../../services/message.service';
 import { PermissionService } from '../../../services/permission.service';
 import { ResponsiveService } from '../../../services/responsive.service';
@@ -27,6 +26,13 @@ import * as guidingTourGlobal from '../../guiding.tour.global';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
+import { AccountsListCellComponent } from '../../account-users-management/account-users/accounts-list-cell/accounts-list-cell.component';
+import { AccountService } from '../../../services/account.service';
+import { TokenService } from '../../../services/token.service';
+import { MultiAccountsService } from '../../../services/multi-accounts-service';
+import { InfoDialogData } from '../../../_shared/components/info-dialog/info-dialog-data';
+import { InfoDialogComponent } from '../../../_shared/components/info-dialog/info-dialog.component';
+import { ListTitleService } from '../../../services/list-title.service';
 
 @Component({
   selector: 'ngx-customer-users',
@@ -99,6 +105,23 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
           component: CpFilterComponent,
         },
       },
+      accounts: {
+        title: 'Accounts',
+        type: 'custom',
+        renderComponent: AccountsListCellComponent,
+        onComponentInitFunction: (instance: AccountsListCellComponent) => {
+          instance.setHeader('Accounts');
+          instance.clicked.subscribe((accountId) => {
+            this.router.navigateByUrl(`/pages/settings-management/accounts/${accountId}`);
+          });
+          instance.showAccountInfo.subscribe((account) => {
+            this._showAccountRoles(account);
+          });
+        },
+        filter: false,
+        sort: false,
+        width: '35%'
+      },
       actionsCol: {
         filter: false,
         sort: false,
@@ -111,6 +134,8 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
     },
   };
   responsiveSubscription: Subscription;
+  showAccountRolesDialog: any;
+  title: string;
 
   constructor(
     private router: Router,
@@ -122,15 +147,95 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
     private joyrideService: JoyrideService,
     private permissionService: PermissionService,
     private miscellaneousService: MiscellaneousService,
-    baseService: BaseComponentService
+    private tokenService: TokenService,
+    private multiAccountService: MultiAccountsService,
+    private listTitleService: ListTitleService,
+    baseService: BaseComponentService,
+
   ) {
     super(baseService);
   }
 
-  ngOnInit(): void {
+  initializeSource() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber || 25
+    };
+    this.source = new BaseServerDataSource();
+    this.source.convertFilterValue = (field, value) => {
+      if (this.isEmpty(value))
+        return null;
+
+      return value;
+    };
+    this.source.serviceErrorCallBack = (error) => { };
+
+    this.source.serviceCallBack = (params) => {
+
+      if (this.isSmall) {
+        const sParam = params as CustomerUsersParams;
+        sParam.firstName = this.firstName;
+        sParam.lastName = this.lastName;
+        sParam.email = this.email;
+      }
+
+      const searchParams = params as CustomerUsersParams
+      searchParams.customerId = this.multiAccountService.getSelectedAccount();
+
+      return this.accountService.getCustomerUsersByCustomerAdmin(searchParams);
+
+    };
+    this.source.dataLoading.subscribe(isLoading => {
+      this.isLoading = isLoading;
+
+      setTimeout(() => {
+        this.startGuidingTour();
+      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+    });
+  }
+
+  onComponentInitFunction(instance: CustomerUserActionsComponent) {
+    instance.editUser.subscribe(user => {
+      this.onEditUser(user);
+    });
+    instance.resetPassword.subscribe(user => {
+      this.onResetPassword(user);
+    });
+    instance.resendInvitation.subscribe(user => {
+      this.onResendInvitation(user);
+    });
+  }
+
+  onResendInvitation(user: IGetCustomerUser) {
+    this.miscellaneousService.openConfirmModal(
+      'Are you sure you want to resend the invitation link?',
+      () => {
+        this._sendInvitationLink(user);
+      }
+    );
+  }
+
+  private _sendInvitationLink(user: IGetCustomerUser) {
+    this.isLoading = true;
+    this.accountService.userResendInvitationLink(user.id).subscribe(
+      () => {
+        this.messageService.showSuccessMessage(
+          'Invitation link has been resent successfully'
+        );
+        this.isLoading = false;
+      },
+      (error) => {
+        this.isLoading = false;
+      }
+    );
+  }
+
+  async ngOnInit() {
+    this.title = await this.listTitleService.buildTitle('Account Users');
     this.enableCreateCustomerUser();
     this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords;
+      this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
       this.responsiveSubscription =
         this.responsiveService.currentBreakpoint$.subscribe((w) => {
@@ -153,10 +258,16 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
     });
   }
 
-  enableCreateCustomerUser() {
-    this.canCreateCustomerUser = this.permissionService.hasPermission(
-      'CustomerUsersCreate'
-    );
+  async enableCreateCustomerUser() {
+
+    if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasManyAccountsAndOneSelectedAccount()) {
+      this.canCreateCustomerUser = await this.permissionService.hasPermissionInAccountAsync(
+        "CustomerUsersCreate", 
+        this.multiAccountService.getSelectedAccount());
+    }
+    else {
+      this.canCreateCustomerUser = this.permissionService.hasPermission('CustomerUsersCreate');
+    }
   }
 
   onCreateUser() {
@@ -166,9 +277,16 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
   }
 
   onEditUser(user: ICustomerUserLookup) {
-    this.router.navigateByUrl(
-      'pages/settings-management/customer-users/' + user.id
-    );
+    if (this._isLoggedInUser(user)) {
+      this.messageService.showInfoMessage("Please contact your Account Administrator or Regional Business Development Manager to update your account roles");
+      return;
+    }
+
+    this.router.navigateByUrl('pages/settings-management/customer-users/' + user.id);
+  }
+
+  private _isLoggedInUser(user: ICustomerUserLookup) {
+    return user.id === this.tokenService.getProperty("UserId");
   }
 
   onResetPassword(user: ICustomerUserLookup) {
@@ -176,24 +294,6 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
       'Are you sure you want to reset the password?',
       () => {
         this._sendResetPassword(user);
-      }
-    );
-  }
-
-  onActivateUser(user: ICustomerUserLookup) {
-    this.miscellaneousService.openConfirmModal(
-      'Are you sure you want to activate this user?',
-      () => {
-        this._sendActivateUser(user);
-      }
-    );
-  }
-
-  onDeactivateUser(user: ICustomerUserLookup) {
-    this.miscellaneousService.openConfirmModal(
-      'Are you sure you want to deactivate this user?',
-      () => {
-        this._sendDeactivateUser(user);
       }
     );
   }
@@ -235,71 +335,13 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
     this.showFilters = !this.showFilters;
   }
 
-  initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber,
-    };
-    this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-        return null;
-      }
-
-      return value;
-    };
-    this.source.serviceErrorCallBack = () => {};
-    this.source.serviceCallBack = (params) => {
-      if (this.isSmall) {
-        const sParam = params as CustomerUsersParams;
-        sParam.firstName = this.firstName;
-        sParam.lastName = this.lastName;
-        sParam.email = this.email;
-      }
-      return this.accountService.getCustomerUsersByCustomerAdmin(
-        params as CustomerUsersParams
-      );
-    };
-    this.source.dataLoading.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-
-      setTimeout(
-        () => {
-          this.startGuidingTour();
-        },
-        this.isSmall
-          ? guidingTourGlobal.smallScreenSuspensionTimeInterval
-          : guidingTourGlobal.wideScreenSuspensionTimeInterval
-      );
-    });
-  }
-
-  onComponentInitFunction(instance: CustomerUserActionsComponent) {
-    instance.editUser.subscribe((user) => {
-      this.onEditUser(user);
-    });
-    instance.resetPassword.subscribe((user) => {
-      this.onResetPassword(user);
-    });
-    instance.activateUser.subscribe((user) => {
-      this.onActivateUser(user);
-    });
-    instance.deactivateUser.subscribe((user) => {
-      this.onDeactivateUser(user);
-    });
-    instance.resendInvitation.subscribe((user) => {
-      this.onResendInvitation(user);
-    });
-  }
-
-  onResendInvitation(user: IGetCustomerUser) {
-    this.miscellaneousService.openConfirmModal(
-      'Are you sure you want to resend the invitation link?',
-      () => {
-        this._sendInvitationLink(user);
-      }
-    );
+  private _sendResetPassword(user: ICustomerUserLookup) {
+    this.accountService.resetUserPasswordRequest(user.id)
+      .subscribe(() => {
+        this.messageService.showSuccessMessage('User password reset request has been sent successfully');
+      },
+        error => {
+        });
   }
 
   startGuidingTour() {
@@ -313,15 +355,29 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
 
   openGuidingTour() {
     if (this.joyrideService) {
-      this.joyrideService.startTour({
-        steps: ['customerUserFirstStep', 'customerUserSecondStep'],
-        themeColor: guidingTourGlobal.guidingTourThemeColor,
-        customTexts: {
-          prev: guidingTourGlobal.guidingTourPrevButtonText,
-          next: guidingTourGlobal.guidingTourNextButtonText,
-          done: guidingTourGlobal.guidingTourDoneButtonText,
-        },
-      });
+      if (this.canCreateCustomerUser) {
+        this.joyrideService.startTour({
+          steps: ['customerUserFirstStep', 'customerUserSecondStep'],
+          themeColor: guidingTourGlobal.guidingTourThemeColor,
+          customTexts: {
+            prev: guidingTourGlobal.guidingTourPrevButtonText,
+            next: guidingTourGlobal.guidingTourNextButtonText,
+            done: guidingTourGlobal.guidingTourDoneButtonText
+          }
+        });
+      }
+      else {
+        this.joyrideService.startTour({
+          steps: ['customerUserFirstStep'],
+          themeColor: guidingTourGlobal.guidingTourThemeColor,
+          customTexts: {
+            prev: guidingTourGlobal.guidingTourPrevButtonText,
+            next: guidingTourGlobal.guidingTourNextButtonText,
+            done: guidingTourGlobal.guidingTourDoneButtonText
+          }
+        });
+      }
+
     }
   }
 
@@ -350,57 +406,22 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
     this.joyrideService = null;
   }
 
-  private _sendInvitationLink(user: IGetCustomerUser) {
-    this.isLoading = true;
-    this.accountService.userResendInvitationLink(user.id).subscribe(
-      () => {
-        this.messageService.showSuccessMessage(
-          'Invitation link has been resent successfully'
-        );
-        this.isLoading = false;
-      },
-      () => {
-        this.isLoading = false;
+  private _showAccountRoles(account: any) {
+    const roles = [];
+    let showAsBulltes = true;
+    if (account.roles && account.roles.length > 0) {
+      roles.push(...account.roles);
+    } else {
+      roles.push('No roles found');
+      showAsBulltes = false;
+    }
+    this.showAccountRolesDialog = this.modalService.show<InfoDialogData>(InfoDialogComponent, {
+      initialState: {
+        title: 'Roles',
+        content: roles.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0)),
+        showAsBulltes: showAsBulltes,
+        dismissButtonLabel: 'Close'
       }
-    );
-  }
-
-  private _sendDeactivateUser(user: ICustomerUserLookup) {
-    this.accountService.deactivateUser(user.id).subscribe(
-      () => {
-        this.messageService.showSuccessMessage(
-          'User has been deactivated successfully'
-        );
-        this.source.refresh();
-      },
-      () => {
-        this.source.refresh();
-      }
-    );
-  }
-
-  private _sendActivateUser(user: ICustomerUserLookup) {
-    this.accountService.activateUser(user.id).subscribe(
-      () => {
-        this.messageService.showSuccessMessage(
-          'User has been activated successfully'
-        );
-        this.source.refresh();
-      },
-      () => {
-        this.source.refresh();
-      }
-    );
-  }
-
-  private _sendResetPassword(user: ICustomerUserLookup) {
-    this.accountService.resetUserPasswordRequest(user.id).subscribe(
-      () => {
-        this.messageService.showSuccessMessage(
-          'User password reset request has been sent successfully'
-        );
-      },
-      () => {}
-    );
+    });
   }
 }

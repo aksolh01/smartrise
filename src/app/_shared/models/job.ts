@@ -42,12 +42,6 @@ export interface IJob {
   resourceFiles: IJobResource[];
 }
 
-export interface IJobLookup {
-  id: number;
-  jobNumber: string;
-  jobName: string;
-}
-
 export interface IJobResource {
   resourceType: IEnumValue;
   id: number;

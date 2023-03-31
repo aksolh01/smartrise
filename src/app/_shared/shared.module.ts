@@ -91,8 +91,8 @@ import { RolesChecklistCellComponent } from './components/roles-checklist-cell/r
 import { AccountRolesSelectionComponent } from './components/account-roles-selection/account-roles-selection.component';
 import { SelectableAccountCellComponent } from './components/selectable-account-cell/selectable-account-cell.component';
 import { RemoveAccountCellComponent } from './components/remove-account-cell/remove-account-cell.component';
-import { AccountNameCellComponent } from './components/account-name-cell/account-name-cell.component';
 import { AccountInfoComponent } from './components/account-info/account-info.component';
+import { AccountTableCellComponent } from './components/account-table-cell/account-table-cell.component';
 
 @NgModule({
   declarations: [
@@ -142,6 +142,7 @@ import { AccountInfoComponent } from './components/account-info/account-info.com
     AddressFieldComponent,
     ProfilePictureComponent,
     HLinkTableCellComponent,
+    AccountTableCellComponent,
     InformativeCellComponentComponent,
     NgxButtonComponent,
     NumberTableCellComponent,
@@ -164,8 +165,8 @@ import { AccountInfoComponent } from './components/account-info/account-info.com
     AccountRolesSelectionComponent,
     SelectableAccountCellComponent,
     RemoveAccountCellComponent,
-    AccountNameCellComponent,
     AccountInfoComponent,
+    AccountTableCellComponent,
   ],
   imports: [
     CommonModule,
@@ -180,6 +181,7 @@ import { AccountInfoComponent } from './components/account-info/account-info.com
     NbCardModule,
     NbSelectModule,
     NbButtonModule,
+    NbToggleModule,
     Ng2SmartTableModule,
     TooltipModule,
     NbSpinnerModule,
@@ -197,6 +199,7 @@ import { AccountInfoComponent } from './components/account-info/account-info.com
     NbToggleModule,
     NbAutocompleteModule,
     NbSpinnerModule,
+    NbCheckboxModule,
     NbDatepickerModule,
     NbPopoverModule,
     Ng2SmartTableModule,
@@ -232,6 +235,7 @@ import { AccountInfoComponent } from './components/account-info/account-info.com
     Ng2TableCellComponent,
     Ng2TableHtmlCellComponent,
     HLinkTableCellComponent,
+    AccountTableCellComponent,
     InformativeCellComponentComponent,
     RolesChecklistComponent,
     InfoDialogComponent,

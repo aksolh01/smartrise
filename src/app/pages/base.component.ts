@@ -4,6 +4,8 @@ import { ITextValueLookup } from '../_shared/models/text-value.lookup';
 import { BaseComponentService } from '../services/base-component.service';
 import { PermissionService } from '../services/permission.service';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { IPagination } from '../_shared/models/pagination';
 
 export class BaseComponent {
 
@@ -56,6 +58,15 @@ export class BaseComponent {
 return null;
 }
     return JSON.parse(error.error.instance);
+  }
+
+  protected emptyData(): Observable<IPagination> {
+    return of({
+      data: [],
+      count: 0,
+      pageIndex: 1,
+      pageSize: 1
+    });
   }
 
   formatMoney(value: number) {

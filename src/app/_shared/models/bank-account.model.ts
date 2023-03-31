@@ -2,7 +2,7 @@ import { BaseParams } from './baseParams';
 import { IEnumValue } from './enumValue.model';
 
 export class BankAccountParams extends BaseParams {
-    customerName: string;
+    account: string;
     accountType: string;
     accountHolderName: string;
     bankName: string;

@@ -1,64 +1,48 @@
-<div class="row">
-  <div class="col-lg-6">
+<div class="card-details">
+  <div class="card-details-container">
 
-    <div *ngIf="displayAccountName" class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" id="last4" value="{{ job?.customerName | value }}">
-      </div>
+    <div *ngIf="displayAccountName" class="displayData">
+      <div class="label">Account Name</div>
+      <div class="content" id="last4">{{ job?.customerName | value }}</div>
     </div>
 
-    <div class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" id="last4" value="{{ job?.jobName | value }}">
-      </div>
+    <div class="displayData">
+      <div class="label">Job Name</div>
+      <div class="content" id="last4" value="">{{ job?.jobName | value }}</div>
     </div>
 
-    <div class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Number</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" value="{{ job?.jobNumber | value }}">
-      </div>
+    <div class="displayData">
+      <div class="label">Job Number</div>
+      <div class="content">{{ job?.jobNumber | value }}</div>
     </div>
 
-    <div class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">PO Number</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" value="{{ job?.customerPONumber | value }}">
-      </div>
+    <div class="displayData">
+      <div class="label">PO Number</div>
+      <div class="content">{{ job?.customerPONumber | value }}</div>
     </div>
 
   </div>
 
-  <div class="col-lg-6">
+  <div class="card-details-container">
 
-    <div class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Desired Ship Date</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" value="{{ job?.shipDate | usdate | value }}">
-      </div>
+    <div class="displayData">
+      <div class="label">Desired Ship Date</div>
+      <div class="content">{{ job?.shipDate | usdate | value }}</div>
     </div>
 
-    <div class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Tentative Ship Date</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" value="{{ job?.grantedShipDate | usdate | value }}">
-      </div>
+    <div class="displayData">
+      <div class="label">Tentative Ship Date</div>
+      <div class="content">{{ job?.grantedShipDate | usdate | value }}</div>
     </div>
 
-    <div class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Actual Ship Date</label>
-      <div class="col-12 col-lg-8">
-        <input readonly type="text" class="form-control-plaintext" value="{{ job?.actualShipDate | usdate | value }}">
-      </div>
+    <div class="displayData">
+      <div class="label">Actual Ship Date</div>
+      <div class="content">{{ job?.actualShipDate | usdate | value }}</div>
     </div>
 
-    <div *ngIf="passcode" class="form-group row">
-      <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Passcode</label>
-      <div class="col-12 col-lg-8">
-        <div [innerHTML]="passcode" class="form-control-plaintext">
-        </div>
+    <div *ngIf="passcode" class="displayData">
+      <div class="label">Passcode</div>
+      <div [innerHTML]="passcode" class="content">
       </div>
     </div>
 

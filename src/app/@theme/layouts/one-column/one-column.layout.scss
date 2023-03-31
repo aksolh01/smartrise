@@ -4,9 +4,9 @@
 
 @include nb-install-component() {
   ::ng-deep nb-layout-header nav {
-    background: #fff;
-    border-bottom: 1px solid #e9e9e6;
-    border-top: 3px solid #ededed;
+    // background: #fff;
+    // border-bottom: 1px solid #e9e9e6;
+    // border-top: 3px solid #ededed;
   }
 
   .disable-scroll {

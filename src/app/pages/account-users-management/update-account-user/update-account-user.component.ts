@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { forkJoin, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -12,6 +13,7 @@ import { IAccountUserRoles } from '../../../_shared/models/account-selection.mod
 import { IAccountUserPayload, IAccountUserResponse } from '../../../_shared/models/account-user.model';
 import { IAccountLookup } from '../../../_shared/models/customer-lookup';
 import { IRole } from '../../../_shared/models/role';
+import { AccountsWithoutMatchingContactsComponent } from '../accounts-without-matching-contacts/accounts-without-matching-contacts.component';
 
 @Component({
   selector: 'ngx-update-account-user',
@@ -32,10 +34,8 @@ export class UpdateAccountUserComponent implements OnInit {
   formSubmitted: boolean;
   rolesTouched: boolean;
 
-  @ViewChild('selectedAccountInput') selectedAccountInput: ElementRef<HTMLInputElement>;
   filteredAccounts: any[];
   isSaving: boolean;
-  debounceTimeSearchAccounts = new Subject<string>();
 
   constructor(
     private router: Router,
@@ -43,10 +43,10 @@ export class UpdateAccountUserComponent implements OnInit {
     private accountService: AccountService,
     private messageService: MessageService,
     private customerService: CustomerService,
+    private modalService: BsModalService,
     private bcService: BreadcrumbService
   ) {
     this.bcService.set('@userName', { skip: true });
-    this.debounceTimeSearchAccounts.pipe(debounceTime(200)).subscribe(val => this.onSearchAccounts(val));
   }
 
   ngOnInit(): void {
@@ -114,15 +114,52 @@ export class UpdateAccountUserComponent implements OnInit {
     };
 
     this.accountService.updateAccountUserBySmartrise(accountUser).subscribe(
-      () => {
-        this.messageService.showSuccessMessage('Account user has been updated successfully');
-        this.router.navigateByUrl(URLs.ViewAccountUsersURL);
-      },
-      (error) => {
-        console.log('');
-        this.isSaving = false;
-      }
+      (updateResponse) => this._onUserUpdated(updateResponse),
+      (error) => this._onUserCreationFailed(error)
     );
+  }
+
+  private _onUserCreationFailed(error: any): void {
+    this.isSaving = false;
+    if(error?.error?.failedResult && error.error.failedResult.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnFailedScenario(error.error.failedResult).subscribe(() => { });
+    }
+  }
+
+  private _showAccountsWithoutMatchingContactsOnFailedScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'failed',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Failed to update Account User.',
+        topMessage: `The Account User could not be linked to the following Account(s):`,
+        bottomMessage: 'Please add the Account User as an Account Contact in Salesforce.'
+      }
+    }).onHide;
+  }
+
+  private _onUserUpdated(response) {
+    this.isSaving = false;
+    if (response.accountsWithoutMatchingContacts.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnSuccessScenario(response.accountsWithoutMatchingContacts).subscribe(() => {
+        this.router.navigateByUrl(URLs.ViewAccountUsersURL);
+      });
+      return;
+    }
+    this.messageService.showSuccessMessage('Account user has been updated successfully');
+    this.router.navigateByUrl(URLs.ViewAccountUsersURL);
+  }
+
+  private _showAccountsWithoutMatchingContactsOnSuccessScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'success',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Account User has been updated successfully.',
+        topMessage: `The Account User could not be linked to the following Account(s):`,
+        bottomMessage: 'Please add the Account User as an Account Contact in Salesforce.'
+      }
+    }).onHide;
   }
 
   onSearchAccounts(searchValue: string) {
@@ -132,10 +169,8 @@ export class UpdateAccountUserComponent implements OnInit {
   }
 
   onSelectionChange(selectedAccount: IAccountLookup) {
-    this.selectedAccountInput.nativeElement.value = null;
-
     if (this._accountAlreadySelected(selectedAccount.id)) {
-      this.messageService.showErrorMessage(`${selectedAccount.name} account have been already selected`);
+      this.messageService.showErrorMessage(`${selectedAccount.name} account has been already selected`);
       return;
     }
 

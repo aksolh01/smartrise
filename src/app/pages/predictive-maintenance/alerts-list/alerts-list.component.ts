@@ -163,7 +163,7 @@ export class AlertsListComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingsService.getBusinessSettings().subscribe(x => {
-      this.recordsNumber = x.numberOfRecords;
+      this.recordsNumber = x.numberOfRecords || 25;
       this.onRecordsNumberChanged(x.numberOfRecords);
     });
     const filter = this.route.snapshot.queryParams['filter'];

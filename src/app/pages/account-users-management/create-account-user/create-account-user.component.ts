@@ -1,9 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { BreadcrumbService } from 'xng-breadcrumb';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { forkJoin, Subject } from 'rxjs';
 import { AccountService } from '../../../services/account.service';
 import { CustomerService } from '../../../services/customer.service';
 import { MessageService } from '../../../services/message.service';
@@ -13,6 +12,7 @@ import { IAccountUserRoles } from '../../../_shared/models/account-selection.mod
 import { IAccountLookup } from '../../../_shared/models/customer-lookup';
 import { IRole } from '../../../_shared/models/role';
 import { trimValidator } from '../../../_shared/validators/trim-validator';
+import { AccountsWithoutMatchingContactsComponent } from '../accounts-without-matching-contacts/accounts-without-matching-contacts.component';
 
 @Component({
   selector: 'ngx-create-account-user',
@@ -32,20 +32,20 @@ export class CreateAccountUserComponent implements OnInit {
   searchAccounts: string;
   lookupAccounts$ = new Subject<string>();
   filteredAccounts: any[];
+  accountsCards: any[] = [];
 
-  @ViewChild('selectedAccountInput') selectedAccountInput: ElementRef<HTMLInputElement>;
   @ViewChild('accounts') accounts: AccountRolesSelectionComponent;
   isSaving: boolean;
 
-  debounceTimeSearchAccounts = new Subject<string>();
+  @ViewChild('firstName') firstName: ElementRef;
 
   constructor(
     private router: Router,
     private accountService: AccountService,
     private messageService: MessageService,
     private customerService: CustomerService,
+    private modalService: BsModalService
   ) {
-    this.debounceTimeSearchAccounts.pipe(debounceTime(200)).subscribe(val => this.onSearchAccounts(val));
   }
 
   ngOnDestroy(): void {
@@ -104,6 +104,7 @@ export class CreateAccountUserComponent implements OnInit {
 
     this.formSubmitted = true;
     if (this.customerUserForm.invalid) {
+      this._goToTheTopOfPage();
       return;
     }
 
@@ -113,14 +114,59 @@ export class CreateAccountUserComponent implements OnInit {
 
     this.accountService
       .createAccountUserBySmartriseUser(this.customerUserForm.value)
-      .subscribe(() => {
-        this.isLoading = false;
-        this.messageService.showSuccessMessage('Account user has been created successfully');
+      .subscribe(
+        (resp) => this._onAccountUserCreated(resp),
+        error => this._onUserCreationFailed(error)
+      );
+  }
+
+  private _onUserCreationFailed(error) {
+    this.isLoading = false;
+    this.isSaving = false;
+    if (error?.error?.failedResult && error.error.failedResult.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnFailedScenario(error.error.failedResult).subscribe(() => { });
+    }
+  }
+
+  private _onAccountUserCreated(response) {
+    this.isLoading = false;
+    this.isSaving = false;
+    if (response.accountsWithoutMatchingContacts.length > 0) {
+      this._showAccountsWithoutMatchingContactsOnSuccessScenario(response.accountsWithoutMatchingContacts).subscribe(() => {
         this.router.navigateByUrl(URLs.ViewAccountUsersURL);
-      }, error => {
-        this.isLoading = false;
-        this.isSaving = false;
       });
+      return;
+    }
+    this.messageService.showSuccessMessage('Account user has been created successfully');
+    this.router.navigateByUrl(URLs.ViewAccountUsersURL);
+  }
+
+  private _showAccountsWithoutMatchingContactsOnSuccessScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'success',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Account User has been created successfully.',
+        topMessage: `The Account User could not be linked to the following Account(s):`,
+        bottomMessage: 'Please add the Account User as an Account Contact in Salesforce.'
+      }
+    }).onHide;
+  }
+
+  private _showAccountsWithoutMatchingContactsOnFailedScenario(accountsWithoutMatchingContacts: any[]) {
+    return this.modalService.show<AccountsWithoutMatchingContactsComponent>(AccountsWithoutMatchingContactsComponent, {
+      initialState: {
+        messageStatus: 'failed',
+        accounts: accountsWithoutMatchingContacts,
+        message: 'Failed to create the Account User.',
+        topMessage: `The Account User could not be linked to the following Account(s):`,
+        bottomMessage: 'Please add the Account User as an Account Contact in Salesforce.'
+      }
+    }).onHide;
+  }
+
+  private _goToTheTopOfPage() {
+    this.firstName.nativeElement.scrollIntoView({ behavior: 'smooth' });
   }
 
   private _noAccountIsSelected() {
@@ -134,17 +180,15 @@ export class CreateAccountUserComponent implements OnInit {
   }
 
   onSearchAccounts(searchValue: string) {
-    console.log('calling onSearchAccounts');
     this.customerService.getCustomersPagedLookup(searchValue).subscribe(accounts => {
       this.filteredAccounts = accounts;
     });
   }
 
   onSelectionChange(selectedAccount: IAccountLookup) {
-    this.selectedAccountInput.nativeElement.value = null;
 
     if (this._accountAlreadySelected(selectedAccount.id)) {
-      this.messageService.showErrorMessage(`${selectedAccount.name} account have been already selected`);
+      this.messageService.showErrorMessage(`${selectedAccount.name} account has been already selected`);
       return;
     }
 
@@ -157,6 +201,12 @@ export class CreateAccountUserComponent implements OnInit {
   }
 
   private _addAccount(selectedAccount: IAccountLookup) {
+    this.accountsCards.push({
+      accountId: selectedAccount.id,
+      name: selectedAccount.name,
+      roles: []
+    });
+
     const accounts = this.customerUserForm.value.accounts;
     accounts.push({
       accountId: selectedAccount.id,

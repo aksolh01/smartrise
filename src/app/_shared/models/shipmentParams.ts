@@ -6,7 +6,7 @@ export class ShipmentParams extends BaseParams {
   shipDate?: Date;
   status: string;
   deliveryDate?: Date;
-  customerName: string;
+  account: string;
   jobName: string;
   jobNumber: string;
   isDropShipment?: Boolean;

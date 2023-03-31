@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
 import { forkJoin, Subscription } from 'rxjs';
@@ -26,8 +26,8 @@ import { QuoteActivityHistoryComponent } from './quote-activity-history/quote-ac
 import { RfqDetailsComponent } from '../rfq-details/rfq-details.component';
 import { JobNameCellComponent } from './job-name-cell/job-name-cell.component';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
-import { AccountNameCellComponent } from '../../../_shared/components/account-name-cell/account-name-cell.component';
 import { AccountInfoService } from '../../../services/account-info.service';
+import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 
 @Component({
   selector: 'ngx-quoting-tool-list',
@@ -38,9 +38,9 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
   mRef: BsModalRef;
   source: BaseServerDataSource;
   isSmall?: boolean = null;
-  showFilters = false;
-  runGuidingTour = true;
-  customer: string;
+  showFilters: boolean = false;
+  runGuidingTour: boolean = true;
+  account: string;
   jobName: string;
   controllerType: string;
   status?: string = '';
@@ -60,13 +60,18 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
       account: {
         title: 'Account',
         type: 'custom',
-        renderComponent: AccountNameCellComponent,
-        onComponentInitFunction: (instance: AccountNameCellComponent) => {
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
           instance.setHeader('Account');
-          instance.clicked.subscribe((accountId: number) => {
-            this.accountInfoService.showAccountInfo(accountId);
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
           });
         },
+        width: '15%',
         show: false,
         filter: {
           type: 'custom',
@@ -162,6 +167,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
   jobStatuses: IEnumValue[];
   jobStatus = '';
   canSaveOnlineQuote = false;
+  private _isCreatingQuote = false;
 
   onActionsInit(actions: QuotingToolActionsComponent) {
     actions.edit.subscribe((quote: any) => {
@@ -213,9 +219,20 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     baseService: BaseComponentService,
   ) {
     super(baseService);
+    router.events.subscribe(event => {
+
+      if (!(event instanceof NavigationStart)) {
+        return;
+      }
+
+      if (event.url === URLs.CreateOnlineQuote) {
+        this._isCreatingQuote = true;
+      }
+    });
   }
 
   ngOnDestroy(): void {
+    this._isCreatingQuote = false;
     this.modalService.hide();
 
     if (this.responsiveSubscription) {
@@ -225,13 +242,14 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     this.stopGuidingTour();
     this.joyrideService = null;
     this.mRef?.hide();
+    this.accountInfoService.closePopup();
   }
 
   initializeSource() {
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber
+      perPage: this.recordsNumber || 25
     };
 
     this.settings.columns.status.filter.config.list = this.statuses.map(x => ({ title: x.description, value: x.value }));
@@ -264,7 +282,7 @@ return null;
     this.source.serviceCallBack = (params) => {
       const quoteParams = params as QuoteToolParams;
       if (this.isSmall) {
-        quoteParams.customer = this.customer;
+        quoteParams.account = this.account;
         quoteParams.jobName = this.jobName;
         quoteParams.controllerType = this.controllerType;
         quoteParams.status = this.status;
@@ -358,7 +376,7 @@ quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
       this.statuses = statuses;
       this.jobStatuses = jobStatuses;
       if (businessSettings) {
-        this.recordsNumber = businessSettings.numberOfRecords;
+        this.recordsNumber = businessSettings.numberOfRecords || 25;
         this.initializeSource();
         this.isImpersonate = this.miscellaneousService.isImpersonateMode();
         this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
@@ -389,7 +407,7 @@ quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
 
   onReset() {
 
-    this.customer = null;
+    this.account = null;
     this.jobName = null;
     this.creationDate = null;
     this.controllerType = null;
@@ -440,6 +458,10 @@ e.preventDefault();
   }
 
   onRequestQuote() {
+    if (this._isCreatingQuote) {
+      return;
+    }
+    this._isCreatingQuote = true;
     this.router.navigateByUrl(URLs.CreateOnlineQuote);
   }
 }

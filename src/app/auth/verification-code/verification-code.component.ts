@@ -1,16 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ScreenBreakpoint } from '../../_shared/models/screenBreakpoint';
-import { AccountService } from '../../services/account.service';
 import { MessageService } from '../../services/message.service';
 import { PermissionService } from '../../services/permission.service';
 import { ResponsiveService } from '../../services/responsive.service';
 import { IAuthPageComponent } from '../auth-page.interface';
-import { SmartriseValidators } from '../../_shared/constants';
+// import 'rxjs/add/operator/filter';
+// import 'rxjs/add/operator/pairwise';
+import { SmartriseValidators, URLs } from '../../_shared/constants';
 import { Subscription } from 'rxjs';
 import { MultiAccountsService } from '../../services/multi-accounts-service';
 import { IUser } from '../../_shared/models/IUser';
+import { ScreenBreakpoint } from '../../_shared/models/screenBreakpoint';
+import { AccountService } from '../../services/account.service';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 @Component({
   selector: 'ngx-verification-code',
   templateUrl: './verification-code.component.html',
@@ -149,19 +151,27 @@ export class VerificationCodeComponent implements OnInit, OnDestroy, IAuthPageCo
       .subscribe(res => {
         sessionStorage.removeItem('allow-verification');
         this.isLoading = false;
-        this._setLinkedAccounts(res);
-        if (this._multiAccountService.hasOneAccount()) {
-          this._multiAccountService.setSelectedAccount(res?.accounts[0]?.accountId);
-        }
-        this.permissionService.setPermissions(res.accounts);
+        this.accountService.loadCurrentUser(res.token).subscribe(
+          (currentUser) => this._currentUserLoadedCallback(currentUser),
+          (error) => this.isLoading = false
+        );
       },
         error => {
           this.isLoading = false;
         });
   };
 
+  private _currentUserLoadedCallback(currentUser: IUser) {
+    this._setLinkedAccounts(currentUser);
+    if (this._multiAccountService.hasOneAccount()) {
+      this._multiAccountService.setSelectedAccount(currentUser?.accounts[0]?.accountId);
+    }
+    this.permissionService.setPermissions(currentUser.accounts);
+    this._router.navigateByUrl(this._returnUrl);
+  }
+
   private _setLinkedAccounts(user: IUser) {
-    this._multiAccountService.setAccounts(user?.accounts?.map(account => account.accountId));
+    this._multiAccountService.setAccounts(user?.accounts);
   }
 
   onGenerateCode() {

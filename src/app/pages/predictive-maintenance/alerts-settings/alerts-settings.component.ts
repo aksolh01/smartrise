@@ -7930,7 +7930,7 @@ export class AlertsSettingsComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.initializeGrid();
     this.settingsService.getBusinessSettings().subscribe(x => {
-      this.recordsNumber = x.numberOfRecords;
+      this.recordsNumber = x.numberOfRecords || 25;
       this.onRecordsNumberChanged(x.numberOfRecords);
       this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
         if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {

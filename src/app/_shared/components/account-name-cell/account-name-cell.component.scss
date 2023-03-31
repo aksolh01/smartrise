@@ -15,7 +15,7 @@ a {
 
 a:not([href]):not([tabindex]) {
     text-decoration: underline !important;
-    color: #1e6bb8;
+    color:var(--primary-color-gray);
     cursor: pointer;
 }
 

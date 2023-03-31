@@ -1,30 +1,77 @@
-<nb-card size="xlarge" class="pb-1 mb-3">
-    <nb-tabset *ngIf="job" (changeTab)="onChangeTab($event)">
-        <nb-tab tabTitle="Job Info" tabIcon="star">
-            <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job" [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
-        </nb-tab>
-        <nb-tab [active]="shipmentsTabSelected" tabTitle="Shipments" tabIcon="car">
-            <ngx-job-shipments [shipments]="job?.shipments"></ngx-job-shipments>
-        </nb-tab>
-        <nb-tab [active]="resurcesTabSelected" tabTitle="Job Files" tabIcon="download">
-            <ngx-job-resources *ngIf="renderJobResources === true" [jobId]="job?.id"
-                [resourceFiles]="job?.resourceFiles" [runGuidingTour]="runGuidingTour">
-            </ngx-job-resources>
-        </nb-tab>
-    </nb-tabset>
-    <ng-template [ngIf]="!job && !isLoading">
-        <div class="col-12 p-4">
-            Job not found.
-        </div>
-    </ng-template>
-</nb-card>
 
-<div class="text-right mb-0 mx-3" *ngIf="!isLoading">
+
+<div class="page-header-container">
+    <div class="page-header-title" *ngIf="job">
+        <span>Jobs</span>  / {{ job.jobName }}
+    </div>
+    <!-- <div *ngIf="!isSmall" class="form-container mx-w-400" style="width: 40%;">
+        <div class="input-container">
+            <div class="input-item">
+                <input type="text" placeholder="Search">
+            </div>
+        </div>
+    </div> -->
+
+</div>
+
+<div style="display: flex;flex-direction: column;gap: 32px;">
+    <div class="main-card">
+        <div class="card-container">
+            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+                <nb-card-header class="default-card-header">
+                    <h2 class="card-title">Jobs Details</h2>
+                </nb-card-header>
+                <nb-card-body>
+                    <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job"
+                    [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
+                </nb-card-body>
+               
+            </nb-card>
+        </div>
+        <div class="card-container">
+            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+                <nb-card-header class="default-card-header">
+                    <h2 class="card-title">Jobs History</h2>
+                </nb-card-header>
+                <nb-card-body>no Data Found</nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+
+    <div class="main-card">
+        <div class="card-container">
+            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+                <nb-card-header class="default-card-header">
+                    <h2 class="card-title">shipments</h2>
+                </nb-card-header>
+                <nb-card-body>
+                    <ngx-job-shipments [shipments]="job?.shipments"></ngx-job-shipments>
+                </nb-card-body>
+            </nb-card>
+        </div>
+        <div class="card-container">
+            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+                <nb-card-header class="default-card-header">
+                    <h2 class="card-title">Job Files</h2>
+                </nb-card-header>
+                <div>
+                    <ngx-job-resources *ngIf="renderJobResources === true" [jobId]="job?.id"
+                        [resourceFiles]="job?.resourceFiles" [runGuidingTour]="runGuidingTour">
+                    </ngx-job-resources>
+                </div>
+            </nb-card>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <div class="text-right mb-0 mx-3" *ngIf="!isLoading">
     <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
         <i class="fas fa-times"></i>
         Close
     </button>
-</div>
+</div> -->
 
 <ng-template [ngIf]="isLoading">
     <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">

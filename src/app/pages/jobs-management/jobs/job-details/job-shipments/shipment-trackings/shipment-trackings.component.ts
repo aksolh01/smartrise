@@ -20,6 +20,7 @@ export class ShipmentTrackingsComponent extends BaseComponent implements OnInit 
   settings = {
     mode: 'external',
     hideSubHeader: true,
+   
     actions: {
       position: 'right',
       add: false,
