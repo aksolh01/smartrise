@@ -1,7 +1,7 @@
 <form class="form-container" [formGroup]="form" *ngIf="form" (ngSubmit)="onSubmit()">
   <ng-template [ngIf]="!succuessMessage">
-    <div class="input-container">
-      <div  class="input-sub-container">
+    <div class="input-container" >
+      <div class="input-sub-container">
         <div class="input-item">
           <input type="text" formControlName="firstName" placeholder="First Name" maxlength="255" />
           <div *ngIf="
@@ -42,47 +42,25 @@
           </div>
         </div>
       </div>
-      <div class="input-sub-container">
-        <div class="input-item">
-          <input type="text" formControlName="title" placeholder="Title" maxlength="255" />
-          <div *ngIf="
-              formSubmitted &&
-              form.get('companyName').touched &&
-              form.get('companyName').errors &&
-              form.get('companyName').errors['requiredWithTrim']
-            " class="input-error">
-            Title is required
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('title').touched &&
-              form.get('title').errors &&
-              form.get('title').errors['trimError']
-            " class="input-error">
-            This field can't start or end with a blank space
-          </div>
+      <div class="input-item">
+        <input type="text" formControlName="title" placeholder="Title" maxlength="255" />
+        <div *ngIf="
+            formSubmitted &&
+            form.get('companyName').touched &&
+            form.get('companyName').errors &&
+            form.get('companyName').errors['requiredWithTrim']
+          " class="input-error">
+          Title is required
         </div>
-        <div class="input-item">
-          <input type="text" formControlName="companyName" placeholder="Company Name" maxlength="255" />
-          <div *ngIf="
-              formSubmitted &&
-              form.get('companyName').touched &&
-              form.get('companyName').errors &&
-              form.get('companyName').errors['requiredWithTrim']
-            " class="input-error">
-            Company Name is required
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('companyName').touched &&
-              form.get('companyName').errors &&
-              form.get('companyName').errors['trimError']
-            " class="input-error">
-            This field can't start or end with a blank space
-          </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('title').touched &&
+            form.get('title').errors &&
+            form.get('title').errors['trimError']
+          " class="input-error">
+          This field can't start or end with a blank space
         </div>
       </div>
-     
       <div class="input-item phone-input-item">
         <input type="text" ng2TelInput (keypress)="keyPress($event)" (countryChange)="countryChange($event)"
           formControlName="phoneNumber" placeholder="Phone Number" maxlength="30" />
@@ -103,61 +81,78 @@
           This field can't start or end with a blank space
         </div>
       </div>
-      
-    
-      
-      <div class="input-sub-container">
-        <div class="input-item">
-          <input type="text" formControlName="email" placeholder="Email Address"
-            (keydown.space)="$event.preventDefault()" />
-          <div *ngIf="
-              formSubmitted &&
-              form.get('email').touched &&
-              form.get('email').errors &&
-              form.get('email').errors['requiredWithTrim']
-            " class="input-error">
-            Email Address is required
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('email').dirty &&
-              form.get('email').errors &&
-              form.get('email').errors['smartriseEmail'] &&
-                !form.get('email').errors['trimError']
-            " class="input-error">
-            Please enter a valid email
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('email').touched &&
-              form.get('email').errors &&
-              form.get('email').errors['trimError']
-            " class="input-error">
-            This field can't start or end with a blank space
-          </div>
+
+
+      <div class="input-item">
+        <input type="text" formControlName="email" placeholder="Email Address"
+          (keydown.space)="$event.preventDefault()" />
+        <div *ngIf="
+            formSubmitted &&
+            form.get('email').touched &&
+            form.get('email').errors &&
+            form.get('email').errors['requiredWithTrim']
+          " class="input-error">
+          Email Address is required
         </div>
-        <div class="input-item">
-          <input type="text" formControlName="businessAddress" placeholder="Business Address" maxlength="255" />
-          <div *ngIf="
-              formSubmitted &&
-              form.get('businessAddress').touched &&
-              form.get('businessAddress').errors &&
-              form.get('businessAddress').errors['requiredWithTrim']
-            " class="input-error">
-            Business Address is required
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('businessAddress').touched &&
-              form.get('businessAddress').errors &&
-              form.get('businessAddress').errors['trimError']
-            " class="input-error">
-            This field can't start or end with a blank space
-          </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('email').dirty &&
+            form.get('email').errors &&
+            form.get('email').errors['smartriseEmail'] &&
+              !form.get('email').errors['trimError']
+          " class="input-error">
+          Please enter a valid email
+        </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('email').touched &&
+            form.get('email').errors &&
+            form.get('email').errors['trimError']
+          " class="input-error">
+          This field can't start or end with a blank space
+        </div>
+      </div>
+      <div class="input-item">
+        <input type="text" formControlName="companyName" placeholder="Company Name" maxlength="255" />
+        <div *ngIf="
+            formSubmitted &&
+            form.get('companyName').touched &&
+            form.get('companyName').errors &&
+            form.get('companyName').errors['requiredWithTrim']
+          " class="input-error">
+          Company Name is required
+        </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('companyName').touched &&
+            form.get('companyName').errors &&
+            form.get('companyName').errors['trimError']
+          " class="input-error">
+          This field can't start or end with a blank space
+        </div>
+      </div>
+
+      <div class="input-item">
+        <input type="text" formControlName="businessAddress" placeholder="Business Address" maxlength="255" />
+        <div *ngIf="
+            formSubmitted &&
+            form.get('businessAddress').touched &&
+            form.get('businessAddress').errors &&
+            form.get('businessAddress').errors['requiredWithTrim']
+          " class="input-error">
+          Business Address is required
+        </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('businessAddress').touched &&
+            form.get('businessAddress').errors &&
+            form.get('businessAddress').errors['trimError']
+          " class="input-error">
+          This field can't start or end with a blank space
         </div>
       </div>
       <div class="input-sub-container">
-        <div class="input-item phone-input-item">
+        <div class="input-item">
           <input type="text" formControlName="city" placeholder="City" maxlength="255" />
           <div *ngIf="
               formSubmitted &&
@@ -176,7 +171,7 @@
             This field can't start or end with a blank space
           </div>
         </div>
-        <div class="input-item phone-input-item">
+        <div class="input-item">
           <input type="text" formControlName="state" placeholder="State/Province" maxlength="255" />
           <div *ngIf="
             formSubmitted &&
@@ -196,46 +191,43 @@
           </div>
         </div>
       </div>
-      <div class="input-sub-container">
-        <div class="input-item phone-input-item">
-          <input type="text" formControlName="country" placeholder="Country" maxlength="255" />
-          <div *ngIf="
-              formSubmitted &&
-              form.get('country').touched &&
-              form.get('country').errors &&
-              form.get('country').errors['requiredWithTrim']
-            " class="input-error">
-            Country is required
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('country').touched &&
-              form.get('country').errors &&
-              form.get('country').errors['trimError']
-            " class="input-error">
-            This field can't start or end with a blank space
-          </div>
+      <div class="input-item">
+        <input type="text" formControlName="zipCode" placeholder="ZIP Code" maxlength="255" />
+        <div *ngIf="
+            formSubmitted &&
+            form.get('zipCode').touched &&
+            form.get('zipCode').errors &&
+            form.get('zipCode').errors['requiredWithTrim']
+          " class="input-error">
+          ZIP Code is required
         </div>
-        <div class="input-item">
-          <input type="text" formControlName="zipCode" placeholder="ZIP Code" maxlength="255" />
-          <div *ngIf="
-              formSubmitted &&
-              form.get('zipCode').touched &&
-              form.get('zipCode').errors &&
-              form.get('zipCode').errors['requiredWithTrim']
-            " class="input-error">
-            Business Address is required
-          </div>
-          <div *ngIf="
-              formSubmitted &&
-              form.get('zipCode').touched &&
-              form.get('zipCode').errors &&
-              form.get('zipCode').errors['trimError']
-            " class="input-error">
-            This field can't start or end with a blank space
-          </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('zipCode').touched &&
+            form.get('zipCode').errors &&
+            form.get('zipCode').errors['trimError']
+          " class="input-error">
+          This field can't start or end with a blank space
         </div>
-        
+      </div>
+      <div class="input-item">
+        <input type="text" formControlName="country" placeholder="Country" maxlength="255" />
+        <div *ngIf="
+            formSubmitted &&
+            form.get('country').touched &&
+            form.get('country').errors &&
+            form.get('country').errors['requiredWithTrim']
+          " class="input-error">
+          Country is required
+        </div>
+        <div *ngIf="
+            formSubmitted &&
+            form.get('country').touched &&
+            form.get('country').errors &&
+            form.get('country').errors['trimError']
+          " class="input-error">
+          This field can't start or end with a blank space
+        </div>
       </div>
 
 
@@ -256,9 +248,8 @@
     <div class="alert alert-success font-weight-bold">
       {{ succuessMessage }}
     </div>
-    <div class="text-right">
+    <div class="text-center">
       <button class="btn btn-primary" (click)="goToLogin()">
-        <i class="fas fa-chevron-left"></i>
         Go to Login
       </button>
     </div>
