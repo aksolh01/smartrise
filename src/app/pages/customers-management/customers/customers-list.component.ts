@@ -31,7 +31,7 @@ export class CustomersListComponent extends BaseComponent implements OnInit, OnD
 
   hasLogin?: boolean;
   isFavorite?: boolean;
-
+  public Math = Math;
   isLoading = true;
   source: BaseServerDataSource;
   runGuidingTour = true;
@@ -255,7 +255,22 @@ return null;
       });
     });
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   onSearch() {
     this.source.setPage(1, false);
     this.source.refresh();

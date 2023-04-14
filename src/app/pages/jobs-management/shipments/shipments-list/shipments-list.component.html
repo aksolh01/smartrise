@@ -1,8 +1,9 @@
 <div class="page-header-container">
   <div class="page-header-title">Jobs & Tracking</div>
-  <div class="form-container mx-w-400" style="width: 40%;" *ngIf="!isSmall">
+  <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
     <div class="input-container">
-      <div class="input-item">
+      <div class="input-item search-input-icon">
+        <i class="fa fa-search"></i>
         <input type="text" placeholder="Search">
       </div>
     </div>
@@ -14,9 +15,26 @@
   </div>
 </div>
 <div class="page-tab">
-  <div class="page-tab-item" (click)="goToJobs()">jobs</div>
-  <div class="page-tab-item active" (click)="goToShipments()">shipments</div>
-  <div class="page-tab-item last" (click)="goToJobsFile()">jobs file</div>
+  <div class="page-tab-container">
+    <div class="page-tab-item" (click)="goToJobs()">Jobs</div>
+    <div class="page-tab-item active" (click)="goToShipments()">Shipments</div>
+    <div class="page-tab-item last" (click)="goToJobsFile()">Job files</div>
+  </div>
+  <div class="pagination-info">
+    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+    -
+    {{
+    Math.min(
+    source.count(),
+    (source.getPaging().page - 1) * settings.pager.perPage +
+    settings.pager.perPage
+    )
+    }}
+    of {{ source.count() }}
+
+    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+  </div>
 </div>
 <div class="table-container">
   <nb-card joyrideStep="shipmentFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Shipments' : null"
@@ -47,10 +65,10 @@
             </button> -->
           </div>
           <div>
-            <button (click)="onReset()" class="main-button">
+            <!-- <button (click)="onReset()" class="main-button">
               <i class="fas fa-redo-alt"></i>
               Reset Filters
-            </button>
+            </button> -->
           </div>
           <!-- <div class="table-record">
             <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
@@ -63,18 +81,16 @@
           <div class="form-container" filters>
             <div class="input-container">
               <div *ngIf="settings?.columns?.customerName" class="input-item">
-                <input type="text" maxlength="255" placeholder="Account"
-                  [(ngModel)]="customerName" />
+                <input type="text" maxlength="255" placeholder="Account" [(ngModel)]="customerName" />
               </div>
               <div class="input-item">
-                <input type="text" maxlength="255" placeholder="Job Name"  [(ngModel)]="jobName" />
+                <input type="text" maxlength="255" placeholder="Job Name" [(ngModel)]="jobName" />
               </div>
               <div class="input-item">
-                <input type="text" maxlength="255" placeholder="Job Number"
-                  [(ngModel)]="jobNumber" />
+                <input type="text" maxlength="255" placeholder="Job Number" [(ngModel)]="jobNumber" />
               </div>
               <div class="input-item">
-                <nb-select [(ngModel)]="shipmentType" >
+                <nb-select [(ngModel)]="shipmentType">
                   <nb-option value="">Package</nb-option>
                   <nb-option *ngFor="let c of shipmentTypes" [value]="c.value">
                     {{ c.description }}
@@ -82,8 +98,7 @@
                 </nb-select>
               </div>
               <div class="input-item">
-                <input type="text" maxlength="255" placeholder="Tracking Number" 
-                  [(ngModel)]="trackingNumber" />
+                <input type="text" maxlength="255" placeholder="Tracking Number" [(ngModel)]="trackingNumber" />
               </div>
               <div class="input-item">
                 <nb-select [(ngModel)]="isDropShipment">
@@ -95,7 +110,7 @@
                 <!-- <ngx-cp-checkbox class="ml-2" [(checkStatus)]="isDropShipment"></ngx-cp-checkbox> -->
               </div>
               <div class="input-item">
-                <ngx-cp-datepicker  memberName="Ship Date" displayPlaceholder="Ship Date"
+                <ngx-cp-datepicker memberName="Ship Date" displayPlaceholder="Ship Date"
                   [(selectedDate)]="shipDate"></ngx-cp-datepicker>
               </div>
               <!-- <div class="filter-control">
@@ -103,7 +118,7 @@
             [(selectedDate)]="deliveryDate"></ngx-cp-datepicker>
         </div> -->
               <div class="input-item">
-                <nb-select [(ngModel)]="status" >
+                <nb-select [(ngModel)]="status">
                   <nb-option value="">Status</nb-option>
                   <nb-option *ngFor="let c of statuses" [value]="c.value">
                     {{ c.description }}
@@ -111,29 +126,28 @@
                 </nb-select>
               </div>
               <div class="w-100">
-                <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                </ngx-smr-records-per-page>
+                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+                </ngx-smr-records-per-page> -->
               </div>
             </div>
           </div>
-          <div actions class="form-action" >
-            <button class="main-button"  (click)="onSearch();toggleFilters()">
+          <div actions class="form-action">
+            <button class="main-button" (click)="onSearch();toggleFilters()">
               <i class="fas fa-search"></i>
               Search
             </button>
-            <button (click)="onReset(); toggleFilters()" class="main-button" >
+            <!-- <button (click)="onReset(); toggleFilters()" class="main-button" >
               <i class="fas fa-redo-alt"></i>
               Reset Filters
-            </button>
+            </button> -->
           </div>
         </ngx-smr-mobile-filters>
       </div>
 
-      <div  [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-      
+      <div [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+
         <div class="table-content" *ngIf="source">
-          <ng2-smart-table  #table [settings]="settings"
-            [source]="source">
+          <ng2-smart-table #table [settings]="settings" [source]="source">
           </ng2-smart-table>
         </div>
       </div>

@@ -10,7 +10,9 @@ import { FunctionConstants } from '../../constants';
 
 @Component({
     template: `
-        <div  (window:resize)="onResize($event)">
+        <div  (window:resize)="onResize($event)" class="form-container">
+        <div class="input-container">
+        <div class="input-item">
         <input
         [ngClass]="inputClass"
             [nbDatepicker]="datepicker"
@@ -18,10 +20,11 @@ import { FunctionConstants } from '../../constants';
             (focus)="onFocus($event)"
             type="text"
             [placeholder]="column.title"
-            class="form-control input-style"
             (keydown)="keyPress($event)"
             >
         <nb-datepicker #datepicker [format]="'MM/dd/yyyy'"></nb-datepicker>
+        </div>
+        </div>
         </div>`,
     styleUrls: ['./cp-date-filter.component.scss']
 })

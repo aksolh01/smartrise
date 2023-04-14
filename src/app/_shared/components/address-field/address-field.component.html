@@ -2,8 +2,11 @@
     <div style="position: relative;padding-right: 32px;">
         {{ FullAddress | value }}
 
-        <button class="fas fa-eye btn btn-primary"
+        <button
         tooltip="View Address Details"
-        (click)="onShowAddressDetails()"></button>
+        (click)="onShowAddressDetails()">
+    
+        <i class="fa fa-eye"></i>
+    </button>
     </div>
 </div>

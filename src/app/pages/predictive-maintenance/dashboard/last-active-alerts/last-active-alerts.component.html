@@ -1,6 +1,6 @@
 <nb-card class="card">
     <nb-card-header class="default-card-header">
-        <div class="d-flex">
+        <div class="d-flex align-items-center">
             <h2 class="card-title">Latest Alerts</h2>
             <button type="button" class="btn btn-primary ml-auto" tooltip="View All My Alerts"
                 (click)="onViewAllMyAlerts()">
@@ -8,118 +8,120 @@
             </button>
         </div>
     </nb-card-header>
-    <nb-card-body class="card-body">
-        <table class="table table-responsive-md table-striped mb-0">
-            <thead>
-                <tr>
-                    <th>Alert Name</th>
-                    <th>Job Name</th>
-                    <th>Job Number</th>
-                    <th>Group</th>
-                    <th>Car</th>
-                    <th>Part Type</th>
-                    <th>Severity</th>
-                    <th>Date/Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to contactor</td>
-                    <td>Job 1</td>
-                    <td>877907-990</td>
-                    <td>Group 1</td>
-                    <td>Car 1</td>
-                    <td>Contactor</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus1"></ngx-alert-severity>
-                    </td>
-                    <td>02/13/2021 11:12 PM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to contactor</td>
-                    <td>Job 1</td>
-                    <td>099876-122</td>
-                    <td>Group 2</td>
-                    <td>Car 1</td>
-                    <td>Contactor</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus2"></ngx-alert-severity>
-                    </td>
-                    <td>03/22/2021 11:56 PM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to braker</td>
-                    <td>Job 1</td>
-                    <td>680098-322</td>
-                    <td>Group 2</td>
-                    <td>Car 2</td>
-                    <td>Braker</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus3"></ngx-alert-severity>
-                    </td>
-                    <td>03/28/2021 02:12 PM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to contactor</td>
-                    <td>Job 1</td>
-                    <td>877907-990</td>
-                    <td>Group 3</td>
-                    <td>Car 1</td>
-                    <td>Contactor</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus1"></ngx-alert-severity>
-                    </td>
-                    <td>02/13/2021 08:12 AM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to contactor</td>
-                    <td>Job 1</td>
-                    <td>099876-122</td>
-                    <td>Group 3</td>
-                    <td>Car 1</td>
-                    <td>Contactor</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus2"></ngx-alert-severity>
-                    </td>
-                    <td>03/22/2021 04:56 AM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to braker</td>
-                    <td>Job 1</td>
-                    <td>680098-322</td>
-                    <td>Group 3</td>
-                    <td>Car 2</td>
-                    <td>Braker</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus3"></ngx-alert-severity>
-                    </td>
-                    <td>03/28/2021 02:12 PM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to contactor</td>
-                    <td>Job 1</td>
-                    <td>877907-990</td>
-                    <td>Group 3</td>
-                    <td>Car 1</td>
-                    <td>Contactor</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus1"></ngx-alert-severity>
-                    </td>
-                    <td>02/13/2021 11:12 AM</td>
-                </tr>
-                <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
-                    <td>Attention needed to contactor</td>
-                    <td>Job 1</td>
-                    <td>099876-122</td>
-                    <td>Group 3</td>
-                    <td>Car 1</td>
-                    <td>Contactor</td>
-                    <td>
-                        <ngx-alert-severity [status]="alertStatus2"></ngx-alert-severity>
-                    </td>
-                    <td>03/22/2021 09:56 AM</td>
-                </tr>
-            </tbody>
-        </table>
+    <nb-card-body>
+        <div class="table-container">
+            <table class="table table-responsive-md table-striped mb-0 table-content">
+                <thead>
+                    <tr>
+                        <th><a>Alert Name</a></th>
+                        <th><a>Job Name </a></th>
+                        <th><a>Job Number </a></th>
+                        <th><a>Group </a></th>
+                        <th><a>Car </a></th>
+                        <th><a>Part Type </a></th>
+                        <th><a>Severity </a></th>
+                        <th><a>Date/Time </a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to contactor</td>
+                        <td>Job 1</td>
+                        <td>877907-990</td>
+                        <td>Group 1</td>
+                        <td>Car 1</td>
+                        <td>Contactor</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus1"></ngx-alert-severity>
+                        </td>
+                        <td>02/13/2021 11:12 PM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to contactor</td>
+                        <td>Job 1</td>
+                        <td>099876-122</td>
+                        <td>Group 2</td>
+                        <td>Car 1</td>
+                        <td>Contactor</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus2"></ngx-alert-severity>
+                        </td>
+                        <td>03/22/2021 11:56 PM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to braker</td>
+                        <td>Job 1</td>
+                        <td>680098-322</td>
+                        <td>Group 2</td>
+                        <td>Car 2</td>
+                        <td>Braker</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus3"></ngx-alert-severity>
+                        </td>
+                        <td>03/28/2021 02:12 PM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to contactor</td>
+                        <td>Job 1</td>
+                        <td>877907-990</td>
+                        <td>Group 3</td>
+                        <td>Car 1</td>
+                        <td>Contactor</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus1"></ngx-alert-severity>
+                        </td>
+                        <td>02/13/2021 08:12 AM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to contactor</td>
+                        <td>Job 1</td>
+                        <td>099876-122</td>
+                        <td>Group 3</td>
+                        <td>Car 1</td>
+                        <td>Contactor</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus2"></ngx-alert-severity>
+                        </td>
+                        <td>03/22/2021 04:56 AM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to braker</td>
+                        <td>Job 1</td>
+                        <td>680098-322</td>
+                        <td>Group 3</td>
+                        <td>Car 2</td>
+                        <td>Braker</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus3"></ngx-alert-severity>
+                        </td>
+                        <td>03/28/2021 02:12 PM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to contactor</td>
+                        <td>Job 1</td>
+                        <td>877907-990</td>
+                        <td>Group 3</td>
+                        <td>Car 1</td>
+                        <td>Contactor</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus1"></ngx-alert-severity>
+                        </td>
+                        <td>02/13/2021 11:12 AM</td>
+                    </tr>
+                    <tr class="clickable-row" (click)="onClickRow($event)" tooltip="View Alert Details">
+                        <td>Attention needed to contactor</td>
+                        <td>Job 1</td>
+                        <td>099876-122</td>
+                        <td>Group 3</td>
+                        <td>Car 1</td>
+                        <td>Contactor</td>
+                        <td>
+                            <ngx-alert-severity [status]="alertStatus2"></ngx-alert-severity>
+                        </td>
+                        <td>03/22/2021 09:56 AM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </nb-card-body>
 </nb-card>

@@ -1,0 +1,29 @@
+<nb-card class="in-dialog m-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Important!</h2>
+        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onOk()"
+            style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body>
+        <p class="alert alert-{{ messageStatus === 'success' ? 'success' : 'danger' }}">
+            {{ message }}
+        </p>
+        <p class="alert pt-0 pb-0 mb-1">
+            {{ topMessage }}
+        </p>
+        <ul>
+            <li *ngFor="let account of accounts">{{ account.accountName }}</li>
+        </ul>
+        <p class="alert">
+            {{ bottomMessage }}
+        </p>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <button (click)="onOk()" type="button" class="footer-btn btn btn-secondary ml-2">
+            <i class="clear-icon fas fa-times"></i>
+            Close
+        </button>
+    </nb-card-footer>
+</nb-card>

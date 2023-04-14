@@ -36,15 +36,33 @@
         min-height: 56px;
         input{
           border: 1px solid var(--primary-color-border);
+          border-radius: 10px ;
+          padding: 0px 16px ;
+          width: 100% ;
+          min-height: 40px ;
+          outline: none ;
+          &::placeholder{
+            font-size: 14px ;
+            font-weight: 600 ;
+            color:rgba(0, 0, 0, 0.75) !important;
+          }
+        }
+      
+        nb-select{
+          border: 1px solid var(--primary-color-border);
           border-radius: 10px;
           padding: 0px 16px;
           width: 100%;
-          min-height: 41px;
+          min-height: 40px;
           outline: none;
           &::placeholder{
             font-size: 14px;
-            font-weight: 400;
+            font-weight: 600;
+            color:rgba(0, 0, 0, 0.75) !important;
           }
+        }
+        button{
+          border: none !important;
         }
         &.hasLabel{
           display: flex;
@@ -53,12 +71,29 @@
             border-radius: 10px;
             padding: 0px 16px;
             width: 100%;
-            min-height: 41px;
+            min-height: 40px;
             outline: none;
             &::placeholder{
               font-size: 14px;
-              font-weight: 400;
+              font-weight: 600;
+              color:rgba(0, 0, 0, 0.75) !important;
             }
+          }
+        }
+        &.search-input-icon{
+          position: relative;
+          i{
+            position: absolute;
+            padding: 12px;
+            color: grey;
+          }
+          input{
+            padding-left: 32px;
+          }
+        }
+        &.phone-input-item{
+          input{
+            padding-left: 46px;
           }
         }
       }
@@ -66,6 +101,7 @@
         font-size: 11px;
         color:var(--primary-color-red);
       }
+
     }
     .form-link-helper{
       font-size: 14px;

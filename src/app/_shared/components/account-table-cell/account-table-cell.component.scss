@@ -1,0 +1,17 @@
+a {
+    text-decoration: underline !important;
+}
+
+.break-word {
+    word-break: break-all;
+}
+
+a:not([href]):not([tabindex]) {
+    text-decoration: underline !important;
+    color:var(--primary-color-gray);
+    cursor: pointer;
+}
+
+a:not([href]):not([tabindex]):hover {
+    color: #598bff;
+}

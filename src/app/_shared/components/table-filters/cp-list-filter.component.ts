@@ -9,6 +9,9 @@ import { SelectHelperService } from '../../../services/select-helper.service';
 
 @Component({
   template: `
+  <div class="form-container">
+  <div class="input-container">
+  <div class="input-item">
   <nb-select
   (click)="onClick()"
   scrollStrategy="close"
@@ -19,7 +22,10 @@ import { SelectHelperService } from '../../../services/select-helper.service';
     <nb-option *ngFor="let option of optionsList" [value]="option.value">
       {{ option.title }}
     </nb-option>
-</nb-select>
+  </nb-select>
+  <div>
+  <div>
+  <div>
   `,
   styles: [
     `nb-select {
@@ -55,7 +61,7 @@ export class CpListFilterComponent extends DefaultFilter implements OnInit, OnCh
         if (this.inputControl.value != null) {
           this.isReset = true;
           this.inputControl.setValue(null);
-      }
+        }
       });
 
     // this.filter.asObservable()

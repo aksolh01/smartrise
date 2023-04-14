@@ -52,7 +52,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
   isLoading = true;
-
+  public Math = Math;
   isSmartriseUser = false;
   shipments: IShipmentRecord[] = [];
   totalCount: number;
@@ -442,7 +442,22 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
       this.source.resetFilters();
     }
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
   }

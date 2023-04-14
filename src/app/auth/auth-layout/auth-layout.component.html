@@ -2,7 +2,7 @@
     <div class="auth-layout-title">
       <img class="logo" src="assets/images/logo-wt.png" alt="Smartrise Logo" />
     </div>
-      <div class="auth-layout-container">
+      <div class="auth-layout-container" >
           <div class="auth-layout-container-left-section">
             <div class="auth-layout-container-left-section-image" *ngIf="pageTitle !== 'Request Access'">
               <img src="assets/images/loginImg.jpg" alt="">
@@ -18,26 +18,11 @@
               </div>
               <router-outlet (activate)="onRouteChanged($event)"></router-outlet>
             </div>
-  
-            <div class="auth-layout-container-right-section-footer">
-  
-            </div>
           </div>
-          <!-- <div class="">
-              <div class="">
-                  <img class="logo" src="assets/images/logo-borderless.png" alt="Smartrise Logo" />
-                  <div class="">{{ pageTitle }}</div>
-                  <hr class="" />
-              </div>
-              <div id="auth-container" class="">
-                  <router-outlet (activate)="onRouteChanged($event)"></router-outlet>
-              </div>
-          </div> -->
       </div>
-      <div class="" *ngIf="showPolicy !== false">
-          <!-- <div class="">
-              <a routerLink="policy">Privacy Policy</a>
-          </div> -->
+     
+      <div class="privacy-policy" *ngIf="showPolicy !== false">
+        <a routerLink="policy">Privacy Policy</a>
       </div>
   </div>
   

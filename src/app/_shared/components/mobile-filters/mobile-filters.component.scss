@@ -33,6 +33,9 @@
   .filter-actions {
     margin-top: 16px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     button{
       width: 100%;
       display: flex;

@@ -4,7 +4,8 @@
             <nb-accordion-item (collapsedChange)="onShipmentCollapsedExpanded(shipment, $event)" [expanded]="selectedShipmentId === shipment.id" #item>
                 <nb-accordion-item-header>
                     <div class="w-100  d-flex justify-content-between align-items-center">
-                        <div>
+                        <div class="shipment-header">
+                            <div>
                             {{ shipment.shipmentType.description }} 
                         
                             <i *ngIf="i === 0" joyrideStep="subfirstStep" stepPosition="bottom"
@@ -15,15 +16,13 @@
                             <i *ngIf="i != 0" class="fas fa-info-circle"
                             (click)="item.toggle(); showPartsDescription(shipment)"
                             tooltip="Show Parts Description"></i>
+                            </div>
+                            <div></div>
+                            <div class="status status-{{ shipment.status }}">
+                                {{ shipment.status }}
+                            </div>
                         </div>
-                        <div class="status status-{{ shipment.status }}">
-                            {{ shipment.status }}
-                        </div>
-
-                        
-
-                        
-
+                       
                     </div>
                 </nb-accordion-item-header>
                 <nb-accordion-item-body>
@@ -53,7 +52,7 @@
                         </div>
                         <div class="card-container">
                             <div class="card-container-data">
-                                <div class="label">Shipm Address</div>
+                                <div class="label">Ship Address</div>
                                 <div class="content">
                                     <ngx-address-field [Address]="shipment?.address"
                                         [FullAddress]="shipment?.addressStr">

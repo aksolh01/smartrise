@@ -65,7 +65,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
   showList = true;
   markedAsPay: IInvoiceInfo[] = [];
   source: BaseServerDataSource;
-
+  public Math = Math;
   settings: any = {
     rowClassFunction: (rowData) => {
       if (rowData.data?.isTransactionLocked) {
@@ -511,7 +511,22 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     this._saveAccountInfoToStorage(this.accountId);
     this.onSearch();
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   private _saveAccountInfoToStorage(accountId: number) {
     sessionStorage.setItem(StorageConstants.StatementOfAccountSelectedAccount, accountId.toString());
   }

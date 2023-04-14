@@ -43,7 +43,7 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
   aged = '';
   showFilters = false;
   runGuidingTour = true;
-
+  public Math = Math;
   source: BaseServerDataSource;
   settings: any = {
     mode: 'external',
@@ -332,7 +332,22 @@ return null;
       }
     }
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   onRecordsNumberChanged(value: number) {
     this.recordsNumber = value;
     this.source.setPaging(1, value);

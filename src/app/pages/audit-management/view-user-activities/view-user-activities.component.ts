@@ -50,7 +50,7 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
   objectType: string;
   objectDisplayMember: string;
   createdDate?: Date;
-
+  public Math = Math;
   settings: any = {
     mode: 'external',
     actions: {
@@ -419,7 +419,22 @@ return null;
       this.joyrideService.closeTour();
     }
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   onFinishingTour() {
     localStorage.setItem('GuidingTourUserActivities', '1');
     this.runGuidingTour = false;

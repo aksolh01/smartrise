@@ -52,6 +52,7 @@ import { ListTitleService } from '../../../../services/list-title.service';
 export class JobFilesListComponent extends BaseComponent implements OnInit, OnDestroy {
   recordsNumber: number;
   title: string;
+  public Math = Math;
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
   isLoading = true;
@@ -529,7 +530,22 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
         }
       );
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   async ngOnInit() {
     
     this.title = await this.listTitleService.buildTitle('Job Files');

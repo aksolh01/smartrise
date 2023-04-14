@@ -3,8 +3,10 @@
         You are already logged on as {{ user.firstName }} {{ user.lastName }}.<br/>
         Please sign out first before attempting to proceed.
     </div>
-    <button type="button" (click)="onLogOut()" class="btn btn-primary mt-3 float-right">
-        <i class="fas fa-power-off"></i>
-        Sign Out
-    </button>
+    <div class="text-center">
+        <button type="button" (click)="onLogOut()" class="main-button">
+            Sign Out
+        </button>
+    </div>
+    
 </div>

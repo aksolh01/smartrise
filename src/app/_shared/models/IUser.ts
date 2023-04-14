@@ -5,6 +5,16 @@ export interface IUser {
     email: string;
     firstName: string;
     lastName: string;
+    primaryPhoneNumber?:number;
+    secondaryPhoneNumber?:number;
+    primaryEmailAddress?:string;
+    secondaryEmailAddress?:string;
+    companyName?:string;
+    businessAddress?:string;
+    city?:string;
+    state?:string;
+    zipcode?:string;
+    country?:string;
     displayName: string;
     token: string;
     impersonationModeIsActivated: boolean;

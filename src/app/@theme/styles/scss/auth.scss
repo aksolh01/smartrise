@@ -3,8 +3,8 @@
 }
 .auth-layout{
   position: relative;
-  height: 100%;
-  padding:0px 20px;
+  min-height: 100%;
+  padding:20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,6 +67,17 @@
       }
     }
   }
+  .privacy-policy{
+    z-index: 100;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    a{
+      color: white !important;
+      text-decoration: none;
+    }
+  }
+
 }
 
 

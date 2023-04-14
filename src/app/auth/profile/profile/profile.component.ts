@@ -92,6 +92,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.profileForm.patchValue({ twoFactorAuthentication: this.user?.userProfileInfo?.twoFactorAuthentication });
     this.profileForm.patchValue({ firstName: this.user?.firstName });
     this.profileForm.patchValue({ lastName: this.user?.lastName });
+    this.profileForm.patchValue({ primaryPhoneNumber: this.user?.primaryPhoneNumber });
+    this.profileForm.patchValue({ secondaryPhoneNumber: this.user?.secondaryPhoneNumber });
+    this.profileForm.patchValue({ primaryEmailAddress: this.user?.primaryEmailAddress });
+    this.profileForm.patchValue({ secondaryEmailAddress: this.user?.secondaryEmailAddress });
+    this.profileForm.patchValue({ companyName: this.user?.companyName });
+    this.profileForm.patchValue({ businessAddress: this.user?.businessAddress });
+    this.profileForm.patchValue({ city: this.user?.city });
+    this.profileForm.patchValue({ state: this.user?.state });
+    this.profileForm.patchValue({ zipcode: this.user?.zipcode });
+    this.profileForm.patchValue({ country: this.user?.country });
     this.profileForm.patchValue({ title: this.user?.userProfileInfo?.title });
   }
 
@@ -107,12 +117,39 @@ export class ProfileComponent implements OnInit, OnDestroy {
         trimValidator,
         SmartriseValidators.requiredWithTrim,
       ]),
-      title: new UntypedFormControl('', [
+      primaryPhoneNumber: new UntypedFormControl('', [
         trimValidator,
       ]),
-      twoFactorAuthentication: new UntypedFormControl({
-        value: false
-      }, []),
+      secondaryPhoneNumber: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      primaryEmailAddress: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      secondaryEmailAddress: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      companyName: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      businessAddress: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      city: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      state: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      zipcode: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      country: new UntypedFormControl('', [
+        trimValidator,
+      ]),
+      title: new UntypedFormControl('', [
+        trimValidator,
+      ])
     });
     this.profileForm.markAllAsTouched();
   }
@@ -123,6 +160,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.profileForm.invalid) {
       return;
     }
+    console.log("this.profileForm.invalid",this.profileForm)
 
     this.isLoading = true;
 
@@ -132,17 +170,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }).subscribe(
       () => {
         this.isLoading = false;
-        this.user.displayName =
-          this.profileForm.controls['firstName'].value +
-          ' ' +
-          this.profileForm.controls['lastName'].value;
+        this.user.displayName =this.profileForm.controls['firstName'].value + ' ' + this.profileForm.controls['lastName'].value;
+          // this.profileForm.controls['primaryPhoneNumber'].value;
+          // this.profileForm.controls['secondaryPhoneNumber'].value;
+          // this.profileForm.controls['primaryEmailAddress'].value;
+          // this.profileForm.controls['secondaryEmailAddress'].value;
+          // this.profileForm.controls['companyName'].value;
+          // this.profileForm.controls['businessAddress'].value;
+          // this.profileForm.controls['city'].value;
+          // this.profileForm.controls['state'].value;
+          // this.profileForm.controls['zipcode'].value;
+          // this.profileForm.controls['country'].value;
         this.accountService.updateUserLocal(this.user);
         this.messageService.showSuccessMessage('Profile Information has been updated successfully');
       },
       (error) => {
         this.isLoading = false;
       }
+      
     );
+    this.router.navigateByUrl('pages/dashboard');
   }
 
   getImageFromService(photoGuid: string) {
@@ -187,7 +234,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.pUrl.indexOf('auth/login') > -1 || this.pUrl === '/') {
         this.router.navigateByUrl('pages/dashboard');
     } else {
-this.router.navigateByUrl(this.pUrl);
+  this.router.navigateByUrl(this.pUrl);
 }
   }
 

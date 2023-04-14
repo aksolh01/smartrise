@@ -40,7 +40,7 @@ import * as guidingTourGlobal from '../../../guiding.tour.global';
 export class JobsListComponent extends BaseComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('search') search: ElementRef;
   recordsNumber: number;
-
+  public Math = Math;
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
   isLoading = true;
@@ -383,7 +383,22 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   onJobFilterChange() { }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   onSearch() {
     this.source.setPage(1, false);
     this.source.refresh();

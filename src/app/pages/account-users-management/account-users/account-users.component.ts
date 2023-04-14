@@ -32,10 +32,11 @@ import { InfoDialogComponent } from '../../../_shared/components/info-dialog/inf
   templateUrl: './account-users.component.html',
   styleUrls: ['./account-users.component.scss']
 })
+
 export class AccountUsersComponent extends BaseComponent implements OnInit {
   source: BaseServerDataSource;
   runGuidingTour = true;
-
+  public Math = Math;
   @ViewChild('search', { static: false }) searchRef: ElementRef;
   users: IAccountUserLookup[] = [];
   accountUsersParams = new AccountUsersParams();
@@ -61,6 +62,7 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
       edit: false,
       delete: false,
     },
+   
     columns: {
       firstName: {
         title: 'First Name',
@@ -113,7 +115,7 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
         },
         filter: false,
         sort: false,
-       
+
       },
       actionsCol: {
         filter: false,
@@ -155,8 +157,8 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
       if (this.isEmpty(value)) {
-return null;
-}
+        return null;
+      }
 
       return value;
     };
@@ -249,7 +251,22 @@ return null;
     this.router.navigateByUrl(URLs.CreateAccountUsersURL);
     this.isLoading = false;
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   onEditUser(user: IAccountUserLookup) {
     this.router.navigateByUrl(`${URLs.ViewAccountUsersURL}/${user.id}`);
   }
@@ -324,8 +341,8 @@ return null;
   concatRoles(roleNames: IAccountUserRoleLookup[]) {
     let roles = '';
     if (roleNames.length > 0) {
-roles = roleNames[0].displayName;
-}
+      roles = roleNames[0].displayName;
+    }
     for (let index = 1; index < roleNames.length; index++) {
       roles = roles + ', ' + roleNames[index].displayName;
     }
@@ -429,3 +446,4 @@ roles = roleNames[0].displayName;
     });
   }
 }
+

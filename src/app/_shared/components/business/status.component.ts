@@ -21,7 +21,6 @@ import { TaskStatus } from '../../models/job';
     `
 })
 export class ResourceTaskStatusCellComponent {
-
   pending = TaskStatusConstants.Pending;
   inProgress = TaskStatusConstants.InProgress;
   failed = TaskStatusConstants.Failed;

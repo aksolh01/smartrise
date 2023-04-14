@@ -1,0 +1,15 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+<ng-template [ngIf]="!!value" [ngIfElse]="naOnMobile">
+  <ul>
+    <li *ngFor="let account of value">
+      <i class="privileges-icon ml-1 fas fa-info-circle" tooltip="Show Account Roles"
+        (click)="openAccountRoles(account)">
+      </i>
+      <a tooltip="View Account Details" (click)="onClickAccount(account)">{{ account.name }}</a>
+      
+    </li>
+  </ul>
+</ng-template>
+<ng-template #naOnMobile>
+  <div class="d-lg-none d-block">N/A</div>
+</ng-template>

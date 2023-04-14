@@ -23,6 +23,7 @@
 @import "./scss/auth.scss";
 @import "./scss/table.scss";
 @import "./scss/components/button.scss";
+@import "./scss/card.scss";
 
 
 // install the framework and custom global styles
@@ -416,6 +417,7 @@ body {
                                             }
                                         }
                                     }
+                                   
                                 }
                             }
                         }
@@ -465,24 +467,7 @@ body {
                 }
             }
         }
-        ng2-smart-table-pager {
-            .page-item {
-                &.active {
-                    .ng2-smart-page-link {
-                        background-color: #0088cc;
-                        &:hover {
-                            background-color: #00a1f2;
-                        }
-                    }
-                }
-                .ng2-smart-page-link {
-                    color: #0088cc;
-                    &:hover {
-                        color: #00a1f2;
-                    }
-                }
-            }
-        }
+      
         &:not(.responsive-design1) {
             ngx-smr-ng2-table-cell > div {
                 display: none;
@@ -591,7 +576,7 @@ body {
     nb-auth nb-layout .layout .layout-container .content .columns nb-layout-column {
         padding: 0;
         nb-card {
-            height: 100%;
+            height: 100vh;
             nb-card-header {
                 display: none;
             }
@@ -1166,7 +1151,7 @@ ng2-smart-table tbody tr td:only-child {
 }
 
 .nb-theme-corporate nb-toast.status-info nb-icon svg {
-    visibility: collapse;
+    visibility:collapse;
 }
 .active-bank-accounts {
     min-width: 50rem;
@@ -1340,9 +1325,10 @@ input::placeholder {
             }
             .content{
                 color: black;
-                font-size: 13px;
+                font-size: 12px;
                 font-weight: 400;
-            }
+                height: 28px;
+                        }
         }
     }
 }
@@ -1384,11 +1370,14 @@ nb-accordion-item-header{
     color: white;
     border-radius: 8px;
     font-size: 12px;
-    padding: 4px;
+    padding: 2px 4px;
     font-weight: 400;
     
     &.status-Delivered{
         background-color: green;
+    }
+    &.status-Unknown{
+        background-color: grey;
     }
     &.status-{
         background-color: grey;
@@ -1432,7 +1421,12 @@ nb-accordion-item-header{
 .page-tab{
     display: flex;
     gap: 14px;
-    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    .page-tab-container{
+    width: 85%;
+    display: flex;
+    gap: 14px;
     .page-tab-item{
         width: 100%;
         background-color: white;
@@ -1440,7 +1434,7 @@ nb-accordion-item-header{
         padding: 10px;
         font-size: 18px;
         font-weight: 600;
-        color: gray;
+        color: black;
         border-radius: 12px;
         cursor: pointer;
       
@@ -1450,6 +1444,8 @@ nb-accordion-item-header{
         }
         
     }
+    }
+    
 }
 .status-job-file{
     background-color: red;
@@ -1460,12 +1456,31 @@ nb-accordion-item-header{
     .avatar-btn{
         button{
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
         }
         
     }
 }
 ng2-smart-table nav.ng2-smart-pagination-nav{
     padding-left: 20px;
+}
+.error {
+    color: red;
+    font-size: 14px;
+    padding-bottom: 6px;
+  }
+  ng2-smart-table-pager{
+    display: none !important;
+  }
+  .pagination-info{
+    display: flex;
+    gap: 10px;
+    color: black;
+    justify-content: flex-end;
+    font-weight: 600;
+    font-size: 16px;
+    .pagination-btn{
+        cursor: pointer;
+    }
 }

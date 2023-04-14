@@ -37,15 +37,15 @@
         <ng-template [ngIf]="isSmall === false && (accountSelected || isSmartriseUser)">
             <div class="row mb-3">
                 <div class="col d-flex align-items-center justify-content-start">
-                    <button (click)="onReset()" class="btn btn-primary">
+                    <!-- <button (click)="onReset()" class="btn btn-primary">
                         <i class="fas fa-redo-alt"></i>
                         Reset Filters
-                    </button>
+                    </button> -->
                 </div>
                 <div class="col-auto d-flex align-items-center justify-content-start">
-                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
                         (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page>
+                    </ngx-smr-records-per-page> -->
                 </div>
             </div>
         </ng-template>
@@ -84,9 +84,9 @@
                     </nb-select>
                 </div>
                 <div class="filter-control">
-                    <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
                         (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page>
+                    </ngx-smr-records-per-page> -->
                 </div>
             </div>
             <div actions>
@@ -94,10 +94,10 @@
                     <i class="fas fa-search"></i>
                     Search
                 </button>
-                <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+                <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
                     <i class="fas fa-redo-alt"></i>
                     Reset Filters
-                </button>
+                </button> -->
             </div>
         </ngx-smr-mobile-filters>
 

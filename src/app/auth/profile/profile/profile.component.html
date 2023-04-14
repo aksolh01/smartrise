@@ -1,266 +1,273 @@
-<div [class]="isDataLoading ? 'form-container data-loading' : 'form-container'" [nbSpinner]="isDataLoading" nbSpinnerStatus="primary"
-    nbSpinnerSize="large" nbSpinnerMessage="">
+<div [class]="isDataLoading ? 'form-container data-loading' : 'form-container'" [nbSpinner]="isDataLoading"
+    nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="">
 
-    <div class="">
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-            <div class="main-card">
-                <div class="card-container">
-                    <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
-                        <nb-card-header class="default-card-header">
-                            <h2 class="card-title">Edit Profile</h2>
-                        </nb-card-header>
-                        <nb-card-body>
-                            <ngx-profile-picture [profileLoading]="proflieLoading" [photoGuid]="photoGuid" [(url)]="imageToShow">
-                            </ngx-profile-picture> 
-                            <div class="input-container">
-                                <div class="input-sub-container">
-                                    <label for="fistName" class="pt-2 required">First Name</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="fistName" formControlName="firstName"
-                                            placeholder="First Name" class="form-control" />
+    <div class="main-card">
+        <div class="card-container">
+            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+                <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+                    <nb-card-header class="default-card-header">
+                        <h2 class="card-title">Edit Profile</h2>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <ngx-profile-picture [profileLoading]="proflieLoading" [photoGuid]="photoGuid"
+                            [(url)]="imageToShow">
+                        </ngx-profile-picture>
+                        <div class="input-container">
+                            <div class="input-sub-container">
+                                <label for="fistName" class="pt-2 required">First Name</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="fistName" formControlName="firstName"
+                                        placeholder="First Name" class="form-control" />
 
-                                        <div *ngIf="formSubmitted &&
-                                                profileForm.get('firstName').touched &&
-                                                profileForm.get('firstName').errors &&
-                                                profileForm.get('firstName').errors['requiredWithTrim']"
-                                            class="mt-1 help-block error">
-                                            First Name is required
-                                        </div>
-
-                                        <div *ngIf="formSubmitted &&
+                                    <div *ngIf="formSubmitted &&
                                             profileForm.get('firstName').touched &&
                                             profileForm.get('firstName').errors &&
-                                            profileForm.get('firstName').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
+                                            profileForm.get('firstName').errors['requiredWithTrim']"
+                                        class="mt-1 help-block error">
+                                        First Name is required
                                     </div>
-                                </div>
 
-                                <div class="input-sub-container">
-                                    <label for="lastName" class="pt-2 required">Last
-                                        Name</label>
-
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="lastName" formControlName="lastName"
-                                            placeholder="Last Name" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('lastName').touched &&
-                                            profileForm.get('lastName').errors &&
-                                            profileForm.get('lastName').errors['requiredWithTrim']
-                                          " class="mt-1 help-block error">
-                                            Last Name is required
-                                        </div>
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('lastName').touched &&
-                                            profileForm.get('lastName').errors &&
-                                            profileForm.get('lastName').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="title" class="pt-2 required">Title</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="title" formControlName="title"
-                                            placeholder="Title" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('title').touched &&
-                                            profileForm.get('title').errors &&
-                                            profileForm.get('title').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="primaryPhoneNumber" class="pt-2 required">Primary Phone Number</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="primaryPhoneNumber" formControlName="primaryPhoneNumber"
-                                            placeholder="Primary Phone Number" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('primaryPhoneNumber').touched &&
-                                            profileForm.get('primaryPhoneNumber').errors &&
-                                            profileForm.get('primaryPhoneNumber').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="secondaryPhoneNumber" class="pt-2 required">Secondary Phone Number</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="secondaryPhoneNumber" formControlName="secondaryPhoneNumber"
-                                            placeholder="Secondary Phone Number" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('secondaryPhoneNumber').touched &&
-                                            profileForm.get('secondaryPhoneNumber').errors &&
-                                            profileForm.get('secondaryPhoneNumber').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="primaryEmailAddress" class="pt-2 required">Primary Email Address</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="primaryEmailAddress" formControlName="primaryEmailAddress"
-                                            placeholder="Primary Email Address" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('primaryEmailAddress').touched &&
-                                            profileForm.get('primaryEmailAddress').errors &&
-                                            profileForm.get('primaryEmailAddress').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="secondaryEmailAddress" class="pt-2 required">Secondary Email Address</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="secondaryEmailAddress" formControlName="secondaryEmailAddress"
-                                            placeholder="Secondary Email Address" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('secondaryEmailAddress').touched &&
-                                            profileForm.get('secondaryEmailAddress').errors &&
-                                            profileForm.get('secondaryEmailAddress').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="companyName" class="pt-2 required">Company Name</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="companyName" formControlName="companyName"
-                                            placeholder="Company Name" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('companyName').touched &&
-                                            profileForm.get('companyName').errors &&
-                                            profileForm.get('companyName').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="businessAddress" class="pt-2 required">Business Address</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="businessAddress" formControlName="businessAddress"
-                                            placeholder="Business Address" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('businessAddress').touched &&
-                                            profileForm.get('businessAddress').errors &&
-                                            profileForm.get('businessAddress').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="city" class="pt-2 required">City</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="city" formControlName="city"
-                                            placeholder="City" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('city').touched &&
-                                            profileForm.get('city').errors &&
-                                            profileForm.get('city').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="state" class="pt-2 required">State/Province</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="state" formControlName="state"
-                                            placeholder="State/Province" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('state').touched &&
-                                            profileForm.get('state').errors &&
-                                            profileForm.get('state').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="zipcode" class="pt-2 required">ZIP Code</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="zipcode" formControlName="zipcode"
-                                            placeholder="ZIP Code" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('zipcode').touched &&
-                                            profileForm.get('zipcode').errors &&
-                                            profileForm.get('zipcode').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="input-sub-container">
-                                    <label for="country" class="pt-2 required">Country</label>
-                                    <div class="input-item">
-                                        <input type="text" maxlength="255" id="country" formControlName="country"
-                                            placeholder="Country" class="form-control" />
-
-                                        <div *ngIf="formSubmitted &&
-                                            profileForm.get('country').touched &&
-                                            profileForm.get('country').errors &&
-                                            profileForm.get('country').errors['trimError']
-                                          " class="mt-1 help-block error">
-                                            This field can't start or end with a blank space
-                                        </div>
-
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('firstName').touched &&
+                                        profileForm.get('firstName').errors &&
+                                        profileForm.get('firstName').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-action">
-                                <button class="main-button" (click)="back()" type="submit">
-                                    Save
-                                </button>
+
+                            <div class="input-sub-container">
+                                <label for="lastName" class="pt-2 required">Last
+                                    Name</label>
+
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="lastName" formControlName="lastName"
+                                        placeholder="Last Name" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('lastName').touched &&
+                                        profileForm.get('lastName').errors &&
+                                        profileForm.get('lastName').errors['requiredWithTrim']
+                                      " class="mt-1 help-block error">
+                                        Last Name is required
+                                    </div>
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('lastName').touched &&
+                                        profileForm.get('lastName').errors &&
+                                        profileForm.get('lastName').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
                             </div>
-                        </nb-card-body>
-                    </nb-card>
-                </div>
-                <div class="card-container nobackground">
-                    <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
-                        <nb-card-header class="default-card-header">
-                            <h2 class="card-title">Change Password</h2>
-                        </nb-card-header>
-                        <nb-card-body>
-                            <ngx-change-password>
-                            </ngx-change-password>
-                        </nb-card-body>
-                    </nb-card>
-                </div>
-            </div>
-        </form>
+                            <div class="input-sub-container">
+                                <label for="title" class="pt-2 required">Title</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="title" formControlName="title"
+                                        placeholder="Title" class="form-control" />
+                                        
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('title').touched &&
+                                        profileForm.get('title').errors &&
+                                        profileForm.get('title').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="primaryPhoneNumber" class="pt-2 required">Primary Phone Number</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="primaryPhoneNumber"
+                                        formControlName="primaryPhoneNumber" placeholder="Primary Phone Number"
+                                        class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('primaryPhoneNumber').touched &&
+                                        profileForm.get('primaryPhoneNumber').errors &&
+                                        profileForm.get('primaryPhoneNumber').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="secondaryPhoneNumber" class="pt-2 required">Secondary Phone
+                                    Number</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="secondaryPhoneNumber"
+                                        formControlName="secondaryPhoneNumber" placeholder="Secondary Phone Number"
+                                        class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('secondaryPhoneNumber').touched &&
+                                        profileForm.get('secondaryPhoneNumber').errors &&
+                                        profileForm.get('secondaryPhoneNumber').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="primaryEmailAddress" class="pt-2 required">Primary Email Address</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="primaryEmailAddress"
+                                        formControlName="primaryEmailAddress" placeholder="Primary Email Address"
+                                        class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('primaryEmailAddress').touched &&
+                                        profileForm.get('primaryEmailAddress').errors &&
+                                        profileForm.get('primaryEmailAddress').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="secondaryEmailAddress" class="pt-2 required">Secondary Email
+                                    Address</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="secondaryEmailAddress"
+                                        formControlName="secondaryEmailAddress" placeholder="Secondary Email Address"
+                                        class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('secondaryEmailAddress').touched &&
+                                        profileForm.get('secondaryEmailAddress').errors &&
+                                        profileForm.get('secondaryEmailAddress').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="companyName" class="pt-2 required">Company Name</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="companyName" formControlName="companyName"
+                                        placeholder="Company Name" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('companyName').touched &&
+                                        profileForm.get('companyName').errors &&
+                                        profileForm.get('companyName').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="businessAddress" class="pt-2 required">Business Address</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="businessAddress"
+                                        formControlName="businessAddress" placeholder="Business Address"
+                                        class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('businessAddress').touched &&
+                                        profileForm.get('businessAddress').errors &&
+                                        profileForm.get('businessAddress').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="city" class="pt-2 required">City</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="city" formControlName="city"
+                                        placeholder="City" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('city').touched &&
+                                        profileForm.get('city').errors &&
+                                        profileForm.get('city').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="state" class="pt-2 required">State/Province</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="state" formControlName="state"
+                                        placeholder="State/Province" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('state').touched &&
+                                        profileForm.get('state').errors &&
+                                        profileForm.get('state').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="zipcode" class="pt-2 required">ZIP Code</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="zipcode" formControlName="zipcode"
+                                        placeholder="ZIP Code" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('zipcode').touched &&
+                                        profileForm.get('zipcode').errors &&
+                                        profileForm.get('zipcode').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="input-sub-container">
+                                <label for="country" class="pt-2 required">Country</label>
+                                <div class="input-item">
+                                    <input type="text" maxlength="255" id="country" formControlName="country"
+                                        placeholder="Country" class="form-control" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('country').touched &&
+                                        profileForm.get('country').errors &&
+                                        profileForm.get('country').errors['trimError']
+                                      " class="mt-1 help-block error">
+                                        This field can't start or end with a blank space
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-action">
+                            <ngx-button [isLoading]="isLoading" class="main-button" type="submit">
+                                Save
+                            </ngx-button>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </form>
+        </div>
+        <div class="card-container nobackground">
+            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+                <nb-card-header class="default-card-header">
+                    <h2 class="card-title">Change Password</h2>
+                </nb-card-header>
+                <nb-card-body>
+                    <ngx-change-password>
+                    </ngx-change-password>
+                </nb-card-body>
+            </nb-card>
+        </div>
     </div>
 
 </div>

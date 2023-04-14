@@ -2,9 +2,10 @@
     <div class="page-header-title">
         Jobs & Tracking
     </div>
-    <div *ngIf="!isSmall" class="form-container mx-w-400" style="width: 40%;">
+    <div *ngIf="!isSmall" class="form-container" style="width: 25%;">
         <div class="input-container">
-            <div class="input-item">
+            <div class="input-item search-input-icon">
+                <i class="fa fa-search"></i>
                 <input type="text" placeholder="Search">
             </div>
         </div>
@@ -17,10 +18,28 @@
 
 </div>
 <div class="page-tab">
-    <div class="page-tab-item" (click)="goToJobs()">jobs</div>
-    <div class="page-tab-item" (click)="goToShipments()">shipments</div>
-    <div class="page-tab-item last active" (click)="goToJobsFile()">jobs file</div>
+    <div class="page-tab-container">
+        <div class="page-tab-item" (click)="goToJobs()">Jobs</div>
+        <div class="page-tab-item" (click)="goToShipments()">Shipments</div>
+        <div class="page-tab-item last active" (click)="goToJobsFile()">Job files</div>
+    </div>
+    <div class="pagination-info">
+        <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+        {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+        -
+        {{
+        Math.min(
+        source.count(),
+        (source.getPaging().page - 1) * settings.pager.perPage +
+        settings.pager.perPage
+        )
+        }}
+        of {{ source.count() }}
+
+        <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+    </div>
 </div>
+
 <div class="table-container">
     <nb-card joyrideStep="resourceFirstStep" stepPosition="center"
         [title]="runGuidingTour === true ? 'Job Files' : null" [stepContent]="firstCustomContent"
@@ -54,18 +73,11 @@
                 </div>
             </div>
         </ng-template>
-
-        <!-- <nb-card-header class="default-card-header">
-            <h2 class="card-title">Job Files</h2>
-            <div *ngIf="res$ | async as res">
-                {{res.newResource.status}}
-            </div>
-        </nb-card-header> -->
         <nb-card-body>
             <ng-template [ngIf]="isSmall === false">
                 <div class="table-header">
                     <div>
-                        
+
                         <!-- we hide it for the time being sine Smartrise users can use the Status column -->
                         <div *ngIf="false">
                             <ngx-cp-checkbox [label]="'Has Uploaded File'"
@@ -74,17 +86,7 @@
                             </ngx-cp-checkbox>
                         </div>
                     </div>
-                    <div>
-                        <button (click)="onReset()" class="main-button">
-                            <i class="fas fa-redo-alt"></i>
-                            Reset Filters
-                        </button>
-                    </div>
-                    <!-- <div class="table-record">
-                        <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
-                            (changed)="onRecordsNumberChanged($event)">
-                        </ngx-smr-records-per-page>
-                    </div> -->
+
                 </div>
             </ng-template>
             <div class="table-content">
@@ -122,15 +124,8 @@
                                     </nb-option>
                                 </nb-select>
                             </div>
-                            <!-- <div class="filter-control" *ngIf="isSmartriseUser">
-                            <ngx-cp-checkbox [label]="'Has Uploaded File'" [(checkStatus)]="hasUploadedFile"
-                                 [disable]="isLoading" class="pr-2">
-                                 </ngx-cp-checkbox>
-                                 </div> -->
                             <div class="w-100">
-                                <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
-                                    (changed)="onRecordsNumberChanged($event)">
-                                </ngx-smr-records-per-page>
+
                             </div>
                         </div>
                     </div>
@@ -138,10 +133,6 @@
                         <button class="main-button" (click)="onSearch(); toggleFilters()">
                             <i class="fas fa-search"></i>
                             Search
-                        </button>
-                        <button (click)="onReset(); toggleFilters()" class="main-button">
-                            <i class="fas fa-redo-alt"></i>
-                            Reset Filters
                         </button>
                     </div>
 
