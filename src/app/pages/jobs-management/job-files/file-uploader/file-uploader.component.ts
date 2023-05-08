@@ -21,7 +21,8 @@ export class FileUploaderComponent implements OnInit {
   formSubmitted = false;
   selectedFilename: string;
   file: File;
-  progress = 0;
+  progress: number = 0;
+  hideFileDescription: boolean = false;
   private _isUploading: boolean;
 
   @Input()

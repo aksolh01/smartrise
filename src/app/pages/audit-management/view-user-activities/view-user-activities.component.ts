@@ -218,65 +218,85 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25
-    };
+
+    this._initializePager();
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
       delete this.settings.columns.account;
     }
 
-    this.settings.columns.objectType.filter.config.list = this.objectTypes.map(x => ({ title: x.description, value: x.value }));
-    this.settings.columns.action.filter.config.list = this.actions.map(x => ({ title: x.description, value: x.value }));
+    this._fillTableFilterLists();
 
     this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-return null;
-}
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+    this.source.serviceCallBack = (params) => this._getUserActivities(params);
+    this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
+  }
 
-      if (field === 'createdDate') {
-        return new Date(value);
-      }
-      return value;
-    };
+  private _onDataLoading(isLoading: any) {
+    this.isLoading = isLoading;
 
-    this.source.serviceErrorCallBack = (error) => { };
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
 
-    this.source.serviceCallBack = (params) => {
-      const activityParams = params as ActivityParams;
-      if (this.isSmall) {
-        activityParams.account = this.account;
-        activityParams.userDisplayName = this.userDisplayName;
-        activityParams.impersonationUserDisplayName = this.impersonationUserDisplayName;
-        activityParams.action = this.isEmpty(this.action) ? null : this.action;
-        activityParams.objectType = this.isEmpty(this.objectType) ? null : this.objectType;
-        activityParams.objectDisplayMember = this.objectDisplayMember;
-        activityParams.createdDate = this.createdDate;
-      }
+  private _convertFilterValue(field, value) {
+    if (this.isEmpty(value))
+      return null;
 
-      activityParams.createdDate = this.mockUtcDate(activityParams.createdDate);
-      activityParams.isSmartrise = this.isSmartriseUser;
+    if (field === 'createdDate') {
+      return new Date(value);
+    }
+    return value;
+  }
 
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.activityService.getActivitiesBySmartriseUser(activityParams);
-      } else {
-        const searchParams = activityParams as ActivitySearchByCustomerUser;
-        searchParams.customerId = this.multiAccountService.getSelectedAccount();
+  private _getUserActivities(params: any) {
+    const activityParams = params as ActivityParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(activityParams);
+    }
 
-        return this.activityService.getActivitiesByCustomerUser(activityParams);
-      }
-    };
+    activityParams.createdDate = this.mockUtcDate(activityParams.createdDate);
+    activityParams.isSmartrise = this.isSmartriseUser;
 
-    this.source.dataLoading.subscribe(isLoading => {
-      this.isLoading = isLoading;
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.activityService.getActivitiesBySmartriseUser(activityParams);
+    } else {
+      return this._getActivitiesByCustomerUser(activityParams as ActivitySearchByCustomerUser);
+    }
+  }
+  
+  private _getActivitiesByCustomerUser(searchParams: ActivitySearchByCustomerUser) {
+    searchParams.customerId = this.multiAccountService.getSelectedAccount();
+    return this.activityService.getActivitiesByCustomerUser(searchParams);
+  }
 
-      setTimeout(() => {
-        this.startGuidingTour();
-      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  private _fillTableFilterLists() {
+    this.settings.columns.objectType.filter.config.list = this.objectTypes.map(x => {
+      return { title: x.description, value: x.value };
     });
+    this.settings.columns.action.filter.config.list = this.actions.map(x => {
+      return { title: x.description, value: x.value };
+    });
+  }
+
+  private _initializePager() {
+      this.settings.pager = {
+          display: true,
+          page: 1,
+          perPage: this.recordsNumber || 25
+      };
+  }
+
+  private _fillFilterParameters(activityParams: ActivityParams) {
+    activityParams.account = this.account;
+    activityParams.userDisplayName = this.userDisplayName;
+    activityParams.impersonationUserDisplayName = this.impersonationUserDisplayName;
+    activityParams.action = this.isEmpty(this.action) ? null : this.action;
+    activityParams.objectType = this.isEmpty(this.objectType) ? null : this.objectType;
+    activityParams.objectDisplayMember = this.objectDisplayMember;
+    activityParams.createdDate = this.createdDate;
   }
 
   populateActionsFilterList() {
@@ -334,6 +354,16 @@ return null;
 
   onReset() {
 
+    this._resetFilterParameters();
+
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.account = null;
     this.userDisplayName = null;
     this.impersonationUserDisplayName = null;
@@ -341,12 +371,6 @@ return null;
     this.objectType = '';
     this.objectDisplayMember = null;
     this.createdDate = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
   }
 
   onUserSelected(user) {

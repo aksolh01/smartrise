@@ -4,7 +4,6 @@ import { JoyrideStepInfo } from 'ngx-joyride/lib/models/joyride-step-info.class'
 import { Observable, Subscription } from 'rxjs';
 import { PERMISSIONS } from '../../_shared/constants';
 import { ICustomerRecord, IRecentCustomer } from '../../_shared/models/customer-lookup';
-import { CustomerParams } from '../../_shared/models/CustomerParams';
 import { SortDirection } from '../../_shared/models/enums';
 import { IUser } from '../../_shared/models/IUser';
 import { IRecentJob } from '../../_shared/models/job';
@@ -21,6 +20,7 @@ import { TokenService } from '../../services/token.service';
 import * as guidingTourGlobal from '../guiding.tour.global';
 import { MiscellaneousService } from '../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../services/multi-accounts-service';
+import { CustomerParams } from '../../_shared/models/CustomerParams';
 
 @Component({
   selector: 'ngx-smr-home',

@@ -15,6 +15,8 @@ export class ResourceParams extends BaseParams {
     shipDate: any = null;
     message = '';
     hasUploadedFile?: boolean = null;
+    installedBy?: string;
+    maintainedBy?: string;
 }
 
 export class ResourceByCustomerUserParams extends ResourceParams {

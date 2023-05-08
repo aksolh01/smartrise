@@ -68,8 +68,8 @@
     }
   }
   .privacy-policy{
-    z-index: 100;
-    position: fixed;
+    z-index: 100000;
+    position: absolute;
     bottom: 20px;
     right: 20px;
     a{

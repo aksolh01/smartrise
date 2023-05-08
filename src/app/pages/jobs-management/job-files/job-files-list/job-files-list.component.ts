@@ -43,6 +43,7 @@ import { PermissionService } from '../../../../services/permission.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
 import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
 import { ListTitleService } from '../../../../services/list-title.service';
+import { IBusinessSettings } from '../../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-job-files-list',
@@ -81,6 +82,8 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   isImpersonateMode: boolean;
   canManageFiles: boolean;
   canGenerateFile: boolean;
+  installedBy: string;
+  maintainedBy: string;
 
   constructor(
     baseService: BaseComponentService,
@@ -117,7 +120,49 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
         type: 'custom',
         renderComponent: AccountTableCellComponent,
         onComponentInitFunction: (instance: AccountTableCellComponent) => {
-          instance.setHeader('Account');
+          instance.setHeader(this._getAccountTitle());
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      installedBy: {
+        title: 'Installation By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Installation By');
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      maintainedBy: {
+        title: 'Currently Maintained By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Currently Maintained By');
           instance.setOptions({
             tooltip: 'View Account Details',
             link: URLs.CompanyInfoURL,
@@ -262,11 +307,8 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   // }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25,
-    };
+
+    this._initializePager();
 
     this.isImpersonateMode = this.miscellaneousService.isImpersonateMode();
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
@@ -275,92 +317,35 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       delete this.settings.columns.status;
     }
 
-    if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
-      delete this.settings.columns.account;
+    this.settings.columns.account.title = this._getAccountTitle();
+    
+    if (this.miscellaneousService.isCustomerUser()) {
+      delete this.settings.columns.maintainedBy;
+      delete this.settings.columns.installedBy;
+      if (this.multiAccountService.hasOneAccount()) {
+        delete this.settings.columns.account;
+      }
     }
+    
     if (!this.canManageFiles) {
       delete this.settings.columns.fileDescription;
     }
 
-    this.settings.columns.resourceType.filter.config.list =
-      this.resourceTypes.map((x) => ({ title: x.description, value: x.value }));
-    if (this.settings.columns.status) {
-      this.settings.columns.status.filter.config.list = this.statuses.map(
-        (x) => ({ title: x.description, value: x.value })
-      );
-    }
+    this._fillTableFilterLists();
 
     this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-        return null;
-      }
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
 
-      if (field === 'epicorWaitingInfo') {
-        return /true/i.test(value);
-      }
-
-      if (
-        field === 'orderDate' ||
-        field === 'createDate' ||
-        field === 'shipDate' ||
-        field === 'grantedShipDate'
-      ) {
-        return new Date(value);
-      }
-
-      return value;
-    };
-    this.source.serviceErrorCallBack = () => {};
-    this.source.serviceCallBack = (params) => {
-      const resourceParams = params as ResourceParams;
-
-      if (this.isSmartriseUser) {
-        resourceParams.hasUploadedFile = this.hasUploadedFile;
-      } else {
-        resourceParams.hasUploadedFile = true;
-      }
-
-      if (this.isSmall) {
-        resourceParams.account = this.account;
-        resourceParams.jobName = this.jobName;
-        resourceParams.jobNumber = this.jobNumber;
-        resourceParams.message = this.message;
-        resourceParams.fileDescription = this.fileDescription;
-        resourceParams.resourceType = this.isEmpty(this.resourceType)
-          ? null
-          : this.resourceType;
-        resourceParams.status = this.isEmpty(this.status) ? null : this.status;
-      }
-
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.resourceService.getConsolidateResourcesBySmartriseUser(
-          resourceParams
-        );
-      } else {
-        const searchPayload = resourceParams as ResourceByCustomerUserParams;
-        searchPayload.customerId =
-          this.multiAccountService.getSelectedAccount();
-
-        return this.resourceService.getConsolidateResourcesByCustomerUser(
-          resourceParams
-        );
-      }
-    };
+    this.source.serviceCallBack = (params) => this._getJobFiles(params);
     this.source.dataLoading.subscribe((result) => {
       // setTimeout(() => {
       //   this.isLoading = result;
       // }, 0);
       this.isLoading = result;
 
-      setTimeout(
-        () => {
-          this.startGuidingTour();
-        },
-        this.isSmall
-          ? guidingTourGlobal.smallScreenSuspensionTimeInterval
-          : guidingTourGlobal.wideScreenSuspensionTimeInterval
-      );
+      setTimeout(() => {
+        this.startGuidingTour();
+      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
     });
     this.source.setSort(
       [
@@ -368,6 +353,75 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       ],
       false
     );
+  }
+
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value)) return null;
+
+    if (field === 'epicorWaitingInfo') return /true/i.test(value);
+
+    if (
+      field === 'orderDate' ||
+      field === 'createDate' ||
+      field === 'shipDate' ||
+      field === 'grantedShipDate'
+    )
+      return new Date(value);
+
+    return value;
+  }
+
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber,
+    };
+  }
+
+  private _fillTableFilterLists() {
+    this.settings.columns.resourceType.filter.config.list = this.resourceTypes.map(x => {
+      return { title: x.description, value: x.value };
+    });
+    if (this.settings.columns.status) {
+      this.settings.columns.status.filter.config.list = this.statuses.map(x => {
+        return { title: x.description, value: x.value };
+      });
+    }
+  }
+
+  private _getJobFiles(params: any) {
+    const resourceParams = params as ResourceParams;
+
+    if (this.isSmartriseUser)
+      resourceParams.hasUploadedFile = this.hasUploadedFile;
+    else
+      resourceParams.hasUploadedFile = true;
+
+    if (this.isSmall) {
+      this._fillFilterParameters(resourceParams);
+    }
+
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.resourceService.getConsolidateResourcesBySmartriseUser(resourceParams);
+    } else {
+      var searchPayload = resourceParams as ResourceByCustomerUserParams;
+      searchPayload.customerId = this.multiAccountService.getSelectedAccount();
+
+      return this.resourceService.getConsolidateResourcesByCustomerUser(resourceParams);
+    }
+  }
+
+  private _fillFilterParameters(resourceParams: ResourceParams) {
+    resourceParams.account = this.account;
+    resourceParams.jobName = this.jobName;
+    resourceParams.jobNumber = this.jobNumber;
+    resourceParams.message = this.message;
+    resourceParams.fileDescription = this.fileDescription;
+    resourceParams.resourceType = this.isEmpty(this.resourceType) ? null : this.resourceType;
+    resourceParams.status = this.isEmpty(this.status) ? null : this.status;
+    resourceParams.installedBy = this.installedBy;
+    resourceParams.maintainedBy = this.maintainedBy;
   }
 
   onActionsInit(actions: JobFilesListActionsComponent) {
@@ -392,6 +446,80 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     });
   }
 
+  private _onUploadingFile(data: any): void {
+    const modalRef = this.modalService.show<FileUploaderComponent>(
+      FileUploaderComponent
+    );
+    const subscription = modalRef.content.upload.subscribe((uploadData) => {
+      if (this.isAllowedFileType(uploadData.file.name)) {
+        const size = uploadData.file.size / 1024 / 1024;
+        if (size > 10) {
+          this.messageService.showErrorMessage(
+            'File size cannot be more than 10 MB'
+          );
+          return;
+        }
+        subscription.add(
+          this.resourceService
+            .validateUploadFile(data.resourceFileId)
+            .subscribe(
+              (r) => {
+                subscription.add(
+                  this.resourceService
+                    .uploadFile(
+                      uploadData.file,
+                      data.resourceFileId,
+                      uploadData.fileDescription
+                    )
+                    .subscribe(
+                      (event) => {
+                        switch (event.type) {
+                          case HttpEventType.Sent:
+                            modalRef.content.isUploading = true;
+                            break;
+                          case HttpEventType.ResponseHeader:
+                            modalRef.content.isUploading = false;
+                            break;
+                          case HttpEventType.UploadProgress:
+                            modalRef.content.progress = Math.round(
+                              (event.loaded / event.total) * 100
+                            );
+                            break;
+                          case HttpEventType.Response:
+                            this.messageService.showSuccessMessage(
+                              'File has been uploaded successfully'
+                            );
+                            this.source.refresh();
+                            modalRef.hide();
+                            break;
+                        }
+                      },
+                      (error) => {
+                        this.messageService.showError(error);
+                        this.source.refresh();
+                        modalRef.content.resetUpload();
+                      }
+                    )
+                );
+              },
+              (error) => {
+                this.source.refresh();
+              }
+            )
+        );
+      } else {
+        this.messageService.showErrorMessage('This file type is not allowed');
+        modalRef.content.isUploading = false;
+      }
+    });
+
+    subscription.add(
+      modalRef.onHidden.subscribe(() => {
+        subscription.unsubscribe();
+      })
+    );
+  }
+
   onRemoveUploadedFile(f: any) {
     this.miscellaneousService.openConfirmModal(
       'Are you sure you want to remove the uploaded file?',
@@ -406,6 +534,20 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       }
     }
     return false;
+  }
+
+  private _removeUploadedFile(f: any) {
+    this.resourceService.removeUploadedFile(f.resourceFileId).subscribe(
+      () => {
+        this.messageService.showSuccessMessage(
+          'File has been removed successfully'
+        );
+        this.source.refresh();
+      },
+      (error) => {
+        this.source.refresh();
+      }
+    );
   }
 
   onRefreshResourceV2(resource: any) {
@@ -463,9 +605,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
       })
       .subscribe(
         () => {
-          this.messageService.showInfoMessage(
-            'Please wait until the Job File is generated'
-          );
+          this.messageService.showInfoMessage('Please wait until the Job File is generated');
           this.source.refresh();
         },
         () => {
@@ -547,35 +687,14 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     }
   }
   async ngOnInit() {
-    
+
     this.title = await this.listTitleService.buildTitle('Job Files');
 
     this.canGenerateFile = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
     this.canManageFiles = this.permissionService.hasPermission(PERMISSIONS.ManageJobFiles);
     this.resourceTypes = await this.resourceService.getResourceTypes().toPromise();
     this.statuses = await this.resourceService.getStatuses().toPromise();
-    this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription =
-        this.responsiveService.currentBreakpoint$.subscribe((w) => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (
-            w === ScreenBreakpoint.md ||
-            w === ScreenBreakpoint.xs ||
-            w === ScreenBreakpoint.sm
-          ) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
-          }
-        });
-    });
+    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
 
     this.backgroundCall = setInterval(() => {
       if (this.source && !this.isLoading) {
@@ -583,11 +702,34 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
 
         if (pagination && pagination.data) {
           pagination.data
-            .filter((o) => o.status && o.status.value === 'Pending')
-            .forEach((o) => this.onRefreshResourceV2(o));
+            .filter(o => o.status && o.status.value === 'Pending')
+            .forEach(o => this.onRefreshResourceV2(o));
         }
       }
     }, 10000);
+
+  }
+
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
+    this.recordsNumber = rep.numberOfRecords;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe((w) => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md ||
+      w === ScreenBreakpoint.xs ||
+      w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   displayStatusText(action: any) {
@@ -595,6 +737,16 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   }
 
   onReset() {
+    this._resetFilterParameters();
+
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.account = null;
     this.jobName = null;
     this.jobNumber = null;
@@ -603,12 +755,8 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     this.message = null;
     this.fileDescription = null;
     this.hasUploadedFile = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
+    this.installedBy = null;
+    this.maintainedBy = null;
   }
 
   onSearch() {
@@ -687,79 +835,10 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     this.joyrideService = null;
   }
 
-  private _onUploadingFile(data: any): void {
-    const modalRef = this.modalService.show<FileUploaderComponent>(
-      FileUploaderComponent
-    );
-    const subscription = modalRef.content.upload.subscribe((uploadData) => {
-      if (this.isAllowedFileType(uploadData.file.name)) {
-        const size = uploadData.file.size / 1024 / 1024;
-        if (size > 10) {
-          this.messageService.showErrorMessage(
-            'File size cannot be more than 10 MB'
-          );
-          return;
-        }
-        subscription.add(
-          this.resourceService
-            .validateUploadFile(data.resourceFileId)
-            .subscribe(
-              () => {
-                subscription.add(
-                  this.resourceService
-                    .uploadFile(
-                      uploadData.file,
-                      data.resourceFileId,
-                      uploadData.fileDescription
-                    )
-                    .subscribe(
-                      (event) => {
-                        switch (event.type) {
-                          case HttpEventType.Sent:
-                            modalRef.content.isUploading = true;
-                            break;
-                          case HttpEventType.ResponseHeader:
-                            modalRef.content.isUploading = false;
-                            break;
-                          case HttpEventType.UploadProgress:
-                            modalRef.content.progress = Math.round(
-                              (event.loaded / event.total) * 100
-                            );
-                            break;
-                          case HttpEventType.Response:
-                            this.messageService.showSuccessMessage(
-                              'File has been uploaded successfully'
-                            );
-                            this.source.refresh();
-                            modalRef.hide();
-                            break;
-                        }
-                      },
-                      (error) => {
-                        this.messageService.showError(error);
-                        this.source.refresh();
-                        modalRef.content.resetUpload();
-                      }
-                    )
-                );
-              },
-              () => {
-                this.source.refresh();
-              }
-            )
-        );
-      } else {
-        this.messageService.showErrorMessage('This file type is not allowed');
-        modalRef.content.isUploading = false;
-      }
-    });
-
-    subscription.add(
-      modalRef.onHidden.subscribe(() => {
-        subscription.unsubscribe();
-      })
-    );
+  private _getAccountTitle(): string {
+    return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
   }
+
   goToJobs() {
     this.router.navigateByUrl('/pages/jobs-management/jobs');
   }
@@ -769,18 +848,4 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   goToJobsFile() {
     this.router.navigateByUrl('/pages/jobs-management/job-files');
   }
-  private _removeUploadedFile(f: any) {
-    this.resourceService.removeUploadedFile(f.resourceFileId).subscribe(
-      () => {
-        this.messageService.showSuccessMessage(
-          'File has been removed successfully'
-        );
-        this.source.refresh();
-      },
-      () => {
-        this.source.refresh();
-      }
-    );
-  }
-
 }

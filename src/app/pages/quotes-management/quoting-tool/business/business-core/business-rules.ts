@@ -85,10 +85,30 @@ export function updateMX(traction: ICarTractionFieldView) {
 }
 
 export function updateHydroEvolved(hydraulic: ICarHydraulicFieldView) {
-    if (hydraulic.car.isHydraulic()) {
-        hydraulic.hydroEvolvedAvailable = true;
-    } else {
+    if (hydraulic.car.isHydraulic() && hydraulic.car.quote.isCanadaOntario()) {
+        hydraulic.hydroEvolved = false;
         hydraulic.hydroEvolvedAvailable = false;
+    } else if (hydraulic.car.isHydraulic() && !hydraulic.car.quote.isCanadaOntario()) {
+        hydraulic.hydroEvolvedAvailable = true;
+    }
+}
+
+export function updateV2Hydraulic(hydraulic: ICarHydraulicFieldView) {
+    if (hydraulic.car.isHydraulic() && hydraulic.car.quote.isCanadaOntario()) {
+        hydraulic.v2 = false;
+        hydraulic.v2Available = false;
+    } else if (hydraulic.car.isHydraulic() && !hydraulic.car.quote.isCanadaOntario()) {
+        hydraulic.v2Available = true;
+    }
+}
+
+export function updateV3Hydraulic(hydraulic: ICarHydraulicFieldView) {
+    if (hydraulic.car.isHydraulic() && hydraulic.car.quote.isCanadaOntario()) {
+        hydraulic.v3 = true;
+        hydraulic.v3Available = false;
+    } else if (hydraulic.car.isHydraulic() && !hydraulic.car.quote.isCanadaOntario()) {
+        hydraulic.v3 = false;
+        hydraulic.v3Available = false;
     }
 }
 
@@ -105,7 +125,11 @@ export function updateV2V3HallCallSecurityCat5(provision: ICarProvisionView) {
         return;
     }
 
-    if (provision.car.isHydraulic() && provision.car.carHydraulicField.hydroEvolved) {
+    if (provision.car.isHydraulic() && (
+        provision.car.carHydraulicField.hydroEvolved ||
+        provision.car.carHydraulicField.v2 ||
+        provision.car.carHydraulicField.v3)
+    ) {
         provision.v2V3HallCallSecurityCat5Available = true;
         return;
     }
@@ -120,11 +144,8 @@ export function updateV2Traction(traction: ICarTractionFieldView) {
     if (!traction.car.hasControllerType()) {
         traction.v2Available = false;
         traction.v2Traction = false;
-    } else if (traction.car.isTraction() && traction.car.quote?.jobLocation?.country?.value !== 'Canada') {
+    } else if (traction.car.isTraction()) {
         traction.v2Available = true;
-    } else if (traction.car.isTraction() && traction.car.quote?.jobLocation?.country?.value === 'Canada') {
-        traction.v2Available = false;
-        traction.v2Traction = false;
     }
 }
 
@@ -235,6 +256,7 @@ export function updateTractionFieldVisibility(carTractionField: ICarTractionFiel
 
 
 function resetTractionFields(carTractionField: ICarTractionFieldView) {
+    carTractionField.newMotorProvidedBySmartrise = false;
     carTractionField.v2Traction = false;
     carTractionField.c4 = false;
     carTractionField.coupler = false;
@@ -851,18 +873,11 @@ function updateMotorFLAAssume(car: ICarView) {
 }
 
 export function updateAIParking(carManagementSystem: ICarManagementSystemView) {
-    carManagementSystem.aiParkingAvailable = carManagementSystem.car.isHydraulic();
+    carManagementSystem.aiParkingAvailable = carManagementSystem.car.isHydraulic()
+        || (carManagementSystem.car.isTraction() && carManagementSystem.car.carTractionField.v2Traction);
 
     if (!carManagementSystem.aiParkingAvailable) {
         carManagementSystem.aiParking = false;
-    }
-}
-
-export function updateMachineRoomMonitoring(carManagementSystem: ICarManagementSystemView) {
-    carManagementSystem.v2MachineRoomMonitoringInterfaceAvailable = carManagementSystem.car.isHydraulic();
-
-    if (!carManagementSystem.v2MachineRoomMonitoringInterfaceAvailable) {
-        carManagementSystem.v2MachineRoomMonitoringInterface = false;
     }
 }
 

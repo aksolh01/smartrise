@@ -7,6 +7,7 @@ import { JobDetailsComponent } from './jobs/job-details/job-details.component';
 import { JobsListComponent } from './jobs/jobs-list/jobs-list.component';
 import { JobFilesListComponent } from './job-files/job-files-list/job-files-list.component';
 import { ShipmentsListComponent } from './shipments/shipments-list/shipments-list.component';
+import { UploadConfigFileComponent } from './jobs/upload-config-file/upload-config-file.component';
 
 const routes: Routes = [
     {
@@ -77,6 +78,17 @@ const routes: Routes = [
                 data: { title: 'Invoice Details', breadcrumb: { alias: 'invoiceNumber' } }
             }
         ],
+    },
+    {
+        path: 'generate-passcode',
+        data: { title: 'Generate Passcode' },
+        children: [
+            {
+                path: '',
+                component: UploadConfigFileComponent,
+                data: { title: 'Generate Passcode', breadcrumb: { label: 'Generate Passcode' } },        
+            }
+        ]
     },
 ];
 

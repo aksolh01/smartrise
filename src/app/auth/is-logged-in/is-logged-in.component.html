@@ -1,11 +1,11 @@
 <div *ngIf="user">
     <div class="alert alert-danger font-weight-bold m-0">
         You are already logged on as {{ user.firstName }} {{ user.lastName }}.<br/>
-        Please sign out first before attempting to proceed.
+        Please Logout first before attempting to proceed.
     </div>
-    <div class="text-center">
+    <div class="text-center margin-top-16">
         <button type="button" (click)="onLogOut()" class="main-button">
-            Sign Out
+            Logout
         </button>
     </div>
     

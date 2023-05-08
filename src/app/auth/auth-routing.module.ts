@@ -88,12 +88,12 @@ export const routes: Routes = [
             canActivate: [PreventLoggedInNavigateGuard],
             data: { title: 'Request Access' }
           },
-          {
-            path: 'profile',
-            component: ProfileComponent, // <---
-            canActivate: [AuthGuard, PreventImpersonateGuard],
-            data: { title: 'Profile' }
-          },
+          // {
+          //   path: 'profile',
+          //   component: ProfileComponent, // <---
+          //   canActivate: [AuthGuard, PreventImpersonateGuard],
+          //   data: { title: 'Profile' }
+          // },
           {
             path: 'policy',
             component: PolicyComponent,

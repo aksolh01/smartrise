@@ -35,6 +35,10 @@ import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { IUserAccountLookup } from '../../../_shared/models/IUser';
 import { ListTitleService } from '../../../services/list-title.service';
+import { BaseParams } from '../../../_shared/models/baseParams';
+import { Observable } from 'rxjs';
+import { IPagination } from '../../../_shared/models/pagination';
+import { IBusinessSettings } from '../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-statement-of-account',
@@ -102,7 +106,49 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
         type: 'custom',
         renderComponent: AccountTableCellComponent,
         onComponentInitFunction: (instance: AccountTableCellComponent) => {
-          instance.setHeader('Account');
+          instance.setHeader(this._getAccountTitle());
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      installedBy: {
+        title: 'Installation By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Installation By');
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      maintainedBy: {
+        title: 'Currently Maintained By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Currently Maintained By');
           instance.setOptions({
             tooltip: 'View Account Details',
             link: URLs.CompanyInfoURL,
@@ -233,6 +279,8 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
   accounts: IUserAccountLookup[];
   showSelectAccount: boolean = this.multiAccountService.hasMultipleAccounts();
   hasMultipleAccounts: boolean = this.multiAccountService.hasMultipleAccounts();
+  installedBy: string;
+  maintainedBy: string;
 
   get accountSelected(): boolean {
     return this.accountId ? true : false;
@@ -272,13 +320,12 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     private messageService: MessageService,
     private accountInfoService: AccountInfoService,
     baseService: BaseComponentService,
-    ) {
+  ) {
     super(baseService);
   }
 
   async ngOnInit(): Promise<void> {
-
-
+    
     await this._loadUserAccounts();
 
     if (this.accounts.length === 1) {
@@ -288,29 +335,27 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     this.canMakePayment = this.permissionService.hasPermission(PERMISSIONS.MakePayment);
     this.showList = true;
     this.markedAsPay = this.invoiceService.releaseToBePaidInvoices();
+    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
+  }
 
-    this.settingService.getBusinessSettings().subscribe((rep) => {
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
       this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription =
-        this.responsiveService.currentBreakpoint$.subscribe((w) => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (
-            w === ScreenBreakpoint.md ||
-            w === ScreenBreakpoint.xs ||
-            w === ScreenBreakpoint.sm
-          ) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
-          }
-        });
-    });
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   private _handleSingleAccount() {
@@ -361,6 +406,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
 
   initializeSource() {
 
+    this._initializePager();
     this.agedOptions = this._generateAgedOptions();
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
     this.isImpersonate = this.miscellaneousService.isImpersonateMode();
@@ -368,114 +414,121 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
       delete this.settings.columns.pay;
     }
 
-    if (this.isSmartriseUser === false && this.multiAccountService.hasOneAccount()) {
-      delete this.settings.columns.account;
+    this.settings.columns.account.title = this._getAccountTitle();
+    
+    if (this.miscellaneousService.isCustomerUser()) {
+      delete this.settings.columns.maintainedBy;
+      delete this.settings.columns.installedBy;
+      if (this.multiAccountService.hasOneAccount()) {
+        delete this.settings.columns.account;
+      }
     }
 
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25,
-    };
     this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-        return null;
-      }
-
-      if (field === 'dueDate' || field === 'invoiceDate') {
-        return new Date(value);
-      }
-      return value;
-    };
-    this.source.serviceErrorCallBack = () => {};
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
     this.source.injectPipe(
-      map((x) => {
-        x.data.forEach((item) => {
-          const items = this.markedAsPay.filter((x1) => x1.invoiceId === item.id);
-          if (items.length > 0) {
-            const indexOfInvoice = this.markedAsPay.indexOf(items[0]);
-            item.pay = indexOfInvoice > -1;
-            if (!item.invoiceCanBePaid) {
-              item.pay = false;
-              if (indexOfInvoice > -1) {
-                this.invoiceService.removeInvoiceByIndex(indexOfInvoice);
-                this.markedAsPay.splice(indexOfInvoice, 1);
-              }
-            }
-          } else {
-            item.pay = false;
-          }
-        });
-
+      map(x => {
+        x.data.forEach(item => this._updatePayFlag(item));
         return x;
       })
     );
-    this.source.serviceCallBack = (params) => {
+    this.source.serviceCallBack = (params) => this._getStatementOfAccount(params);
+    this.source.setSort([
+      { field: 'dueDate', direction: 'asc' }  // primary sort
+    ], false);
+    this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
+  }
+  
+  private _getAccountTitle(): string {
+    return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
+  }
 
-      if (this.isSmartriseUser === false && this.hasMultipleAccounts && !this.accountSelected) {
-        return this.emptyData();
-      }
+  private _onDataLoading(isLoading: any) {
+    this.isLoading = isLoading;
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
 
-      const sParam = params as AgedRecievablesSearchParams;
-      sParam.aged = this.isEmpty(this.aged) ? null : this.aged;
+  private _convertFilterValue(field, value) {
+    if (this.isEmpty(value))
+      return null;
 
-      if (this.isSmall) {
-        sParam.account = this.account;
-        sParam.invoiceNumber = this.invoiceNumber;
-        sParam.poNumbers = this.poNumbers;
-        sParam.invoiceDate = this.invoiceDate;
-        sParam.dueDate = this.dueDate;
-        sParam.amount = this.amount;
-        sParam.balance = this.balance;
-      }
-      sParam.invoiceDate = this.mockUtcDate(sParam.invoiceDate);
-      sParam.dueDate = this.mockUtcDate(sParam.dueDate);
+    if (field === 'dueDate' || field === 'invoiceDate') {
+      return new Date(value);
+    }
+    return value;
+  }
 
-      if (this.isSmartriseUser) {
-        return this.invoiceService.getAgedRecievablesBySmartriseUser(params as AgedRecievablesSearchParams);
-      } else {
-        const searchParameters =
-          sParam as AgedRecievablesByCustomerSearchParams;
-        searchParameters.customerId =
-          this.multiAccountService.getSelectedAccount();
-
-        return this.invoiceService.getAgedRecievablesByCustomerUser(
-          searchParameters as AgedRecievablesByCustomerSearchParams
-        );
-      }
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber
     };
-    this.source.setSort(
-      [
-        { field: 'dueDate', direction: 'asc' }, // primary sort
-      ],
-      false
-    );
-    this.source.dataLoading.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-      setTimeout(
-        () => {
-          this.startGuidingTour();
-        },
-        this.isSmall
-          ? guidingTourGlobal.smallScreenSuspensionTimeInterval
-          : guidingTourGlobal.wideScreenSuspensionTimeInterval
-      );
-    });
+  }
+
+  private _getStatementOfAccount(params: BaseParams): Observable<IPagination> {
+    if (this.isSmartriseUser === false && this.hasMultipleAccounts && !this.accountSelected) {
+      return this.emptyData();
+    }
+
+    const sParam = params as AgedRecievablesSearchParams;
+    sParam.aged = this.isEmpty(this.aged) ? null : this.aged;
+
+    if (this.isSmall) {
+      this._fillFilterParameters(sParam);
+    }
+    this._mockDateParameters(sParam);
+
+    if (this.isSmartriseUser) {
+      return this.invoiceService.getAgedRecievablesBySmartriseUser(params as AgedRecievablesSearchParams);
+    } else {
+      const searchParameters = sParam as AgedRecievablesByCustomerSearchParams;
+      searchParameters.customerId = this.accountId;
+
+      return this.invoiceService.getAgedRecievablesByCustomerUser(searchParameters as AgedRecievablesByCustomerSearchParams);
+    }
+  }
+
+  private _mockDateParameters(sParam: AgedRecievablesSearchParams) {
+    sParam.invoiceDate = this.mockUtcDate(sParam.invoiceDate);
+    sParam.dueDate = this.mockUtcDate(sParam.dueDate);
+  }
+
+  private _fillFilterParameters(sParam: AgedRecievablesSearchParams) {
+    sParam.account = this.account;
+    sParam.invoiceNumber = this.invoiceNumber;
+    sParam.poNumbers = this.poNumbers;
+    sParam.invoiceDate = this.invoiceDate;
+    sParam.dueDate = this.dueDate;
+    sParam.amount = this.amount;
+    sParam.balance = this.balance;
+    sParam.installedBy = this.installedBy;
+    sParam.maintainedBy = this.maintainedBy;
+  }
+
+  private _updatePayFlag(item: any): void {
+    const _item = this.markedAsPay.find(x => x.invoiceId == item.id);
+    if (_item) {
+      if (item.invoiceCanBePaid) {
+        item.pay = true;
+      } else {
+        item.pay = false;
+        const indexOfInvoice = this.markedAsPay.indexOf(_item);
+        if (indexOfInvoice > -1) {
+          this.invoiceService.removeInvoiceByIndex(indexOfInvoice);
+          this.markedAsPay.splice(indexOfInvoice, 1);
+        }
+      }
+    } else {
+      item.pay = false;
+    }
   }
 
   onReset() {
     if (this.isSmall) {
-
-      this.account = null;
-      this.invoiceNumber = null;
-      this.poNumbers = null;
-      this.invoiceDate = null;
-      this.dueDate = null;
-      this.amount = null;
-      this.balance = null;
-      this.aged = '';
-
+      this._resetFilterParameters();
       this.source.refreshAndGoToFirstPage();
     } else {
       if (!this.isEmpty(this.aged)) {
@@ -490,6 +543,19 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
         this.source.resetFilters();
       }
     }
+  }
+
+  private _resetFilterParameters() {
+    this.account = null;
+    this.invoiceNumber = null;
+    this.poNumbers = null;
+    this.invoiceDate = null;
+    this.dueDate = null;
+    this.amount = null;
+    this.balance = null;
+    this.aged = '';
+    this.installedBy = null;
+    this.maintainedBy = null;
   }
 
   onlyNumbers(event) {

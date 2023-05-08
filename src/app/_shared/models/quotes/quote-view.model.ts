@@ -48,6 +48,9 @@ export class QuoteView implements IQuoteView {
     hideTraction: boolean;
     hideHydraulic: boolean;
     hideC4RiserBoards: boolean;
+    isCanadaOntario(): boolean {
+        return this.jobLocation?.country?.value === 'Canada' && this.jobLocation?.state?.value === 'Ontario';
+    }
 }
 
 export class QuoteCustomerView implements IQuoteCustomerView {
@@ -385,6 +388,12 @@ export class CarHydraulicFieldView implements ICarHydraulicFieldView {
     hydroEvolved: boolean;
     hydroEvolvedAvailable: boolean;
     car: ICarView;
+    @AutoMap()
+    v2: boolean;
+    v2Available: boolean;
+    @AutoMap()
+    v3: boolean;
+    v3Available: boolean;
 }
 
 export class CarTractionFieldView implements ICarTractionFieldView {

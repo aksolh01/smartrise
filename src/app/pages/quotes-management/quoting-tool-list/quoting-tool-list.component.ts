@@ -28,6 +28,7 @@ import { JobNameCellComponent } from './job-name-cell/job-name-cell.component';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
+import { IBusinessSettings } from '../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-quoting-tool-list',
@@ -47,7 +48,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
   isSmartriseUser = true;
   isImpersonate = true;
   canEditQuote = false;
-
+  public Math = Math;
   settings: any = {
     mode: 'external',
     actions: {
@@ -62,7 +63,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
         type: 'custom',
         renderComponent: AccountTableCellComponent,
         onComponentInitFunction: (instance: AccountTableCellComponent) => {
-          instance.setHeader('Account');
+          instance.setHeader(this._getAccountTitle());
           instance.setOptions({
             tooltip: 'View Account Details',
             link: URLs.CompanyInfoURL,
@@ -176,32 +177,8 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     actions.view.subscribe((quote: any) => {
       this.router.navigateByUrl(`${URLs.ViewOpenQuotesURL}/customer/${quote.id}/view`);
     });
-    actions.viewHistory.subscribe((quote: any) => {
-      actions.isLoadingActivityHistory = true;
-      this.quotingToolService.getQuoteHistory(quote.id).subscribe(history => {
-        const ref = this.modalService.show<QuoteActivityHistoryComponent>(QuoteActivityHistoryComponent, {
-          initialState: {
-          }
-        });
-        ref.content.quoteName = history.quoteName;
-        ref.content.updateHistory(history.history);
-        ref.onHidden.subscribe(() => {
-          this.source.refresh();
-        });
-      }, error => {
-        this.source.refresh();
-      });
-    });
-    actions.viewPricing.subscribe((quote: any) => {
-      const ref = this.modalService.show<RfqDetailsComponent>(RfqDetailsComponent, {
-        initialState: {
-          quoteId: quote.id
-        }
-      });
-      ref.onHidden.subscribe(() => {
-        this.source.refresh();
-      });
-    });
+    actions.viewHistory.subscribe((quote: any) => this._onViewHistory(actions, quote));
+    actions.viewPricing.subscribe((quote: any) => this._onViewPricing(quote));
   }
 
   constructor(
@@ -231,6 +208,36 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     });
   }
 
+  private _onViewPricing(quote: any) {
+    const ref = this.modalService.show<RfqDetailsComponent>(RfqDetailsComponent, {
+      initialState: {
+        quoteId: quote.id
+      }
+    });
+    ref.onHidden.subscribe(() => {
+      this.source.refresh();
+    });
+  }
+
+  private _onViewHistory(actions: QuotingToolActionsComponent, quote: any) {
+    actions.isLoadingActivityHistory = true;
+    this.quotingToolService.getQuoteHistory(quote.id).subscribe(
+      history => this._onHistoryRecordsReady(history),
+      error => this.source.refresh()
+    );
+  }
+
+  private _onHistoryRecordsReady(history: any) {
+    const ref = this.modalService.show<QuoteActivityHistoryComponent>(QuoteActivityHistoryComponent, {
+      initialState: {}
+    });
+    ref.content.quoteName = history.quoteName;
+    ref.content.updateHistory(history.history);
+    ref.onHidden.subscribe(() => {
+      this.source.refresh();
+    });
+  }
+
   ngOnDestroy(): void {
     this._isCreatingQuote = false;
     this.modalService.hide();
@@ -246,73 +253,92 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25
-    };
+    this._initializePager();
+    this._fillTableFilterLists();
 
-    this.settings.columns.status.filter.config.list = this.statuses.map(x => ({ title: x.description, value: x.value }));
-    this.settings.columns.jobStatus.filter.config.list = this.jobStatuses.map(x => ({ title: x.description, value: x.value }));
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
 
+    this.settings.columns.account.title = this._getAccountTitle();
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
       delete this.settings.columns.account;
     }
 
     this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-return null;
-}
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
 
-      if (field === 'quoteCreated') {
-        return new Date(value);
-      }
-
-      if (field === 'numberOfCars') {
-        return +value;
-      }
-      return value;
-    };
-
-    this.source.serviceErrorCallBack = (error) => {
-    };
-
-    this.source.serviceCallBack = (params) => {
-      const quoteParams = params as QuoteToolParams;
-      if (this.isSmall) {
-        quoteParams.account = this.account;
-        quoteParams.jobName = this.jobName;
-        quoteParams.controllerType = this.controllerType;
-        quoteParams.status = this.status;
-        quoteParams.jobStatus = this.jobStatus;
-        quoteParams.creationDate = this.creationDate;
-      }
-
-      if (quoteParams.creationDate) {
-quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
-}
-
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.quoteService.searchQuotesBySmartriseUsers(quoteParams);
-      } else {
-        const searchParams = quoteParams as SearchQuotesByCustomerParams;
-        searchParams.customerId = this.multiAccountService.getSelectedAccount();
-
-        return this.quoteService.searchQuotesByCustomerUsers(searchParams);
-      }
-    };
+    this.source.serviceCallBack = (params) => this._getQuotes(params);
     this.source.dataLoading.subscribe((isLoading) => {
       this.isLoading = isLoading;
-
-      // setTimeout(() => {
-      //   this.startGuidingTour();
-      // }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
     });
     this.source.setSort([
       { field: 'creationDate', direction: 'desc' }  // primary sort
     ], false);
+  }
+  
+  private _getAccountTitle(): string {
+    return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
+  }
+
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value)) return null;
+
+    if (field === 'quoteCreated') {
+      return new Date(value);
+    }
+
+    if (field === 'numberOfCars') {
+      return +value;
+    }
+    return value;
+  }
+
+  private _getQuotes(params: any) {
+    const quoteParams = params as QuoteToolParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(quoteParams);
+    }
+
+    if (quoteParams.creationDate)
+      quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
+
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.quoteService.searchQuotesBySmartriseUsers(quoteParams);
+    } else {
+      return this._searchQuotesByCustomerUsers(quoteParams);
+    }
+  }
+
+  private _searchQuotesByCustomerUsers(quoteParams: QuoteToolParams) {
+    const searchParams = quoteParams as SearchQuotesByCustomerParams;
+    searchParams.customerId = this.multiAccountService.getSelectedAccount();
+
+    return this.quoteService.searchQuotesByCustomerUsers(searchParams);
+  }
+
+  private _fillTableFilterLists() {
+    this.settings.columns.status.filter.config.list = this.statuses.map(x => {
+      return { title: x.description, value: x.value };
+    });
+    this.settings.columns.jobStatus.filter.config.list = this.jobStatuses.map(x => {
+      return { title: x.description, value: x.value };
+    });
+  }
+
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+        perPage: this.recordsNumber || 25
+    };
+  }
+
+  private _fillFilterParameters(quoteParams: QuoteToolParams) {
+    quoteParams.account = this.account;
+    quoteParams.jobName = this.jobName;
+    quoteParams.controllerType = this.controllerType;
+    quoteParams.status = this.status;
+    quoteParams.jobStatus = this.jobStatus;
+    quoteParams.creationDate = this.creationDate;
   }
 
   triggerGuidingTour() {
@@ -363,7 +389,6 @@ quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
       this.canEditQuote = this.permissionService.hasPermission(PERMISSIONS.SaveOnlineQuote) && !this.miscellaneousService.isImpersonateMode();
     }
 
-
     forkJoin([
       this.quotingToolService.getStatuses(),
       this.quotingToolService.getJobStatuses(),
@@ -372,28 +397,32 @@ quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
       statuses,
       jobStatuses,
       businessSettings
-    ]) => {
-      this.statuses = statuses;
-      this.jobStatuses = jobStatuses;
-      if (businessSettings) {
+    ]) => this._onResponseReady(statuses, jobStatuses, businessSettings));
+  }
+
+  private _onResponseReady(statuses: IEnumValue[], jobStatuses: IEnumValue[], businessSettings: IBusinessSettings) {
+    this.statuses = statuses;
+    this.jobStatuses = jobStatuses;
+    if (businessSettings) {
         this.recordsNumber = businessSettings.numberOfRecords || 25;
-        this.initializeSource();
-        this.isImpersonate = this.miscellaneousService.isImpersonateMode();
-        this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
-          }
-        });
+      this.initializeSource();
+      this.isImpersonate = this.miscellaneousService.isImpersonateMode();
+      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+    }
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
       }
-    });
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   toggleFilters(): void {
@@ -407,18 +436,37 @@ quoteParams.creationDate = this.mockUtcDate(quoteParams.creationDate);
 
   onReset() {
 
-    this.account = null;
-    this.jobName = null;
-    this.creationDate = null;
-    this.controllerType = null;
-    this.status = '';
-    this.jobStatus = '';
+    this._resetFilterParameters();
 
     if (this.isSmall) {
       this.source.refreshAndGoToFirstPage();
     } else {
       this.source.resetFilters();
     }
+  }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
+
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
+  private _resetFilterParameters() {
+    this.account = null;
+    this.jobName = null;
+    this.creationDate = null;
+    this.controllerType = null;
+    this.status = '';
+    this.jobStatus = '';
   }
 
   onRecordsNumberChanged(value: number) {

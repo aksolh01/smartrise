@@ -101,34 +101,12 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25
-    };
+    this._initializePager();
 
     this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-return null;
-}
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
 
-      if (field === 'createdDate') {
-        return new Date(value);
-      }
-      return value;
-    };
-
-    this.source.serviceErrorCallBack = (error) => { };
-    this.source.serviceCallBack = (params) => {
-      if (this.isSmall) {
-        const sParam = params as CustomerUsersParams;
-        sParam.firstName = this.firstName;
-        sParam.lastName = this.lastName;
-        sParam.email = this.email;
-      }
-      return this.accountService.getCustomerUsersForSmartriseUser(params as CustomerUsersParams, this.customer.id);
-    };
+    this.source.serviceCallBack = (params) => this._getCustomerUsers(params);
 
     this.source.dataLoading.subscribe(isLoading => {
       this.isLoading = isLoading;
@@ -137,6 +115,38 @@ return null;
         this.startGuidingTour();
       }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
     });
+  }
+  
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value))
+      return null;
+
+    if (field === 'createdDate') {
+      return new Date(value);
+    }
+    return value;
+  }
+
+  private _getCustomerUsers(params: any) {
+    const sParam = params as CustomerUsersParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(sParam);
+    }
+    return this.accountService.getCustomerUsersForSmartriseUser(sParam, this.customer.id);
+  }
+
+  private _fillFilterParameters(sParam: CustomerUsersParams) {
+    sParam.firstName = this.firstName;
+    sParam.lastName = this.lastName;
+    sParam.email = this.email;
+  }
+
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+        perPage: this.recordsNumber || 25
+    };
   }
 
   toggleFilters(): void {

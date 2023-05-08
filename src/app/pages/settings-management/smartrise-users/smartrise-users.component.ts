@@ -16,12 +16,15 @@ import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { SmartriseUserActionsComponent } from './smartrise-user-actions/smartrise-user-actions.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { JoyrideService } from 'ngx-joyride';
 import * as guidingTourGlobal from '../../guiding.tour.global';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
+import { BaseParams } from '../../../_shared/models/baseParams';
+import { IPagination } from '../../../_shared/models/pagination';
+import { IBusinessSettings } from '../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-smartrise-users',
@@ -136,81 +139,87 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
   }
 
   initializeSource() {
+
+    this._initializePager();
+    this.source = new BaseServerDataSource();
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+    this.source.serviceCallBack = (params) => this._getSmartriseUsers(params);
+    this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
+  }
+
+  private _onDataLoading(isLoading: any) {
+    this.isLoading = isLoading;
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
+
+  private _convertFilterValue(field, value) {
+    if (this.isEmpty(value))
+      return null;
+
+    if (field === 'shipmentType' || field === 'status') {
+      return +value;
+    }
+    if (field === 'shipDate' || field === 'deliveryDate') {
+      return new Date(value);
+    }
+    return value;
+  }
+
+  private _getSmartriseUsers(params: BaseParams): Observable<IPagination> {
+    const sParam = params as SmartriseUsersParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(sParam);
+    }
+    return this.accountService.getSmartriseUsers(params as SmartriseUsersParams);
+  }
+
+  private _initializePager() {
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber || 25
+        perPage: this.recordsNumber || 25
     };
-    this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-return null;
-}
+  }
 
-      if (field === 'shipmentType' || field === 'status') {
-        return +value;
-      }
-      if (field === 'shipDate' || field === 'deliveryDate') {
-        return new Date(value);
-      }
-      return value;
-    };
-    this.source.serviceErrorCallBack = () => { };
-    this.source.serviceCallBack = (params) => {
-      if (this.isSmall) {
-        const sParam = params as SmartriseUsersParams;
-        sParam.firstName = this.firstName;
-        sParam.lastName = this.lastName;
-        sParam.email = this.email;
-      }
-      return this.accountService.getSmartriseUsers(params as SmartriseUsersParams);
-    };
-    this.source.dataLoading.subscribe(isLoading => {
-      this.isLoading = isLoading;
-      setTimeout(() => {
-        this.startGuidingTour();
-      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
-    });
+  private _fillFilterParameters(sParam: SmartriseUsersParams) {
+    sParam.firstName = this.firstName;
+    sParam.lastName = this.lastName;
+    sParam.email = this.email;
   }
 
   onComponentInitFunction(instance: SmartriseUserActionsComponent) {
-    instance.editUser.subscribe(user => {
-      this.onEditUser(user);
-    });
-    instance.resetPassword.subscribe(user => {
-      this.onResetPassword(user);
-    });
-    instance.activateUser.subscribe(user => {
-      this.onActivateUser(user);
-    });
-    instance.deactivateUser.subscribe(user => {
-      this.onDeactivateUser(user);
-    });
-    instance.resendInvitation.subscribe(user => {
-      this.onResendInvitation(user);
-    });
+    instance.editUser.subscribe(user => this.onEditUser(user));
+    instance.resetPassword.subscribe(user => this.onResetPassword(user));
+    instance.activateUser.subscribe(user => this.onActivateUser(user));
+    instance.deactivateUser.subscribe(user => this.onDeactivateUser(user));
+    instance.resendInvitation.subscribe(user => this.onResendInvitation(user));
   }
-
 
   ngOnInit(): void {
     this.enableCreateSmartriseUser();
-    this.settingService.getBusinessSettings().subscribe(rep => {
+    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
+  }
+
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
       this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
-        }
-      });
-    });
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   enableCreateSmartriseUser() {

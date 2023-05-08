@@ -1,8 +1,6 @@
-
-
 <div class="page-header-container">
     <div class="page-header-title" *ngIf="job">
-        <span>Jobs</span>  / {{ job.jobName }}
+        <span>Jobs</span> / {{ job.jobName }}
     </div>
     <!-- <div *ngIf="!isSmall" class="form-container mx-w-400" style="width: 40%;">
         <div class="input-container">
@@ -14,33 +12,36 @@
 
 </div>
 
-<div style="display: flex;flex-direction: column;gap: 32px;">
+<div style="display: flex;flex-direction: column;gap: 32px;margin-top: 8px;">
     <div class="main-card">
         <div class="card-container">
-            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+            <nb-card size="xlarge" class="card-container-data pb-1 mb-3">
                 <nb-card-header class="default-card-header">
-                    <h2 class="card-title">Jobs Details</h2>
+                    <h2 class="card-title">Job Details</h2>
                 </nb-card-header>
                 <nb-card-body>
-                    <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job"
-                    [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
+                    <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job" [passcode]="passcode" [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
                 </nb-card-body>
-               
+
             </nb-card>
         </div>
         <div class="card-container">
-            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+            <nb-card size="xlarge" class="card-container-data pb-1 mb-3">
                 <nb-card-header class="default-card-header">
                     <h2 class="card-title">Job History</h2>
                 </nb-card-header>
-                <nb-card-body>No Data Found</nb-card-body>
+                <nb-card-body>
+                    <div class="nodatafound">
+                        No data found
+                    </div>
+                </nb-card-body>
             </nb-card>
         </div>
     </div>
 
     <div class="main-card">
         <div class="card-container">
-            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+            <nb-card size="xlarge" class="card-container-data pb-1 mb-3">
                 <nb-card-header class="default-card-header">
                     <h2 class="card-title">Shipments</h2>
                 </nb-card-header>
@@ -50,15 +51,15 @@
             </nb-card>
         </div>
         <div class="card-container">
-            <nb-card size="xlarge" class="pb-1 mb-3" class="card-container-data">
+            <nb-card size="xlarge" class="card-container-data pb-1 mb-3">
                 <nb-card-header class="default-card-header">
                     <h2 class="card-title">Job Files</h2>
                 </nb-card-header>
-                <div>
+                <nb-card-body>
                     <ngx-job-resources *ngIf="renderJobResources === true" [jobId]="job?.id"
                         [resourceFiles]="job?.resourceFiles" [runGuidingTour]="runGuidingTour">
                     </ngx-job-resources>
-                </div>
+                </nb-card-body>
             </nb-card>
         </div>
     </div>

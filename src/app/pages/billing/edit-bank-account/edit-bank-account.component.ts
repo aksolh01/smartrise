@@ -79,19 +79,12 @@ export class EditBankAccountComponent extends BaseComponent implements OnInit {
     this.bcService.set('@bankAccount', { skip: true });
 
     this.bankAccountService.getBankAccount(bankAccountId)
-      .subscribe((result) => {
-        this.bankAccount = result;
-        this.bcService.set('@bankAccount', this.bankAccount.last4);
-        this.bcService.set('@bankAccount', { skip: false });
-        this.isLoading = false;
-        this.bankAccountForm.patchValue({
-          accountType: result.accountType ?? '',
-          accountHolderName: result.accountHolderName ?? '',
+      .subscribe(
+        (result) => this._onBankAccountReady(result),
+        (error) => {
+          this.isLoading = false;
+          this.router.navigateByUrl('pages/billing/bank-accounts');
         });
-      }, (error) => {
-        this.isLoading = false;
-        this.router.navigateByUrl('pages/billing/bank-accounts');
-      });
 
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
       if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -99,6 +92,17 @@ export class EditBankAccountComponent extends BaseComponent implements OnInit {
       } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
         this.isSmall = true;
       }
+    });
+  }
+
+  private _onBankAccountReady(result: IBankAccountDetails) {
+    this.bankAccount = result;
+    this.bcService.set('@bankAccount', this.bankAccount.last4);
+    this.bcService.set('@bankAccount', { skip: false });
+    this.isLoading = false;
+    this.bankAccountForm.patchValue({
+      accountType: result.accountType ?? '',
+      accountHolderName: result.accountHolderName ?? '',
     });
   }
 

@@ -17,6 +17,7 @@ import { JobFilesListComponent } from './job-files/job-files-list/job-files-list
 import { ShipmentActionsComponent } from './shipments/shipments-list/shipment-actions/shipment-actions.component';
 import { ShipmentsListComponent } from './shipments/shipments-list/shipments-list.component';
 import { FileUploaderComponent } from './job-files/file-uploader/file-uploader.component';
+import { UploadConfigFileComponent } from './jobs/upload-config-file/upload-config-file.component';
 
 const routedShipmentComponents = [
     ShipmentsListComponent,
@@ -53,5 +54,6 @@ export const routedComponents = [
     ...routedJobComponents,
     ...routedShipmentComponents,
     ...routedResourceComponents,
-    ...routedInvoiceComponents
+    ...routedInvoiceComponents,
+    UploadConfigFileComponent
 ];

@@ -7,16 +7,22 @@ import { BaseServerDataSource } from '../../datasources/base-server.datasource';
 
 @Component({
     template: `
-    <input
-      #number
-      [ngClass]="inputClass"
-      [formControl]="inputControl"
-      class="form-control"
-      (paste)="onPaste($event)"
-      (keypress)="preventNonNumericalInput($event)"
-      [min]="column.filter.config.min"
-      [placeholder]="column.title"
-      type="number">
+    <div class="form-container for-filter">
+        <div class="input-container">
+            <div class="input-item">
+                <input
+                #number
+                [ngClass]="inputClass"
+                [formControl]="inputControl"
+                class="form-control"
+                (paste)="onPaste($event)"
+                (keypress)="preventNonNumericalInput($event)"
+                [min]="column.filter.config.min"
+                [placeholder]="column.title"
+                type="number">
+            </div>
+        </div>
+    </div>
   `,
     styleUrls: ['./cp-filter.component.scss']
 })

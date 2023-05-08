@@ -28,8 +28,8 @@ export class JobShipmentsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.modelRef !== null && this.modelRef !== undefined) {
-this.modelRef.hide();
-}
+      this.modelRef.hide();
+    }
   }
 
   showPartsDescription(shippment: IShipment): void {

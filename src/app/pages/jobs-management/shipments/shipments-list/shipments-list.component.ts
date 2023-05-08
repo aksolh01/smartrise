@@ -91,7 +91,49 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
         type: 'custom',
         renderComponent: AccountTableCellComponent,
         onComponentInitFunction: (instance: AccountTableCellComponent) => {
-          instance.setHeader('Account');
+          instance.setHeader(this._getAccountTitle());
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      installedBy: {
+        title: 'Installation By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Installation By');
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      maintainedBy: {
+        title: 'Currently Maintained By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Currently Maintained By');
           instance.setOptions({
             tooltip: 'View Account Details',
             link: URLs.CompanyInfoURL,
@@ -261,6 +303,8 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   };
   responsiveSubscription: Subscription;
   title: string;
+  installedBy: string;
+  maintainedBy: string;
 
   constructor(
     baseService: BaseComponentService,
@@ -274,7 +318,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     private miscellaneousService: MiscellaneousService,
     private accountInfoService: AccountInfoService,
     private listTitleService: ListTitleService
-    ) {
+  ) {
     super(baseService);
 
     this.populateLookup(this.shipmentStatuses, ShipmentStatus);
@@ -290,89 +334,100 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   }
 
   initializeSource() {
+
+    this._initializePager();
+
+    this.settings.columns.account.title = this._getAccountTitle();
+
+    if (this.miscellaneousService.isCustomerUser()) {
+      delete this.settings.columns.maintainedBy;
+      delete this.settings.columns.installedBy;
+      if (this.multiAccountService.hasOneAccount()) {
+        delete this.settings.columns.account;
+      }
+    }
+
+    this._fillTableFilterLists();
+
+    this.source = new BaseServerDataSource();
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+    this.source.serviceCallBack = (params) => this._getShipments(params);
+    this.source.dataLoading.subscribe((isLoading) => this._onDataLoading(isLoading));
+
+    this.source.setSort([
+      { field: 'jobName', direction: 'asc' }  // primary sort
+    ], false);
+  }
+
+  private _onDataLoading(isLoading: any) {
+    this.isLoading = isLoading;
+
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
+
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value)) return null;
+
+    if (field === 'shipDate' || field === 'deliveryDate') {
+      return new Date(value);
+    }
+    return value;
+  }
+
+  private _initializePager() {
     this.settings.pager = {
       display: true,
       page: 1,
       perPage: this.recordsNumber || 25,
     };
+  }
 
-    if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
-      delete this.settings.columns.account;
+  private _fillTableFilterLists() {
+    this.settings.columns.shipmentType.filter.config.list = this.shipmentTypes.map(x => {
+      return { title: x.description, value: x.value };
+    });
+    this.settings.columns.status.filter.config.list = this.statuses.map(x => {
+      return { title: x.description, value: x.value };
+    });
+  }
+
+  private _getShipments(params: any) {
+    const shipmentParams = params as ShipmentParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(shipmentParams);
     }
 
-    this.settings.columns.shipmentType.filter.config.list =
-      this.shipmentTypes.map((x) => ({ title: x.description, value: x.value }));
-    this.settings.columns.status.filter.config.list = this.statuses.map(
-      (x) => ({ title: x.description, value: x.value })
-    );
+    this._mockDateParameters(shipmentParams);
 
-    this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-        return null;
-      }
-
-      if (field === 'shipDate' || field === 'deliveryDate') {
-        return new Date(value);
-      }
-      return value;
-    };
-
-    this.source.serviceErrorCallBack = (error) => {
-    };
-
-    this.source.serviceCallBack = (params) => {
-      const shipmentParams = params as ShipmentParams;
-      if (this.isSmall) {
-        shipmentParams.account = this.account;
-        shipmentParams.jobName = this.jobName;
-        shipmentParams.jobNumber = this.jobNumber;
-        shipmentParams.shipmentType = this.isEmpty(this.shipmentType)
-          ? null
-          : this.shipmentType;
-        shipmentParams.shipDate = this.shipDate;
-        shipmentParams.deliveryDate = this.deliveryDate;
-        shipmentParams.status = this.isEmpty(this.status) ? null : this.status;
-        shipmentParams.isDropShipment = !this.isEmpty(this.isDropShipment)
-          ? /true/.test(this.isDropShipment)
-          : null;
-        shipmentParams.trackingNumber = this.trackingNumber;
-      }
-
-      shipmentParams.shipDate = this.mockUtcDate(shipmentParams.shipDate);
-      shipmentParams.deliveryDate = this.mockUtcDate(shipmentParams.deliveryDate);
-
-
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.shipmentService.getShipmentsBySmartriseUser(shipmentParams);
-      }
-      else {
-        const searchParameters = shipmentParams as ShipmentByCustomerParams;
-        searchParameters.customerId = this.multiAccountService.getSelectedAccount();
-
-        return this.shipmentService.getShipmentsByCustomerUser(searchParameters);
-      }
-    };
-
-    this.source.dataLoading.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-
-      setTimeout(
-        () => {
-          this.startGuidingTour();
-        },
-        this.isSmall
-          ? guidingTourGlobal.smallScreenSuspensionTimeInterval
-          : guidingTourGlobal.wideScreenSuspensionTimeInterval
-      );
-    });
-    this.source.setSort(
-      [
-        { field: 'jobName', direction: 'asc' }, // primary sort
-      ],
-      false
-    );
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.shipmentService.getShipmentsBySmartriseUser(shipmentParams);
+    } else {
+      const searchParameters = shipmentParams as ShipmentByCustomerParams;
+      searchParameters.customerId = this.multiAccountService.getSelectedAccount();
+      return this.shipmentService.getShipmentsByCustomerUser(searchParameters);
+    }
   }
+
+  private _mockDateParameters(shipmentParams: ShipmentParams) {
+    shipmentParams.shipDate = this.mockUtcDate(shipmentParams.shipDate);
+    shipmentParams.deliveryDate = this.mockUtcDate(shipmentParams.deliveryDate);
+  }
+
+  private _fillFilterParameters(shipmentParams: ShipmentParams) {
+    shipmentParams.account = this.account;
+    shipmentParams.jobName = this.jobName;
+    shipmentParams.jobNumber = this.jobNumber;
+    shipmentParams.shipmentType = this.isEmpty(this.shipmentType) ? null : this.shipmentType;
+    shipmentParams.shipDate = this.shipDate;
+    shipmentParams.deliveryDate = this.deliveryDate;
+    shipmentParams.status = this.isEmpty(this.status) ? null : this.status;
+    shipmentParams.isDropShipment = !this.isEmpty(this.isDropShipment) ? /true/.test(this.isDropShipment) : null;
+    shipmentParams.trackingNumber = this.trackingNumber;
+    shipmentParams.installedBy = this.installedBy;
+    shipmentParams.maintainedBy = this.maintainedBy;
+}
 
   async ngOnInit() {
 
@@ -381,7 +436,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     this.shipmentTypes = await this.shipmentService.getShipmentTypes().toPromise();
 
     this.statuses = await this.shipmentService.getShipmentStatuses().toPromise();
-    
+
     this.settingService.getBusinessSettings().subscribe((rep) => {
       this.recordsNumber = rep.numberOfRecords || 25;
       this.initializeSource();
@@ -426,6 +481,15 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   }
 
   onReset() {
+    this._resetFilterParameters();
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.account = null;
     this.jobName = null;
     this.jobNumber = null;
@@ -435,12 +499,8 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     this.status = '';
     this.isDropShipment = '';
     this.trackingNumber = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
+    this.installedBy = null;
+    this.maintainedBy = null;
   }
   onPagePrev(): void {
     const currentPage = this.source.getPaging().page;
@@ -527,5 +587,9 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
         title: 'No',
       },
     ];
+  }
+
+  private _getAccountTitle(): string {
+    return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
   }
 }

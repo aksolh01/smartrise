@@ -30,7 +30,7 @@
                 <div *ngIf="showAccountName" class="form-group row">
                     <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
                     <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">{{ quote?.customer?.name }}</div>
+                        <div class="account-name form-control-plaintext">{{ quote?.customer?.name }}</div>
                     </div>
                 </div>
 
@@ -381,6 +381,8 @@
                     <thead>
                         <tr>
                             <th></th>
+                            <th>V2</th>
+                            <th>V3</th>
                             <th>Hydro Evolved</th>
                             <th>Starter</th>
                             <th>Motor Leads</th>
@@ -395,7 +397,17 @@
                             <td class="text-left">{{ displayGroup(car.group) }} - {{
                                 car.carLabel }}</td>
                             <td class="text-center">
-                                <ngx-quoting-checkbox [item]="car.carHydraulicField" [carRef]="car.ref"
+                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.v2Available" [item]="car.carHydraulicField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="v2">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.v3Available" [item]="car.carHydraulicField" [carRef]="car.ref"
+                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="v3">
+                                </ngx-quoting-checkbox>
+                            </td>
+                            <td class="text-center">
+                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.hydroEvolvedAvailable" [item]="car.carHydraulicField" [carRef]="car.ref"
                                     [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="hydroEvolved">
                                 </ngx-quoting-checkbox>
                             </td>
@@ -934,7 +946,7 @@
                         <tr>
                             <th></th>
                             <th>Lobby Monitoring</th>
-                            <th>V2/V3 Machine Room Monitoring</th>
+                            <th>Machine Room Monitoring</th>
                             <th>Remote Monitoring</th>
                             <th>Lift-Net Interface</th>
                             <th>BACnet Interface</th>
@@ -954,8 +966,7 @@
                             <td class="text-center">
                                 <ngx-quoting-checkbox [item]="car.carManagementSystem" [carRef]="car.ref"
                                     [carLabel]="car.displayName" [carIndex]="car.carIndex" fieldLabel=""
-                                    valueField="v2MachineRoomMonitoringInterface"
-                                    [disabled]="!car.carManagementSystem.v2MachineRoomMonitoringInterfaceAvailable">
+                                    valueField="v2MachineRoomMonitoringInterface">
                                 </ngx-quoting-checkbox>
                             </td>
                             <td class="text-center">

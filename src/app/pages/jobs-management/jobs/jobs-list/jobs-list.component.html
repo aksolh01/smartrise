@@ -17,7 +17,7 @@
 </div>
 <div class="page-tab">
   <div class="page-tab-container">
-    <div class="page-tab-item active" (click)="goToJobs()">Jobs</div>
+    <div class="page-tab-item active" (click)="goToJobs()">Jobs</div> 
     <div class="page-tab-item" (click)="goToShipments()">Shipments</div>
     <div class="page-tab-item last" (click)="goToJobsFile()">Job files</div>
   </div>
@@ -51,13 +51,11 @@
         <div>
           <i class="fas fa-eye guiding-tour-action"></i>View Job Details
         </div>
-        <div *ngIf="canFillPasscode">
-          <i class="fas fa-key guiding-tour-action"></i>Fill Passcode
-        </div>
       </div>
     </ng-template>
 
     <nb-card-body>
+
       <div class="table-content">
         <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
           <div class="form-container" filters>

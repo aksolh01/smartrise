@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { loadStripe } from '@stripe/stripe-js';
 import { environment } from '../../../../environments/environment';
 import { AccountService } from '../../../services/account.service';
 import { BankAccountService } from '../../../services/bank-account.service';
 import { MessageService } from '../../../services/message.service';
+import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { SmartriseValidators, StorageConstants, URLs } from '../../../_shared/constants';
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { trimValidator } from '../../../_shared/validators/trim-validator';
@@ -15,11 +16,13 @@ import { trimValidator } from '../../../_shared/validators/trim-validator';
   templateUrl: './bank-account.component.html',
   styleUrls: ['./bank-account.component.scss']
 })
-export class BankAccountComponent implements OnInit {
+export class BankAccountComponent implements OnInit, OnDestroy {
+
   bankAccountForm: UntypedFormGroup;
   bankAccount: any;
   isLoading = false;
   formSubmitted: boolean;
+  displayAccountName: boolean;
 
   set accountId(value: number | null) {
     if (value == null) {
@@ -34,18 +37,23 @@ export class BankAccountComponent implements OnInit {
     return +accountId;
   }
 
+  get accountName(): string {
+    return sessionStorage.getItem(StorageConstants.AddBankAccountSelectedAccountName);
+  }
+
   constructor(
     private accountService: AccountService,
     private route: ActivatedRoute,
     private router: Router,
     private messageService: MessageService,
     private bankAccountService: BankAccountService,
+    private multiAccountsService: MultiAccountsService
   ) { }
 
   ngOnDestroy(): void {
     this._disposeAccountId();
   }
-  
+
   private _disposeAccountId() {
     if (this.router.url !== URLs.ViewBankAccountsURL) {
       this.accountId = null;
@@ -53,6 +61,8 @@ export class BankAccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.displayAccountName = this.multiAccountsService.hasMultipleAccounts();
+
     this.createBankAccountForm();
     if (!this._accountIsSelected()) {
       this.router.navigateByUrl(URLs.ViewBankAccountsURL);

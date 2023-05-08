@@ -1,11 +1,14 @@
 <div class="card-details">
+
   <div class="card-details-container">
-
-    <div *ngIf="displayAccountName" class="displayData">
-      <div class="label">Account Name</div>
-      <div class="content" id="last4">{{ job?.customerName | value }}</div>
+    <div class="displayData" *ngIf="displayAccountName">
+      <div class="label">{{ accountTitle }}</div>
+      <div class="content"> {{ isSmartrise ? (job?.customerName | value) : (job?.primaryCustomer | value) }}</div>
     </div>
-
+    <div class="displayData" *ngIf="isSmartrise">
+      <div class="label">Installation By</div>
+      <div class="content"> {{ job?.installedBy | value }}</div>
+    </div>
     <div class="displayData">
       <div class="label">Job Name</div>
       <div class="content" id="last4" value="">{{ job?.jobName | value }}</div>
@@ -20,11 +23,13 @@
       <div class="label">PO Number</div>
       <div class="content">{{ job?.customerPONumber | value }}</div>
     </div>
-
   </div>
 
   <div class="card-details-container">
-
+    <div class="displayData" *ngIf="isSmartrise">
+      <div class="label">Currently Maintained By</div>
+      <div class="content"> {{ job?.maintainedBy | value }}</div>
+    </div>
     <div class="displayData">
       <div class="label">Desired Ship Date</div>
       <div class="content">{{ job?.shipDate | usdate | value }}</div>
@@ -40,11 +45,27 @@
       <div class="content">{{ job?.actualShipDate | usdate | value }}</div>
     </div>
 
-    <div *ngIf="passcode" class="displayData">
-      <div class="label">Passcode</div>
-      <div [innerHTML]="passcode" class="content">
+  </div>
+
+</div>
+<div class="col-lg-12">
+  <div class="row">
+
+    <div class="col-12" *ngIf="passcode?.displayPasscode; else passcodeMessage">
+      <div class="activity-history-title">
+        Passcodes
       </div>
+      <ng2-smart-table class="default-smart-table responsive-design1" [settings]="passcodeSettings"
+        [source]="passcodeSource">
+      </ng2-smart-table>
     </div>
 
+    <ng-template #passcodeMessage>
+      <div class="col-12" *ngIf="passcode?.message">
+        <div class="alert alert-info mb-0">
+          {{passcode.message}}
+        </div>
+      </div>
+    </ng-template>
   </div>
 </div>

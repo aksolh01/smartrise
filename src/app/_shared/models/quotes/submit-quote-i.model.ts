@@ -137,6 +137,8 @@ export interface ISubmitCarHydraulicFieldPayload {
     ropedHydro: boolean;
     hydroEvolved: boolean;
     dualSoftStarts: boolean;
+    v2: boolean;
+    v3: boolean;
 }
 
 export interface ISubmitCarTractionFieldPayload {

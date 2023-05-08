@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-invoices-actions',
@@ -12,7 +13,7 @@ export class InvoicesActionsComponent implements OnInit {
   canPay = true;
   payEvent = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }

@@ -16,7 +16,6 @@ export function consultantNameRequired(ctx: BusinessContext, instance: InstanceV
     }
 }
 
-
 export function travelerLengthRequired(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
     if (instance.travelerCable && isEmptyValue(arg.newValue)) {
         return 'Value is required';

@@ -11,6 +11,8 @@ export class ShipmentParams extends BaseParams {
   jobNumber: string;
   isDropShipment?: Boolean;
   trackingNumber: string;
+  installedBy: string;
+  maintainedBy: string;
 }
 
 export class ShipmentByCustomerParams extends ShipmentParams {

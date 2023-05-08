@@ -7,10 +7,10 @@ import { JobLocationView } from './quote-view.model';
 export class CreateQuoteView implements ICreateQuoteView {
 
     constructor(props?: Partial<CreateQuoteView>) {
-        if(props) {
+        if (props) {
             Object.assign(this, props);
-            if(props.jobLocation) {
-                this.jobLocation = new JobLocationView(props.jobLocation);
+            if (props.jobLocation) {
+                this.jobLocation = new JobLocationView(props.jobLocation)
             }
         }
     }

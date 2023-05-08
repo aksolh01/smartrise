@@ -183,24 +183,32 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
         initialValue: this.quote.contactId
       }
     });
-    this.modalRef.content.refresh.subscribe(() => {
-      this.contactService.getCustomerContacts(this.customerId).subscribe(contacts => {
-        this.lookup.customerContacts = contacts;
-        this.modalRef.content.options = contacts;
-        this.modalRef.content.isRefreshingContacts = false;
-      }, error => {
-        this.modalRef.content.isRefreshingContacts = false;
-      });
-    });
-    this.modalRef.onHidden.subscribe(() => {
-      this.actionsRequired?.enable();
-      if (this.modalRef?.content?.selectedContact) {
-        this.selectedContact = this.modalRef?.content?.selectedContact;
-        this.quote.contactId = this.modalRef?.content?.selectedContact?.id;
-        this.quote.contact = this.modalRef?.content?.selectedContact?.fullName;
-        this.quote.email = this.modalRef?.content?.selectedContact?.email;
-        this.quote.phone = this.modalRef?.content?.selectedContact?.phone;
-      }
+    this.modalRef.content.refresh.subscribe(() => this._onRefreshContacts());
+    this.modalRef.onHidden.subscribe(() => this._onCloseContacts());
+  }
+
+  private _onCloseContacts() {
+    this.actionsRequired?.enable();
+    if (this.modalRef?.content?.selectedContact) {
+      this._fillQuoteContactInfo();
+    }
+  }
+
+  private _fillQuoteContactInfo() {
+    this.selectedContact = this.modalRef?.content?.selectedContact;
+    this.quote.contactId = this.modalRef?.content?.selectedContact?.id;
+    this.quote.contact = this.modalRef?.content?.selectedContact?.fullName;
+    this.quote.email = this.modalRef?.content?.selectedContact?.email;
+    this.quote.phone = this.modalRef?.content?.selectedContact?.phone;
+  }
+
+  private _onRefreshContacts() {
+    this.contactService.getCustomerContacts(this.customerId).subscribe(contacts => {
+      this.lookup.customerContacts = contacts;
+      this.modalRef.content.options = contacts;
+      this.modalRef.content.isRefreshingContacts = false;
+    }, error => {
+      this.modalRef.content.isRefreshingContacts = false;
     });
   }
 
@@ -248,41 +256,38 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
     this.quotingToolValidationService.reset();
     this.quotingToolValidationService.index = 0;
     this.businessContext.workingMode = WorkingMode.NotSet;
-
-    this.responsiveService.currentBreakpoint$.subscribe(w => {
-      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-        if (this.isSmall !== false) {
-          this.isSmall = false;
-        }
-      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-        if (this.isSmall !== true) {
-          this.isSmall = true;
-        }
-      }
-    });
-
+    this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
     this.bcService.set('@jobName', { skip: true });
-
     const quoteId = this.route.snapshot.paramMap.get('id');
 
     this.quotingToolService
       .getQuote(+quoteId)
-      .subscribe(quoteResponse => {
-
-        if (this.miscellaneousService.isCustomerUser()) {
-          const selectedAccount = this.multiAccountsService.getSelectedAccount();
-
-          if (selectedAccount != null && selectedAccount !== quoteResponse.customer.id) {
-            this.router.navigateByUrl(URLs.ViewOpenQuotesURL);
-            return;
-          }
-        }
-
-        this._quoteResponseReadyCallback(quoteResponse)
-      });
+      .subscribe(quoteResponse => this._onQuoteResponseReady(quoteResponse));
   }
 
-  private _quoteResponseReadyCallback(quoteResponse: IQuoteResponse) {
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.isSmall = true;
+      }
+    }
+  }
+
+  private _onQuoteResponseReady(quoteResponse: IQuoteResponse) {
+
+    if (this.miscellaneousService.isCustomerUser()) {
+      const selectedAccount = this.multiAccountsService.getSelectedAccount();
+
+      if (selectedAccount != null && selectedAccount !== quoteResponse.customer.id) {
+        this.router.navigateByUrl(URLs.ViewOpenQuotesURL);
+        return;
+      }
+    }
+
     this.quote = Mapper.map(quoteResponse, QuoteView);
     this.customerId = quoteResponse.customer.id;
 
@@ -498,18 +503,25 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
 
     this.actionsRequired.collapse();
     this.miscellaneousService.openConfirmModal(
-      'Are you sure you want to remove this car?', () => {
-        this.isBusy = true;
-        setTimeout(() => {
-          const indexOfCar = this.quote.cars.indexOf(car);
-          this.quote.cars.splice(indexOfCar, 1);
-          this.updateTablesVisibility();
-          this.isBusy = false;
-        });
-        this.actionsRequired?.enable();
-      }, () => {
-        this.actionsRequired?.enable();
-      });
+      'Are you sure you want to remove this car?',
+      () => this._onDeleteCarConfirmed(car),
+      () => this.actionsRequired?.enable()
+    );
+  }
+
+  private _onDeleteCarConfirmed(car: any) {
+    this.isBusy = true;
+    setTimeout(() => {
+      this._removeCarFromQuote(car);
+      this.updateTablesVisibility();
+      this.isBusy = false;
+    });
+    this.actionsRequired?.enable();
+  }
+
+  private _removeCarFromQuote(car: any) {
+    const indexOfCar = this.quote.cars.indexOf(car);
+    this.quote.cars.splice(indexOfCar, 1);
   }
 
   onCloneCar(car: ICarView) {
@@ -604,17 +616,24 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
       return;
     }
 
+    if (withGenerate && !this._validateC2V2Checkings()) {
+      this.isProcessing = false;
+      return;
+    }
+
+    if (withGenerate && !this._validateV2EvolvedCheckings()) {
+      this.isProcessing = false;
+      return;
+    }
+
     this.quotingToolValidationService.validateAll(() => {
 
       if (this.hasError) {
-        this.quotingToolValidationService.errorChanged.next({ sort: true });
-        this.isProcessing = false;
-        this.messageService.showErrorMessage('Please check the action(s) required');
+        this._handleValidationErrorEncountered();
         return;
       }
 
       this._prePost();
-
 
       if (
         !this.attachments.hasNewFiles() &&
@@ -622,83 +641,30 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
       ) {
         this.miscellaneousService.startFullscreenBusy();
         this.isBusy = true;
+
         if (withGenerate) {
-          this.isGenerating = true;
-          const submitQuotePayload = Mapper.map(this.quote, SubmitQuotePayload);
-          submitQuotePayload.customerId = this.customerId;
-
-          this.quotingToolService.submitQuote(submitQuotePayload).subscribe(result => {
-            this._onSaveSuccess();
-            this._onTasksCompleted(withGenerate, result);
-          }, error => {
-            this.isProcessing = false;
-            this.isGenerating = false;
-            this.isBusy = false;
-            this.miscellaneousService.endFullscreenBusy();
-            this._resetQuote();
-          });
+          this._submitQuote();
         } else {
-          this.isSaving = true;
-          const saveQuotePayload = Mapper.map(this.quote, SaveQuotePayload);
-          saveQuotePayload.customerId = this.customerId;
-
-          this.quotingToolService.saveQuote(saveQuotePayload).subscribe(result => {
-            this._onSaveSuccess();
-            this._onTasksCompleted(withGenerate, result);
-          }, error => {
-            this.isProcessing = false;
-            this.isSaving = false;
-            this.isBusy = false;
-            this.miscellaneousService.endFullscreenBusy();
-            this._resetQuote();
-          });
+          this._saveQuote();
         }
+
         return;
       }
 
 
       this.taskSyncronizerService.clear();
       if (withGenerate) {
-        const submitQuotePayload = Mapper.map(this.quote, SubmitQuotePayload);
-        submitQuotePayload.customerId = this.customerId;
-
-        this.taskSyncronizerService.registerTask(
-          this.quotingToolService.submitQuote(submitQuotePayload),
-          'SaveQuote',
-          `Generating quote ${this.quote.jobName}`
-        );
+        this._registerGenerateQuoteTask();
       } else {
-        const saveQuotePayload = Mapper.map(this.quote, SaveQuotePayload);
-        saveQuotePayload.customerId = this.customerId;
-
-        this.taskSyncronizerService.registerTask(
-          this.quotingToolService.saveQuote(saveQuotePayload),
-          'SaveQuote',
-          `Saving quote ${this.quote.jobName}`
-        );
+        this._registerSaveQuoteTask();
       }
 
       if (this.attachments.hasNewFiles()) {
-        let index = -1;
-        this.attachments.newFiles.forEach(file => {
-
-          this.taskSyncronizerService.registerTask(
-            this.quotingToolService.uploadAttachments([file.data], this.quote.id),
-            `UploadAttachment${index}`,
-            `Uploading file ${file.data.name}`,
-            file.ui
-          );
-
-          index++;
-        });
+        this._registerUploadAttachmentsTasks();
       }
 
       if (this.attachments.hasRemovedFiles()) {
-        this.taskSyncronizerService.registerTask(
-          this.quotingToolService.deleteAttachments(this.attachments.removedFiles),
-          'DeleteAttachments',
-          `Deleting removed attachments`
-        );
+        this._registerDeleteAttachmentsTask();
       }
 
       const taskStatuses = this.taskSyncronizerService.tasks.map(x => {
@@ -722,20 +688,139 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
       };
 
       let saveQuoteResult = null;
-      const sub = this.taskSyncronizerService.start().subscribe(result => {
-        _updateTaskStatusOnUI(result.name, result.status);
-        this._onTaskStatus(result);
-      }, error => {
-        this._updateInProgressTasks(taskStatuses, 'Failed');
-        this._onTaskError(error);
-        sub.unsubscribe();
-      }, () => {
-        this._atachmentsChanged = false;
-        this._onTasksCompleted(withGenerate, saveQuoteResult);
-        this._saveCurrentQuote();
-        this._updateAllTasks(taskStatuses, 'Done');
-        sub.unsubscribe();
-      });
+      const sub = this.taskSyncronizerService.start().subscribe(
+        result => {
+          _updateTaskStatusOnUI(result.name, result.status);
+          this._handleTaskBasedOnStatus(result);
+        },
+        error => {
+          this._updateInProgressTasks(taskStatuses, 'Failed');
+          this._onTaskError(error);
+          sub.unsubscribe();
+        },
+        () => {
+          this._atachmentsChanged = false;
+          this._onTasksCompleted(withGenerate, saveQuoteResult);
+          this._saveCurrentQuote();
+          this._updateAllTasks(taskStatuses, 'Done');
+          sub.unsubscribe();
+        });
+    });
+  }
+
+  private _validateV2EvolvedCheckings() {
+
+    if (this.quote.isCanadaOntario()) {
+      return true;
+    }
+
+    for (var car of this.quote.cars) {
+      if (this._eitherV2OrHydroEvolvedMustBeSelected(car)) {
+        this.messageService.showErrorMessage(`${car.displayName} must have either V2 or Hydro Evolved selected`);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private _eitherV2OrHydroEvolvedMustBeSelected(car: ICarView) {
+    return car.isHydraulic() &&
+      !car.carHydraulicField.v2 &&
+      !car.carHydraulicField.hydroEvolved;
+  }
+
+  private _validateC2V2Checkings() {
+    for (var car of this.quote.cars) {
+      if (car.isTraction() && (!car.carTractionField.c4 && !car.carTractionField.v2Traction)) {
+        this.messageService.showErrorMessage(`${car.displayName} must have either C4 or V2 selected`);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private _handleValidationErrorEncountered() {
+    this.quotingToolValidationService.errorChanged.next({ sort: true });
+    this.isProcessing = false;
+    this.messageService.showErrorMessage('Please check the action(s) required');
+  }
+
+  private _saveQuote() {
+    this.isSaving = true;
+    const saveQuotePayload = Mapper.map(this.quote, SaveQuotePayload);
+    saveQuotePayload.customerId = this.customerId;
+
+    this.quotingToolService.saveQuote(saveQuotePayload).subscribe(result => {
+      this._onSaveSuccess();
+      this._onTasksCompleted(false, result);
+    }, error => {
+      this.isProcessing = false;
+      this.isSaving = false;
+      this.isBusy = false;
+      this.miscellaneousService.endFullscreenBusy();
+      this._resetQuote();
+    });
+  }
+
+  private _submitQuote() {
+    this.isGenerating = true;
+    const submitQuotePayload = Mapper.map(this.quote, SubmitQuotePayload);
+    submitQuotePayload.customerId = this.customerId;
+
+    this.quotingToolService.submitQuote(submitQuotePayload).subscribe(result => {
+      this._onSaveSuccess();
+      this._onTasksCompleted(true, result);
+    }, error => {
+      this.isProcessing = false;
+      this.isGenerating = false;
+      this.isBusy = false;
+      this.miscellaneousService.endFullscreenBusy();
+      this._resetQuote();
+    });
+  }
+
+  private _registerSaveQuoteTask() {
+    const saveQuotePayload = Mapper.map(this.quote, SaveQuotePayload);
+    saveQuotePayload.customerId = this.customerId;
+
+    this.taskSyncronizerService.registerTask(
+      this.quotingToolService.saveQuote(saveQuotePayload),
+      'SaveQuote',
+      `Saving quote ${this.quote.jobName}`
+    );
+  }
+
+  private _registerGenerateQuoteTask() {
+    const submitQuotePayload = Mapper.map(this.quote, SubmitQuotePayload);
+    submitQuotePayload.customerId = this.customerId;
+
+    this.taskSyncronizerService.registerTask(
+      this.quotingToolService.submitQuote(submitQuotePayload),
+      'SaveQuote',
+      `Generating quote ${this.quote.jobName}`
+    );
+  }
+
+  private _registerDeleteAttachmentsTask() {
+    this.taskSyncronizerService.registerTask(
+      this.quotingToolService.deleteAttachments(this.attachments.removedFiles),
+      'DeleteAttachments',
+      `Deleting removed attachments`
+    );
+  }
+
+  private _registerUploadAttachmentsTasks() {
+    let index = -1;
+    this.attachments.newFiles.forEach(file => {
+
+      this.taskSyncronizerService.registerTask(
+        this.quotingToolService.uploadAttachments([file.data], this.quote.id),
+        `UploadAttachment${index}`,
+        `Uploading file ${file.data.name}`,
+        file.ui
+      );
+
+      index++;
     });
   }
 
@@ -815,7 +900,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
     this._resetQuote();
   }
 
-  private _onTaskStatus(result: any) {
+  private _handleTaskBasedOnStatus(result: any) {
     if (result.status === 'Done') {
       if (result.name === 'SaveQuote') {
         this._onSaveSuccess();

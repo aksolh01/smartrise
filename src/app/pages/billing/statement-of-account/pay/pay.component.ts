@@ -140,7 +140,7 @@ export class PayComponent extends BaseComponent implements OnInit, OnDestroy {
   private _removeInvoice(invoice: any) {
 
     if (this.invoices.length == 1) {
-      this.messageService.showErrorMessage('You can not remove this invoice, at least one invoice must be selected');
+      this.messageService.showErrorMessage('You cannot remove this invoice, at least one invoice must be selected');
       return;
     }
 

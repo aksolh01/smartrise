@@ -1,4 +1,4 @@
-<div class="actions">
+<div class="actions text-center">
 
     <div *ngIf="!isImpersonate" tooltip="Set As Default" class="action-tooltip-holder">
         <button [disabled]="!canSetDefault || rowData.isDefault || rowData?.status?.value !== active" data-tooltip="Set As Default" (click)="onSetDefault()">

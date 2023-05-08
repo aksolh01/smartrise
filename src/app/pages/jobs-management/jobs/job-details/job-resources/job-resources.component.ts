@@ -68,7 +68,6 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
         title: '',
         type: 'custom',
         renderComponent: Ng2TableCellComponent,
-      
         valuePrepareFunction: this.getEnumDescription.bind(this),
         filter: false,
         sort: false,
@@ -96,9 +95,12 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
   };
 
   ngOnInit(): void {
+    
     this.canGenerateFiles = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
 
     this.source = new LocalDataSource(this.resourceFiles);
+    console.log("this.source",this.source)
+    
     this.startGuidingTour();
 
     this.backgroundCall = setInterval(() => {

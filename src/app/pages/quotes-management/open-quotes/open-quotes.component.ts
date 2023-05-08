@@ -55,6 +55,7 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
   isDropShipment: string;
   trackingNumber: string;
   isSmartriseUser = false;
+  public Math = Math;
 
   settings: any = {
     mode: 'external',
@@ -70,7 +71,7 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
         type: 'custom',
         renderComponent: AccountTableCellComponent,
         onComponentInitFunction: (instance: AccountTableCellComponent) => {
-          instance.setHeader('Account');
+          instance.setHeader(this._getAccountTitle());
           instance.setOptions({
             tooltip: 'View Account Details',
             link: URLs.CompanyInfoURL,
@@ -246,6 +247,10 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
     });
   }
 
+  private _getAccountTitle(): string {
+    return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
+  }
+
   constructor(
     private router: Router,
     private jobTabService: JobTabService,
@@ -277,73 +282,77 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25
-    };
+
+    this._initializePager();
 
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
 
+    this.settings.columns.account.title = this._getAccountTitle();
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
       delete this.settings.columns.account;
     }
 
     this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-return null;
-}
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
 
-      if (field === 'quoteCreated') {
-        return new Date(value);
-      }
-
-      if (field === 'numberOfCars') {
-        return +value;
-      }
-      return value;
-    };
-
-    this.source.serviceErrorCallBack = (error) => {
-    };
-
-    this.source.serviceCallBack = (params) => {
-      const quoteParams = params as QouteSearchParams;
-      if (this.isSmall) {
-        quoteParams.account = this.account;
-        quoteParams.jobName = this.jobName;
-        quoteParams.quoteNumber = this.quoteNumber;
-        quoteParams.controllerType = this.controllerType;
-        quoteParams.contact = this.contact;
-        quoteParams.quoteCreated = this.quoteCreated;
-        quoteParams.numberOfCars = this.numberOfCars;
-        quoteParams.amount = this.amount;
-        quoteParams.createdBy = this.createdBy;
-      }
-      if (quoteParams.quoteCreated) {
-quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
-}
-
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.quoteService.getOpenQuotesBySmartriseUser(quoteParams);
-      } else {
-        const searchParams = quoteParams as OpenQuoteByCustomerSearchParams;
-        searchParams.customerId = this.multiAccountService.getSelectedAccount();
-
-        return this.quoteService.getOpenQuotesByCustomerUser(searchParams);
-      }
-    };
-    this.source.dataLoading.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-
-      // setTimeout(() => {
-      //   this.startGuidingTour();
-      // }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
-    });
+    this.source.serviceCallBack = (params) => this._getOpenQuotes(params);
+    this.source.dataLoading.subscribe((isLoading) => this.isLoading = isLoading);
     this.source.setSort([
       { field: 'quoteCreated', direction: 'desc' }  // primary sort
     ], false);
+  }
+
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value)) return null;
+
+    if (field === 'quoteCreated') {
+      return new Date(value);
+    }
+
+    if (field === 'numberOfCars') {
+      return +value;
+    }
+    return value;
+  }
+
+  private _getOpenQuotes(params: any) {
+    const quoteParams = params as QouteSearchParams;
+
+    if (this.isSmall) {
+      this._fillFilterParameters(quoteParams);
+    }
+
+    if (quoteParams.quoteCreated)
+      quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
+
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.quoteService.getOpenQuotesBySmartriseUser(quoteParams);
+    } else {
+      const searchParams = quoteParams as OpenQuoteByCustomerSearchParams;
+      searchParams.customerId = this.multiAccountService.getSelectedAccount();
+
+      return this.quoteService.getOpenQuotesByCustomerUser(searchParams);
+    }
+  }
+
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+        perPage: this.recordsNumber || 25
+    };
+  }
+
+  private _fillFilterParameters(quoteParams: QouteSearchParams) {
+    quoteParams.account = this.account;
+    quoteParams.jobName = this.jobName;
+    quoteParams.quoteNumber = this.quoteNumber;
+    quoteParams.controllerType = this.controllerType;
+    quoteParams.contact = this.contact;
+    quoteParams.quoteCreated = this.quoteCreated;
+    quoteParams.numberOfCars = this.numberOfCars;
+    quoteParams.amount = this.amount;
+    quoteParams.createdBy = this.createdBy;
   }
 
   triggerGuidingTour() {
@@ -412,6 +421,15 @@ quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
 
   onReset() {
 
+    this._resetFilterParameters();
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.account = null;
     this.jobName = null;
     this.quoteNumber = null;
@@ -421,12 +439,6 @@ quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
     this.numberOfCars = null;
     this.amount = null;
     this.createdBy = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
   }
 
   onRecordsNumberChanged(value: number) {
@@ -438,7 +450,22 @@ quoteParams.quoteCreated = this.mockUtcDate(quoteParams.quoteCreated);
     localStorage.setItem('GuidingTourOpenQuotes', '1');
     this.runGuidingTour = false;
   }
+  onPagePrev(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source.setPaging(currentPage - 1, perPage);
+    }
+  }
 
+  onPageNext(): void {
+    const currentPage = this.source.getPaging().page;
+    const perPage = this.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source.setPaging(currentPage + 1, perPage);
+    }
+  }
   preventNonNumericalInput(e) {
 
     e = e || window.event;

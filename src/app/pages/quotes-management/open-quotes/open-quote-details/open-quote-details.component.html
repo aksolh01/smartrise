@@ -13,10 +13,9 @@
             <div class="col-12 col-lg-6">
 
                 <div *ngIf="displayAccountName" class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">{{accountTitle}}</label>
                     <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext" id="last4"
-                            value="{{ openQuote?.customer | value }}">
+                        <div class="form-control-plaintext" id="last4">{{ openQuote?.customer | value }}</div>
                     </div>
                 </div>
 

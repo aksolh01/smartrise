@@ -63,12 +63,12 @@ export class LoginComponent extends BaseComponent implements OnInit, IAuthPageCo
     this.isLoading = true;
     this.warnUserAboutAccountLock = false;
     this.accountService.login(this.loginForm.value).subscribe(
-      (user) => this._loginResponseReadyCallback(user),
-      (error) => this._handleLoginError(error)
+      (user) => this._onSuccessLogin(user),
+      (error) => this._onFailedLogin(error)
     );
   }
 
-  private _loginResponseReadyCallback(user: IUser) {
+  private _onSuccessLogin(user: IUser) {
 
     if (user.twoStepVerificationActivated) {
       sessionStorage.setItem('2FAIsActivated', '1');
@@ -112,7 +112,7 @@ export class LoginComponent extends BaseComponent implements OnInit, IAuthPageCo
     );
   }
   
-  private _handleLoginError(error: any) {
+  private _onFailedLogin(error: any) {
     this.warnUserAboutAccountLock = error?.error?.failedResult?.warnUserAboutAccountLock;
     this.isLoading = false;
   }

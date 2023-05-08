@@ -13,7 +13,7 @@ export class AccountTableCellComponent implements ViewCell, OnInit {
 
   showHeader = true;
 
-  value: string | number;
+  value: any;
   @Input() rowData: any;
 
   breakWord: boolean;
@@ -51,10 +51,9 @@ export class AccountTableCellComponent implements ViewCell, OnInit {
 
   onGoToLink() {
     if (this.miscellaneousService.isSmartriseUser()) {
-      this.router.navigateByUrl(`${URLs.ViewCustomersURL}/${this.rowData.account.id}`);
-    }
-    else {
-      this.router.navigateByUrl(`${URLs.CompanyInfoURL}/${this.rowData.account.id}`);
+      this.router.navigateByUrl(`${URLs.ViewCustomersURL}/${this.value.id}`);
+    } else {
+      this.router.navigateByUrl(`${URLs.CompanyInfoURL}/${this.value.id}`);
     }
   }
 

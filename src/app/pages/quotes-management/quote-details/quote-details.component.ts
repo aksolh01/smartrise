@@ -28,6 +28,7 @@ import { RfqDetailsComponent } from '../rfq-details/rfq-details.component';
 })
 export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
 
+  accountTitle: string;
   historySettings: any = {
     mode: 'external',
     actions: {
@@ -106,9 +107,9 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   quote: IQuoteDetailsResponse;
-  isLoading = true;
-  displayAccountName = true;
-
+  isLoading: boolean = true;
+  displayAccountName: boolean = true;
+  
   constructor(
     baseService: BaseComponentService,
     private quotingToolService: QuotingToolService,
@@ -130,9 +131,12 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
+
     this.canEditQuote = this.permissionService.hasPermission(PERMISSIONS.SaveOnlineQuote) && !this.miscellaneousService.isImpersonateMode();
     this.displayAccountName = this.miscellaneousService.isSmartriseUser() || this.multiAccountsService.hasMultipleAccounts();
 
+    this._setAccountTitle();
+    
     this.bcService.set('@quoteName', { skip: true });
     const quoteId = this.route.snapshot.paramMap.get('id');
 
@@ -177,6 +181,10 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
       }
     });
 
+  }
+
+  private _setAccountTitle() {
+    this.accountTitle = this.miscellaneousService.isSmartriseUser() ? 'Ordered By' : 'Account Name';
   }
 
   private _readSaveOnlineQuotePermission(accountId: number) {

@@ -1,7 +1,8 @@
 <div class="flex-container">
     <div class="img-container">
         <!-- *ngIf="imageToShow" -->
-        <img src="{{ imageToShow }}" alt="" class="profile-img" />
+        <img *ngIf="!imageToShow" src="/assets/loader3.gif" alt="" class="profile-img" />
+        <img *ngIf="imageToShow" src="{{ imageToShow }}" alt="" class="profile-img" />
     </div>
 
     <div class="name-container">

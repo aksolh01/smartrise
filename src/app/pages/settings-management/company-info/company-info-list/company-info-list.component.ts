@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JoyrideService } from 'ngx-joyride';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { CustomerService } from '../../../../services/customer.service';
 import { ResponsiveService } from '../../../../services/responsive.service';
@@ -16,6 +16,9 @@ import { CompanyActionInfoComponent } from './company-action-info/company-action
 import * as guidingTourGlobal from '../../../guiding.tour.global';
 import { URLs } from '../../../../_shared/constants';
 import { HLinkTableCellComponent } from '../../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
+import { BaseParams } from '../../../../_shared/models/baseParams';
+import { IPagination } from '../../../../_shared/models/pagination';
+import { IBusinessSettings } from '../../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-company-info-list',
@@ -122,23 +125,27 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe((rep) => {
+    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
+  }
+
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
       this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
-        }
-      });
-    });
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -157,28 +164,11 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25
-    };
 
+    this._initializePager();
     this.source = new BaseServerDataSource();
 
-    this.source.serviceErrorCallBack = (error) => { };
-
-    this.source.serviceCallBack = (params) => {
-      const searchParams = params as SearchCompanyInfoParams;
-
-      if (this.isSmall) {
-        searchParams.name = this.customerName;
-        searchParams.phone = this.phone;
-        searchParams.fax = this.fax;
-        searchParams.email = this.email;
-      }
-
-      return this.customerService.searchCompanyInfo(searchParams);
-    };
+    this.source.serviceCallBack = (params) => this._getCompantInfos(params);
 
     this.source.dataLoading.subscribe((result) => {
       this.isLoading = result;
@@ -190,6 +180,31 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
     this.source.setSort([
       { field: 'name', direction: 'asc' }  // primary sort
     ], false);
+  }
+
+  private _getCompantInfos(params: BaseParams): Observable<IPagination> {
+    const searchParams = params as SearchCompanyInfoParams;
+
+    if (this.isSmall) {
+      this._fillFilterParameters(searchParams);
+    }
+
+    return this.customerService.searchCompanyInfo(searchParams);
+  }
+
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+        perPage: this.recordsNumber || 25
+    };
+  }
+
+  private _fillFilterParameters(searchParams: SearchCompanyInfoParams) {
+    searchParams.name = this.customerName;
+    searchParams.phone = this.phone;
+    searchParams.fax = this.fax;
+    searchParams.email = this.email;
   }
 
   onSearch() {
@@ -207,16 +222,20 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
   }
 
   onReset() {
-    this.customerName = null;
-    this.phone = null;
-    this.fax = null;
-    this.email = null;
+    this._resetFilterParameters();
 
     if (this.isSmall) {
       this.source.refreshAndGoToFirstPage();
     } else {
       this.source.resetFilters();
     }
+  }
+
+  private _resetFilterParameters() {
+    this.customerName = null;
+    this.phone = null;
+    this.fax = null;
+    this.email = null;
   }
 
   startGuidingTour() {

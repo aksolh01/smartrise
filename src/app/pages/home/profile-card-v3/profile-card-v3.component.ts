@@ -73,8 +73,8 @@ export class ProfileCardV3Component implements OnInit, OnDestroy, AfterContentIn
 
   ngOnDestroy(): void {
     if (this.modelRef !== null && this.modelRef !== undefined) {
-this.modelRef.hide();
-}
+      this.modelRef.hide();
+    }
 
     if (this.guidingTourSubscription) {
       this.guidingTourSubscription.unsubscribe();
@@ -123,7 +123,8 @@ this.modelRef.hide();
   }
 
   logout() {
-    this.accountService.logoutFromAllTabs();
+    this.miscellaneousService.openConfirmModal('Are you sure you want to logout?',
+      () => this.accountService.logoutFromAllTabs());
   }
 
   openUserPrivileges() {

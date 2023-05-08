@@ -1,6 +1,6 @@
-import { ICarView } from '../../../../../_shared/models/quotes/quote-view-i.model';
-import { BusinessContext } from '../business-context';
-import { updateBiddingDateAvailability, selectCablesDatasource, selectDriveModelDatasource, updateV2Traction, updateC4Availability, updateGovernorResetBox, updateGroupRedundancy, updateMADFixture, updateHydroEvolved, updateISOTransfer, updateMX, updateMotorVolts, updateInterfaceToDestinationDispatch, updateV2V3HallCallSecurityCat5, updateConsultantNameAvailability, updateTravelerCable, updateHoistwayCable, updateCarTitle, updateNewMotorFieldsAvailability, updateHoistwayLength, updateLandingSystemLengthOfTravel, updateTravelerLength, updateC4RiserBoardsVisibilityOnQuoteLevel, updateTractionFieldVisibilityOnQuoteLevel, updateHydraulicFieldVisibilityOnQuoteLevel, updateMotorHP, updateCapacity, updateSpeed, updateAIParking, updateMachineRoomMonitoring, updateMotorFLA } from '../business-core/business-rules';
+import { ICarView } from "../../../../../_shared/models/quotes/quote-view-i.model";
+import { BusinessContext } from "../business-context";
+import { updateBiddingDateAvailability, selectCablesDatasource, selectDriveModelDatasource, updateV2Traction, updateC4Availability, updateGovernorResetBox, updateGroupRedundancy, updateMADFixture, updateHydroEvolved, updateISOTransfer, updateMX, updateMotorVolts, updateInterfaceToDestinationDispatch, updateV2V3HallCallSecurityCat5, updateConsultantNameAvailability, updateTravelerCable, updateHoistwayCable, updateCarTitle, updateNewMotorFieldsAvailability, updateHoistwayLength, updateLandingSystemLengthOfTravel, updateTravelerLength, updateC4RiserBoardsVisibilityOnQuoteLevel, updateTractionFieldVisibilityOnQuoteLevel, updateHydraulicFieldVisibilityOnQuoteLevel, updateMotorHP, updateCapacity, updateSpeed, updateAIParking, updateMotorFLA, updateV2Hydraulic, updateV3Hydraulic } from "../business-core/business-rules";
 
 export function initializeQuoteStatuses(ctx: BusinessContext) {
 
@@ -32,6 +32,8 @@ export function initializeCar(car: ICarView, ctx: BusinessContext) {
     updateGroupRedundancy(car.carSpecialField);
     updateMADFixture(car.carTractionField);
     updateHydroEvolved(car.carHydraulicField);
+    updateV2Hydraulic(car.carHydraulicField);
+    updateV3Hydraulic(car.carHydraulicField);
     updateISOTransfer(car.carTractionField);
     updateMX(car.carTractionField);
     updateTravelerLength(car.carSmartriseFeature);
@@ -49,8 +51,6 @@ export function initializeCar(car: ICarView, ctx: BusinessContext) {
     updateHydraulicFieldVisibilityOnQuoteLevel(ctx, false);
 
     updateAIParking(car.carManagementSystem);
-
-    updateMachineRoomMonitoring(car.carManagementSystem);
 
     updateCarTitle(ctx.lookupData, car);
 }

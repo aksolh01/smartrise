@@ -4,10 +4,12 @@ import { ControlContainer, ControlValueAccessor, UntypedFormControl, FormControl
 @Component({
   selector: 'ngx-smr-password-input',
   template: `
+  <div class="input-holder">
       <input type="password" [id]="id" [placeholder]="placeholder" #input [formControl]="control"
              [maxlength]="maxLength" (focus)="showVals()" (blur)="hideVals()"/>
       <i class="toggle-icon far" *ngIf="!!control.value?.trim()" [tooltip]="tooltip" [class]="eyeIcon"
          (click)="toggleShowPassword()"></i>
+         </div>
     <fieldset *ngIf="showValidations === true && validationShown">
       <ul>
         <li *ngFor="let val of passwordValidations">
@@ -68,6 +70,11 @@ export class PasswordInputComponent implements ControlValueAccessor {
   tooltip: 'Show Password' | 'Hide Password' = 'Show Password';
   passwordValidations = [
     {
+      name: 'New Password is required.',
+      rule: /./,
+      isValid: false,
+    },
+    {
       name: 'At least 1 lowercase character.',
       rule: /[a-z]/,
       isValid: false,
@@ -91,7 +98,8 @@ export class PasswordInputComponent implements ControlValueAccessor {
       name: 'At least 8 characters long.',
       rule: /.{8,}/,
       isValid: false,
-    }
+    },
+   
   ];
 
   private _isShown = false;

@@ -150,6 +150,8 @@ export interface ICarHydraulicFieldResponse {
     ropedHydro: boolean;
     dualSoftStarts: boolean;
     hydroEvolved: boolean;
+    v2: boolean;
+    v3: boolean;
 }
 
 export interface ICarTractionFieldResponse {

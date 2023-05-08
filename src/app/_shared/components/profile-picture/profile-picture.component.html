@@ -14,7 +14,7 @@
             </div>
         </div>
         <div>
-            <button class="edit-photo" [disabled]="uploading"
+            <button type="button" class="edit-photo" [disabled]="uploading"
             (click)="canRenderImage = true; fileInput.value = '';fileInput.click()">{{ uploadPictureText }}</button>
         </div>
     </div>

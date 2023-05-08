@@ -151,35 +151,9 @@ export function convertDates(object: Object) {
 
 export function stringifyObject(obj: any) {
 
-    // function createNode(_instance: any, _parentInstance: any) {
-    //     var _keys = Object.keys(_instance);
-    //     var _node: any = {
-    //         instance: _instance,
-    //         lastKey: _keys[_keys.length - 1],
-    //         parent: _parentInstance,
-    //     };
-    //     return _node;
-    // }
-    // var node = createNode(obj, null);
-
-    const cache = [];
+    var cache = [];
 
     return JSON.stringify(obj, (key, value) => {
-
-        // const currentIntance = node.instance;
-        // if (typeof node.instance[key] === 'object' && !(node.instance[key] instanceof Date)) {
-        //     node = createNode(node.instance[key], node);
-        // } else if (node.lastKey === key) {
-        //     node = node.parent;
-        // }
-
-        // if (key) {
-        //     const ignore = Reflect.getMetadata('JsonIgnore', currentIntance, key);
-        //     if (ignore) {
-        //         return;
-        //     }
-        // }
-
 
         if (typeof value === 'object' && value !== null) {
             if (cache.indexOf(value) !== -1) {

@@ -102,3 +102,7 @@
     }
   }
 }
+
+::ng-deep ngx-bank-account nb-select[placeholder-selected="true"] button {
+  color: #6d767e82 !important;
+}

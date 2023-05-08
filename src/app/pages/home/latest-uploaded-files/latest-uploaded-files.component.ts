@@ -15,6 +15,9 @@ import { JobFilesListActionsComponent } from '../../jobs-management/job-files/jo
 import { LatestFilesActionsComponent } from './latest-files-actions/latest-files-actions.component';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
+import { BaseParams } from '../../../_shared/models/baseParams';
+import { Observable } from 'rxjs';
+import { IPagination } from '../../../_shared/models/pagination';
 
 @Component({
   selector: 'ngx-latest-uploaded-files',
@@ -110,29 +113,35 @@ export class LatestUploadedFilesComponent extends BaseComponent implements OnIni
 
   ngOnInit(): void {
     this.source = new BaseServerDataSource();
-    this.source.serviceErrorCallBack = (error) => {};
-    this.source.serviceCallBack = (params) => {
-      const options = params as ResourceParams;
-      options.pageIndex = 1;
-      options.pageSize = 5;
-      options.sort = 'uploadedAt';
-      options.hasUploadedFile = true;
-      options.sortDirection = SortDirection.Desc;
-
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.resourceService.getLatestUploadedFilesBySmartriseUser(options);
-      } else {
-        const searchParams = options as ResourceByCustomerUserParams;
-        searchParams.customerId = this.multiAccountService.getSelectedAccount();
-
-        return this.resourceService.getLatestUploadedFilesByCustomerUser(searchParams);
-      }
-    };
+    this.source.serviceCallBack = (params) => this._getLastUploadedFiles(params);
 
     this.source.dataLoading.subscribe((result) => {
       this.isLoading = result;
     });
     this.source.setPage(1, true);
+  }
+
+  private _getLastUploadedFiles(params: BaseParams): Observable<IPagination> {
+    const options = params as ResourceParams;
+    
+    this._fillFilterParameters(options);
+
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.resourceService.getLatestUploadedFilesBySmartriseUser(options);
+    } else {
+      const searchParams = options as ResourceByCustomerUserParams;
+      searchParams.customerId = this.multiAccountService.getSelectedAccount();
+
+      return this.resourceService.getLatestUploadedFilesByCustomerUser(searchParams);
+    }
+  }
+
+  private _fillFilterParameters(options: ResourceParams) {
+    options.pageIndex = 1;
+    options.pageSize = 5;
+    options.sort = 'uploadedAt';
+    options.hasUploadedFile = true;
+    options.sortDirection = SortDirection.Desc;
   }
 
   onActionsInit(actions: JobFilesListActionsComponent) {

@@ -145,6 +145,8 @@ export interface ICarHydraulicFieldDetailsResponse {
     ropedHydro: boolean;
     hydroEvolved: boolean;
     dualSoftStarts: boolean;
+    v2: boolean;
+    v3: boolean;
 }
 
 export interface ICarAdditionalC4RiserBoardsDetailsResponse {

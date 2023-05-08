@@ -1,6 +1,7 @@
 import { AfterContentInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { JoyrideService } from 'ngx-joyride';
+import * as guidingTourGlobal from '../../../guiding.tour.global';
 import { Subscription } from 'rxjs';
 import { JobTabService } from '../../../../services/job-tabs.service';
 import { JobService } from '../../../../services/job.service';
@@ -18,7 +19,7 @@ import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { MiscellaneousService } from '../../../../services/miscellaneous.service';
 import { CommonValues, URLs } from '../../../../_shared/constants';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FillPasscodeComponent } from '../fill-passcode/fill-passcode.component';
 import { AccountService } from '../../../../services/account.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
@@ -27,10 +28,15 @@ import { AccountTableCellComponent } from '../../../../_shared/components/accoun
 import { MatLine } from '@angular/material/core';
 import { tap } from 'rxjs/operators';
 import { ListTitleService } from '../../../../services/list-title.service';
+import { IBusinessSettings } from '../../../../_shared/models/settings';
+import { FileUploaderComponent } from '../../job-files/file-uploader/file-uploader.component';
+import { PasscodeService } from '../../../../services/passcode.service';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { MessageService } from '../../../../services/message.service';
+import { UploadConfigFileComponent } from '../upload-config-file/upload-config-file.component';
 import { BaseComponent } from '../../../base.component';
-import { PendingInfoCellComponent } from './pending-info-cell.component';
 import { JobActionsComponent } from './job-actions/job-actions.component';
-import * as guidingTourGlobal from '../../../guiding.tour.global';
+import { PendingInfoCellComponent } from './pending-info-cell.component';
 
 @Component({
   selector: 'ngx-jobs-list',
@@ -48,6 +54,8 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   showFilters = false;
   runGuidingTour = true;
   actualShipDate?: Date;
+  installedBy: string;
+  maintainedBy: string;
   account: string;
   jobName: string;
   jobNumber: string;
@@ -74,7 +82,49 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
         type: 'custom',
         renderComponent: AccountTableCellComponent,
         onComponentInitFunction: (instance: AccountTableCellComponent) => {
-          instance.setHeader('Account');
+          instance.setHeader(this._getAccountTitle());
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      installedBy: {
+        title: 'Installation By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Installation By');
+          instance.setOptions({
+            tooltip: 'View Account Details',
+            link: URLs.CompanyInfoURL,
+            paramExps: [
+              'id'
+            ]
+          });
+        },
+        width: '15%',
+        show: false,
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        },
+      },
+      maintainedBy: {
+        title: 'Currently Maintained By',
+        type: 'custom',
+        renderComponent: AccountTableCellComponent,
+        onComponentInitFunction: (instance: AccountTableCellComponent) => {
+          instance.setHeader('Currently Maintained By');
           instance.setOptions({
             tooltip: 'View Account Details',
             link: URLs.CompanyInfoURL,
@@ -222,7 +272,6 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   responsiveSubscription: Subscription;
 
   source: BaseServerDataSource;
-  canFillPasscode: boolean;
 
   constructor(
     private accountService: AccountService,
@@ -237,111 +286,46 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     private multiAccountService: MultiAccountsService,
     private accountInfoService: AccountInfoService,
     private listTitleService: ListTitleService,
+    private passcodeService: PasscodeService,
+    private messageService: MessageService,
     baseService: BaseComponentService,
   ) {
     super(baseService);
   }
 
   onActionsInit(actions: JobActionsComponent) {
-    actions.showDetails.subscribe((id) => {
-      this.jobTabService.setSelectedTab(Tab.JobDetails);
-      this.router.navigateByUrl('pages/jobs-management/jobs/' + id.toString());
-    });
-    actions.fillPasscode.subscribe(job => {
-      const ref = this.modalService.show<FillPasscodeComponent>(FillPasscodeComponent,
-        {
-          initialState: {
-            jobId: job.id,
-            tempPasscode: job.tempPasscode,
-          },
-          class: 'passcode-model centered',
-        }
-      );
-      ref.onHide.subscribe(() => {
-        this.source.refresh();
-      });
-    });
+    actions.showDetails.subscribe(id => this._showJobDetails(id));
+  }
+
+  private _showJobDetails(id: any) {
+    this.jobTabService.setSelectedTab(Tab.JobDetails);
+    this.router.navigateByUrl('pages/jobs-management/jobs/' + id.toString());
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25,
-    };
 
-    if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
-      delete this.settings.columns.account;
+    this._initializePager();
+
+    this.settings.columns.account.title = this._getAccountTitle();
+
+    if (this.miscellaneousService.isCustomerUser()) {
+      delete this.settings.columns.maintainedBy;
+      delete this.settings.columns.installedBy;
+      if (this.multiAccountService.hasOneAccount()) {
+        delete this.settings.columns.account;
+      }
     }
 
     this.source = new BaseServerDataSource();
 
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-        return null;
-      }
-
-      if (field === 'epicorWaitingInfo') {
-        return /true/i.test(value);
-      }
-
-      if (
-        field === 'orderDate' ||
-        field === 'createDate' ||
-        field === 'shipDate' ||
-        field === 'grantedShipDate'
-      ) {
-        return new Date(value);
-      }
-
-      return value;
-    };
-
-    this.source.serviceErrorCallBack = () => {};
-
-    this.source.serviceCallBack = (params) => {
-      const jobParams = params as JobSearchParams;
-
-      if (this.isSmall) {
-        jobParams.account = this.account;
-        jobParams.jobName = this.jobName;
-        jobParams.jobNumber = this.jobNumber;
-        jobParams.epicorWaitingInfo = this.epicorWaitingInfo
-          ? /true/.test(this.epicorWaitingInfo)
-          : null;
-        jobParams.customerPONumber = this.customerPONumber;
-        jobParams.grantedShipDate = this.grantedShipDate;
-        jobParams.actualShipDate = this.actualShipDate;
-        jobParams.createDate = this.createDate;
-        jobParams.shipDate = this.shipDate;
-      }
-
-      jobParams.actualShipDate = this.mockUtcDate(jobParams.actualShipDate);
-      jobParams.grantedShipDate = this.mockUtcDate(jobParams.grantedShipDate);
-      jobParams.createDate = this.mockUtcDate(jobParams.createDate);
-      jobParams.shipDate = this.mockUtcDate(jobParams.shipDate);
-
-      if (this.miscellaneousService.isSmartriseUser()) {
-        return this.jobService.searchJobsBySmartriseUser(jobParams);
-      } else {
-        const searchParameters = jobParams as JobSearchByCustomerParams;
-        searchParameters.customerId =
-          this.multiAccountService.getSelectedAccount();
-
-        return this.jobService.searchJobsByCustomerUser(jobParams);
-      }
-    };
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+    this.source.serviceCallBack = (params) => this._getJobs(params);
 
     this.source.dataLoading.subscribe((result) => {
       this.isLoading = result;
-      setTimeout(
-        () => {
-          this.startGuidingTour();
-        },
-        this.isSmall
-          ? guidingTourGlobal.smallScreenSuspensionTimeInterval
-          : guidingTourGlobal.wideScreenSuspensionTimeInterval
-      );
+      setTimeout(() => {
+        this.startGuidingTour();
+      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
     });
 
     this.source.setSort([
@@ -349,40 +333,94 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     ], false);
   }
 
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value)) return null;
+
+    if (field === 'epicorWaitingInfo')
+      return (/true/i).test(value);
+
+    if (field === 'orderDate' || field === 'createDate' || field === 'shipDate' || field === 'grantedShipDate')
+      return new Date(value);
+
+    return value;
+  }
+
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber ||25
+    };
+  }
+
+  private _getJobs(params: any) {
+    const jobParams = params as JobSearchParams;
+
+    if (this.isSmall) {
+      this._fillFilterParameters(jobParams);
+    }
+
+    this._mockDateParameters(jobParams);
+
+    if (this.miscellaneousService.isSmartriseUser()) {
+      return this.jobService.searchJobsBySmartriseUser(jobParams);
+    } else {
+      const searchParameters = jobParams as JobSearchByCustomerParams;
+      searchParameters.customerId = this.multiAccountService.getSelectedAccount();
+      return this.jobService.searchJobsByCustomerUser(jobParams);
+    }
+  }
+
+  private _mockDateParameters(jobParams: JobSearchParams) {
+    jobParams.actualShipDate = this.mockUtcDate(jobParams.actualShipDate);
+    jobParams.grantedShipDate = this.mockUtcDate(jobParams.grantedShipDate);
+    jobParams.createDate = this.mockUtcDate(jobParams.createDate);
+    jobParams.shipDate = this.mockUtcDate(jobParams.shipDate);
+  }
+
+  private _fillFilterParameters(jobParams: JobSearchParams) {
+    jobParams.account = this.account;
+    jobParams.jobName = this.jobName;
+    jobParams.jobNumber = this.jobNumber;
+    jobParams.epicorWaitingInfo = this.epicorWaitingInfo ? /true/.test(this.epicorWaitingInfo) : null;
+    jobParams.customerPONumber = this.customerPONumber;
+    jobParams.grantedShipDate = this.grantedShipDate;
+    jobParams.actualShipDate = this.actualShipDate;
+    jobParams.createDate = this.createDate;
+    jobParams.shipDate = this.shipDate;
+    jobParams.installedBy = this.installedBy;
+    jobParams.maintainedBy = this.maintainedBy;
+  }
+
   async ngOnInit() {
-    this.canFillPasscode = this.accountService.loadedUser.roles.indexOf('SmartriseSupport') > -1;
     this.jobsListTitle = await this.listTitleService.buildTitle('Jobs');
-    this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription =
-        this.responsiveService.currentBreakpoint$.subscribe((w) => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (
-            w === ScreenBreakpoint.md ||
-            w === ScreenBreakpoint.xs ||
-            w === ScreenBreakpoint.sm
-          ) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
-          }
-        });
-    });
+    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
 
     this.yesNoList = this.populateYesNo();
   }
 
-  private _loadUserAccounts() {
-    return this.accountService.loadCurrentUser().toPromise();
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
+    this.recordsNumber = rep.numberOfRecords;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   onJobFilterChange() { }
+  
   onPagePrev(): void {
     const currentPage = this.source.getPaging().page;
     const perPage = this.source.getPaging().perPage;
@@ -417,6 +455,15 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   onReset() {
+    this._resetFilterParameters();
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.account = null;
     this.jobName = null;
     this.jobNumber = null;
@@ -427,12 +474,8 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     this.grantedShipDate = null;
     this.epicorWaitingInfo = '';
     this.actualShipDate = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
+    this.installedBy = null;
+    this.maintainedBy = null;
   }
 
   onRecordsNumberChanged(value: number) {
@@ -511,4 +554,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     this.runGuidingTour = false;
   }
 
+  private _getAccountTitle(): string {
+    return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
+  }
 }

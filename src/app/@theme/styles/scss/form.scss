@@ -29,7 +29,12 @@
           font-size: 14px;
           font-weight: 600;
           color: #8f8f8f;
+          &.label-align{
+            text-align: end ;
+            margin-top: 4px;
+           }
          }
+        
       }
       .input-item{
         width: 100%;
@@ -41,9 +46,11 @@
           width: 100% ;
           min-height: 40px ;
           outline: none ;
+          font-size: 14px;
+          font-weight: 600;
           &::placeholder{
-            font-size: 14px ;
-            font-weight: 600 ;
+            font-size: 14px;
+            font-weight: 500 ;
             color:rgba(0, 0, 0, 0.75) !important;
           }
         }
@@ -55,9 +62,16 @@
           width: 100%;
           min-height: 40px;
           outline: none;
-          &::placeholder{
+          font-size: 14px;
+          font-weight: 600;
+          button{
             font-size: 14px;
             font-weight: 600;
+            color:rgba(0, 0, 0, 0.75) !important;
+          }
+          &::placeholder{
+            font-size: 14px;
+            font-weight: 500;
             color:rgba(0, 0, 0, 0.75) !important;
           }
         }
@@ -73,9 +87,11 @@
             width: 100%;
             min-height: 40px;
             outline: none;
+            font-size: 14px;
+            font-weight: 600;
             &::placeholder{
               font-size: 14px;
-              font-weight: 600;
+              font-weight: 500;
               color:rgba(0, 0, 0, 0.75) !important;
             }
           }
@@ -88,12 +104,16 @@
             color: grey;
           }
           input{
+            font-size: 14px;
+            font-weight: 600;
             padding-left: 32px;
           }
         }
         &.phone-input-item{
           input{
             padding-left: 46px;
+            font-size: 14px;
+            font-weight: 600;
           }
         }
       }

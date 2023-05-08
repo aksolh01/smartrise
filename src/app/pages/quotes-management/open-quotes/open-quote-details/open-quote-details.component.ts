@@ -22,7 +22,8 @@ import { MultiAccountsService } from '../../../../services/multi-accounts-servic
 })
 export class OpenQuoteDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
 
-  isLoading = true;
+  accountTitle: string;
+  isLoading: boolean = true;
   openQuote: IOpenQuoteDetails = null;
   runGuidingTour: boolean;
   isSmartriseUser: boolean;
@@ -48,6 +49,10 @@ export class OpenQuoteDetailsComponent extends BaseComponent implements OnInit, 
     this.bcService.set('@quoreName', { skip: true });
   }
 
+  private _setAccountTitle() {
+    this.accountTitle = this.miscellaneousService.isSmartriseUser() ? 'Ordered By' : 'Account Name';
+  }
+
   ngOnDestroy(): void {
     this.responsiveSubscription?.unsubscribe();
     this.modalService?.hide();
@@ -56,7 +61,7 @@ export class OpenQuoteDetailsComponent extends BaseComponent implements OnInit, 
   async ngOnInit() {
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
     this.displayAccountName = this.isSmartriseUser || this.multiAccountsService.hasMultipleAccounts();
-
+    this._setAccountTitle();
     this.bcService.set('@quoteName', { skip: true });
 
     const openQuoteId = +this.route.snapshot.paramMap.get('id');

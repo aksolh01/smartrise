@@ -497,12 +497,6 @@ table {
         right: -1rem;
         top: 0;
     }
-
-    @-moz-document url-prefix() {
-        .general-1-table {
-            margin-right: 0.6rem !important;
-        }
-    }
 }
 
 @media (max-width: 768px) {
@@ -811,4 +805,14 @@ th {
 
 .hide-row {
     visibility: collapse;
+}
+
+.account-name {
+    padding-left: 0.3rem !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #e9ecef !important;
 }

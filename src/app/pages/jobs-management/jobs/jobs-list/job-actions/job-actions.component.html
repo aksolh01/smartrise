@@ -1,10 +1,4 @@
-<div class="actions">
-  <div *ngIf="canFillPasscode" tooltip="Fill Passcode" class="action-tooltip-holder">
-    <button [class]="rowData?.tempPasscode ? 'green' : ''" (click)="onFillPasscode()" data-tooltip="Fill Passcode" [disabled]="!canFillPasscode">
-      <i class="fa fa-key" disabled="true"></i>
-    </button>
-  </div>
-  
+<div class="actions text-center">  
   <div tooltip="View Details" class="action-tooltip-holder">
     <button (click)="onShowDetails()" data-tooltip="View Details" [disabled]="!canViewDetails">
       <i class="fa fa-eye" disabled="true"></i>

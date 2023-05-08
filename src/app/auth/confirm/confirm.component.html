@@ -84,7 +84,7 @@
     </form>
   </div>
   <div *ngIf="isSignedIn" class="alert alert-danger font-weight-bold m-0">
-    You need to sign out first
+    You need to Logoutfirst
   </div>
   <div *ngIf="isConfirmed && !isSignedIn">
     <div class="alert alert-success font-weight-bold m-0">
@@ -99,7 +99,7 @@
 
   <div *ngIf="isSignedIn || invalidToken">
     <ng-template [ngIf]="isSignedIn">
-      <div class="alert alert-danger font-weight-bold m-0">You need to sign out first</div>
+      <div class="alert alert-danger font-weight-bold m-0">You need to Logout first</div>
     </ng-template>
     <ng-template [ngIf]="invalidToken">
       <div class="alert alert-danger font-weight-bold m-0">This is an invalid invitation link</div>

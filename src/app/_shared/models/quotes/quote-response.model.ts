@@ -380,6 +380,10 @@ export class CarHydraulicFieldResponse implements ICarHydraulicFieldResponse {
     dualSoftStarts: boolean;
     @AutoMap()
     hydroEvolved: boolean;
+    @AutoMap()
+    v2: boolean;
+    @AutoMap()
+    v3: boolean;
 }
 
 export class CarTractionFieldReponse implements ICarTractionFieldResponse {

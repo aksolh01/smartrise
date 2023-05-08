@@ -149,11 +149,8 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25
-    };
+    
+    this._initializePager();
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
       if (this.isEmpty(value)) {
@@ -162,22 +159,35 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
 
       return value;
     };
-    this.source.serviceErrorCallBack = (error) => { };
-    this.source.serviceCallBack = (params) => {
-      if (this.isSmall) {
-        const sParam = params as AccountUsersParams;
-        sParam.firstName = this.firstName;
-        sParam.lastName = this.lastName;
-        sParam.email = this.email;
-      }
-      return this.accountService.getAccountUsers(params as AccountUsersParams);
-    };
+    this.source.serviceCallBack = (params) => this._getAccountUsers(params);
     this.source.dataLoading.subscribe(isLoading => {
       this.isLoading = isLoading;
       setTimeout(() => {
         this.startGuidingTour();
       }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
     });
+  }
+
+  private _initializePager() {
+      this.settings.pager = {
+          display: true,
+          page: 1,
+          perPage: this.recordsNumber || 25
+      };
+  }
+
+  private _getAccountUsers(params: any) {
+    const sParam = params as AccountUsersParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(sParam);
+    }
+    return this.accountService.getAccountUsers(sParam);
+  }
+
+  private _fillFilterParameters(sParam: AccountUsersParams) {
+    sParam.firstName = this.firstName;
+    sParam.lastName = this.lastName;
+    sParam.email = this.email;
   }
 
   onComponentInitFunction(instance: AccountUserActionsComponent) {
@@ -252,19 +262,19 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
     this.isLoading = false;
   }
   onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
+    const currentPage = this.source?.getPaging().page;
+    const perPage = this.source?.getPaging().perPage;
     if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
+      this.source?.setPaging(currentPage - 1, perPage);
     }
   }
 
   onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
+    const currentPage = this.source?.getPaging().page;
+    const perPage = this.source?.getPaging().perPage;
+    const totalPages = Math.ceil(this.source?.count() / perPage);
     if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
+      this.source?.setPaging(currentPage + 1, perPage);
     }
   }
   onEditUser(user: IAccountUserLookup) {
@@ -322,15 +332,20 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
   }
 
   onReset() {
-    this.firstName = '';
-    this.lastName = '';
-    this.email = '';
+    
+    this._resetFilterParameters();
 
     if (this.isSmall) {
       this.source.refreshAndGoToFirstPage();
     } else {
       this.source.resetFilters();
     }
+  }
+
+  private _resetFilterParameters() {
+    this.firstName = '';
+    this.lastName = '';
+    this.email = '';
   }
 
   onRecordsNumberChanged(value: number) {

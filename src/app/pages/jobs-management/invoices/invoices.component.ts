@@ -15,6 +15,7 @@ import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { InvoicesActionsComponent } from './invoices-actions/invoices-actions.component';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
+import { IBusinessSettings } from '../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-invoices',
@@ -146,41 +147,48 @@ export class InvoicesComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.onRecordsNumberChanged(rep.numberOfRecords);
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
-        }
-      });
-    });
+    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
       delete this.settings.columns.account;
     }
-
-    this.source.serviceErrorCallBack = (error) => { };
+    
     this.source.serviceCallBack = (param) => {
       const invoiceParams = param as InvoiceParams;
       if (this.isSmall) {
-        invoiceParams.customer = this.customer;
-        invoiceParams.jobNumber = this.jobNumber;
-        invoiceParams.jobName = this.jobName;
-        invoiceParams.amount = this.amount;
-        invoiceParams.balance = this.balance;
+        this._fillFilterParameters(invoiceParams);
       }
       return this.invoicesService.getInvoices(invoiceParams);
     };
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
+  }
+
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
+      this.recordsNumber = rep.numberOfRecords || 25;
+    this.onRecordsNumberChanged(rep.numberOfRecords);
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
+  }
+
+  private _fillFilterParameters(invoiceParams: InvoiceParams) {
+    invoiceParams.customer = this.customer;
+    invoiceParams.jobNumber = this.jobNumber;
+    invoiceParams.jobName = this.jobName;
+    invoiceParams.amount = this.amount;
+    invoiceParams.balance = this.balance;
   }
 
   onSearch() {
@@ -190,16 +198,20 @@ export class InvoicesComponent extends BaseComponent implements OnInit {
   onReset() {
     if (this.isSmall) {
 
-      this.customer = null;
-      this.jobName = null;
-      this.jobNumber = null;
-      this.amount = null;
-      this.balance = null;
+      this._resetFilterParameters();
 
       this.source.refreshAndGoToFirstPage();
     } else {
       this.source.resetFilters();
     }
+  }
+
+  private _resetFilterParameters() {
+    this.customer = null;
+    this.jobName = null;
+    this.jobNumber = null;
+    this.amount = null;
+    this.balance = null;
   }
 
   preventNonNumericalInput(e) {

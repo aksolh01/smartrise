@@ -20,7 +20,7 @@ export class BaseServerDataSource extends LocalDataSource {
   private pipes: OperatorFunction<IPagination, IPagination>[] = [];
 
   serviceCallBack: (params: BaseParams) => Observable<IPagination>;
-  serviceErrorCallBack: (error: any) => void;
+  serviceErrorCallBack: (error: any) => void = (error) => {};
   convertFilterValue: (key: string, value: string) => any;
 
   dataLoading = new EventEmitter<any>();

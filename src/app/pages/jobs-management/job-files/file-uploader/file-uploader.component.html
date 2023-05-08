@@ -33,7 +33,7 @@
         <div class="progress form-group mb-2" *ngIf="progress > 0">
           <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width.%]="progress"></div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="!hideFileDescription">
           <div class="col-12 position-relative">
             <textarea formControlName="fileDescription" name="Text1" class="form-control w-100" rows="1"
               [maxlength]="fileDescriptionMaxLength" placeholder="File Description..." [(ngModel)]="fileDescription"

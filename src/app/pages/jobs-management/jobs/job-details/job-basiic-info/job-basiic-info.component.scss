@@ -4,8 +4,12 @@
     
     .card-details-container{
         width: 100%;
+        &:first-child {
+            margin-right: 8px;
+          }
+       
         .displayData{
-            margin-top: 14px;
+            margin-top: 8px;
             .label{
                 color: #9d9a9a;
                 margin-bottom: 0px;
@@ -42,3 +46,11 @@
 //     max-height: 120px;
 //     overflow-y: auto;
 // }
+
+.activity-history-title {
+    font-size: 13.6px;
+    font-weight: bold;
+    color: #0088cc;
+    background-color: #f6f6f6;
+    padding: .375rem;
+}

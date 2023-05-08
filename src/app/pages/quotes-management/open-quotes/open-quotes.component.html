@@ -1,117 +1,127 @@
-<nb-card joyrideStep="openQuoteFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Open Quotes' : null"
-    [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">
+<div class="pagination-info">
+    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+    -
+    {{
+    Math.min(
+    source.count(),
+    (source.getPaging().page - 1) * settings.pager.perPage +
+    settings.pager.perPage
+    )
+    }}
+    of {{ source.count() }}
 
-    <ng-template #firstCustomContent>
-        <div class='joyride-custom-content'>
-            <div style="margin-bottom: 5px;">
-                View a list of open quotes associated with your account.<br />
-            </div>
-            <div>
-                <i class="fas fa-eye guiding-tour-action"></i>View Open Quote Details
-            </div>
-        </div>
-    </ng-template>
+    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+</div>
+<div class="table-container">
+    <nb-card joyrideStep="openQuoteFirstStep" stepPosition="center"
+        [title]="runGuidingTour === true ? 'Open Quotes' : null" [stepContent]="firstCustomContent"
+        (done)="onFinishingTour()" [doneTemplate]="doneButton">
 
-    <!-- <nb-card-header class="default-card-header">
-        <div class="row">
-            <div class="col-md">
-                <h2 class="card-title">Open Quotes</h2>
-            </div>
-            <div class="col-md text-right">
-            </div>
-        </div>
-    </nb-card-header> -->
-    <nb-card-body>
-
-        <ng-template [ngIf]="isSmall === false">
-
-            <div class="row mb-3">
-                <div class="col d-flex justfiy-content-start align-items-center">
-                    <!-- <button (click)="onReset()" class="btn btn-primary">
-                        <i class="fas fa-redo-alt"></i>
-                        Reset Filters
-                    </button> -->
+        <ng-template #firstCustomContent>
+            <div class='joyride-custom-content'>
+                <div style="margin-bottom: 5px;">
+                    View a list of open quotes associated with your account.<br />
                 </div>
-                <div class="col-auto d-flex justfiy-content-start align-items-center">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
-                        (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page> -->
+                <div>
+                    <i class="fas fa-eye guiding-tour-action"></i>View Open Quote Details
                 </div>
             </div>
         </ng-template>
+        <nb-card-body>
 
-        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-            <div filters>
-                <div class="filter-control" *ngIf="settings?.columns?.account">
-                    <input type="text" maxlength="255" placeholder="Account" class="form-control"
-                        [(ngModel)]="account" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Job Name" class="form-control"
-                        [(ngModel)]="jobName" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Quote Number" class="form-control"
-                            (keypress)="onKeyPress($event)"
-                            [(ngModel)]="quoteNumber" />
-                </div>
-                <div class="filter-control">
-                    <input type="number" (keypress)="preventNonNumericalInput($event)" min="1" maxlength="10"
-                        placeholder="Cars" class="form-control" [(ngModel)]="numberOfCars" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Controller Type" class="form-control"
-                        [(ngModel)]="controllerType" />
-                </div>
-                <div class="filter-control">
-                    <input type="number" min="0" (keypress)="preventNonNumericalInput($event)" maxlength="10"
-                        placeholder="Amount" class="form-control" [(ngModel)]="amount" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Created By" class="form-control"
-                        [(ngModel)]="createdBy" />
-                </div>
-                <div class="filter-control">
-                    <ngx-cp-datepicker memberName="Created Date" displayPlaceholder="Created Date"
-                        [(selectedDate)]="quoteCreated"></ngx-cp-datepicker>
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Contact" class="form-control"
-                        [(ngModel)]="contact" />
-                </div>
-                <div class="filter-control">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+            <ng-template [ngIf]="isSmall === false">
+
+                <div class="row mb-3">
+                    <div class="col d-flex justfiy-content-start align-items-center">
+                        <!-- <button (click)="onReset()" class="btn btn-primary">
+                        <i class="fas fa-redo-alt"></i>
+                        Reset Filters
+                    </button> -->
+                    </div>
+                    <div class="col-auto d-flex justfiy-content-start align-items-center">
+                        <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
                         (changed)="onRecordsNumberChanged($event)">
                     </ngx-smr-records-per-page> -->
+                    </div>
                 </div>
-            </div>
-            <div actions>
-                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-                    <i class="fas fa-search"></i>
-                    Search
-                </button>
-                <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+            </ng-template>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div class="input-item"*ngIf="settings?.columns?.account">
+                                <input type="text" maxlength="255" [placeholder]="settings?.columns?.account?.title"
+                                    [(ngModel)]="account" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Job Name" 
+                                    [(ngModel)]="jobName" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Quote Number" 
+                                    (keypress)="onKeyPress($event)" [(ngModel)]="quoteNumber" />
+                            </div>
+                            <div class="input-item">
+                                <input type="number" (keypress)="preventNonNumericalInput($event)" min="1"
+                                    maxlength="10" placeholder="Cars"  [(ngModel)]="numberOfCars" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Controller Type"
+                                    [(ngModel)]="controllerType" />
+                            </div>
+                            <div class="input-item">
+                                <input type="number" min="0" (keypress)="preventNonNumericalInput($event)"
+                                    maxlength="10" placeholder="Amount"  [(ngModel)]="amount" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Created By" 
+                                    [(ngModel)]="createdBy" />
+                            </div>
+                            <div class="input-item">
+                                <ngx-cp-datepicker memberName="Created Date" displayPlaceholder="Created Date"
+                                    [(selectedDate)]="quoteCreated"></ngx-cp-datepicker>
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Contact" 
+                                    [(ngModel)]="contact" />
+                            </div>
+                            <div class="input-item">
+                                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                        (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div actions class="form-action">
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                        <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
                     <i class="fas fa-redo-alt"></i>
                     Reset Filters
                 </button> -->
+                    </div>
+                </ngx-smr-mobile-filters>
             </div>
-        </ngx-smr-mobile-filters>
 
-        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
-                    <i class="fas fa-filter"></i>
-                </button>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                    <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table  #table [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
+                </div>
             </div>
-            <div class="col-sm-12" *ngIf="source">
-                <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
-                    [source]="source">
-                </ng2-smart-table>
-            </div>
-        </div>
 
-    </nb-card-body>
-</nb-card>
+        </nb-card-body>
+    </nb-card>
+</div>
 
 <ng-template #doneButton>
     <button class="btn btn-primary">

@@ -133,19 +133,7 @@ export class JobsListComponent extends BaseComponent implements OnInit {
     this.settingService.getBusinessSettings().subscribe(rep => {
       this.recordsNumber = rep.numberOfRecords || 25;
       this.onRecordsNumberChanged(rep.numberOfRecords);
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
-        }
-      });
+      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
     });
     this.source.serviceCallBack = (param) => {
       const predictiveJobBaseParams = param as PredictiveJobBaseParams;
@@ -157,6 +145,20 @@ export class JobsListComponent extends BaseComponent implements OnInit {
       }
       return this.jobService.getPredictiveMaintenanceJobs(predictiveJobBaseParams);
     };
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   onActionsInit(actions: JobsListActionsComponent) {

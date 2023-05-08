@@ -109,7 +109,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.accountService.logoutFromAllTabs();
+    this.miscellaneousService.openConfirmModal('Are you sure you want to logout?',
+      () => this.accountService.logoutFromAllTabs());
   }
 
   ngOnDestroy() {

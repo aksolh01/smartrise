@@ -20,7 +20,7 @@ import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { CustomerUserActionsComponent } from './customer-user-actions/customer-user-actions.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { JoyrideService } from 'ngx-joyride';
 import * as guidingTourGlobal from '../../guiding.tour.global';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
@@ -33,6 +33,9 @@ import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { InfoDialogData } from '../../../_shared/components/info-dialog/info-dialog-data';
 import { InfoDialogComponent } from '../../../_shared/components/info-dialog/info-dialog.component';
 import { ListTitleService } from '../../../services/list-title.service';
+import { BaseParams } from '../../../_shared/models/baseParams';
+import { IPagination } from '../../../_shared/models/pagination';
+import { IBusinessSettings } from '../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-customer-users',
@@ -157,54 +160,59 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
   }
 
   initializeSource() {
+    this._initializePager();
+    this.source = new BaseServerDataSource();
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+
+    this.source.serviceCallBack = (params) => this._getCustomerUsers(params);
+    this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
+  }
+
+  private _onDataLoading(isLoading: any) {
+    this.isLoading = isLoading;
+
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
+
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value))
+      return null;
+
+    return value;
+  }
+
+  private _getCustomerUsers(params: BaseParams): Observable<IPagination> {
+    const sParam = params as CustomerUsersParams;
+    if (this.isSmall) {
+      this._fillFilterParameters(sParam);
+    }
+
+    const searchParams = params as CustomerUsersParams;
+    searchParams.customerId = this.multiAccountService.getSelectedAccount();
+
+    return this.accountService.getCustomerUsersByCustomerAdmin(searchParams);
+  }
+
+  private _initializePager() {
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber || 25
+        perPage: this.recordsNumber || 25
     };
-    this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value))
-        return null;
+  }
 
-      return value;
-    };
-    this.source.serviceErrorCallBack = (error) => { };
-
-    this.source.serviceCallBack = (params) => {
-
-      if (this.isSmall) {
-        const sParam = params as CustomerUsersParams;
-        sParam.firstName = this.firstName;
-        sParam.lastName = this.lastName;
-        sParam.email = this.email;
-      }
-
-      const searchParams = params as CustomerUsersParams
-      searchParams.customerId = this.multiAccountService.getSelectedAccount();
-
-      return this.accountService.getCustomerUsersByCustomerAdmin(searchParams);
-
-    };
-    this.source.dataLoading.subscribe(isLoading => {
-      this.isLoading = isLoading;
-
-      setTimeout(() => {
-        this.startGuidingTour();
-      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
-    });
+  private _fillFilterParameters(sParam: CustomerUsersParams) {
+    sParam.firstName = this.firstName;
+    sParam.lastName = this.lastName;
+    sParam.email = this.email;
   }
 
   onComponentInitFunction(instance: CustomerUserActionsComponent) {
-    instance.editUser.subscribe(user => {
-      this.onEditUser(user);
-    });
-    instance.resetPassword.subscribe(user => {
-      this.onResetPassword(user);
-    });
-    instance.resendInvitation.subscribe(user => {
-      this.onResendInvitation(user);
-    });
+    instance.editUser.subscribe(user => this.onEditUser(user));
+    instance.resetPassword.subscribe(user => this.onResetPassword(user));
+    instance.resendInvitation.subscribe(user => this.onResendInvitation(user));
   }
 
   onResendInvitation(user: IGetCustomerUser) {
@@ -234,28 +242,27 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
   async ngOnInit() {
     this.title = await this.listTitleService.buildTitle('Account Users');
     this.enableCreateCustomerUser();
-    this.settingService.getBusinessSettings().subscribe((rep) => {
+    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
+  }
+
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
       this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription =
-        this.responsiveService.currentBreakpoint$.subscribe((w) => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (
-            w === ScreenBreakpoint.md ||
-            w === ScreenBreakpoint.xs ||
-            w === ScreenBreakpoint.sm
-          ) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
-          }
-        });
-    });
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
 
   async enableCreateCustomerUser() {
@@ -315,15 +322,19 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
   }
 
   onReset() {
-    this.firstName = '';
-    this.lastName = '';
-    this.email = '';
+    this._resetFilterParameters();
 
     if (this.isSmall) {
       this.source.refreshAndGoToFirstPage();
     } else {
       this.source.resetFilters();
     }
+  }
+
+  private _resetFilterParameters() {
+    this.firstName = '';
+    this.lastName = '';
+    this.email = '';
   }
 
   onRecordsNumberChanged(value: number) {

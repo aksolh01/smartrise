@@ -14,6 +14,8 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
 
     private _redirectToDashboard: boolean;
 
+    private _dictionary = new Map<(url: string) => boolean, () => Promise<boolean> | boolean>();
+
     constructor(
         private router: Router,
         private permissionService: PermissionService,
@@ -22,11 +24,68 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
         private multiAccountsService: MultiAccountsService,
         private tokenService: TokenService
     ) {
+        this._initializeDictionary();
         multiAccountsService.accountSelectionChanged$.subscribe(accountId => {
             this._redirectToDashboard = true;
         });
     }
 
+    private _initializeDictionary() {
+        this._dictionary.set((url) => url === URLs.EditProfile, () => true);
+        this._dictionary.set((url) => url.startsWith('/pages/predictive-maintenance') || url.startsWith('/pages/not-found'), () => true);
+        this._dictionary.set((url) => url === URLs.HomeURL, () => true);
+        this._dictionary.set((url) => url === URLs.BusinessSettingsURL, async () => await this._hasPermissionAsync(PERMISSIONS.BusinessSettingsDisplay));
+        this._dictionary.set((url) => url === URLs.JobsURL, async () => await this._hasPermissionAsync(PERMISSIONS.JobsListing));
+        this._dictionary.set((url) => url === URLs.GeneratePasscode, async () => await this._hasPermissionAsync(PERMISSIONS.GeneratePasscode));
+        this._dictionary.set((url) => url.startsWith('/pages/jobs-management/jobs/') ||
+            url.startsWith('/pages/jobs-management/shipments/') ||
+            url.startsWith('/pages/jobs-management/job-files/'), async () => await this._hasPermissionAsync(PERMISSIONS.JobsListing) && await this._hasPermissionAsync(PERMISSIONS.JobsDetail));
+        this._dictionary.set((url) => url === URLs.SmartriseUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.SmartriseUsersListing));
+        this._dictionary.set((url) => url === '/pages/settings-management/smartrise-users/create-smartrise-user', async () => await this._hasPermissionAsync(PERMISSIONS.SmartriseUsersListing) &&
+            await this._hasPermissionAsync(PERMISSIONS.SmartriseUsersCreate));
+        this._dictionary.set((url) => url.startsWith('/pages/settings-management/smartrise-users/'), async () => await this._hasPermissionAsync(PERMISSIONS.SmartriseUsersListing) &&
+            await this._hasPermissionAsync(PERMISSIONS.SmartriseUsersUpdate));
+        this._dictionary.set((url) => url === URLs.CustomerUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.CustomerUsersListing));
+        this._dictionary.set((url) => url === URLs.CreateCustomerUserURL, async () => await this._hasPermissionAsync(PERMISSIONS.CustomerUsersListing) &&
+            await this._hasPermissionAsync(PERMISSIONS.CustomerUsersCreate));
+        this._dictionary.set((url) => url === URLs.CustomerUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.CustomerUsersListing));
+        this._dictionary.set((url) => this._match(url, `${URLs.CustomerUsersURL}\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}`), async () => await this._hasPermissionAsync(PERMISSIONS.CustomerUsersListing) &&
+            await this._hasPermissionAsync(PERMISSIONS.CustomerUsersUpdate));
+        this._dictionary.set((url) => url === URLs.SystemSettingsURL, async () => await this._hasPermissionAsync(PERMISSIONS.SystemSettingsDisplay));
+        this._dictionary.set((url) => url.startsWith(URLs.CompanyInfoURL), async () => await this._hasPermissionAsync(PERMISSIONS.CompanyInfoDisplay));
+        this._dictionary.set((url) => url === URLs.TrackingURL, async () => await this._hasPermissionAsync(PERMISSIONS.TrackingListing));
+        this._dictionary.set((url) => url === URLs.ViewResourcesURL, async () => await this._hasPermissionAsync(PERMISSIONS.ViewResourcesList));
+        this._dictionary.set((url) => url === URLs.ViewCustomersURL, async () => await this._hasPermissionAsync(PERMISSIONS.CustomerListing));
+        this._dictionary.set((url) => url === URLs.ViewJobFilesURL, async () => await this._hasPermissionAsync(PERMISSIONS.ManageJobFiles));
+        this._dictionary.set((url) => url === URLs.ViewInvoicesURL, () => true);
+        this._dictionary.set((url) => url === URLs.ViewPaymentsURL, () => true);
+        this._dictionary.set((url) => url === URLs.ViewStatementOfAccountURL, async () => await this._hasPermissionAsync(PERMISSIONS.StatementOfAccount));
+        this._dictionary.set((url) => this._match(url, `${URLs.ViewStatementOfAccountURL}/[0-9]+`), async () => await this._hasPermissionAsync(PERMISSIONS.StatementOfAccount));
+        this._dictionary.set((url) => url === URLs.ViewBillingInvoicesURL, async () => await this._hasPermissionAsync(PERMISSIONS.InvoicesListing));
+        this._dictionary.set((url) => this._match(url, `${URLs.ViewBillingInvoicesURL}/[0-9]+`), async () => await this._hasPermissionAsync(PERMISSIONS.InvoicesListing));
+        this._dictionary.set((url) => url === URLs.ViewBankAccountsURL, async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts));
+        this._dictionary.set((url) => url === URLs.CreateBankAccountURL, async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts) && !this.miscellaneousService.isImpersonateMode());
+        this._dictionary.set((url) => url.startsWith(URLs.EditBankAccountURL), async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts) && !this.miscellaneousService.isImpersonateMode());
+        this._dictionary.set((url) => this._match(url, `${URLs.ViewBankAccountsURL}/[0-9]+`), async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts));
+        this._dictionary.set((url) => url === '/pages/customers-management/customers/createaccount', async () => await this._hasPermissionAsync(PERMISSIONS.CustomerListing) &&
+            await this._hasPermissionAsync(PERMISSIONS.AdministratorAccountCreate));
+        this._dictionary.set((url) => url.startsWith('/pages/customers-management/customers/'), async () => await this._hasPermissionAsync(PERMISSIONS.CustomerListing) &&
+            await this._hasPermissionAsync(PERMISSIONS.CustomerDetail));
+        this._dictionary.set((url) => url === URLs.ViewUserActivities, async () => await this._hasPermissionAsync(PERMISSIONS.UserActivitiesListing));
+        this._dictionary.set((url) => this._compareOpenQuoteUrl(url, URLs.ViewOpenQuotesURL), async () => await this._hasPermissionAsync(PERMISSIONS.OpenQuotesListing));
+        this._dictionary.set((url) => url === URLs.CreateOnlineQuote, async () => await this._canCreateOnlineQuote());
+        this._dictionary.set((url) => url.startsWith(URLs.CustomerOnlineQuote) && url.endsWith('view'), async () => await this._hasPermissionAsync(PERMISSIONS.ShowOnlineQuoteDetails));
+        this._dictionary.set((url) => url.startsWith(URLs.CustomerOnlineQuote) && !url.endsWith('view'), async () => await this._customerCanAccessOnlineQuote());
+        this._dictionary.set((url) => url.startsWith(URLs.ViewOpenQuotesURL), async () => await this._hasPermissionAsync(PERMISSIONS.OpenQuoteDetails));
+        this._dictionary.set((url) => url.startsWith(URLs.SmartriseOnlineQuote), async () => await this._hasPermissionAsync(PERMISSIONS.OpenQuoteDetails));
+        this._dictionary.set((url) => url === URLs.ViewAccountUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.AccountUsersListing));
+        this._dictionary.set((url) => url === URLs.CreateAccountUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.AccountUsersCreate));
+        this._dictionary.set((url) => url.startsWith(URLs.ViewAccountUsersURL) && url !== URLs.ViewAccountUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.AccountUsersUpdate));
+    }
+
+    private _match(url: string, pattern: string) {
+        return new RegExp(`^${pattern}$`).test(url);
+    }
 
     async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
 
@@ -77,101 +136,13 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
     private async _checkByRoute(url: string): Promise<boolean> {
         let authenticated = false;
 
-        if (
-            url.startsWith('/pages/predictive-maintenance') ||
-            url.startsWith('/pages/not-found')
-        ) {
-            return true;
-        }
-
-        if (url === URLs.HomeURL) {
-            authenticated = true;
-        }
-        else if (url === URLs.EditProfile) {
-            authenticated = true;
-        } else if (url === URLs.BusinessSettingsURL) {
-            authenticated = await this._hasPermissionAsync(PERMISSIONS.BusinessSettingsDisplay);
-        } else if (url === URLs.JobsURL) {
-            authenticated = await this._hasPermissionAsync(PERMISSIONS.JobsListing);
-        } else if (
-            url.startsWith('/pages/jobs-management/jobs/') ||
-            url.startsWith('/pages/jobs-management/shipments/') ||
-            url.startsWith('/pages/jobs-management/job-files/')
-        ) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.JobsListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.JobsDetail);
-        } else if (url === URLs.SmartriseUsersURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.SmartriseUsersListing);
-        } else if (url === '/pages/settings-management/smartrise-users/create-smartrise-user') {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.SmartriseUsersListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.SmartriseUsersCreate);
-        } else if (url.startsWith('/pages/settings-management/smartrise-users/')) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.SmartriseUsersListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.SmartriseUsersUpdate);
-        } else if (url === URLs.CustomerUsersURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerUsersListing);
-        } else if (url === '/pages/settings-management/customer-users/create-customer-user') {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerUsersListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerUsersCreate);
-        } else if (url.startsWith('/pages/settings-management/customer-users/')) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerUsersListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerUsersUpdate);
-        } else if (url === URLs.SystemSettingsURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.SystemSettingsDisplay);
-        } else if (url === URLs.CompanyInfoURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CompanyInfoDisplay);
-        } else if (url === URLs.TrackingURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.TrackingListing);
-        } else if (url === URLs.ViewResourcesURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ViewResourcesList);
-        } else if (url === URLs.ViewCustomersURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerListing);
-        } else if (url === URLs.ViewJobFilesURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ManageJobFiles);
-        } else if (url.startsWith(URLs.ViewInvoicesURL)) {
-            authenticated = true;
-        } //await this.permissionService.hasPermission(PERMISSIONS.ViewInvoicesList);
-        else if (url.startsWith(URLs.ViewPaymentsURL)) {
-            authenticated = true;
-        } //await this.permissionService.hasPermission(PERMISSIONS.ViewInvoicesList);
-        else if (url.startsWith(URLs.ViewStatementOfAccountURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.StatementOfAccount);
-        } else if (url.startsWith(URLs.ViewBillingInvoicesURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.InvoicesListing);
-        } else if (url === URLs.ViewBankAccountsURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ManageBankAccounts);
-        } else if (url === URLs.CreateBankAccountURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ManageBankAccounts) && !this.miscellaneousService.isImpersonateMode();
-        } else if (url.startsWith(URLs.EditBankAccountURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ManageBankAccounts) && !this.miscellaneousService.isImpersonateMode();
-        } else if (url.startsWith(URLs.ViewBankAccountsURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ManageBankAccounts);
-        } else if (url === '/pages/customers-management/customers/createaccount') {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.AdministratorAccountCreate);
-        } else if (url.startsWith('/pages/customers-management/customers/')) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerListing) &&
-                await this.permissionService.hasPermissionAsync(PERMISSIONS.CustomerDetail);
-        } else if (url === URLs.ViewUserActivities) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.UserActivitiesListing);
-        } else if (this._compareOpenQuoteUrl(url, URLs.ViewOpenQuotesURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.OpenQuotesListing);
-        } else if (url === URLs.CreateOnlineQuote) {
-            authenticated = await this._canCreateOnlineQuote();
-        } else if (url.startsWith(URLs.CustomerOnlineQuote) && url.endsWith('view')) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.ShowOnlineQuoteDetails);
-        } else if (url.startsWith(URLs.CustomerOnlineQuote)) {
-            authenticated = await this._customerCanAccessOnlineQuote();
-        } else if (url.startsWith(URLs.ViewOpenQuotesURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.OpenQuoteDetails);
-        } else if (url.startsWith(URLs.SmartriseOnlineQuote)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.OpenQuoteDetails);
-        } else if (url === URLs.ViewAccountUsersURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.AccountUsersListing);
-        } else if (url === URLs.CreateAccountUsersURL) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.AccountUsersCreate);
-        } else if (url.startsWith(URLs.ViewAccountUsersURL)) {
-            authenticated = await this.permissionService.hasPermissionAsync(PERMISSIONS.AccountUsersUpdate);
+        for (const [checkUrl, validate] of this._dictionary.entries()) {
+            if (checkUrl(url)) {
+                authenticated = await validate();
+                if (authenticated) {
+                    break;
+                }
+            }
         }
 
         if (!authenticated) {

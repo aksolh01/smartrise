@@ -18,10 +18,8 @@ export class JobActionsComponent extends BaseComponent implements ViewCell, OnIn
   rowData: any;
 
   canViewDetails = true;
-  canFillPasscode = true;
 
   showDetails = new EventEmitter<any>();
-  fillPasscode = new EventEmitter<any>();
 
   constructor(
     baseService: BaseComponentService,
@@ -34,7 +32,6 @@ export class JobActionsComponent extends BaseComponent implements ViewCell, OnIn
 
   ngOnInit(): void {
     this.enableViewDetails();
-    this.canFillPasscode = this.accountService.loadedUser.roles.indexOf('SmartriseSupport') > -1;
   }
 
   enableViewDetails() {
@@ -43,9 +40,5 @@ export class JobActionsComponent extends BaseComponent implements ViewCell, OnIn
 
   onShowDetails() {
     this.showDetails.emit(this.rowData.id);
-  }
-
-  onFillPasscode() {
-    this.fillPasscode.emit(this.rowData);
   }
 }

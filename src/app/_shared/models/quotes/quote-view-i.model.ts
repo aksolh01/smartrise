@@ -26,6 +26,7 @@ export interface IQuoteView {
     hideHydraulic: boolean;
     hideC4RiserBoards: boolean;
     cars: ICarView[];
+    isCanadaOntario(): boolean;
 }
 
 export interface IQuoteCustomerView {
@@ -205,6 +206,10 @@ export class ICarHydraulicFieldView {
     hydroEvolvedAvailable: boolean;
     hide: boolean;
     car: ICarView;
+    v2: boolean;
+    v2Available: boolean;
+    v3: boolean;
+    v3Available: boolean;
 }
 
 export interface ICarTractionFieldView {

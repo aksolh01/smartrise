@@ -15,7 +15,7 @@
             <div class="col-lg-6">
 
                 <div *ngIf="displayAccountName" class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">{{accountTitle}}</label>
                     <div class="col-12 col-lg-8">
                         <div class="form-control-plaintext">
                             {{ quote?.createdByAccount }}
@@ -278,6 +278,8 @@
                     <thead>
                         <tr>
                             <th></th>
+                            <th>V2</th>
+                            <th>V3</th>
                             <th>Hydro Evolved</th>
                             <th>Starter</th>
                             <th>Motor Leads</th>
@@ -291,6 +293,12 @@
                         <tr *ngFor="let car of getHydraulicCars()">
                             <td class="text-center">{{ car?.group?.description }} - {{
                                 car.carLabel }}</td>
+                            <td class="text-center">
+                                <ngx-yes-no [value]="car.carHydraulicField.v2"></ngx-yes-no>
+                            </td>
+                            <td class="text-center">
+                                <ngx-yes-no [value]="car.carHydraulicField.v3"></ngx-yes-no>
+                            </td>
                             <td class="text-center">
                                 <ngx-yes-no [value]="car.carHydraulicField.hydroEvolved"></ngx-yes-no>
                             </td>

@@ -21,6 +21,7 @@ import { StorageConstants } from '../../../_shared/constants';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { HLinkTableCellComponent } from '../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
+import { IBusinessSettings } from '../../../_shared/models/settings';
 
 @Component({
   selector: 'ngx-customers-list',
@@ -158,59 +159,62 @@ export class CustomersListComponent extends BaseComponent implements OnInit, OnD
   }
 
   initializeSource() {
+    this._initializePager();
+    this.source = new BaseServerDataSource();
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+    this.source.serviceCallBack = (params) => this._getCustomers(params);
+    this.source.dataLoading.subscribe((isLoading) => this._onDataLoading(isLoading));
+  }
+
+  private _onDataLoading(isLoading: any) {
+    this.isLoading = isLoading;
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
+
+  private _convertFilterValue(field: string, value: string): any {
+    if (this.isEmpty(value)) return null;
+
+    if (field === 'lastLogin') {
+      return new Date(value);
+    }
+    return value;
+  }
+
+  private _getCustomers(params: any) {
+    // params.pageSize = this.recordsNumber;
+    const customerParams = params as CustomerParams;
+    customerParams.hasLogin = this.hasLogin;
+    customerParams.favoriteCustomer = this.isFavorite;
+    if (this.isSmall) {
+      this._fillFilterParameters(customerParams);
+    }
+    customerParams.lastLogin = this.mockUtcDate(customerParams.lastLogin);
+    return this.customerService.getCustomers(customerParams);
+  }
+
+  private _initializePager() {
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber || 25
+        perPage: this.recordsNumber || 25
     };
-    this.source = new BaseServerDataSource();
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-return null;
-}
+  }
 
-      if (field === 'lastLogin') {
-        return new Date(value);
-      }
-      return value;
-    };
-    this.source.serviceErrorCallBack = (error) => { };
-    this.source.serviceCallBack = (params) => {
-      // params.pageSize = this.recordsNumber;
-      const customerParams = params as CustomerParams;
-      customerParams.hasLogin = this.hasLogin;
-      customerParams.favoriteCustomer = this.isFavorite;
-      if (this.isSmall) {
-        customerParams.name = this.name;
-        customerParams.epicorCustomerId = this.epicorCustomerId;
-        customerParams.phone = this.phone;
-        customerParams.fax = this.fax;
-        customerParams.lastLogin = this.lastLogin;
-      }
-      customerParams.lastLogin = this.mockUtcDate(customerParams.lastLogin);
-      return this.customerService.getCustomers(customerParams);
-    };
-    this.source.dataLoading.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-      setTimeout(() => {
-        this.startGuidingTour();
-      }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
-    });
+  private _fillFilterParameters(customerParams: CustomerParams) {
+    customerParams.name = this.name;
+    customerParams.epicorCustomerId = this.epicorCustomerId;
+    customerParams.phone = this.phone;
+    customerParams.fax = this.fax;
+    customerParams.lastLogin = this.lastLogin;
   }
 
   onActionsInit(actions: CustomerActionsComponent) {
-    actions.showDetails.subscribe((row) => {
-      this.onShowDetails(row);
-    });
-    actions.manageUsers.subscribe((row) => {
-      this.manageUsers(row);
-    });
-    actions.addToFavorite.subscribe((row) => {
-      this.onAddToFavorite(row);
-    });
-    actions.removeFromFavorite.subscribe((row) => {
-      this.onRemoveFromFavorite(row);
-    });
+    actions.showDetails.subscribe((row) => this.onShowDetails(row));
+    actions.manageUsers.subscribe((row) => this.manageUsers(row));
+    actions.addToFavorite.subscribe((row) => this.onAddToFavorite(row));
+    actions.removeFromFavorite.subscribe((row) => this.onRemoveFromFavorite(row));
   }
 
   manageUsers(customer: ICustomerRecord) {
@@ -233,27 +237,29 @@ return null;
 
   ngOnInit(): void {
     // this.recordsNumber = null;
-    this.settingService.getBusinessSettings().subscribe((rep) => {
+    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
+  }
+
+  private _onBusinessSettingsReady(rep: IBusinessSettings) {
       this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe((w) => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (
-          w === ScreenBreakpoint.md ||
-          w === ScreenBreakpoint.xs ||
-          w === ScreenBreakpoint.sm
-        ) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
-        }
-      });
-    });
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe((w) => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md ||
+      w === ScreenBreakpoint.xs ||
+      w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
   }
   onPagePrev(): void {
     const currentPage = this.source.getPaging().page;
@@ -277,6 +283,16 @@ return null;
   }
 
   onReset() {
+    this._resetFilterParameters();
+
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.hasLogin = null;
     this.isFavorite = null;
     this.epicorCustomerId = null;
@@ -284,12 +300,6 @@ return null;
     this.phone = null;
     this.fax = null;
     this.lastLogin = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
   }
 
   onShowDetails(customer: ICustomerRecord) {

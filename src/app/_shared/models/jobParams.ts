@@ -11,6 +11,8 @@ export class JobSearchParams extends BaseParams {
   shipDate?: Date;
   customerPONumber: string;
   actualShipDate?: Date;
+  installedBy: string;
+  maintainedBy: string;
 }
 
 export class JobSearchByCustomerParams extends JobSearchParams {

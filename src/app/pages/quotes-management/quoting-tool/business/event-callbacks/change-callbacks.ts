@@ -1,8 +1,7 @@
-/* eslint-disable */
-import { EventArg, InstanceView } from '../types';
-import { BusinessContext } from '../business-context';
-import { updateGroupRedundancy, updateInterfaceToDestinationDispatch, updateV2V3HallCallSecurityCat5, updateMADFixture, updateV2Traction, updateMX, selectDriveModelDatasource, updateC4Availability, updateGovernorResetBox, updateISOTransfer, updateHydroEvolved, updateMotorVolts, updateBiddingDateAvailability, selectCablesDatasource, updateCarTitle, updateHydraulicFieldVisibilityOnQuoteLevel, updateTractionFieldVisibilityOnQuoteLevel, updateC4RiserBoardsVisibilityOnQuoteLevel, updateConsultantNameAvailability, updateTravelerCable, updateHoistwayCable, updateNewMotorFieldsAvailability, updateTravelerLength, updateHoistwayLength, updateLandingSystemLengthOfTravel, updateMotorHP, updateMotorFLA, updateCapacity, updateSpeed, updateEstimatedMotorHP, updateAssumeStatus, updateAIParking, updateMachineRoomMonitoring, fillCarDefaultValuesBasedOnControllerType } from '../business-core/business-rules';
-import { ICarTractionFieldView, ICarView, IQuoteView } from '../../../../../_shared/models/quotes/quote-view-i.model';
+import { EventArg, InstanceView } from "../types";
+import { BusinessContext } from "../business-context";
+import { updateGroupRedundancy, updateInterfaceToDestinationDispatch, updateV2V3HallCallSecurityCat5, updateMADFixture, updateV2Traction, updateMX, selectDriveModelDatasource, updateC4Availability, updateGovernorResetBox, updateISOTransfer, updateHydroEvolved, updateMotorVolts, updateBiddingDateAvailability, selectCablesDatasource, updateCarTitle, updateHydraulicFieldVisibilityOnQuoteLevel, updateTractionFieldVisibilityOnQuoteLevel, updateC4RiserBoardsVisibilityOnQuoteLevel, updateConsultantNameAvailability, updateTravelerCable, updateHoistwayCable, updateNewMotorFieldsAvailability, updateTravelerLength, updateHoistwayLength, updateLandingSystemLengthOfTravel, updateMotorHP, updateMotorFLA, updateCapacity, updateSpeed, updateEstimatedMotorHP, updateAssumeStatus, updateAIParking, fillCarDefaultValuesBasedOnControllerType, updateV2Hydraulic, updateV3Hydraulic } from "../business-core/business-rules";
+import { ICarTractionFieldView, ICarView, IQuoteView } from "../../../../../_shared/models/quotes/quote-view-i.model";
 
 export function reevaluateGroupDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
 
@@ -47,8 +46,6 @@ export function reevaluateControllerTypeDependents(ctx: BusinessContext, car: IC
     selectDriveModelDatasource(ctx.lookupData, car.carTractionField);
     selectCablesDatasource(ctx.lookupData, car.carSmartriseFeature);
 
-    updateMachineRoomMonitoring(car.carManagementSystem);
-
     updateAIParking(car.carManagementSystem);
 
     updateMADFixture(car.carTractionField);
@@ -73,6 +70,8 @@ export function reevaluateControllerTypeDependents(ctx: BusinessContext, car: IC
     car.carTractionField.isoTransformerAvailable = true;
     updateISOTransfer(car.carTractionField);
     updateHydroEvolved(car.carHydraulicField);
+    updateV2Hydraulic(car.carHydraulicField);
+    updateV3Hydraulic(car.carHydraulicField);
 
     // updateV2V3HallCallSecurityCat5({
     //     c4: instance.carTractionField.c4,
@@ -300,6 +299,7 @@ export function reevaluateMotorRPM(ctx: BusinessContext, traction: ICarTractionF
 
 export function reevaluateV2Traction(ctx: BusinessContext, traction: ICarTractionFieldView, arg: EventArg) {
     selectCablesDatasource(ctx.lookupData, traction.car.carSmartriseFeature);
+    updateAIParking(traction.car.carManagementSystem);
 }
 
 export function reevaluateMotorVoltsDependents(ctx: BusinessContext, car: ICarView, arg: EventArg) {
@@ -344,11 +344,22 @@ export function reevaluateC4Dependents(ctx: BusinessContext, instance: InstanceV
     ctx.actions.revalidateField(instance.car.carSmartriseFeature, 'hoistwayCable');
 }
 
+export function reevaluateV2HydrualicDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
+    updateV2V3HallCallSecurityCat5(instance.car.carProvision)
+}
+
+export function reevaluateV3HydrualicDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
+    updateV2V3HallCallSecurityCat5(instance.car.carProvision)
+}
+
 export function reevaluateJobLocationDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
     ctx.quote.cars.forEach(car => {
         updateMADFixture(car.carTractionField);
         updateV2Traction(car.carTractionField);
-
+        updateV2Hydraulic(car.carHydraulicField);
+        updateV3Hydraulic(car.carHydraulicField);
+        updateHydroEvolved(car.carHydraulicField);
+        updateV2V3HallCallSecurityCat5(car.carProvision);
         ctx.actions.revalidateField(car.carTractionField, 'madFixtures');
         ctx.actions.revalidateField(car.carTractionField, 'v2Traction');
         ctx.actions.revalidateField(car.carHydraulicField, 'v3');

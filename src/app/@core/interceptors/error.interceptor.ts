@@ -49,28 +49,16 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.messageService.showErrorMessage(response?.error?.message);
             }
           } else if (response.status === 401) {
-            if (this.router.url.indexOf('auth/login') === -1) {
+            if (!this._isLoginUrl()) {
               this.isLoggedOut.next();
             }
             this.accountService.logout(true, () => {
-              if (this.router.url.indexOf('auth/login') > -1 && response?.error?.message) {
+              if (this._isLoginUrl() && response?.error?.message) {
                 this.messageService.showErrorMessage(response?.error?.message);
               } else {
-                const sub = this.router.events.subscribe(e => {
-                  if (e instanceof NavigationEnd) {
-                    if (response?.error?.message !== null && response?.error?.message !== undefined && this._canShowMessage(req.url)) {
-                      this.messageService.showErrorMessage(response?.error?.message);
-                    }
-                    sub.unsubscribe();
-                  }
-                });
+                this._subscribeNavigationEnd(response, req);
               }
-              const isSessionExpiry = this._isSessionExpiry(req.url);
-              this.router.navigateByUrl('/auth/login', {
-                state: {
-                  sessionExpired: isSessionExpiry
-                }
-              });
+              this._navigateToLoginPage(req);
             });
           } else if (response.status === 403) {
             if (this._canShowMessage(req.url)) {
@@ -97,6 +85,30 @@ export class ErrorInterceptor implements HttpInterceptor {
     ).pipe(takeUntil(this.isLoggedOut.asObservable()));
   }
 
+  private _navigateToLoginPage(req: HttpRequest<any>) {
+    const isSessionExpiry = this._isSessionExpiry(req.url);
+    this.router.navigateByUrl('/auth/login', {
+      state: {
+        sessionExpired: isSessionExpiry
+      }
+    });
+  }
+
+  private _subscribeNavigationEnd(response, req) {
+    const sub = this.router.events.subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        if (response?.error?.message !== null && response?.error?.message !== undefined && this._canShowMessage(req.url)) {
+          this.messageService.showErrorMessage(response?.error?.message);
+        }
+        sub.unsubscribe();
+      }
+    });
+  }
+
+  private _isLoginUrl() {
+    return this.router.url.indexOf('auth/login') > -1;
+  }
+
   private _isSessionExpiry(url: string) {
     const lenth = environment.apiUrl.length;
     const pUrl = url.substring(lenth, url.length);
@@ -109,7 +121,8 @@ export class ErrorInterceptor implements HttpInterceptor {
       'jobs\/[0-9]+',
       'quotes\/[0-9]+',
       'quotes\/get\/[0-9]+',
-      'openquotes\/[0-9]+'
+      'openquotes\/[0-9]+',
+      'account\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\/profile\/customeruser'
     ];
     for (const f of hideSessionExpiry) {
       const reg = new RegExp(`^${f}$`, 'i');

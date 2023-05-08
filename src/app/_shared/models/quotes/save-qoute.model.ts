@@ -261,6 +261,10 @@ export class SaveCarHydraulicFieldPayload implements ISaveCarHydraulicFieldPaylo
     hydroEvolved: boolean;
     @AutoMap()
     dualSoftStarts: boolean;
+    @AutoMap()
+    v2: boolean;
+    @AutoMap()
+    v3: boolean;
 }
 
 export class SaveCarTractionFieldPayload implements ISaveCarTractionFieldPayload {

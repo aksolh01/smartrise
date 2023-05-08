@@ -3,6 +3,7 @@ import { IEnumValue } from './enumValue.model';
 import { IShipment } from './shipment';
 
 export interface IJob {
+  primaryCustomerId: number;
   id: number;
   jobNumber: string;
   createDate: Date;
@@ -23,12 +24,15 @@ export interface IRecentJob {
 }
 
 export interface IJob {
+  primaryCustomerId: number;
   id: number;
   jobNumber: string;
   customerPONumber: string;
   jobName: string;
   customerId: number;
   customerName: string;
+  installedBy: string;
+  maintainedBy: string;
   createDate: Date;
   orderDate: Date;
   shipDate: Date;

@@ -1,13 +1,13 @@
-import { QuoteView, CarView, CarTractionFieldView, CarSmartriseFeatureView, CarHydraulicFieldView, CarDoorFeatureView } from '../../../../../_shared/models/quotes/quote-view.model';
-import { BuisnessBuilder } from '../builder/business-builder';
-import { WorkingMode } from '../types';
-import { BusinessContext } from '../business-context';
-import { BusinessProfile } from '../business-profile';
-import { isLessThanToday, hoistwayLengthRequired, landingSystemLengthOfTravelRequired, nemaLocationRequired, isBetween1And8, validateStopsIfInRangeBasedOnControllerType, validateOpeningsIfInRangeBasedOnControllerType, isBetween100And600, isBetween10And1400, isBetween500And20000, consultantNameRequired, travelerLengthRequired, alwaysRequired, hasSpace, validateMotorHPIfInRangeBasedOnControllerType, validateZeroInCaseOfDCController } from '../business-core/business-validations';
-import { reevaluateMainLineVoltageDependentsOnAssume, canAssumeMotorVolts, canAssumeSpeedFPM, canAssumeCapacity, canAssumeMotorHP, canAssumeHoistwayLength, canAssumeTravelerLength, canAssumeLandingSystemLengthOfTravel, canAssumeFullLoadAmps } from '../event-callbacks/assume-callbacks';
-import { reevaluateJobStatusDependents, reevaluateJobLocationDependents, reevaluateUnknownConsultantDependents, reevaluateGroupDependents, reevaluateCarLabelDependents, reevaluateControllerTypeDependents, reevaluateMainLineVoltageDependents, reevaluateMotorLocationDependents, reevaluateMotorTypeDependents, reevaluateMotorVoltsDependents, reevaluateTravelerCableDependents, reevaluateHoistwayCableDependents, reevaluateNemaRatingDependents, reevaluateNemaLocationDependents, reevaluateHydroEvolvedDependents, reevaluateC4Dependents, reevaluateNewMotorProvidedBySmartrise, reevaluateStopsDependents, reevaluateSpeedDependents, reevaluateCapacityDependents, reevaluateMotorHPDependents, reevaluateMotorRPM, reevaluateV2Traction } from '../event-callbacks/change-callbacks';
-import { initializeQuoteStatuses } from '../event-callbacks/initialize-callbacks';
-import { validateV2TractionPreConditions, validateC4PreConditions } from '../event-callbacks/changing-callbacks';
+import { QuoteView, CarView, CarTractionFieldView, CarSmartriseFeatureView, CarHydraulicFieldView, CarDoorFeatureView } from "../../../../../_shared/models/quotes/quote-view.model";
+import { BuisnessBuilder } from "../builder/business-builder";
+import { WorkingMode } from "../types";
+import { BusinessContext } from "../business-context";
+import { BusinessProfile } from "../business-profile";
+import { isLessThanToday, hoistwayLengthRequired, landingSystemLengthOfTravelRequired, nemaLocationRequired, isBetween1And8, validateStopsIfInRangeBasedOnControllerType, validateOpeningsIfInRangeBasedOnControllerType, isBetween100And600, isBetween10And1400, isBetween500And20000, consultantNameRequired, travelerLengthRequired, alwaysRequired, hasSpace, validateMotorHPIfInRangeBasedOnControllerType, validateZeroInCaseOfDCController } from "../business-core/business-validations";
+import { reevaluateMainLineVoltageDependentsOnAssume, canAssumeMotorVolts, canAssumeSpeedFPM, canAssumeCapacity, canAssumeMotorHP, canAssumeHoistwayLength, canAssumeTravelerLength, canAssumeLandingSystemLengthOfTravel, canAssumeFullLoadAmps } from "../event-callbacks/assume-callbacks";
+import { reevaluateJobStatusDependents, reevaluateJobLocationDependents, reevaluateUnknownConsultantDependents, reevaluateGroupDependents, reevaluateCarLabelDependents, reevaluateControllerTypeDependents, reevaluateMainLineVoltageDependents, reevaluateMotorLocationDependents, reevaluateMotorTypeDependents, reevaluateMotorVoltsDependents, reevaluateTravelerCableDependents, reevaluateHoistwayCableDependents, reevaluateNemaRatingDependents, reevaluateNemaLocationDependents, reevaluateHydroEvolvedDependents, reevaluateC4Dependents, reevaluateNewMotorProvidedBySmartrise, reevaluateStopsDependents, reevaluateSpeedDependents, reevaluateCapacityDependents, reevaluateMotorHPDependents, reevaluateMotorRPM, reevaluateV2Traction, reevaluateV2HydrualicDependents } from "../event-callbacks/change-callbacks";
+import { initializeQuoteStatuses } from "../event-callbacks/initialize-callbacks";
+import { validateV2TractionPreConditions, validateC4PreConditions, validateV2HydraulicPreConditions, validateHydroEvolvedPreConditions } from "../event-callbacks/changing-callbacks";
 
 export class DefaultProfile extends BusinessProfile {
 
@@ -33,7 +33,11 @@ export class DefaultProfile extends BusinessProfile {
             .onPrecondition(CarTractionFieldView, 'v2Traction')
             .call(validateV2TractionPreConditions)
             .onPrecondition(CarTractionFieldView, 'c4')
-            .call(validateC4PreConditions);
+            .call(validateC4PreConditions)
+            .onPrecondition(CarHydraulicFieldView, 'v2')
+            .call(validateV2HydraulicPreConditions)
+            .onPrecondition(CarHydraulicFieldView, 'hydroEvolved')
+            .call(validateHydroEvolvedPreConditions);
     }
 
     private _buildOnChanges() {
@@ -83,7 +87,11 @@ export class DefaultProfile extends BusinessProfile {
             .onChange(CarTractionFieldView, 'c4')
             .call(reevaluateC4Dependents)
             .onChange(CarHydraulicFieldView, 'hydroEvolved')
-            .call(reevaluateHydroEvolvedDependents);
+            .call(reevaluateHydroEvolvedDependents)
+            .onChange(CarHydraulicFieldView, 'v2')
+            .call(reevaluateV2HydrualicDependents)
+            .onChange(CarHydraulicFieldView, 'v3')
+            .call(reevaluateV2HydrualicDependents);
     }
 
     private _buildOnValidates() {

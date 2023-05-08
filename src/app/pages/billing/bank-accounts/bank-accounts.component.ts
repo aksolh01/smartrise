@@ -1,31 +1,26 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
-import { map, Subscription, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { BankAccountService } from '../../../services/bank-account.service';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MessageService } from '../../../services/message.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { ResponsiveService } from '../../../services/responsive.service';
 import { SettingService } from '../../../services/setting.service';
+import * as guidingTourGlobal from '../../guiding.tour.global';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
 import { CpListFilterComponent } from '../../../_shared/components/table-filters/cp-list-filter.component';
 import { CommonValues, PERMISSIONS, StorageConstants, URLs } from '../../../_shared/constants';
 import { BaseServerDataSource } from '../../../_shared/datasources/base-server.datasource';
 import { BankAccountParams } from '../../../_shared/models/bank-account.model';
-import { IEnumValue } from '../../../_shared/models/enumValue.model';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponent } from '../../base.component';
-import * as guidingTourGlobal from '../../guiding.tour.global';
 import { BankAccountActionsComponent } from './bank-account-actions/bank-account-actions.component';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { VerifyBankAccountComponent } from './verify-bank-account/verify-bank-account.component';
+import { IEnumValue } from '../../../_shared/models/enumValue.model';
 import { BankAccountLast4CellComponent } from './bank-account-last4-cell/bank-account-last4-cell.component';
 import { BankAccountStatusCellComponent } from './bank-account-status-cell/bank-account-status-cell.component';
 import { SelectBankAccountVerificationComponent } from '../select-bank-account-verification/select-bank-account-verification.component';
@@ -34,31 +29,32 @@ import { AccountService } from '../../../services/account.service';
 import { allowOnlyNumbers } from '../../../_shared/functions';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../services/account-info.service';
-import { VerifyBankAccountComponent } from './verify-bank-account/verify-bank-account.component';
+import { map, tap } from 'rxjs/operators';
+import { IUserAccountLookup } from '../../../_shared/models/IUser';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { IBusinessSettings } from '../../../_shared/models/settings';
-import { IUserAccountLookup } from '../../../_shared/models/IUser';
 
 
 @Component({
   selector: 'ngx-bank-accounts',
   templateUrl: './bank-accounts.component.html',
   styleUrls: ['./bank-accounts.component.scss'],
+  providers: [BsModalService]
 })
-export class BankAccountsComponent extends BaseComponent implements OnInit, OnDestroy {
-  @ViewChild('search') search: ElementRef;
+export class BankAccountsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   recordsNumber: number;
-
+  @ViewChild('search') search: ElementRef;
+  public Math = Math;
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
-  isLoading = true;
-  isSmartriseUser = false;
+  isLoading: boolean = true;
+  isSmartriseUser: boolean = false;
   isSmall?: boolean = null;
-  showFilters = false;
-  runGuidingTour = true;
-  canCreateBankAccount = true;
-  isImpersonate = true;
-
+  showFilters: boolean = false;
+  runGuidingTour: boolean = true;
+  canCreateBankAccount: boolean = true;
+  isImpersonate: boolean = true;
+  disablePage: boolean = false;
   yesNoList: { value?: boolean; title: string }[];
 
   get accountSelected(): boolean {
@@ -107,8 +103,10 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           instance.setOptions({
             breakWord: true,
             link: 'pages/billing/bank-accounts',
-            paramExps: ['id'],
-            tooltip: 'View Bank Account Details',
+            paramExps: [
+              'id'
+            ],
+            tooltip: 'View Bank Account Details'
           });
         },
         show: false,
@@ -116,9 +114,9 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           type: 'custom',
           component: CpFilterComponent,
           config: {
-            allowOnlyNumbers: true,
-          },
-        },
+            allowOnlyNumbers: true
+          }
+        }
       },
       accountHolderName: {
         title: 'Name on Account',
@@ -131,7 +129,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
         filter: {
           type: 'custom',
           component: CpFilterComponent,
-        },
+        }
       },
       bankName: {
         title: 'Bank Name',
@@ -144,7 +142,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
         filter: {
           type: 'custom',
           component: CpFilterComponent,
-        },
+        }
       },
       accountType: {
         title: 'Account Type',
@@ -160,7 +158,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           config: {
             selectText: CommonValues.ShowAll,
           },
-        },
+        }
       },
       status: {
         title: 'Status',
@@ -177,7 +175,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           config: {
             selectText: CommonValues.ShowAll,
           },
-        },
+        }
       },
       actionsCol: {
         filter: false,
@@ -190,10 +188,11 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     },
   };
 
+
   responsiveSubscription: Subscription;
 
   source: BaseServerDataSource;
-  accountTypes: { value: any; title: string }[] = [];
+  accountTypes: { value: any, title: string }[] = [];
   accountStatuses: IEnumValue[];
 
   account: string;
@@ -226,6 +225,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     return accountId == null ? null : +accountId;
   }
 
+
   constructor(
     private router: Router,
     private messageService: MessageService,
@@ -247,71 +247,60 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
 
   ngAfterViewInit(): void {
     if (this._accountIdSelected()) {
-      //this.onAccountSelected(this.accountId);
+      this.onAccountSelected(this.accountId);
     }
   }
 
   onActionsInit(actions: BankAccountActionsComponent) {
-    actions.showDetails.subscribe((id) => {
+    actions.showDetails.subscribe(id => {
       this.router.navigateByUrl('pages/billing/bank-accounts/' + id.toString());
     });
-    actions.setDefault.subscribe((id) => {
-      this.miscellaneousService.openConfirmModal(
-        'Are you sure you want to set this bank account as default?',
-        () => {
-          actions.disableSetDefault();
-          this.bankAccountService.setDefault(id).subscribe(
-            () => {
-              this.messageService.showSuccessMessage(
-                'The account has been successfully set to default.'
-              );
-              actions.enableSetDefault();
-              this.source.refresh();
-            },
-            () => {
-              actions.enableSetDefault();
-              this.source.refresh();
-            }
-          );
-        }
-      );
-    });
-    actions.verifyAccount.subscribe((id) => {
-      actions.disableVerifyAccount();
-      this.bankAccountService.preVerifyBankAccount(id).subscribe(
-        (r) => {
-          const attempts = r.failedAttempts;
-          const last4 = r.last4;
-          const isLoading = false;
-          let showAttempts = false;
-          if (attempts > 0 && attempts < 3) {
-            showAttempts = true;
-          }
-          actions.enableVerifyAccount();
-          const ref = this.modelService.show<VerifyBankAccountComponent>(
-            VerifyBankAccountComponent,
-            {
-              initialState: {
-                attempts,
-                id,
-                last4,
-                isLoading,
-                showAttempts,
-              },
-            }
-          );
-
-          ref.onHide.subscribe(() => {
-            this.source.refresh();
-          });
-        },
-        () => {
-          actions.enableVerifyAccount();
-        }
-      );
-    });
-    actions.edit.subscribe((e) => {
+    actions.setDefault.subscribe(id => this._onSetDefault(actions, id));
+    actions.verifyAccount.subscribe(id => this._onVerifyAccount(actions, id));
+    actions.edit.subscribe(e => {
       this.router.navigateByUrl(`pages/billing/bank-accounts/edit/${e.id}`);
+    });
+  }
+  private _onVerifyAccount(actions: BankAccountActionsComponent, id: any) {
+    actions.disableVerifyAccount();
+    const preVerifyResult = this.bankAccountService.preVerifyBankAccount(id).subscribe(r => {
+      const attempts = r.failedAttempts;
+      const last4 = r.last4;
+      const isLoading = false;
+      let showAttempts = false;
+      if (attempts > 0 && attempts < 3) {
+        showAttempts = true;
+      }
+      actions.enableVerifyAccount();
+      const ref = this.modelService.show<VerifyBankAccountComponent>(VerifyBankAccountComponent, {
+        initialState: {
+          attempts: attempts,
+          id: id,
+          last4: last4,
+          isLoading: isLoading,
+          showAttempts: showAttempts,
+        }
+      });
+
+      ref.onHide.subscribe(e => {
+        this.source.refresh();
+      });
+    }, error => {
+      actions.enableVerifyAccount();
+    });
+  }
+
+  private _onSetDefault(actions: BankAccountActionsComponent, id: any,) {
+    this.miscellaneousService.openConfirmModal('Are you sure you want to set this bank account as default?', () => {
+      actions.disableSetDefault();
+      this.bankAccountService.setDefault(id).subscribe(r => {
+        this.messageService.showSuccessMessage('The account has been successfully set to default.');
+        actions.enableSetDefault();
+        this.source.refresh();
+      }, error => {
+        actions.enableSetDefault();
+        this.source.refresh();
+      });
     });
   }
 
@@ -320,16 +309,10 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   initializeSource() {
-    this.settings.pager = {
-      display: true,
-      page: 1,
-      perPage: this.recordsNumber || 25,
-    };
 
-    this.settings.columns.status.filter.config.list = this.accountStatuses.map(
-      (x) => ({ title: x.description, value: x.value })
-    );
-    this.settings.columns.accountType.filter.config.list = this.accountTypes;
+    this._initializePager();
+    this._fillTableFilterLists();
+
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
@@ -338,57 +321,80 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
 
     this.source = new BaseServerDataSource();
 
-    this.source.convertFilterValue = (field, value) => {
-      if (this.isEmpty(value)) {
-        return null;
-      }
-      return value;
-    };
+    this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
+    this.source.serviceCallBack = (params) => this._getBankAccounts(params);
+    this.source.dataLoading.subscribe((result) => this._onDataLoading(result));
 
-    this.source.serviceErrorCallBack = () => {};
+    this.source.setSort([
+      { field: 'last4', direction: 'asc' }  // primary sort
+    ], false);
+  }
 
-    this.source.serviceCallBack = (params) => {
+  private _onDataLoading(result: any) {
+    this.isLoading = result;
+    setTimeout(() => {
+      this.startGuidingTour();
+    }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
+  }
 
-      if (this.hasMultipleAccounts && !this.accountSelected) {
-        return this.emptyData();
-      }
+  private _convertFilterValue(field: string, value: string) {
+    if (this.isEmpty(value))
+      return null;
+    return value;
+  }
+  onPagePrev(): void {
+    const currentPage = this.source?.getPaging().page;
+    const perPage = this.source?.getPaging().perPage;
+    if (currentPage > 1) {
+      this.source?.setPaging(currentPage - 1, perPage);
+    }
+  }
 
-      const bankAccountParams = params as BankAccountParams;
+  onPageNext(): void {
+    const currentPage = this.source?.getPaging().page;
+    const perPage = this.source?.getPaging().perPage;
+    const totalPages = Math.ceil(this.source?.count() / perPage);
+    if (currentPage < totalPages) {
+      this.source?.setPaging(currentPage + 1, perPage);
+    }
+  }
+  private _getBankAccounts(params: any) {
+    if (this.hasMultipleAccounts && !this.accountSelected) {
+      return this.emptyData();
+    }
 
-      if (this.isSmall) {
-        bankAccountParams.account = this.account;
-        bankAccountParams.accountType = this.isEmpty(this.accountType) ? null : this.accountType;
-        bankAccountParams.accountHolderName = this.accountHolderName;
-        bankAccountParams.bankName = this.bankName;
-        bankAccountParams.status = this.isEmpty(this.status)
-          ? null
-          : this.status;
-        bankAccountParams.last4 = this.last4;
-      }
+    const bankAccountParams = params as BankAccountParams;
 
-      bankAccountParams.customerId =
-        this.multiAccountService.getSelectedAccount();
-      return this.bankAccountService.getBankAccounts(bankAccountParams);
-    };
+    if (this.isSmall) {
+      this._fillFilterParameters(bankAccountParams);
+    }
 
-    this.source.dataLoading.subscribe((result) => {
-      this.isLoading = result;
-      setTimeout(
-        () => {
-          this.startGuidingTour();
-        },
-        this.isSmall
-          ? guidingTourGlobal.smallScreenSuspensionTimeInterval
-          : guidingTourGlobal.wideScreenSuspensionTimeInterval
-      );
+    bankAccountParams.customerId = this.accountId;
+    return this.bankAccountService.getBankAccounts(bankAccountParams);
+  }
+
+  private _fillTableFilterLists() {
+    this.settings.columns.status.filter.config.list = this.accountStatuses.map(x => {
+      return { title: x.description, value: x.value };
     });
+    this.settings.columns.accountType.filter.config.list = this.accountTypes;
+  }
 
-    this.source.setSort(
-      [
-        { field: 'last4', direction: 'asc' }, // primary sort
-      ],
-      false
-    );
+  private _initializePager() {
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber
+    };
+  }
+
+  private _fillFilterParameters(bankAccountParams: BankAccountParams) {
+    bankAccountParams.account = this.account;
+    bankAccountParams.accountType = this.isEmpty(this.accountType) ? null : this.accountType;
+    bankAccountParams.accountHolderName = this.accountHolderName;
+    bankAccountParams.bankName = this.bankName;
+    bankAccountParams.status = this.isEmpty(this.status) ? null : this.status;
+    bankAccountParams.last4 = this.last4;
   }
 
   async ngOnInit() {
@@ -410,82 +416,99 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
 
   private async _init() {
     this.isImpersonate = this.miscellaneousService.isImpersonateMode();
-    this.settings.columns.actionsCol.title = this.isImpersonate
-      ? 'View Details'
-      : 'Actions';
+    this.settings.columns.actionsCol.title = this.isImpersonate ? 'View Details' : 'Actions';
     this.accountTypes = this._getAccountTypes();
-    this.accountStatuses = await this.bankAccountService
-      .getAccountStatuses()
-      .toPromise();
+    this.accountStatuses = await this.bankAccountService.getAccountStatuses().toPromise();
 
-    this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription =
-        this.responsiveService.currentBreakpoint$.subscribe((w) => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (
-            w === ScreenBreakpoint.md ||
-            w === ScreenBreakpoint.xs ||
-            w === ScreenBreakpoint.sm
-          ) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
-          }
-        });
-    });
+    this.settingService.getBusinessSettings().subscribe((bs) => this._onBusinessSettingResponseReady(bs));
 
-    this.plaidSuccessSub = this.plaidService.success.subscribe((r) => {
-      this.isLoading = true;
+    this.plaidSuccessSub = this.plaidService.success.subscribe(r => this._onPlaidSuccess(r));
+    this.plaidExitSub = this.plaidService.exit.subscribe(r => this.accountService.checkSession());
 
-      this.bankAccountService
-        .addAccountsInfo({
-          publicToken: r.public_token,
-          customerId: this.multiAccountService.getSelectedAccount(),
-          accounts: r.metadata.accounts,
-        })
-        .subscribe(
-          () => {
-            this.source.refresh();
-            this.messageService.showSuccessMessage(
-              r.metadata.accounts.length === 1
-                ? 'Bank Account has been added successfully'
-                : 'Bank Accounts have been added successfully'
-            );
-          },
-          () => {
-            this.isLoading = false;
-          }
-        );
-    });
-
-    this.plaidExitSub = this.plaidService.exit.subscribe(() => {
-      this.accountService.checkSession();
-    });
-
-    const createBankAccount =
-      this.route.snapshot.queryParamMap.get('createBankAccount');
-    if (createBankAccount) {
+    const createBankAccount = this.route.snapshot.queryParamMap.get('createBankAccount');
+    if (createBankAccount && this._hasValidAccountIDParameter()) {
       this.onCreateBankAccount();
     }
 
     this.yesNoList = this.populateYesNo();
 
-    const receivedRedirectUri =
-      this.route.snapshot.queryParamMap.get('oauth_state_id');
+    const receivedRedirectUri = this.route.snapshot.queryParamMap.get('oauth_state_id');
 
     if (receivedRedirectUri != null) {
       this.plaidService.reInitializePlaidLink();
     }
   }
 
-  onJobFilterChange() {}
+  private _hasValidAccountIDParameter() {
+    const accountId = +this.route.snapshot.queryParamMap.get('accountId');
+    if (!isNaN(accountId) && accountId > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  private _onPlaidSuccess(result) {
+
+    this.isLoading = true;
+
+    this.bankAccountService.addAccountsInfo({
+      publicToken: result.public_token,
+      customerId: this.accountId,
+      accounts: result.metadata.accounts
+    }).subscribe(
+      () => this._onSuccessAddAccountsInfo(result),
+      (error) => this._onFailedAddAccountsInfo()
+    );
+  }
+
+  private _onFailedAddAccountsInfo() {
+    this.isLoading = false;
+    this._isCreatingBankAccount = false;
+  }
+
+  private _onSuccessAddAccountsInfo(result: any) {
+    this.source.refresh();
+    this.messageService.showSuccessMessage(
+      result.metadata.accounts.length === 1
+        ? 'Bank Account has been added successfully'
+        : 'Bank Accounts have been added successfully');
+    this._isCreatingBankAccount = false;
+  }
+
+  private _onBusinessSettingResponseReady(businessSettings: IBusinessSettings) {
+    this.recordsNumber = businessSettings.numberOfRecords;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+  }
+
+  private _onScreenSizeChanged(w: ScreenBreakpoint) {
+    if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+      if (this.isSmall !== false) {
+        this.onReset();
+        this.isSmall = false;
+      }
+    } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+      if (this.isSmall !== true) {
+        this.onReset();
+        this.isSmall = true;
+      }
+    }
+  }
+
+  private _getAccountTypes(): { value: any; title: string }[] {
+    return [
+      {
+        value: 'Individual',
+        title: 'Individual'
+      },
+      {
+        value: 'Company',
+        title: 'Company'
+      }
+    ];
+  }
+
+  onJobFilterChange() { }
 
   onSearch() {
     this.source.setPage(1, false);
@@ -505,7 +528,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   onCreateLink() {
-    this.bankAccountService.createLink().subscribe((e) => {
+    this.bankAccountService.createLink().subscribe(e => {
       this.sbavRef.content.loading.next(false);
       this.sbavRef.hide();
       this.plaidService.initializePlaidLink(e.linkToken);
@@ -513,6 +536,16 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   onReset() {
+    this._resetFilterParameters();
+
+    if (this.isSmall) {
+      this.source.refreshAndGoToFirstPage();
+    } else {
+      this.source.resetFilters();
+    }
+  }
+
+  private _resetFilterParameters() {
     this.account = null;
     this.accountType = '';
     this.accountHolderName = null;
@@ -520,12 +553,6 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     this.status = '';
     this.last4 = null;
     this.isDefault = null;
-
-    if (this.isSmall) {
-      this.source.refreshAndGoToFirstPage();
-    } else {
-      this.source.resetFilters();
-    }
   }
 
   onRecordsNumberChanged(value: number) {
@@ -582,8 +609,8 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           customTexts: {
             prev: guidingTourGlobal.guidingTourPrevButtonText,
             next: guidingTourGlobal.guidingTourNextButtonText,
-            done: guidingTourGlobal.guidingTourDoneButtonText,
-          },
+            done: guidingTourGlobal.guidingTourDoneButtonText
+          }
         });
       } else {
         this.joyrideService.startTour({
@@ -592,10 +619,11 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           customTexts: {
             prev: guidingTourGlobal.guidingTourPrevButtonText,
             next: guidingTourGlobal.guidingTourNextButtonText,
-            done: guidingTourGlobal.guidingTourDoneButtonText,
-          },
+            done: guidingTourGlobal.guidingTourDoneButtonText
+          }
         });
       }
+
     }
   }
 
@@ -603,6 +631,10 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     if (this.joyrideService && this.joyrideService.isTourInProgress()) {
       this.joyrideService.closeTour();
     }
+  }
+
+  ngAfterContentInit(): void {
+
   }
 
   onFinishingTour() {
@@ -676,18 +708,5 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
           this.accounts = this._getAuthorizedAccounts(user.accounts);
         })
       ).toPromise();
-  }
-
-  private _getAccountTypes(): { value: any; title: string }[] {
-    return [
-      {
-        value: 'Individual',
-        title: 'Individual',
-      },
-      {
-        value: 'Company',
-        title: 'Company',
-      },
-    ];
   }
 }

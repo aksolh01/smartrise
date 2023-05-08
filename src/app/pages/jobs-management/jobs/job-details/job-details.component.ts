@@ -9,7 +9,9 @@ import { Tab } from '../../../../_shared/models/jobTabs';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { MiscellaneousService } from '../../../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
-import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
+import { forkJoin } from 'rxjs';
+import { PasscodeService } from '../../../../services/passcode.service';
+import { IPasscode } from '../../../../_shared/models/passcode.model';
 
 @Component({
   selector: 'ngx-job-details',
@@ -28,7 +30,7 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
   jobTabSelected = false;
   renderJobResources = false;
   prevUrl: string;
-  responsiveService: any;
+  passcode: IPasscode;
 
   constructor(
     private jobService: JobService,
@@ -38,6 +40,7 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
     private router: Router,
     private miscellaneousService: MiscellaneousService,
     private multiAccountsService: MultiAccountsService,
+    private passcodeService: PasscodeService,
     baseService: BaseComponentService,
   ) {
     super(baseService);
@@ -80,47 +83,54 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
       return;
     }
 
-    this.jobService
-      .getjob(jobId)
-      .subscribe(
-        (response) => {
+    const getJob = this.jobService.getjob(jobId);
+    const getPasscode = this.passcodeService.getPasscode(jobId);
 
-          if (this.miscellaneousService.isCustomerUser()) {
-            const selectedAccount = this.multiAccountsService.getSelectedAccount();
+    forkJoin([getJob, getPasscode]).subscribe(([job, passcode]) =>
+      this._jobDetailsDataReady(job, passcode));
+  }
 
-            if (selectedAccount != null && selectedAccount !== response.customerId) {
-              this.router.navigateByUrl('pages/jobs-management/jobs');
-              return;
-            }
-          }
+  private _jobDetailsDataReady(job: IJob, passcode: IPasscode) {
+    if (this.miscellaneousService.isCustomerUser()) {
+      const selectedAccount = this.multiAccountsService.getSelectedAccount();
+      
+      if (selectedAccount != null && selectedAccount !== job.primaryCustomerId) {
+        this.router.navigateByUrl('pages/jobs-management/jobs');
+        return;
+      }
+    }
 
-          this.job = response;
+    this.job = job;
+    this.passcode = passcode;
+    //this.passcode.passcode = this._isEmpty(this.passcode.passcode) ? '&nbsp;' : this.passcode.passcode;
 
-          this.job.shipments.forEach(shipment => {
-            shipment.shippingTrackingActions.forEach(action => {
-              let actionDateStr = this.formatDateTime(action.actionDate, 'MM/dd/yyyy HH:mm');
+    this._formatShipments();
 
-              if (shipment.shipmentActionsTimeZone === 'Local') {
-                actionDateStr = `${actionDateStr} (Local)`;
-              }
+    this.bcService.set('@jobNumber', this.job.jobNumber === '' ? 'N/A' : this.job.jobNumber);
+    this.bcService.set('@jobNumber', { skip: false });
+    this.isLoading = false;
+  }
 
-              action.actionDateStr = actionDateStr;
-            });
-          });
+  private _isEmpty(passcode: string) {
+    if (passcode) {
+      return false;
+    }
 
-          this.bcService.set('@jobNumber', this.job.jobNumber === '' ? 'N/A' : this.job.jobNumber);
-          this.bcService.set('@jobNumber', { skip: false });
-          
-          this.isLoading = false;
-          this.renderJobResources = true;
-        },
-        
-        (error) => {
-          this.isLoading = false;
-         
-          this.router.navigateByUrl('pages/jobs-management/jobs');
+    return true;
+  }
+
+  private _formatShipments() {
+    this.job.shipments.forEach(shipment => {
+      shipment.shippingTrackingActions.forEach(action => {
+        let actionDateStr = this.formatDateTime(action.actionDate, 'MM/dd/yyyy HH:mm');
+
+        if (shipment.shipmentActionsTimeZone === 'Local') {
+          actionDateStr = `${actionDateStr} (Local)`;
         }
-      );
+
+        action.actionDateStr = actionDateStr;
+      });
+    });
   }
 
   onChangeTab($event) {
