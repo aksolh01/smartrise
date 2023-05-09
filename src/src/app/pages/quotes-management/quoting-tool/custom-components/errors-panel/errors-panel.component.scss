@@ -1,0 +1,85 @@
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+li:first-child {
+    margin-top: 0;
+}
+
+li:last-child {
+    margin-bottom: 0;
+}
+
+.errors-list {
+    position: absolute;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    z-index: 9999;
+    border: 1px gray solid;
+    top: 2rem;
+    left: 1rem;
+}
+
+.errors-list li {
+    color: red;
+}
+
+nb-accordion-item-header {
+    position: relative;
+    background-color: #f6f6f6;
+}
+
+::ng-deep ngx-errors-panel nb-accordion-item-header.accordion-item-header-collapsed nb-icon {
+    transform: rotate(180deg) !important;
+}
+
+::ng-deep ngx-errors-panel nb-accordion-item-header.accordion-item-header-expanded nb-icon {
+    transform: rotate(0deg) !important;
+}
+
+::ng-deep ngx-errors-panel table,
+::ng-deep ngx-errors-panel table th,
+::ng-deep ngx-errors-panel table td {
+    border: none !important;
+}
+
+::ng-deep ngx-errors-panel nb-accordion-item-body .item-body {
+    padding: 0 !important;
+    max-height: 20rem !important;
+}
+
+::ng-deep ngx-errors-panel ng2-smart-table thead th {
+    text-align: center;
+    padding: 0.35rem 1rem !important;
+    padding-bottom: 0 !important;
+    padding-top: 0.75rem !important;
+}
+
+::ng-deep ngx-errors-panel ng2-smart-table tbody td {
+    padding: 0.35rem 1rem !important;
+    padding-bottom: 0.75rem !important;
+    padding-top: 0.75rem !important;
+}
+::ng-deep ngx-errors-panel ng2-smart-table ngx-hlink-table-cell a:not([href]):not([tabindex]) {
+    color: #0088cc !important;
+}
+
+.warning {
+    color: #dc3545;
+}
+
+$disabled-gray: rgb(179, 179, 179);
+
+::ng-deep ngx-quoting-tool ngx-errors-panel .disable {
+    
+    pointer-events: none;
+    
+}

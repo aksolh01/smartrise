@@ -1,0 +1,9 @@
+<button #btn [type]="type" [disabled]="disabled || isLoading" [class]="class" (click)="onClick($event)">
+    <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+            <ng-content></ng-content>
+        </div>
+        <!-- <div *ngIf="isLoading">HI</div> -->
+        <div *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm" role="status"></div>
+    </div>
+</button>

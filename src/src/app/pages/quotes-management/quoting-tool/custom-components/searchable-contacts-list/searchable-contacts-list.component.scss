@@ -1,0 +1,32 @@
+.hide {
+    opacity: 0;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+    max-height: 10rem;
+    width: 100%;
+    overflow-y: auto;
+}
+
+li.option {
+    cursor: pointer;
+}
+
+li.option:hover {
+    font-weight: bold;
+    color: #0088cc;
+}
+
+
+@media (min-width: 992px) {
+    nb-card {
+        min-width: 20rem;
+    }
+}
+@media (min-width: 768px) {
+    nb-card {
+        min-width: 20rem;
+    }
+}

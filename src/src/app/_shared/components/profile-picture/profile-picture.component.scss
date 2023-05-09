@@ -1,0 +1,47 @@
+.profile-picture {
+    z-index: 1;
+    background-size: contain;
+    color: rgba(255, 255, 255, 0.8);
+    border: dashed 3px rgba(255, 255, 255, 0.8);
+}
+
+.profile-picture label {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    z-index: 3;
+}
+
+div.profile-picture img {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #b5b5b5;
+}
+.profile-image{
+    display: flex;
+    width: 70%;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 32px;
+    .profile-image-container{
+        img{
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+    }
+    .edit-photo{
+        background-color: transparent;
+        border: none;
+        color: var(--primary-color-blue);
+    }
+}
+
+
+
+@media (max-width: 600px) {
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}

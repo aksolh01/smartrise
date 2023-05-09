@@ -1,0 +1,35 @@
+@import '@nebular/theme/styles/global/breakpoints';
+
+:host {
+}
+
+.error {
+  color: red;
+}
+
+.file-name{
+  word-break: break-all;
+}
+
+.hidden-file {
+  display: none;
+}
+
+.char-limit {
+  right: 25px;
+  bottom: 5px;
+  font-size: .7rem;
+  color: #666;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.in-dialog {
+  margin-bottom: 0em;
+}
+
+.browse {
+  min-width: 7em;
+}

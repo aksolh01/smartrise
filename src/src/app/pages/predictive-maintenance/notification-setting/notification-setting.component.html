@@ -1,0 +1,115 @@
+<nb-card class="in-dialog">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Notification Settings</h2>
+        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onClose()"
+            style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body>
+        <form [formGroup]="notificationSettingForm" (ngSubmit)="onSubmit()">
+            <div class="row card-body">
+
+
+                <div class="col-4 col-lg-2 form-group">
+                    <label class="control-label text-left pt-2">Configuration Type</label>
+                </div>
+
+                <div class="col-8 col-lg-4">
+                    <nb-select placeholder="Configuration Type" formControlName="configurationType"
+                        (selectedChange)="onConfigurationTypeChanged($event)" class="col-lg-12 p-0">
+                        <nb-option *ngFor="let cnfType of cnfTypes;" [value]="cnfType.value">{{ cnfType.title }}
+                        </nb-option>
+                    </nb-select>
+                </div>
+
+                <div class="col-4 col-lg-2 form-group">
+                    <label class="control-label text-left pt-2">Notification Method</label>
+                </div>
+
+                <div class="col-8 col-lg-4">
+                    <nb-select placeholder="Notification Method" formControlName="notificationMethod"
+                        class="col-lg-12 p-0">
+                        <nb-option *ngFor="let nfcMtd of nfcMtds;" [value]="nfcMtd.value">{{ nfcMtd.title }}</nb-option>
+                    </nb-select>
+                </div>
+
+                <div class="col-4 col-lg-2 form-group"
+                    *ngIf="configurationType === configurationTypeSeverityAndPartType">
+                    <label class="control-label text-left pt-2">Severity</label>
+                </div>
+
+                <div class="col-8 col-lg-4 form-group"
+                    *ngIf="configurationType === configurationTypeSeverityAndPartType">
+                    <nb-select placeholder="Severity" formControlName="severity" class="col-lg-12 p-0">
+                        <nb-option *ngFor="let sev of severities;" [value]="sev.value">{{ sev.title }}</nb-option>
+                    </nb-select>
+                </div>
+
+                <div class="col-4 col-lg-2 form-group"
+                    *ngIf="configurationType === configurationTypePartType || configurationType === configurationTypeSeverityAndPartType">
+                    <label class="control-label text-left pt-2">Part Type</label>
+                </div>
+
+                <div class="col-8 col-lg-4"
+                    *ngIf="configurationType === configurationTypePartType || configurationType == configurationTypeSeverityAndPartType">
+                    <nb-select placeholder="Part Type" formControlName="partType" class="col-lg-12 p-0">
+                        <nb-option *ngFor="let partType of partTypes;" [value]="partType.name">{{ partType.name }}
+                        </nb-option>
+                    </nb-select>
+                </div>
+
+                <div class="col-4 col-lg-2 form-group" *ngIf="configurationType === configurationTypeAlertType">
+                    <label class="control-label text-left pt-2">Alert Type</label>
+                </div>
+
+                <div class="col-8 col-lg-4" *ngIf="configurationType === configurationTypeAlertType">
+                    <nb-select  placeholder="Alert Type" formControlName="alertType" class="col-lg-12 p-0">
+                        <nb-option *ngFor="let _alertType of alertTypes;" [value]="_alertType.value">{{
+                            _alertType.title }}</nb-option>
+                    </nb-select>
+                </div>
+
+                <div class="col-4 col-lg-2 form-group" *ngIf="configurationType === configurationTypeAlert">
+                    <label class="control-label text-left pt-2">Alert</label>
+                </div>
+
+                <div class="col-8 col-lg-4" *ngIf="configurationType === configurationTypeAlert">
+                    <nb-select placeholder="Alert" formControlName="alert" class="col-lg-12 p-0">
+                        <nb-option *ngFor="let alert of alerts;" [value]="alert.name">{{ alert.name }}</nb-option>
+                    </nb-select>
+                </div>
+
+                <!-- <div class="col-lg-12 text-right">
+                    <button
+                      (click)="onCancel()"
+                      type="button"
+                      class="mr-1 btn btn-lg btn-secondary"
+                    >
+                      <i class="fas fa-times"></i>
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      class="mr-1 btn btn-lg btn-primary"
+                    >
+                      <i class="fas fa-plus-circle"></i>
+                      Update
+                    </button>
+                  </div> -->
+
+            </div>
+        </form>
+    </nb-card-body>
+
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <button (click)="onCancel()" type="button" class="mr-1 btn btn-lg btn-secondary">
+            <i class="fas fa-times"></i>
+            Cancel
+        </button>
+        <button (click)="onSubmit()" type="submit" class="mr-1 btn btn-lg btn-primary">
+            <i class="fas fa-plus-circle"></i>
+            Update
+        </button>
+    </nb-card-footer>
+</nb-card>

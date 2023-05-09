@@ -1,0 +1,32 @@
+label {
+    color: #777;
+    font-size: 0.9375rem;
+}
+
+.form-group:last-of-type, .form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+a:not([href]):not([tabindex]) {
+    text-decoration: underline !important;
+    color:var(--primary-color-gray);
+    cursor: pointer;
+}
+
+a:not([href]):not([tabindex]):hover {
+    color:var(--primary-color-gray);
+}
+
+.control-label,
+.form-control-plaintext {
+    font-size: 0.9375rem;
+}
+
+.card-body {
+    padding-top: 0.3rem;
+}
+
+.is-default {
+    background-color: #0088cc;
+    color: white;
+}

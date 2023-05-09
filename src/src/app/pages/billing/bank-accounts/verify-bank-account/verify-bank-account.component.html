@@ -1,0 +1,193 @@
+<form [formGroup]="microdepositForm" (ngSubmit)="onSubmit()">
+    <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant" class="in-dialog">
+        <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+            <h2 class="card-title">Verify Bank Account</h2>
+            <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="cancel()"
+                style="outline: none">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+        </nb-card-header>
+        <nb-card-body>
+            <div *ngIf="!accountDeleted && !isLoading" class="alert alert-primary mb-0">
+                <p class="mb-0">
+                    We've credited two micro deposits to your bank account ending with {{ last4 }}.
+                    Enter them below to verify your account.
+                </p>
+            </div>
+            <div>
+                <div class="row card-body" *ngIf="!accountDeleted">
+                    <p>
+                        <small>
+                            Enter the two deposit amounts (in cents) we credited to your account.
+                        </small>
+                    </p>
+                    <div class="form-group col-lg-12">
+                        <div class="row form-group">
+                            <div class="col-6 pl-0">
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text deposit-prefix">$0.</span>
+                                    </div>
+                                    <input (keypress)="onlyNumbers($event)" type="text" maxlength="2" placeholder="00"
+                                        autocomplete="off" class="form-control deposit" formControlName="firstAmount"
+                                        id="firstAmount" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text deposit-suffix"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 pr-0">
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text deposit-prefix">$0.</span>
+                                    </div>
+                                    <input placeholder="00" (keypress)="onlyNumbers($event)" type="text" maxlength="2"
+                                        autocomplete="off" class="form-control deposit" formControlName="secondAmount"
+                                        id="secondAmount" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text deposit-suffix"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="formSubmitted" class="row form-group">
+                            <div class="col-6 pl-0">
+                                <div class="help-block error" *ngIf="
+                    microdepositForm.get('firstAmount').errors != null &&
+                    microdepositForm.get('firstAmount').errors[
+                      'required'
+                    ] &&
+                    microdepositForm.get('firstAmount').touched
+                  ">
+                                    First Deposit is required
+                                </div>
+                                <div class="help-block error" *ngIf="
+                    microdepositForm.get('firstAmount').errors != null &&
+                    microdepositForm.get('firstAmount').errors[
+                      'greaterThanZero'
+                    ] &&
+                    microdepositForm.get('firstAmount').touched
+                  ">
+                                    Amount must be greater than 0.
+                                </div>
+                            </div>
+                            <div class="col-6 pr-0">
+                                <div class="help-block error" *ngIf="
+                                microdepositForm.get('secondAmount').errors != null &&
+                                microdepositForm.get('secondAmount').errors[
+                                  'required'
+                                ] &&
+                                microdepositForm.get('secondAmount').touched
+                              ">
+                                    Second Deposit is required
+                                </div>
+                                <div class="help-block error" *ngIf="
+                                microdepositForm.get('secondAmount').errors != null &&
+                                microdepositForm.get('secondAmount').errors[
+                                  'greaterThanZero'
+                                ] &&
+                                microdepositForm.get('secondAmount').touched
+                              ">
+                                    Amount must be greater than 0.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row form-group">
+                            <label for="firstAmount" class="control-label col-lg-5 text-lg-right pt-2 required">First
+                                Deposit</label>
+                            <div class="col-lg-7 p-lg-0">
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text deposit-prefix">$0.</span>
+                                    </div>
+                                    <input (keypress)="onlyNumbers($event)" type="text" maxlength="2" placeholder="00"
+                                        autocomplete="off" class="form-control deposit" formControlName="firstAmount"
+                                        id="firstAmount" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text deposit-suffix"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="help-block error" *ngIf="
+                        microdepositForm.get('firstAmount').errors != null &&
+                        microdepositForm.get('firstAmount').errors[
+                          'required'
+                        ] &&
+                        microdepositForm.get('firstAmount').touched
+                      ">
+                                        First Deposit is required
+                                    </div>
+                                    <div class="help-block error" *ngIf="
+                        microdepositForm.get('firstAmount').errors != null &&
+                        microdepositForm.get('firstAmount').errors[
+                          'greaterThanZero'
+                        ] &&
+                        microdepositForm.get('firstAmount').touched
+                      ">
+                                        Amount must be greater than 0.
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="row form-group">
+                            <label for="secondAmount" class="control-label col-lg-5 text-lg-right pt-2 required">Second
+                                Deposit</label>
+                            <div class="col-lg-7 p-lg-0">
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text deposit-prefix">$0.</span>
+                                    </div>
+                                    <input placeholder="00" (keypress)="onlyNumbers($event)" type="text" maxlength="2"
+                                        autocomplete="off" class="form-control deposit" formControlName="secondAmount"
+                                        id="secondAmount" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text deposit-suffix"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="help-block error" *ngIf="
+                        microdepositForm.get('secondAmount').errors != null &&
+                        microdepositForm.get('secondAmount').errors[
+                          'required'
+                        ] &&
+                        microdepositForm.get('secondAmount').touched
+                      ">
+                                        Second Deposit is required
+                                    </div>
+                                    <div class="help-block error" *ngIf="
+                        microdepositForm.get('secondAmount').errors != null &&
+                        microdepositForm.get('secondAmount').errors[
+                          'greaterThanZero'
+                        ] &&
+                        microdepositForm.get('secondAmount').touched
+                      ">
+                                        Amount must be greater than 0.
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-danger" *ngIf="accountDeleted">
+                Failed to verify micro payment amounts. This account has been removed from your profile. Please contact
+                your bank if you did not receive the micro deposits from Stripe.
+            </div>
+            <div class="help-block error text-right" *ngIf="showAttempts">
+                {{ attempts }} failed attempt(s) of 3
+            </div>
+        </nb-card-body>
+        <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+            <button (click)="cancel()" type="button" class="footer-btn btn btn-secondary">
+                <i class="clear-icon fas fa-times"></i>
+                Close
+            </button>
+            <ngx-button *ngIf="!accountDeleted" [isLoading]="isVerifying"
+                type="submit" class="footer-btn btn btn-primary ml-2">
+                <i class="clear-icon fas fa-check"></i>
+                Verify
+            </ngx-button>
+        </nb-card-footer>
+    </nb-card>
+</form>

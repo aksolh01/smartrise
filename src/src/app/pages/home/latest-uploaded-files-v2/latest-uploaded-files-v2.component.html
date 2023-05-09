@@ -1,0 +1,25 @@
+<nb-card size="tiny" style="height: 17.6rem;">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">
+            Latest Uploaded Job Files
+        </h2>
+    </nb-card-header>
+    <nb-card-body class="card-body" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+
+        <div *ngIf="this.data">
+            <nb-list>
+                <nb-list-item class="list-item" *ngFor="let file of this.data">
+                    <ngx-latest-uploaded-files-item [file]="file" [displayCustomerName]="displayCustomerName"
+                        (refresh)="onRefresh($event)">
+
+                    </ngx-latest-uploaded-files-item>
+                </nb-list-item>
+            </nb-list>
+        </div>
+    </nb-card-body>
+
+    <div class="no-data-container" *ngIf="!this.isLoading && !this.data">
+        No Job Files recently uploaded
+    </div>
+
+</nb-card>

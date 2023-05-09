@@ -1,0 +1,181 @@
+.form-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 10px;
+  .form-container-subtitle{
+    font-size: 14px;
+    padding-bottom: 8px;
+  }
+  .form-container-hint{
+    font-size: 14px;
+    .form-container-hint-label{
+      margin-bottom: 16px;
+    }
+  }
+
+    .input-container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      width: 100%;
+      .input-sub-container{
+        display: flex;
+        width: 100%;
+        gap: 16px;
+         label{
+          width: 75%;
+          font-size: 14px;
+          font-weight: 600;
+          color: #8f8f8f;
+          &.label-align{
+            text-align: end ;
+            margin-top: 4px;
+           }
+         }
+        
+      }
+      .input-item{
+        width: 100%;
+        min-height: 56px;
+        input{
+          border: 1px solid var(--primary-color-border);
+          border-radius: 10px ;
+          padding: 0px 16px ;
+          width: 100% ;
+          min-height: 40px ;
+          outline: none ;
+          font-size: 14px;
+          font-weight: 600;
+          &::placeholder{
+            font-size: 14px;
+            font-weight: 500 ;
+            color:rgba(0, 0, 0, 0.75) !important;
+          }
+        }
+      
+        nb-select{
+          border: 1px solid var(--primary-color-border);
+          border-radius: 10px;
+          padding: 0px 16px;
+          width: 100%;
+          min-height: 40px;
+          outline: none;
+          font-size: 14px;
+          font-weight: 600;
+          button{
+            font-size: 14px;
+            font-weight: 600;
+            color:rgba(0, 0, 0, 0.75) !important;
+          }
+          &::placeholder{
+            font-size: 14px;
+            font-weight: 500;
+            color:rgba(0, 0, 0, 0.75) !important;
+          }
+        }
+        button{
+          border: none !important;
+        }
+        &.hasLabel{
+          display: flex;
+          input{
+            border: 1px solid var(--primary-color-border);
+            border-radius: 10px;
+            padding: 0px 16px;
+            width: 100%;
+            min-height: 40px;
+            outline: none;
+            font-size: 14px;
+            font-weight: 600;
+            &::placeholder{
+              font-size: 14px;
+              font-weight: 500;
+              color:rgba(0, 0, 0, 0.75) !important;
+            }
+          }
+        }
+        &.search-input-icon{
+          position: relative;
+          i{
+            position: absolute;
+            padding: 12px;
+            color: grey;
+          }
+          input{
+            font-size: 14px;
+            font-weight: 600;
+            padding-left: 32px;
+          }
+        }
+        &.phone-input-item{
+          input{
+            padding-left: 46px;
+            font-size: 14px;
+            font-weight: 600;
+          }
+        }
+      }
+      .input-error{
+        font-size: 11px;
+        color:var(--primary-color-red);
+      }
+
+    }
+    .form-link-helper{
+      font-size: 14px;
+      border-top: 1px solid var(--primary-color-border);
+      width: 100%;
+      text-align: center;
+      padding-top: 20px;
+      margin-top: 20px;
+      a, span{
+        color: var(--primary-color-blue);
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 14px;
+      }
+    }
+    .form-action-login{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 8px;
+      .form-action-left-section{
+        font-size: 14px;
+        a{
+          color: var(--primary-color-blue);
+          text-decoration: none;
+        }
+      }
+      .form-action-right-section{
+        button{
+        }
+      }
+
+    }
+    .form-action{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 8px;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 8px;
+      .form-action-left-section{
+        font-size: 14px;
+        a{
+          color: var(--primary-color-blue);
+          text-decoration: none;
+        }
+      }
+      .form-action-right-section{
+        button{
+        }
+      }
+    }
+}

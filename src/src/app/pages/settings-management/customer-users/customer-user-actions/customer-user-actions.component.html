@@ -1,0 +1,26 @@
+<div class="actions text-center">
+  <div *ngIf="recordBelongsToLoggedInUser" tooltip="Update Account Roles" class="action-tooltip-holder">
+    <button data-tooltip="Update Account Roles" (click)="onEditUser(this.rowData)">
+      <i class="fas fa-exclamation-triangle" style="color:#0088cc; font-size:1.1rem;" data-toggle="tooltip"
+        data-original-title="Update"></i>
+    </button>
+  </div>
+
+  <div *ngIf="!recordBelongsToLoggedInUser" tooltip="Update Account Roles" class="action-tooltip-holder">
+    <button [disabled]="!canUpdateCustomerUser" data-tooltip="Update Account Roles" (click)="onEditUser(this.rowData)">
+      <i class="fas fa-pencil-alt" data-toggle="tooltip" data-original-title="Update"></i>
+    </button>
+  </div>
+  <div *ngIf="!recordBelongsToLoggedInUser" tooltip="Resend Invitation Link" class="action-tooltip-holder">
+    <button [disabled]="!canResendInvitationLink" data-tooltip="Resend Invitation Link"
+      (click)="onResendInvitation(this.rowData)">
+      <i class="fas fa-share" data-toggle="tooltip" data-original-title="Resend Invitation"></i>
+    </button>
+  </div>
+  <div *ngIf="!recordBelongsToLoggedInUser" tooltip="Send Password Reset Request" class="action-tooltip-holder">
+    <button [disabled]="!canSendResetPasswordRequest" data-tooltip="Send Password Reset Request"
+      (click)="onResetPassword(this.rowData)">
+      <i class="fas fa-recycle" data-toggle="tooltip" data-original-title="Send Password Reset Request"></i>
+    </button>
+  </div>
+</div>

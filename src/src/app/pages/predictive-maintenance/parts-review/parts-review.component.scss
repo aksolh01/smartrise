@@ -1,0 +1,24 @@
+.label-width {
+    flex: 0 0 13% !important;
+}
+
+.p-label {
+    width: 6em;
+    float: left;
+}
+
+.p-value {
+    width: 10em;
+    float: left;
+    padding-left: .5em;
+}
+
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(1),
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(2){
+  text-align: center;
+}
+
+:host ::ng-deep ng2-smart-table thead tr:nth-child(1) > th:nth-last-child(1),
+:host ::ng-deep ng2-smart-table thead > tr:nth-child(2) > th:nth-last-child(2){
+  text-align: center;
+}

@@ -1,0 +1,14 @@
+<div class="d-md-block d-lg-none font-weight-bold">{{ header }}</div>
+<ng-template [ngIf]="!!value" [ngIfElse]="naOnMobile">
+    <ng-template [ngIf]="isSelectable" [ngIfElse]="displayName">
+        <nb-checkbox [checked]="rowData.isSelected" (checkedChange)="onAccountChecked($event)">{{value}}</nb-checkbox>
+    </ng-template>
+
+    <ng-template #displayName>
+        {{value}}
+    </ng-template>
+
+</ng-template>
+<ng-template #naOnMobile>
+    <div class="d-lg-none d-block">N/A</div>
+</ng-template>

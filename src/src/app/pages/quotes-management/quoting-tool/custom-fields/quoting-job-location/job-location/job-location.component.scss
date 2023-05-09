@@ -1,0 +1,42 @@
+$placeholder-color: #6d767e82;
+:host {
+    min-width: 25vw;
+}
+.is-busy-container {
+    border: 1px solid #e4e9f2;
+    border-radius: 2px;
+}
+
+.is-busy {
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+::ng-deep .is-busy nb-spinner {
+    background-color: transparent !important;
+}
+
+.is-busy-label {
+    margin-left: 0.3rem;
+}
+
+.error {
+    color: red;
+}
+
+::ng-deep ngx-job-location nb-select[placeholder-selected="true"] button.select-button {
+    color: $placeholder-color !important;
+}
+
+::ng-deep ngx-job-location nb-select button.select-button {
+    font-size: 0.85rem !important;
+    min-height: 2.375rem;
+    padding: 4px !important;
+}
+
+::ng-deep ngx-job-location input {
+    font-size: 0.85rem !important;
+    min-height: 2.375rem;
+    padding: 0.375rem 0.75rem !important; 
+    padding-left: 0.3rem !important;
+}

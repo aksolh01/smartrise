@@ -1,0 +1,118 @@
+<nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+  <nb-card-header class="default-card-header">
+    <h2 class="card-title">User Information</h2>
+  </nb-card-header>
+  <nb-card-body>
+    <form [ngClass]="{'hide': isLoadingForm}" [nbSpinner]="isLoadingForm" nbSpinnerStatus="primary"
+      nbSpinnerSize="large" nbSpinnerMessage="" [formGroup]="customerUserForm" (ngSubmit)="onSubmit()">
+
+      <div class="row">
+
+        <div class="col-12 col-lg-6">
+
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
+            <div class="col-12 col-lg-8">
+              <input type="text" #firstName placeholder="First Name" formControlName="firstName" class="form-control"
+                id="firstName">
+              <div *ngIf="formSubmitted">
+                <div class="help-block error" *ngIf="
+  customerUserForm.get('firstName').errors != null &&
+  customerUserForm.get('firstName').errors[
+  'requiredWithTrim'
+  ] &&
+  customerUserForm.get('firstName').touched
+  ">
+                  First Name is required
+                </div>
+                <div class="help-block error" *ngIf="
+  customerUserForm.get('firstName').errors != null &&
+  customerUserForm.get('firstName').errors[
+  'trimError'
+  ] &&
+  customerUserForm.get('firstName').touched
+  ">
+                  This field can't start or end with a blank space
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Last Name</label>
+            <div class="col-12 col-lg-8">
+              <input type="text" placeholder="Last Name" formControlName="lastName" class="form-control" id="lastName">
+              <div *ngIf="formSubmitted">
+                <div class="help-block error" *ngIf="
+  customerUserForm.get('lastName').errors != null &&
+  customerUserForm.get('lastName').errors[
+  'requiredWithTrim'
+  ] &&
+  customerUserForm.get('lastName').touched
+  ">
+                  Last Name is required
+                </div>
+                <div class="help-block error" *ngIf="
+  customerUserForm.get('lastName').errors != null &&
+  customerUserForm.get('lastName').errors[
+  'trimError'
+  ] &&
+  customerUserForm.get('lastName').touched
+  ">
+                  This field can't start or end with a blank space
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
+            <div class="col-12 col-lg-8">
+              <input type="text" (keydown.space)="$event.preventDefault()" placeholder="Email" formControlName="email"
+                class="form-control" id="email">
+              <div *ngIf="formSubmitted">
+                <div class="help-block error" *ngIf="
+                  customerUserForm.get('email').errors != null &&
+                  customerUserForm.get('email').errors['requiredWithTrim'] &&
+                  customerUserForm.get('email').touched">
+                  Email is required
+                </div>
+                <div class="help-block error"
+                  *ngIf="
+                  customerUserForm.get('email').dirty &&
+                  customerUserForm.get('email').errors &&
+                  (customerUserForm.get('email').errors['smartriseEmail'] && !customerUserForm.get('email').errors['trimError'])">
+                  Please enter a valid email
+                </div>
+                <div *ngIf="customerUserForm.get('email').touched && 
+                customerUserForm.get('email').errors && 
+                customerUserForm.get('email').errors['trimError']" class="mt-1 help-block error">
+                  This field can't start or end with a blank space
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-12 mb-2">
+          <ngx-account-roles-selection #accounts [roles]="roles"
+            formControlName="accounts" 
+            [allowAccountsSelection]="true" 
+            [allowRemoveAccount]="false"></ngx-account-roles-selection>
+        </div>
+
+      </div>
+      <div class="form-buttons mt-2">
+        <button routerLink=".." type="button" class="btn btn-secondary">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+        <ngx-button [isLoading]="isSaving" type="submit" class="btn btn-primary">
+          <i class="fas fa-plus-circle"></i>
+          Create
+        </ngx-button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,12 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">
+    {{ header }}
+</div>
+<div class="badge text-white bank-account-status-active" *ngIf="rowData?.status?.value === active">Active</div>
+<div class="badge text-white bank-account-status-awaiting-verification" *ngIf="rowData?.status?.value === awaitingVerification">Awaiting Verification</div>
+<div class="badge text-white bank-account-status-transfer-failed" *ngIf="rowData?.status?.value === transferFailed">Transfer Failed</div>
+<ng-template [ngIf]="bankStatus !== null" [ngIfElse]="naOnMobile">
+    <div class="d-lg-none d-block badge badge-info text-white" *ngIf="bankStatus === null">N/A</div>
+</ng-template>
+<ng-template #naOnMobile>
+    <div class="d-lg-none d-block">N/A</div>
+</ng-template>

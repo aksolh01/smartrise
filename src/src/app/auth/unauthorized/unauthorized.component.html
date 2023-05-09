@@ -1,0 +1,13 @@
+<div class="text pb-3">You're unauthorized to access this page.</div>
+<div class="text-center" *ngIf="isLoggedIn" >
+    <button class="main-button" (click)="goToHomePage()">
+        Go to Dashboard
+    </button>
+</div>
+
+<div class="text-center" *ngIf="!isLoggedIn">
+    <button  class="main-button" (click)="goToHomePage()">
+
+        Go To Login
+    </button>
+</div>

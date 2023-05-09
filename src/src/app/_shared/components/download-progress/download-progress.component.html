@@ -1,0 +1,8 @@
+<div class="m-2">
+    <p class="margin">Downloading... Please wait.</p>
+    <div *ngIf="progress > 0">{{ progress }} %</div>
+    <div *ngIf="progress == 0">0 %</div>
+    <div class="progress form-group mb-2">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width.%]="progress"></div>
+    </div>
+</div>

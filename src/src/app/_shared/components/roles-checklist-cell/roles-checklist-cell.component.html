@@ -1,0 +1,7 @@
+<div class="d-md-block d-lg-none font-weight-bold">{{ header }}</div>
+
+<div class="checkbox-custom d-flex align-items-center" *ngFor="let role of roles; let i = index">
+    <nb-checkbox [checked]="role.selected" [disabled]="!rowData.isSelected && isAccountSelectable" (checkedChange)="onRoleChecked(role)">{{role.displayName}}</nb-checkbox>
+    <i class="privileges-icon ml-2 fas fa-info-circle" (click)="showPrivileges(role)"
+        tooltip="Show Role Privileges"></i>
+</div>

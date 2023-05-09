@@ -1,0 +1,16 @@
+<div class="actions text-center">
+
+    <div tooltip="View Job File Details" class="action-tooltip-holder">
+        <button data-tooltip="View Job File Details" (click)="onViewDetails(this.rowData)">
+        <i class="fas fa-eye" data-toggle="tooltip" data-original-title="View Job File Details"></i>
+      </button>
+    </div>
+
+    <ng-template [ngIf]="rowData.readyForDownload">
+        <div tooltip="Download File" class="action-tooltip-holder">
+            <button data-tooltip="Download File" (click)="onDownload(this.rowData)">
+          <i class="fas fa-download" data-toggle="tooltip" data-original-title="Download"></i>
+        </button>
+        </div>
+    </ng-template>
+</div>

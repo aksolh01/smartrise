@@ -1,0 +1,105 @@
+<ng-template [ngIf]="shipments?.length > 0">
+    <div class="shipments-body">
+        <nb-accordion *ngFor="let shipment of shipments;let i = index">
+            <nb-accordion-item (collapsedChange)="onShipmentCollapsedExpanded(shipment, $event)" [expanded]="selectedShipmentId === shipment.id" #item>
+                <nb-accordion-item-header>
+                    <div class="w-100  d-flex justify-content-between align-items-center">
+                        <div class="shipment-header">
+                            <div>
+                            {{ shipment.shipmentType.description }} 
+                        
+                            <i *ngIf="i === 0" joyrideStep="subfirstStep" stepPosition="bottom"
+                            text="Click here to check the items inside this shipment"  class="fas fa-info-circle"
+                            (click)="item.toggle(); showPartsDescription(shipment)"
+                            tooltip="Show Parts Description"></i>
+                       
+                            <i *ngIf="i != 0" class="fas fa-info-circle"
+                            (click)="item.toggle(); showPartsDescription(shipment)"
+                            tooltip="Show Parts Description"></i>
+                            </div>
+                            <div></div>
+                            <div class="status status-{{ shipment.status }}">
+                                {{ shipment.status }}
+                            </div>
+                        </div>
+                       
+                    </div>
+                </nb-accordion-item-header>
+                <nb-accordion-item-body>
+
+                    <div class="main-card">
+                        <div class="card-container">
+
+                            <div class="card-container-data">
+                                <div class="label">Tracking Number</div>
+                                <div class="content">
+                                    <a style="color:var(--primary-color-black);text-decoration: none;" *ngIf="shipment?.carrierWebsite && shipment?.trackingNumber"
+                                        [href]="shipment?.carrierWebsite" tooltip="View Tracking Details"
+                                        target="_blank">{{
+                                        shipment?.trackingNumber | value
+                                        }}</a>
+                                    {{ (!shipment?.carrierWebsite || !shipment?.trackingNumber) ?
+                                    (shipment?.trackingNumber |
+                                    value) : '' }}
+                                </div>
+                            </div>
+
+                            <div class="card-container-data">
+                                <div class="label">Carrier</div>
+                                <div class="content">{{ shipment?.carrier | value }}</div>
+                            </div>
+
+                        </div>
+                        <div class="card-container">
+                            <div class="card-container-data">
+                                <div class="label">Ship Address</div>
+                                <div class="content">
+                                    <ngx-address-field [Address]="shipment?.address"
+                                        [FullAddress]="shipment?.addressStr">
+                                    </ngx-address-field>
+                                </div>
+                            </div>
+                            <div class="card-container-data">
+                                <div class="label">Ship Date</div>
+                                <div class="content">{{ shipment?.shipDate | usdate | value }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <nb-accordion class="shipment-trackings-container">
+                        <nb-accordion-item (collapsedChange)="onShipmentTrackingsCollapsedExpanded(shipment, $event)" [expanded]="shipment.trackingsExpanded">
+                            <nb-accordion-item-header>
+                                <div class="activity-history-title">
+                                    Activity History
+                                </div>
+                            </nb-accordion-item-header>
+                            <nb-accordion-item-body>
+                                <ngx-shipment-trackings [trackings]="shipment?.shippingTrackingActions">
+
+                                </ngx-shipment-trackings>
+                            </nb-accordion-item-body>
+                        </nb-accordion-item>
+                    </nb-accordion>
+                </nb-accordion-item-body>
+            </nb-accordion-item>
+        </nb-accordion>
+
+        <!-- <div class="text-right">
+            <button class="btn btn-secondary" type="button" (click)="onClose()">
+                <i class="fas fa-times"></i>
+                Close
+            </button>
+        </div> -->
+    </div>
+</ng-template>
+
+<ng-template [ngIf]="!shipments || !shipments.length">
+    <div class="no-data-found">
+        No data found
+    </div>
+    <!-- <div class="text-right">
+        <button class="btn btn-secondary" type="button" (click)="onClose()">
+            <i class="fas fa-times"></i>
+            Close
+        </button>
+    </div> -->
+</ng-template>

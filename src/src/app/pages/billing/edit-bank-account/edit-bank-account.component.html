@@ -1,0 +1,118 @@
+<nb-card size="xlarge" *ngIf="bankAccount">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">Bank Account Details - {{ bankAccount?.customer.name | value }}</h2>
+    </nb-card-header>
+    <nb-card-body [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div *ngIf="bankAccount?.isDefault" class="badge badge-pill float-right font-weight-normal is-default mr-1">
+            DEFAULT
+        </div>
+        <div *ngIf="bankAccount?.isDeleted"
+            class="badge badge-pill badge-danger float-right font-weight-normal open-quote-deleted">
+            DELETED
+        </div>
+        <div [class]="!bankAccount?.isDeleted && !bankAccount?.isDefault ? '' : ''">
+            <form [formGroup]="bankAccountForm" (ngSubmit)="onSubmit()" class="mt-3">
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+
+                        <div *ngIf="displayAccountName" class="form-group row">
+                            <label class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                            <div class="col-12 col-lg-8">
+                                <div class="form-control-plaintext">{{ bankAccount?.customer.name | value }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Number (last 4 digits)</label>
+                            <div class="col-12 col-lg-8">
+                                <div class="form-control-plaintext">{{ bankAccount?.last4 | value }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Name on
+                                Account</label>
+                            <div class="col-12 col-lg-8">
+                                <input placeholder="Name on Account" type="text" formControlName="accountHolderName" class="form-control"
+                                    id="accountHolderName">
+                                <div *ngIf="formSubmitted">
+                                    <div class="help-block error" *ngIf="
+        bankAccountForm.get('accountHolderName').errors != null &&
+        bankAccountForm.get('accountHolderName').errors[
+          'requiredWithTrim'
+        ] &&
+        bankAccountForm.get('accountHolderName').touched
+      ">
+                                        Name on Account is required
+                                    </div>
+                                    <div class="help-block error" *ngIf="
+        bankAccountForm.get('accountHolderName').errors != null &&
+        bankAccountForm.get('accountHolderName').errors[
+          'trimError'
+        ] &&
+        bankAccountForm.get('accountHolderName').touched
+      ">
+                                        This field can't start or end with a blank space
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="form-group row">
+                            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Bank Name</label>
+                            <div class="col-12 col-lg-8">
+                                <div class="form-control-plaintext">{{ bankAccount?.bankName | value }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Type</label>
+                            <div class="col-12 col-lg-8">
+                                <nb-select [attr.placeholder-selected]="bankAccountForm.value.accountType === ''" formControlName="accountType" class="form-control form-control-select">
+                                    <nb-option value="">Account Type</nb-option>
+                                    <nb-option value="Individual">Individual</nb-option>
+                                    <nb-option value="Company">Company</nb-option>
+                                </nb-select>
+                                <div *ngIf="formSubmitted">
+                                    <div class="help-block error" *ngIf="
+        bankAccountForm.get('accountType').errors != null &&
+        bankAccountForm.get('accountType').errors[
+          'requiredWithTrim'
+        ] &&
+        bankAccountForm.get('accountType').touched
+      ">
+                                        Account Type is required
+                                    </div>
+                                    <div class="help-block error" *ngIf="
+        bankAccountForm.get('accountType').errors != null &&
+        bankAccountForm.get('accountType').errors[
+          'trimError'
+        ] &&
+        bankAccountForm.get('accountType').touched
+      ">
+                                        This field can't start or end with a blank space
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" (click)="onClose()" class="mr-1 btn btn-lg btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button [disabled]="isSaving" type="submit"
+                        class="mr-1 btn btn-lg btn-primary">
+                        <i class="fas fa-save"></i>
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </nb-card-body>
+</nb-card>

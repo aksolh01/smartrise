@@ -1,0 +1,52 @@
+.shipments-body {
+.shipment-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+}
+nb-accordion-item-header {
+    position: relative;
+    //background-color: #f6f6f6;
+}
+
+label {
+    color: #777;
+}
+
+// .form-group:last-of-type,
+// .form-group:last-child {
+//     margin-bottom: 1rem;
+// }
+
+.no-data-found {
+    text-align: center;
+}
+
+.shipment {
+    word-break: break-all;
+}
+
+::ng-deep ngx-job-shipments .shipment-trackings-container {
+
+    nb-accordion-item-header {
+        // padding: .5rem !important;
+        nb-icon {
+            margin-right: -0.16rem;
+        }
+    }
+
+    nb-accordion-item-body .item-body {
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+.activity-history-title {
+    font-size: 13.6px;
+    font-weight: bold;
+}

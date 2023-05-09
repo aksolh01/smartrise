@@ -1,0 +1,21 @@
+<div class="bottom-actions">
+    <button class="btn btn-secondary" type="button" (click)="onCancel()">
+        <i class="fa fa-times"></i>
+        Close
+    </button>
+    <button *ngIf="status === 'Generated'" [disabled]="isProcessing" class="btn btn-primary ml-md-1" type="button"
+        (click)="onViewPricing()">
+        <i class="fas fa-file-alt"></i>
+        View Quote
+    </button>
+    <ngx-button [isLoading]="isSaving" [disabled]="isProcessing" class="btn btn-primary ml-md-1" type="button"
+        (click)="onSaveQuote()">
+        <i class="fa fa-save"></i>
+        Save
+    </ngx-button>
+    <ngx-button [isLoading]="isGenerating" [disabled]="isProcessing" class="btn btn-primary ml-md-1" type="button"
+        (click)="onGenerateQuote()">
+        <i class="fa fa-angle-double-up"></i>
+        Generate Quote
+    </ngx-button>
+</div>

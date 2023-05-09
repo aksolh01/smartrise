@@ -1,0 +1,48 @@
+<form class="form-container" [formGroup]="loginForm" *ngIf="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-container-hint">
+      <div class="form-container-hint-label"  *ngIf="warnUserAboutAccountLock">Your account will be locked after continued
+        incorrect login attempts</div>
+      <div class="form-container-hint-label" *ngIf="sessionExpired">Your session has been expired</div>
+    </div>
+    <div class="input-container">
+        <div class="input-item">
+            <input type="text" id="email" formControlName="email" placeholder="Email Address"
+                (keydown.space)="$event.preventDefault()" />
+            <div class="input-error" *ngIf="formSubmitted && loginForm.get('email').touched && loginForm.get('email').errors && loginForm.get('email').errors['requiredWithTrim']">
+                Email Address is required
+            </div>
+            <div class="input-error" *ngIf="formSubmitted && loginForm.get('email').touched && loginForm.get('email').errors && loginForm.get('email').errors['trimError']">
+                This field can't start or end with a blank space
+            </div>
+        </div>
+
+        <div class="input-item">
+            <ngx-smr-password-input id="password" formControlName="password" placeholder="Password">
+            </ngx-smr-password-input>
+            <div class="input-error" *ngIf="formSubmitted && loginForm.get('password').touched && loginForm.get('password').errors && loginForm.get('password').errors['required']">
+                Password is required
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-action-login">
+        <div class="form-action-left-section">
+            <a  routerLink="../forgotpassword">
+                Forgot Password?
+            </a>
+        </div>
+        <div class="form-action-right-section">
+            <ngx-button class="main-button" [isLoading]="isLoading" type="submit">
+               Login
+            </ngx-button>
+        </div>
+    </div>
+
+
+
+    <div class="form-link-helper">
+        No account? <a routerLink="../askforaccess">Request Access!</a>
+
+    </div>
+</form>

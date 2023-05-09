@@ -1,0 +1,56 @@
+.card-details{
+    display: flex;
+    margin-bottom: 14px;
+    
+    .card-details-container{
+        width: 100%;
+        &:first-child {
+            margin-right: 8px;
+          }
+       
+        .displayData{
+            margin-top: 8px;
+            .label{
+                color: #9d9a9a;
+                margin-bottom: 0px;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            .content{
+                color: black;
+                font-size: 13px;
+                font-weight: 400;
+            }
+        }
+    }
+    
+}
+// .waiting-info input[readonly='readonly'] {
+//     color: #ff0000;
+// }
+
+// label {
+//     color: #777;
+// }
+
+// .form-group:last-of-type, .form-group:last-child {
+//     margin-bottom: 1rem;
+// }
+
+// .fill-passcode {
+//     padding-left: 0.6rem;
+//     padding-right: 0.6rem;
+// }
+
+// .passcode {
+//     max-height: 120px;
+//     overflow-y: auto;
+// }
+
+.activity-history-title {
+    font-size: 13.6px;
+    font-weight: bold;
+    color: #0088cc;
+    background-color: #f6f6f6;
+    padding: .375rem;
+}

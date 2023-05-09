@@ -1,0 +1,13 @@
+<div class="badge orange text-white" *ngIf="!value && assumed">Assumed</div>
+<div *ngIf="!assumed && valueIsNumber">
+    {{ value | numberValue }}
+</div>
+<div *ngIf="!assumed && !valueIsNumber">
+    {{ value | value }}
+</div>
+<div *ngIf="assumed && value && valueIsNumber">
+    {{ value | numberValue }}
+</div>
+<div *ngIf="assumed && value && !valueIsNumber">
+    {{ value | value }}
+</div>

@@ -1,0 +1,11 @@
+.loader {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+::ng-deep .loader nb-spinner {
+    background: none !important;
+}
+::ng-deep .loader nb-spinner span {
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+}

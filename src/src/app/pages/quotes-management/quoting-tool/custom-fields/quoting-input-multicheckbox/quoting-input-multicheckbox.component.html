@@ -1,0 +1,22 @@
+<div *ngFor="let item of dataSource;let i = index">
+    <input id="{{id}}-{{i}}" (change)="onCheckChange($event)" [value]="item[dataSourceValueField]" type="checkbox">
+    <label for="{{id}}-{{i}}">{{ item[dataSourceDisplayField] }}</label>
+</div>
+
+<div *ngIf="isInlineErrors">
+    <div *ngIf="(field.invalid && (field.dirty || field.touched))">
+
+        <div class="error" *ngIf="field.errors && field.errors['requiredWithTrim']">
+            Value is required.
+        </div>
+
+        <div class="error" *ngIf="field.errors && field.errors['trimError']">
+            This field can't start or end with a blank space
+        </div>
+    </div>
+    <div *ngIf="(errors && errors.length > 0)">
+        <div class="error" *ngFor="let error of errors">
+            {{ error }}
+        </div>
+    </div>
+</div>

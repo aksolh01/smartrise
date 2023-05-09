@@ -1,0 +1,153 @@
+<nb-card class="mb-3" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+  <nb-tabset *ngIf="companyinfo">
+    <nb-tab tabIcon="briefcase" tabTitle="Account Information">
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Name</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.name | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Phone</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.phone | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Fax</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.fax | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Primary Shipping Email</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.email | value }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Street</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.fullAddress | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">City</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.city | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">State</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.state | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Zip Code</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.zip | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Country</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.country | value }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-tab>
+    <nb-tab tabIcon="person" tabTitle="Sales Representative">
+
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Name</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.salesRepresentative?.name | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Role</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.salesRepresentative?.role | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Business</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.salesRepresentative?.mobile | value }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Mobile</label>
+            <div class="col-12 col-lg-8">
+              <div class="form-control-plaintext">
+                {{ companyinfo.salesRepresentative?.mobile | value }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
+            <div class="col-12 col-lg-8">
+              <div *ngIf="companyinfo?.salesRepresentative?.email" class="form-control-plaintext">
+                <a href="{{ clickableEmail }}">
+                  {{ companyinfo.salesRepresentative?.email }}
+                </a>
+              </div>
+              <div *ngIf="!companyinfo?.salesRepresentative?.email"
+                class="form-control-plaintext">
+                {{ companyinfo.salesRepresentative?.email | value }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-tab>
+  </nb-tabset>
+</nb-card>
+
+<div class="text-right mb-0 mx-3" *ngIf="!isLoading">
+  <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
+      <i class="fas fa-times"></i>
+      Close
+  </button>
+</div>
+
+<ng-template [ngIf]="isLoading">
+  <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+      <div class="col-12 p-4">
+      </div>
+  </nb-card>
+</ng-template>

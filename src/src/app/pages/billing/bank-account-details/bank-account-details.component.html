@@ -1,0 +1,71 @@
+<nb-card size="xlarge" *ngIf="bankAccount">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">Bank Account Details - {{ bankAccount?.customer.name | value }}</h2>
+    </nb-card-header>
+    <nb-card-body [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div *ngIf="bankAccount?.isDefault" class="badge badge-pill float-right font-weight-normal is-default mr-1">
+            DEFAULT
+        </div>
+        <div *ngIf="bankAccount?.isDeleted"
+            class="badge badge-pill badge-danger float-right font-weight-normal open-quote-deleted">
+            DELETED
+        </div>
+        <div class="row">
+
+            <div class="col-lg-6">
+
+                <div *ngIf="displayAccountName" class="form-group row">
+                    <label class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ bankAccount?.customer.name | value }}</div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Number (last 4 digits)</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ bankAccount?.last4 | value }}</div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Name on Account</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ bankAccount?.accountHolderName | value }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Bank Name</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ bankAccount?.bankName | value }}</div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Type</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ bankAccount?.accountType | value }}</div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Status</label>
+                    <div class="col-12 col-lg-8">
+                        <div class="form-control-plaintext">{{ bankAccount?.status?.description | value }}</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="form-buttons">
+            <button class="btn btn-secondary" type="button" (click)="onClose()">
+                <i class="fas fa-times"></i>
+                Close
+            </button>
+        </div>
+    </nb-card-body>
+</nb-card>

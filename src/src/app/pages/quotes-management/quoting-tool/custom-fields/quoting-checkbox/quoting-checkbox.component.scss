@@ -1,0 +1,33 @@
+input,
+nb-select {
+    font-size: 0.85rem !important;
+}
+
+input[type='checkbox'] {
+    font-size: 5px !important;
+}
+
+:host ::ng-deep nb-select .select-button {
+    padding: 4px !important;
+    font-size: 0.85rem !important;
+}
+
+input[type=checkbox] {
+    transform: scale(1.3);
+}
+
+.checkbox-label {
+    margin-left: 5px;
+}
+
+.hide {
+    display: none;
+}
+
+// ::ng-deep nb-toggle .toggle {
+//     transform: scale(.7);
+// }
+
+// ::ng-deep nb-toggle .toggle-label {
+//     margin-bottom: 0;
+// }

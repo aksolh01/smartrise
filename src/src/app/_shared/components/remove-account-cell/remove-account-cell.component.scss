@@ -1,0 +1,40 @@
+
+.actions button,
+.actions button:focus {
+    border: 0rem;
+    outline: 0rem;
+    background-color: transparent;
+    margin-right: 5px;
+    color: #666;
+    padding: 0;
+}
+
+.actions button:disabled {
+    color: #bbb;
+    background-color: transparent;
+    opacity: .50;
+    cursor: not-allowed;
+}
+
+@media (max-width: 531px) {
+    .small {
+        display: block;
+    }
+    .actions {
+        display: none;
+    }
+}
+
+@media (min-width: 532px) {
+    .small {
+        display: none;
+    }
+    .actions {
+        display: block;
+    }
+}
+
+.btn-primary {
+    color: white;
+    font-size: 1rem;
+}

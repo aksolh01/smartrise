@@ -1,0 +1,126 @@
+<div class="page-header-container">
+  <div class="page-header-title">{{title}}</div>
+  <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
+    <div class="input-container">
+      <div class="input-item search-input-icon">
+        <i class="fa fa-search"></i>
+        <input type="text" placeholder="Search">
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isSmall">
+    <button class="main-button" type="button" (click)="toggleFilters()">
+      <i class="fas fa-filter"></i>
+    </button>
+  </div>
+</div>
+<div class="pagination-info">
+  <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+  {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+  -
+  {{
+  Math.min(
+  source.count(),
+  (source.getPaging().page - 1) * settings.pager.perPage +
+  settings.pager.perPage
+  )
+  }}
+  of {{ source.count() }}
+
+  <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+</div>
+<div class="table-container">
+  <nb-card joyrideStep="userActivitiesFirstStep" stepPosition="center"
+    [title]="runGuidingTour === true ? 'User Activities' : null" [stepContent]="firstCustomContent"
+    (done)="onFinishingTour()" [doneTemplate]="doneButton">
+
+    <ng-template #firstCustomContent>
+      <div>
+        View a log of Activities per User.
+      </div>
+    </ng-template>
+
+    <nb-card-body>
+      <ng-template [ngIf]="isSmall === false">
+        <div class="table-header">
+          <div>
+            <!-- <button class="main-button" (click)="onReset()">
+            <i class="fas fa-redo-alt"></i>
+            Reset Filters
+          </button> -->
+          </div>
+          <div>
+            <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+          </ngx-smr-records-per-page> -->
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="table-content">
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+          <div class="form-container" filters>
+            <div class="input-container">
+              <div class="input-item" *ngIf="settings?.columns?.customerName">
+                <input type="text" maxlength="255" placeholder="Account" [(ngModel)]="customerName" />
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="User" [(ngModel)]="userDisplayName" />
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="View As User"
+                  [(ngModel)]="impersonationUserDisplayName" />
+              </div>
+              <div class="input-item">
+                <nb-select [(ngModel)]="action">
+                  <nb-option value="">Action</nb-option>
+                  <nb-option *ngFor="let c of actions" [value]="c.value">
+                    {{ c.description }}
+                  </nb-option>
+                </nb-select>
+              </div>
+              <div class="input-item">
+                <nb-select [(ngModel)]="objectType">
+                  <nb-option value="">Type</nb-option>
+                  <nb-option *ngFor="let c of objectTypes" [value]="c.value">
+                    {{ c.description }}
+                  </nb-option>
+                </nb-select>
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="Identifier" [(ngModel)]="objectDisplayMember" />
+              </div>
+              <div class="w-100">
+                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+              </ngx-smr-records-per-page> -->
+              </div>
+            </div>
+
+            <div class="form-action" actions>
+              <button class="main-button" (click)="onSearch(); toggleFilters()">
+                <i class="fas fa-search"></i>
+                Search
+              </button>
+              <!-- <button class="main-button" (click)="onReset(); toggleFilters()">
+            <i class="fas fa-redo-alt"></i>
+            Reset Filters
+          </button> -->
+            </div>
+          </div>
+        </ngx-smr-mobile-filters>
+      </div>
+
+      <div [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div class="table-content" *ngIf="source">
+          <ng2-smart-table #table [settings]="settings" [source]="source">
+          </ng2-smart-table>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>
+<ng-template #doneButton>
+  <button>
+    <i class="clear-icon fas fa-check"></i>
+    OK
+  </button>
+</ng-template>

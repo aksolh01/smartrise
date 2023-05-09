@@ -1,0 +1,80 @@
+<nb-card class="in-dialog">
+  <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+    <h2 class="card-title">Upload File</h2>
+    <button [disabled]="progress === 100" type="button" class="close ml-5" aria-label="Close" tooltip="Close"
+      (click)="onClose()" style="outline: none">
+      <i class="fas fa-times text-sm"></i>
+    </button>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="fileUpload">
+      <div class="file-upload-container">
+        <input class="hidden-file" type="file" #fileInput ng2FileSelect [uploader]="uploader" accept=".zip,.pdf"
+          (onFileSelected)="onFileSelected($event)" />
+        <div class="row mb-2">
+          <div class="col-auto d-flex justify-content-start align-items-center">
+            <div (click)="open()">
+              <button type="button" class="btn btn-primary btn-group-icon btn-group-divider hidden-file">
+                <i class="ion-plus-round"></i>
+              </button>
+              <button [disabled]="isUploading" class="btn btn-primary mr-0 mb-0 browse">
+                <i class="fas fa-folder-open"></i>
+                Browse
+              </button>
+              <div class="help-block error" *ngIf="formSubmitted && notBrowsed">
+                File is required
+              </div>
+            </div>
+            <span class="file-name ml-2">{{ selectedFilename || 'No file selected.' }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="progress > 0">{{ progress }} %</div>
+        <div class="progress form-group mb-2" *ngIf="progress > 0">
+          <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width.%]="progress"></div>
+        </div>
+        <div class="row" *ngIf="!hideFileDescription">
+          <div class="col-12 position-relative">
+            <textarea formControlName="fileDescription" name="Text1" class="form-control w-100" rows="1"
+              [maxlength]="fileDescriptionMaxLength" placeholder="File Description..." [(ngModel)]="fileDescription"
+              style="resize: none;height: 40px"></textarea>
+            <div class="char-limit position-absolute">
+              {{fileDescription?.length || 0}} / {{fileDescriptionMaxLength}}
+            </div>
+            <!-- <input type="text" [disabled]="isUploading || notBrowsed" class="form-control w-100" [(ngModel)]="fileDescription" placeholder="Enter file description..."/> -->
+          </div>
+        </div>
+        <!-- <div *ngIf="showRequiredMessage" class="help-block error mt-2">
+          File Description is required
+        </div>
+        <div *ngIf="showWhitespaceMessage" class="help-block error mt-2">
+          This field can't start or end with a blank space
+        </div> -->
+        <div class="help-block error" *ngIf="formSubmitted &&
+          fileUpload.get('fileDescription').errors != null &&
+          fileUpload.get('fileDescription').errors[
+            'requiredWithTrim'
+          ] &&
+          fileUpload.get('fileDescription').touched
+        ">
+          File Description is required
+        </div>
+        <div class="help-block error" *ngIf="formSubmitted &&
+          fileUpload.get('fileDescription').errors != null &&
+          fileUpload.get('fileDescription').errors[
+            'trimError'
+          ] &&
+          fileUpload.get('fileDescription').touched
+        ">
+          This field can't start or end with a blank space
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+    <button type="button" [disabled]="isUploading" (click)="onUpload()" class="btn btn-primary">
+      <i class="fas fa-upload"></i>
+      Upload
+    </button>
+  </nb-card-footer>
+</nb-card>

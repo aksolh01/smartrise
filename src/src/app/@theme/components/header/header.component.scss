@@ -1,0 +1,203 @@
+@import "../../../../../node_modules/bootstrap/scss/mixins/breakpoints";
+@import "../../../../../node_modules/@nebular/theme/styles/global/breakpoints";
+@import "../../styles/themes";
+
+@include nb-install-component() {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+
+    @include media-breakpoint-down(md) {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .toggle-sidebar-left {
+      background: #0088cc;
+      border-radius: 100px;
+      color: #fff;
+      line-height: 30px;
+      text-align: center;
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  nb-action {
+    height: auto;
+    display: flex;
+    align-content: center;
+    padding: 0px;
+
+    
+  }
+  nb-action {
+    border-left: none !important;
+  }
+  nb-action:last-child {
+    border-left: var(--actions-divider-width) var(--actions-divider-style) var(--actions-divider-color)  !important;
+  }
+
+  nb-user {
+    cursor: pointer;
+  }
+
+  ::ng-deep nb-search button {
+    padding: 0 !important;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    width: auto;
+    min-height: 60px;
+    background-color: #003656;
+
+    .sidebar-toggle {
+      @include nb-ltr(margin-right, 1.25rem);
+      @include nb-rtl(margin-left, 1.25rem);
+      text-decoration: none;
+      color: nb-theme(text-hint-color);
+      nb-icon {
+        font-size: 1.75rem;
+      }
+    }
+
+    .logo {
+      //margin: 10px 0 0 15px;
+      img {
+        //max-height: 44px;
+        max-height: 50px;
+      }
+    }
+    .notification-container{
+      font-size: 20px;
+      color: white;
+      padding-right: 18px;
+    }
+    .toggle-container{
+      font-size: 20px;
+      color: white;
+      padding-right: 18px;
+      padding-top: 6px;
+    }
+  }
+
+  .direction-switcher {
+    @include nb-ltr(margin-left, 2rem);
+    @include nb-rtl(margin-right, 2rem);
+  }
+
+  .user-action {
+    [dropdown] {
+      .menu-toggle {
+        cursor: pointer;
+        > i {
+          color: white;
+          font-size: 16px;
+          font-weight: bold;
+        }
+
+        ::ng-deep .user-name {
+          color:white;
+          font-size: 12.8px;
+          font-size: 0.8rem;
+          line-height: 17.6px;
+          line-height: 1.1rem;
+        }
+      }
+      &:not(.show) .custom-angle:before {
+        content: "\f107";
+      }
+      &.show {
+        .menu-toggle {
+          position: relative;
+          z-index: 993;
+          color: #7d7d7d;
+          .custom-angle:before {
+            content: "\f106";
+          }
+        }
+        .dropdown-menu {
+          border: none;
+          -webkit-box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+          -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+          // left: -11px !important;
+          padding: 45px 10px 0;
+          top: -5px !important;
+          -webkit-transform: none !important;
+          transform: none !important;
+          width: 100%;
+          z-index: 992;
+          background-color: white;
+          color:#7d7d7d;
+          .divider {
+            height: 1px;
+            margin: 9px 0 5px;
+            overflow: hidden;
+            background-color: #e5e5e5;
+          }
+          .dropdown-item {
+            border-radius: 2px;
+            color: #7d7d7d;
+            display: block;
+            line-height: 20.8px;
+            line-height: 1.3rem;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-size: 0.75rem;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: 400;
+            &:hover {
+              background: #0088cc;
+              color: #fff;
+            }
+            a i {
+              font-size: 14.4px;
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .control-item {
+      display: none;
+    }
+    .user-action {
+      border: none;
+      padding: 0;
+    }
+  }
+
+  @include media-breakpoint-down(is) {
+    nb-select,
+    .direction-switcher {
+      display: none;
+    }
+  }
+
+  .name-container {
+    min-width: 220px;
+  }
+}
+
+.testing {
+  font-weight: bold;
+  font-size: 26px;
+  color: red;
+  margin-top: 5px;
+}

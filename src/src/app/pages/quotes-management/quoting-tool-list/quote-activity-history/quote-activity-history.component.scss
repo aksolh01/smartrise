@@ -1,0 +1,25 @@
+::ng-deep ngx-quote-activity-history ng2-smart-table table tbody tr td:nth-child(1) {
+    text-align: center;
+}
+
+::ng-deep ngx-quote-activity-history ng2-smart-table table thead tr:nth-child(2) {
+    display: none;
+}
+
+::ng-deep ngx-quote-activity-history ng2-smart-table table tbody tr td {
+    white-space: nowrap;
+}
+
+.table-container {
+    max-height: 30rem;
+}
+
+nb-card {
+    max-height: 32rem;
+}
+
+@-moz-document url-prefix() { 
+    .table-container {
+        margin-right: .2rem; 
+    }
+}

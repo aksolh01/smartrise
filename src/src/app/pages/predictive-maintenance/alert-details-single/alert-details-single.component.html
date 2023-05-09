@@ -1,0 +1,19 @@
+<nb-card class="in-dialog">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <div class="w-100 px-4 d-flex">
+            <div class=" card-title">{{ alert.alertName }}</div>
+            <div class="ml-auto">
+                <ngx-alert-severity [status]="alert.severity"></ngx-alert-severity>
+            </div>
+            <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onClose()"
+                style="outline: none">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row card-body">
+            <ngx-alert-details-template [alert]="alert"></ngx-alert-details-template>
+        </div>
+    </nb-card-body>
+</nb-card>

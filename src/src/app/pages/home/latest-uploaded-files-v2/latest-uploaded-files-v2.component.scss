@@ -1,0 +1,36 @@
+.default-card-header {
+    // padding-top: 0.861rem !important;
+    // padding-bottom: 0.861rem !important;
+    // padding-left: 0.861rem !important;
+}
+
+nb-list-item {
+    padding: 0.5rem 1rem 0.5rem 0.5rem !important;
+}
+
+ngx-latest-uploaded-files-item {
+    width: 100% !important;
+}
+
+.no-data-container {
+    height: 100%;
+    text-align: center;
+    padding-top: 12px;
+}
+
+.card-body {
+    padding: 0;
+
+    @media (max-width: 575px) {
+        margin-right: 10px;
+    }
+}
+
+.list-item {
+    border-bottom: 0.2px solid rgb(210, 210, 210);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(88, 160, 196) !important;
+}
+

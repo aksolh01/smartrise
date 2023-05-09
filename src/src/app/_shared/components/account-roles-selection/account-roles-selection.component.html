@@ -1,0 +1,36 @@
+<!-- <ng2-smart-table [source]="accountsSource" [settings]="accountsSettings">
+
+</ng2-smart-table> -->
+
+<div class="card-container">
+    <div class="card" *ngFor="let account of accounts">
+        <div class="card-content">
+            <nb-list class="account-name">
+                {{account.name}}
+            </nb-list>
+            <div>
+                <hr>
+            </div>
+            <div>
+                <div *ngFor="let role of roles">
+                    <nb-checkbox [disabled]="!account.isSelected && allowAccountsSelection"
+                        [checked]="isRoleSelected(account, role)"
+                        (checkedChange)="roleChecked($event, account, role)">{{role.displayName}}</nb-checkbox>
+                    <i class="privileges-icon ml-2 fas fa-info-circle" (click)="showPrivileges(role)"
+                        tooltip="Show Role Privileges"></i>
+                </div>
+            </div>
+
+            <div class="bottom-0 text-center">
+                <button *ngIf="allowRemoveAccount" type="button" class="btn btn-danger mt-3"
+                    (click)="onRemove(account)">Remove</button>
+                <div *ngIf="allowAccountsSelection" class="d-flex justify-content-center align-items-center  mt-3">
+                    <nb-toggle [ngModel]="account.isSelected" (checkedChange)="onSelectUnSelect($event, account)"
+                        class="px-2 px-md-0">
+                    </nb-toggle>
+                    <label class="ml-2">Grant Access</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

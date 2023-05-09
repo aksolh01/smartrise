@@ -1,0 +1,30 @@
+@mixin breadcrumbs-style {
+  .xng-breadcrumb-root {
+    label {
+      margin: 0;
+    }
+    .xng-breadcrumb-list {
+      flex-wrap: nowrap;
+      li {
+        color: #0088cc;
+        font-size: 0.85rem;
+        font-weight: 300;
+        font-family: 'Open Sans', Arial, sans-serif;
+      }
+      .xng-breadcrumb-item {
+        .xng-breadcrumb-link {
+          color: #0088cc;
+          font-size: 0.85rem;
+          font-weight: 300;
+          text-decoration: none;
+        }
+        .xng-breadcrumb-trail {
+          color: #0088cc;
+        }
+      }
+      .xng-breadcrumb-separator {
+        margin: 0 10px;
+      }
+    }
+  }
+}

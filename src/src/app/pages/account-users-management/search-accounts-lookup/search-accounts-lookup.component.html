@@ -1,0 +1,16 @@
+<input #selectedAccountInput type="text" (click)="debounceTimeSearchAccounts.next($event.target.value)"
+    (input)="debounceTimeSearchAccounts.next($event.target.value)"
+    (focus)="debounceTimeSearchAccounts.next($event.target.value)" placeholder="Search Accounts..." class="form-control"
+    [nbAutocomplete]="customerAutocomplete" scrollStrategy="close" />
+
+<nb-autocomplete #customerAutocomplete (selectedChange)="onSelectionChange($event)">
+
+    <nb-option class="fetching-accounts-spinner" *ngIf="isFetchingAccounts && filteredAccounts?.length === 0" [value]="null">
+        <i nbSpinner="true" nbSpinnerStatus="primary" nbSpinnerSize="tiny">&nbsp;&nbsp;&nbsp;&nbsp;</i>&nbsp;Loading...
+    </nb-option>
+
+    <nb-option *ngFor="let option of filteredAccounts" [value]="option">
+        {{ option.name }}
+    </nb-option>
+
+</nb-autocomplete>

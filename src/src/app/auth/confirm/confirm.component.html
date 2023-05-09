@@ -1,0 +1,112 @@
+<div class="confirm-form-wrapper">
+  <div *ngIf="!invalidToken" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+    <form [formGroup]="confirmForm" (ngSubmit)="onSubmit()" [class.hide]="isLoading">
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <div class="controls">
+        <div class="form-group">
+          <input type="text" maxlength="255" id="firstName" formControlName="firstName" placeholder="First Name"
+            class="form-control" />
+
+          <div class="error" *ngIf="formSubmitted &&
+              confirmForm.get('firstName').errors != null &&
+              confirmForm.get('firstName').touched
+            ">
+            First Name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <input type="text" maxlength="255" id="lastName" formControlName="lastName" placeholder="Last Name"
+            class="form-control" />
+
+          <div class="error" *ngIf="formSubmitted &&
+              confirmForm.get('lastName').errors != null &&
+              confirmForm.get('lastName').touched
+            ">
+            Last Name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <input type="email" maxlength="255" id="email" formControlName="email" class="form-control"
+            placeholder="Email" />
+        </div>
+
+        <div class="form-group">
+          <ngx-smr-password-input maxlength="255" id="password" formControlName="password" placeholder="Password"
+            [showValidations]="formSubmitted">
+          </ngx-smr-password-input>
+          <div class="help-block error" *ngIf="formSubmitted &&
+              confirmForm.get('password').errors != null &&
+              confirmForm.get('password').errors['required'] &&
+              confirmForm.get('password').touched
+            ">
+            Password is required
+          </div>
+          <div class="help-block error" *ngIf="formSubmitted &&
+              confirmForm.get('password').errors != null &&
+              confirmForm.get('password').errors['mismatchingPasswords']
+            ">
+            Passwords are mismatching
+          </div>
+        </div>
+
+        <div class="form-group">
+          <ngx-smr-password-input maxlength="255" id="confirmPassword" formControlName="confirmPassword"
+            placeholder="Confirm Password">
+          </ngx-smr-password-input>
+          <div class="help-block error" *ngIf="formSubmitted &&
+              confirmForm.get('confirmPassword').errors != null &&
+              confirmForm.get('confirmPassword').errors['required'] &&
+              confirmForm.get('confirmPassword').touched
+            ">
+            Password is required
+          </div>
+          <div class="help-block error" *ngIf="formSubmitted &&
+          confirmForm.get('confirmPassword').errors != null &&
+          confirmForm.get('confirmPassword').errors['mismatchingPasswords'] && 
+          confirmForm.get('confirmPassword').touched
+        ">
+            Passwords are mismatching
+          </div>
+        </div>
+      </div>
+
+      <div class="actions mt-4 text-right">
+        <button class="btn btn-lg btn-primary px-5" type="submit">
+          <i class="fas fa-check-circle"></i>
+          Confirm
+        </button>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="isSignedIn" class="alert alert-danger font-weight-bold m-0">
+    You need to Logoutfirst
+  </div>
+  <div *ngIf="isConfirmed && !isSignedIn">
+    <div class="alert alert-success font-weight-bold m-0">
+      Email has been confirmed successfully.
+    </div>
+    <div class="actions text-right mt-4">
+      <button type="button" (click)="onGoToLogin()" class="btn btn-primary px-5">
+        Login
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isSignedIn || invalidToken">
+    <ng-template [ngIf]="isSignedIn">
+      <div class="alert alert-danger font-weight-bold m-0">You need to Logout first</div>
+    </ng-template>
+    <ng-template [ngIf]="invalidToken">
+      <div class="alert alert-danger font-weight-bold m-0">This is an invalid invitation link</div>
+      <div class="mt-3 text-center">
+        <button class="btn btn-primary" (click)="onGoToLogin()" type="button">
+          Go to Login</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

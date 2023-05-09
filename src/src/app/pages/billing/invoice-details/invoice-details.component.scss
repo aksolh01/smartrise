@@ -1,0 +1,28 @@
+// .form-group:last-of-type,
+// .form-group:last-child {
+//     margin-bottom: 1rem;
+// }
+// @media (max-width: 600px) {
+//     .form-group {
+//         margin-bottom: 0rem !important;
+//     }
+// }
+
+.form-group:last-of-type,
+.form-group:last-child {
+    margin-bottom: 1rem;
+}
+
+.message {
+    width: 82%;
+    float: right;
+}
+
+label {
+    color: #777;
+    font-size: 0.9375rem;
+}
+
+.form-control-plaintext {
+    font-size: 0.9375rem;
+}

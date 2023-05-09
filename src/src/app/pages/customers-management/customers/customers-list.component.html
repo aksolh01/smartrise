@@ -1,0 +1,150 @@
+<div class="page-header-container">
+    <div class="page-header-title">Accounts</div>
+    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
+        <div class="input-container">
+            <div class="input-item search-input-icon">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search">
+              </div>
+        </div>
+    </div>
+    <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+</div>
+<div class="pagination-info">
+    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+    -
+    {{
+    Math.min(
+    source.count(),
+    (source.getPaging().page - 1) * settings.pager.perPage +
+    settings.pager.perPage
+    )
+    }}
+    of {{ source.count() }}
+
+    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+</div>
+<div class="table-container">
+    <nb-card joyrideStep="customerFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Accounts' : null"
+        [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">
+
+        <nb-card-body>
+            <ng-template [ngIf]="isSmall === false">
+                <div class="table-header">
+                    <div class="col d-flex justfiy-content-start align-items-center">
+                    </div>
+                    <div class="col-auto d-flex justfiy-content-start align-items-center">
+                        <!-- <button (click)="onReset()" class="main-button">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button> -->
+
+                        <div class="ml-3">
+                            <ngx-cp-checkbox [label]="'Has Logged In'" (checkStatusChange)="onHasLoginChecked($event)"
+                                [(checkStatus)]="this.hasLogin" [disable]="isLoading" class="pr-2">
+                            </ngx-cp-checkbox>
+                            <ngx-cp-checkbox [label]="'Is Favorite'" (checkStatusChange)="onIsFavoriteChecked($event)"
+                                [(checkStatus)]="this.isFavorite" [disable]="isLoading">
+                            </ngx-cp-checkbox>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="ID"
+                                    [(ngModel)]="epicorCustomerId" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Name"
+                                    [(ngModel)]="name" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Phone"
+                                    [(ngModel)]="phone" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Fax"
+                                    [(ngModel)]="fax" />
+                            </div>
+                            <!-- <div class="filter-control">
+                            <ngx-cp-datepicker
+                                class="form-group"
+                                memberName="Last Login"
+                                displayPlaceholder = "Last Login"
+                                [(selectedDate)]="lastLogin"
+                            ></ngx-cp-datepicker>
+                            </div> -->
+                            <div class="input-item">
+                                <ngx-cp-checkbox [label]="'Has Logged In'" [(checkStatus)]="this.hasLogin" class="pr-2">
+                                </ngx-cp-checkbox>
+                            </div>
+                            <div class="input-item">
+                                <ngx-cp-checkbox [label]="'Is Favorite'" [(checkStatus)]="this.isFavorite" class="pr-2">
+                                </ngx-cp-checkbox>
+                            </div>
+                            <div class="input-item">
+                                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                                    (changed)="onRecordsNumberChanged($event)">
+                                </ngx-smr-records-per-page> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-action" actions>
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                        <!-- <button (click)="onReset(); toggleFilters()" class="main-button">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button> -->
+                    </div>
+                </ngx-smr-mobile-filters>
+            </div>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table  #table [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
+                </div>
+            </div>
+
+        </nb-card-body>
+    </nb-card>
+</div>
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>
+
+<ng-template #firstCustomContent>
+    <div class='joyride-custom-content'>
+        <div style="margin-bottom: 5px;">
+            Account lookup.
+        </div>
+        <div>
+            <i class="fas fa-eye guiding-tour-action"></i>View Account Details
+        </div>
+        <div>
+            <i class="fas fa-user-cog guiding-tour-action"></i>Manage Users
+        </div>
+        <div>
+            <i class="far fa-star guiding-tour-action"></i>Add to Favorite List
+        </div>
+        <div>
+            <i class="fas fa-star guiding-tour-action"></i>Remove from Favorite List
+        </div>
+    </div>
+</ng-template>

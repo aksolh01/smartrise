@@ -1,0 +1,14 @@
+<nb-card class="card">
+    <nb-card-header class="default-card-header">
+        <div class="d-flex">
+            <h2 class="card-title">Alerts Per Part Type</h2>
+            <button type="button" class="btn btn-primary ml-auto" tooltip="View All My Parts"
+                (click)="onViewAllMyParts()">
+                View All My Parts
+            </button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div echarts [options]="options" class="echart"></div>
+    </nb-card-body>
+</nb-card>

@@ -1,0 +1,18 @@
+.statuses {
+    list-style: none;
+}
+
+.loader {
+    width: 2rem;
+    height: 2rem;
+    background-color: aquamarine;
+}
+
+.in-progress {
+
+}
+
+:host ::ng-deep .in-progress nb-spinner,
+:host ::ng-deep .in-progress nb-spinner span {
+    background-color: transparent;
+}

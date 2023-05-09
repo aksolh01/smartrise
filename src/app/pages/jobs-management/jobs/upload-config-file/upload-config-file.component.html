@@ -1,0 +1,58 @@
+<nb-card class="in-dialog" joyrideStep="generatePasscodeFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Generate Passcode' : null"
+    [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">
+
+    <ng-template #firstCustomContent>
+        <div class='joyride-custom-content'>
+            <div>
+                <i class="fas fa-folder-open guiding-tour-action"></i>Upload Config File
+            </div>
+        </div>
+    </ng-template>
+
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Generate Passcode</h2>
+    </nb-card-header>
+    <nb-card-body [nbSpinner]="isUploading" nbSpinnerStatus="primary" nbSpinnerSize="large">
+        <form>
+            <div class="file-upload-container">
+                <input class="hidden-file" type="file" #fileInput ng2FileSelect [uploader]="uploader" accept=".h"
+                    (onFileSelected)="onFileSelected($event)" />
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-start align-items-center">
+                                <div (click)="open()">
+                                    <button type="button"
+                                        class="btn btn-primary btn-group-icon btn-group-divider hidden-file">
+                                        <i class="ion-plus-round"></i>
+                                    </button>
+                                    <button [disabled]="isUploading" class="btn btn-primary mr-0 mb-0 browse">
+                                        <i class="fas fa-folder-open"></i>
+                                        Upload Config File
+                                    </button>
+                                </div>
+                                <span class="file-name ml-2">{{ fileGeneratedOnce === false ? 'No config file selected.'
+                                    : '' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-sm-12" *ngIf="source">
+                    <ng2-smart-table class="default-smart-table responsive-design1" [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+</nb-card>
+
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

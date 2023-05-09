@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  width: 50vw;
+  min-width: 300px;
+  max-width: 440px;
+}
+
+// input.ng-invalid.ng-touched,
+// textarea.ng-invalid.ng-touched {
+//   border: 1px solid red;
+// }
+
+.error {
+  color: red;
+}
+
+label {
+  color: #777;
+}
+
+.confirm-password {
+  padding-right: 0;
+}
+
+.hide {
+  opacity: 0;
+}

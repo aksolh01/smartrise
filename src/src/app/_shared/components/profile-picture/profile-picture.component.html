@@ -1,0 +1,30 @@
+<div id="container">
+    <div class="profile-image">
+        <div class="profile-image-container">
+            <img *ngIf="profileLoading" src="/assets/loader3.gif"/>
+            <img [hidden]="profileLoading" width="100%" height="100%" src="{{ url }}"  />
+    
+            <input type="file" accept=".png,.jpg,.jpeg" ng2FileSelect [uploader]="uploader" id="uploader-input"
+                style="display: none; " #fileInput (change)="onChange(fileInput.files[0])" />
+    
+            <div *ngIf="uploading">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" [ngStyle]="{ width: uploader.progress + '%' }"></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="button" class="edit-photo" [disabled]="uploading"
+            (click)="canRenderImage = true; fileInput.value = '';fileInput.click()">{{ uploadPictureText }}</button>
+        </div>
+    </div>
+    
+</div>
+
+
+
+<!-- <div class="">
+    <button class="" [disabled]="uploading"
+    [hidden]="photoGuid == null"
+    (click)="confirmDeleteProfilePhoto()">Remove Profile Picture</button>
+</div> -->

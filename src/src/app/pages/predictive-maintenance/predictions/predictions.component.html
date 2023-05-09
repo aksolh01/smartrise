@@ -1,0 +1,13 @@
+<nb-card>
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Preditions</h2>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="col-sm-12" *ngIf="source">
+            <ng2-smart-table class="default-smart-table responsive-design1" 
+            [settings]="settings" 
+            [source]="source">
+            </ng2-smart-table>
+        </div>
+    </nb-card-body>
+</nb-card>

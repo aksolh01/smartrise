@@ -1,0 +1,70 @@
+<div class="d-flex" [style]="isSmall ? '' : 'width: 650px;'">
+    <div>
+        <i class="fas fa-check-circle icon"></i>
+        <!-- <img src="assets/images/check-mark.png" alt=""> -->
+    </div>
+    <div class="ml-2">
+        <h2 *ngIf="!isSmall" class="card-title">Successful Payment</h2>
+        <h4 *ngIf="isSmall" class="card-title">Successful Payment</h4>
+        <p class="payment-message">Payment will post to your account within 1-2 business day(s).</p>
+    </div>
+</div>
+<div class="card-body" [style]="isSmall ? '' : 'width: 650px;'">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-4 form-group">
+                            <label class="col-lg-12 control-label text-sm-left text-lg-right pt-2 pr-0 pl-0">Amount</label>
+                        </div>
+
+                        <div class="col-sm-12 col-lg-8 form-group form-control-plaintext">
+                            ${{ amount | number: '1.2-2' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-4 form-group">
+                            <label class="col-lg-12 control-label text-sm-left text-lg-right pt-2 pr-0 pl-0">PN Reference</label>
+                        </div>
+
+                        <div class="col-sm-12 col-lg-8 form-group form-control-plaintext">
+                            {{ pnReference }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-4 form-group">
+                            <label class="col-lg-12 control-label text-sm-left text-lg-right pt-2 pr-0 pl-0">Payment
+                                Type</label>
+                        </div>
+
+                        <div class="col-sm-12 col-lg-8 form-group form-control-plaintext">
+                            {{ paymentType }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-4 form-group">
+                            <label class="col-lg-12 control-label text-sm-left text-lg-right pt-2 pr-0 pl-0">Transaction Date/Time</label>
+                        </div>
+
+                        <div class="col-sm-12 col-lg-8 form-group form-control-plaintext">
+                            {{ transactionTime }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 text-right p-0">
+                    <button class="btn btn-secondary" (click)="onCancel()" type="button">
+                        <i class="fas fa-times"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,136 @@
+<div class="page-header-container">
+    <div class="page-header-title">Invoices</div>
+    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
+        <div class="input-container">
+            <div class="input-item search-input-icon">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search">
+              </div>
+        </div>
+    </div>
+    <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+</div>
+<div class="pagination-info">
+    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+    -
+    {{
+    Math.min(
+    source.count(),
+    (source.getPaging().page - 1) * settings.pager.perPage +
+    settings.pager.perPage
+    )
+    }}
+    of {{ source.count() }}
+  
+    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+  </div>
+<div class="table-container">
+    <nb-card joyrideStep="invoicesFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Invoices' : null"
+        [doneTemplate]="doneButton" [stepContent]="firstCustomContent" (done)="onFinishingTour()">
+
+        <ng-template #firstCustomContent>
+            <div class='joyride-custom-content'>
+                <div style="margin-bottom: 5px;">
+                    View a list of invoices associated with your account.
+                </div>
+                <div>
+                    <i class="fas fa-eye guiding-tour-action"></i>View Invoice Details
+                </div>
+            </div>
+        </ng-template>
+
+        <nb-card-body>
+            <ng-template [ngIf]="isSmall === false">
+                <div class="table-header">
+                    <div></div>
+                    <div>
+                        <div class="col d-flex align-items-center justify-content-start">
+                            <!-- <button (click)="onReset()" class="main-button">
+                                <i class="fas fa-redo-alt"></i>
+                                Reset Filters
+                            </button> -->
+
+                            <nb-select (click)="onAgedDropDownClick()" scrollStrategy="close" placeholder="Show All"
+                                class="ml-2" (selectedChange)="onAgedSelected($event)" [selected]="aged">
+                                <nb-option value="">Show All</nb-option>
+                                <nb-option value="Current">Current</nb-option>
+                                <nb-option value="Overdue">Overdue</nb-option>
+                                <nb-option value="Paid">Paid In Full</nb-option>
+                            </nb-select>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div class="input-item" *ngIf="settings?.columns?.account">
+                                <input type="text" maxlength="255" placeholder="Account" [(ngModel)]="account" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Job Number" [(ngModel)]="jobNumber" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Invoice Number"
+                                    (keypress)="onlyNumbers($event)" [(ngModel)]="invoiceNumber" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="PO Number" [(ngModel)]="poNumbers" />
+                            </div>
+                            <div class="input-item">
+                                <ngx-cp-datepicker class="form-group" memberName="Invoice Date"
+                                    displayPlaceholder="Invoice Date"
+                                    [(selectedDate)]="invoiceDate"></ngx-cp-datepicker>
+                            </div>
+                            <div class="input-item">
+                                <input type="number" min="0" maxlength="255" placeholder="Balance" [(ngModel)]="balance"
+                                    (keypress)="preventNonNumericalInput($event)" />
+                            </div>
+                            <div class="input-item">
+                                <nb-select [(ngModel)]="aged" class="form-control form-control-select">
+                                    <nb-option value="">Invoice Status</nb-option>
+                                    <nb-option value="Current">Current</nb-option>
+                                    <nb-option value="Overdue">Overdue</nb-option>
+                                    <nb-option value="Paid">Paid In Full</nb-option>
+                                </nb-select>
+                            </div>
+                            <div class="input-item">
+                                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
+                                    (changed)="onRecordsNumberChanged($event)">
+                                </ngx-smr-records-per-page> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div actions class="form-action">
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                        <!-- <button (click)="onReset(); toggleFilters()" class="main-button">
+                            <i class="fas fa-redo-alt"></i>
+                            Reset Filters
+                        </button> -->
+                    </div>
+                </ngx-smr-mobile-filters>
+            </div>
+            <div class="table-content" *ngIf="source">
+                <ng2-smart-table #table [settings]="settings" [source]="source">
+                </ng2-smart-table>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>
+
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

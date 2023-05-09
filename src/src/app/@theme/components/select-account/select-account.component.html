@@ -1,0 +1,25 @@
+<nb-card class="in-dialog m-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Accounts</h2>
+        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onCancel()"
+            style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body class="card-body">
+        <nb-radio-group [(value)]="selectedAccount">
+            <nb-radio *ngIf="!hideAllOption" [value]="null">All</nb-radio>
+            <nb-radio *ngFor="let account of accounts" [value]="account.accountId">{{ account.name }}</nb-radio>
+        </nb-radio-group>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <button (click)="onCancel()" type="button" class="footer-btn btn btn-secondary">
+            <i class="clear-icon fas fa-times"></i>
+            Cancel
+        </button>
+        <button [disabled]="hideAllOption ? !selectedAccount : false" (click)="onSelect()" type="button" class="footer-btn btn btn-primary ml-2">
+            <i class="clear-icon fas fa-check"></i>
+            Select
+        </button>
+    </nb-card-footer>
+</nb-card>

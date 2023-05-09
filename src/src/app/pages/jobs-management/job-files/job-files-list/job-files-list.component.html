@@ -1,0 +1,155 @@
+<div class="page-header-container">
+    <div class="page-header-title">
+        Jobs & Tracking
+    </div>
+    <div *ngIf="!isSmall" class="form-container" style="width: 25%;">
+        <div class="input-container">
+            <div class="input-item search-input-icon">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search">
+            </div>
+        </div>
+    </div>
+    <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+
+</div>
+<div class="page-tab">
+    <div class="page-tab-container">
+        <div class="page-tab-item" (click)="goToJobs()">Jobs</div>
+        <div class="page-tab-item" (click)="goToShipments()">Shipments</div>
+        <div class="page-tab-item last active" (click)="goToJobsFile()">Job files</div>
+    </div>
+    <div class="pagination-info">
+        <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+        {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
+        -
+        {{
+        Math.min(
+        source.count(),
+        (source.getPaging().page - 1) * settings.pager.perPage +
+        settings.pager.perPage
+        )
+        }}
+        of {{ source.count() }}
+
+        <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <nb-card joyrideStep="resourceFirstStep" stepPosition="center"
+        [title]="runGuidingTour === true ? 'Job Files' : null" [stepContent]="firstCustomContent"
+        [doneTemplate]="doneButton" (done)="onFinishingTour()">
+
+        <ng-template #firstCustomContent>
+            <div class='joyride-custom-content'>
+                <div *ngIf="!canGenerateFile && !canManageFiles" style="margin-bottom: 5px;">
+                    View and download job documents and software.
+                </div>
+                <div *ngIf="!canManageFiles && canGenerateFile" style="margin-bottom: 5px;">
+                    View, request and download job documents and software.
+                </div>
+                <div *ngIf="canManageFiles" style="margin-bottom: 5px;">
+                    View, manage, request and download job documents and software.
+                </div>
+                <div>
+                    <i class="fas fa-eye guiding-tour-action"></i>View Job File Details
+                </div>
+                <div *ngIf="canGenerateFile">
+                    <i class="fas fa-plus-circle guiding-tour-action"></i>Generate Request to Download Job File
+                </div>
+                <div>
+                    <i class="fas fa-download guiding-tour-action"></i>Download Job File
+                </div>
+                <div *ngIf="canManageFiles">
+                    <i class="fas fa-upload guiding-tour-action"></i>Upload or Change Job File
+                </div>
+                <div *ngIf="canManageFiles">
+                    <i class="fas fa-trash guiding-tour-action"></i>Delete Job File
+                </div>
+            </div>
+        </ng-template>
+        <nb-card-body>
+            <ng-template [ngIf]="isSmall === false">
+                <div class="table-header">
+                    <div>
+                        <!-- we hide it for the time being sine Smartrise users can use the Status column -->
+                        <div *ngIf="false">
+                            <ngx-cp-checkbox [label]="'Has Uploaded File'"
+                                (checkStatusChange)="onHasUploadedFileChecked($event)"
+                                [(checkStatus)]="this.hasUploadedFile" [disable]="isLoading" class="pr-2">
+                            </ngx-cp-checkbox>
+                        </div>
+                    </div>
+
+                </div>
+            </ng-template>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div *ngIf="settings?.columns?.customerName" class="input-item">
+                                <input type="text" maxlength="255" placeholder="Account" [(ngModel)]="customerName" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Job Name" [(ngModel)]="jobName" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Job Number" [(ngModel)]="jobNumber" />
+                            </div>
+                            <div class="input-item">
+                                <nb-select [(ngModel)]="resourceType">
+                                    <nb-option value="">File Type</nb-option>
+                                    <nb-option *ngFor="let c of resourceTypes" [value]="c.value">
+                                        {{ c.description }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                            <!-- <div class="filter-control" *ngIf="isSmartriseUser">
+                            <input type="text" maxlength="255" placeholder="File Description" class="form-control" [(ngModel)]="fileDescription" />
+                            </div> -->
+                            <!-- <div class="filter-control" *ngIf="isSmartriseUser">
+                             <input type="text" maxlength="255" placeholder="Message" class="form-control" [(ngModel)]="message" />
+                             </div> -->
+                            <div class="input-item" *ngIf="isSmartriseUser">
+                                <nb-select [(ngModel)]="status">
+                                    <nb-option value="">Status</nb-option>
+                                    <nb-option *ngFor="let c of statuses" [value]="c.value">
+                                        {{ c.description }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                            <div class="w-100">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-action" actions>
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                    </div>
+
+                </ngx-smr-mobile-filters>
+            </div>
+
+            <div [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table [settings]="settings" [source]="source">
+                    </ng2-smart-table>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>
+<ng-template #doneButton>
+    <button>
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

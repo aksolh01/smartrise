@@ -1,0 +1,66 @@
+.card-title {
+    font-weight: 550;
+    color: #0088cc !important;
+}
+
+.card-header {
+    border-bottom: 1px solid #82bddd !important;
+}
+
+.pagination,
+.page-item.active,
+.page-link {
+    color: #fff;
+    border-radius: 0.125rem;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    -webkit-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+}
+
+.actions button,
+.actions button:focus {
+    border: 0rem;
+    color: #0088cc;
+    outline: 0rem;
+    background-color: transparent;
+}
+
+.actions button:disabled {
+    color: #007bff;
+    background-color: transparent;
+    opacity: 0.5;
+}
+
+.number-of-records {
+    font-size: 1.2em;
+    line-height: normal;
+}
+
+.no-records {
+    margin-top: 10px;
+}
+
+.options-group {
+    margin-left: 10px;
+}
+
+.margin {
+    margin-right: 5px;
+}
+
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(1),
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(2),
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(5) {
+    text-align: center;
+}
+
+:host ::ng-deep ng2-smart-table thead tr:nth-child(1) > th:nth-last-child(1),
+:host ::ng-deep ng2-smart-table thead tr:nth-child(2) > th:nth-last-child(5) {
+    text-align: center;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #58a0c4 !important;
+}

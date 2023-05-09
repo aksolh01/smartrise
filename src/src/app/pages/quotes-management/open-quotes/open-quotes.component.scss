@@ -1,0 +1,16 @@
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(1){
+    text-align: center;
+}
+
+:host ::ng-deep ng2-smart-table thead tr:nth-child(1) > th:nth-last-child(1){
+    text-align: center;
+}
+
+.card-title {
+    font-weight: 550;
+    color: #0088cc !important;
+}
+
+.card-header {
+    border-bottom: 1px solid #82bddd !important;
+}

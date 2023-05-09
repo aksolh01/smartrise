@@ -1,0 +1,7 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+<ng-template [ngIf]="value !== null && value !== undefined" [ngIfElse]="naOnMobile">
+  {{ prefix }}{{ value | number: parameter }}{{ suffix }}
+</ng-template>
+<ng-template #naOnMobile>
+  <div class="d-lg-none d-block">N/A</div>
+</ng-template>

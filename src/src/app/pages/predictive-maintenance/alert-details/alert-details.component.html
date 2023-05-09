@@ -1,0 +1,56 @@
+<nb-card class="in-dialog">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Alerts Details</h2>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row card-body">
+
+            <div class="col-4 col-lg-2 form-group label-max-width">
+                <label class="control-label mt-2">Job Name</label>
+            </div>
+
+            <div class="col-8 col-lg-3 form-group form-control-plaintext">
+                {{ jobName }}
+            </div>
+            <div class="col-lg-2"></div>
+            
+            <div class="col-4 col-lg-2 form-group label-max-width">
+                <label class="control-label mt-2">Job Number</label>
+            </div>
+
+            <div class="col-8 col-lg-3 form-group form-control-plaintext">
+                {{ jobNumber }}
+            </div>
+
+            <div class="col-4 col-lg-2 form-group label-max-width">
+                <label class="control-label mt-2">Car</label>
+            </div>
+
+            <div class="col-8 col-lg-3 form-group form-control-plaintext">
+                {{ carName }}
+            </div>
+            <div class="col-lg-2"></div>
+
+            <div class="col-4 col-lg-2 form-group label-max-width">
+                <label class="control-label mt-2">Part Type</label>
+            </div>
+
+            <div class="col-8 col-lg-3 form-group form-control-plaintext mb-3">
+                {{ partType }}
+            </div>
+
+            <nb-accordion *ngFor="let alert of alerts;let i = index">
+                <nb-accordion-item>
+                    <nb-accordion-item-header>
+                        <div class="w-100 px-4 d-flex justify-content-between align-items-center">
+                            {{ alert.alertName }} <ngx-alert-severity [status]="alert.severity"></ngx-alert-severity>
+                        </div>
+                    </nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                        <ngx-alert-details-template [alert]="alert"></ngx-alert-details-template>
+                    </nb-accordion-item-body>
+                </nb-accordion-item>
+            </nb-accordion>
+        </div>
+    </nb-card-body>
+</nb-card>

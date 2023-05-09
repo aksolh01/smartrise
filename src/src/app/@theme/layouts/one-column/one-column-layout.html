@@ -1,0 +1,53 @@
+<!--
+Todo: Note that we added a local reference to nb-layout in order to access the onScroll method
+and use it on the div that is the scrollable div in our solution.
+-->
+<nb-layout class="one-column-layout" withScroll #nbLayout>
+    <nb-layout-header>
+        <ngx-header [class.impersonatedHeader]="impersonationModeIsActivated"></ngx-header>
+    </nb-layout-header>
+
+    <nb-sidebar joyrideStep="thirdStep" [prevTemplate]="prevButton" [nextTemplate]="nextButton" (done)="onFinishingHomeTour()" [title]="runGuidingTour === true ? 'Menu' : null" [stepContent]="thirdCustomContent" stepPosition="right" class="menu-sidebar" tag="menu-sidebar"
+        responsive start>
+        <ng-template #thirdCustomContent>
+            <div class='joyride-custom-content'>
+                Navigate between pages here.
+            </div>
+        </ng-template>
+        <!-- <nb-sidebar-header>
+            <div class="sidebar-title">{{portalTitle}}</div>
+            <div class="sidebar-toggle d-none d-lg-block" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle" (click)="toggleSidebar()">
+                <nb-icon [icon]="'menu-outline'"></nb-icon>
+            </div>
+        </nb-sidebar-header> -->
+        <ng-content select="nb-menu"></ng-content>
+    </nb-sidebar>
+
+    <nb-layout-column class="content-column">
+        <!-- <div class="content-header">
+            <ngx-section-header> </ngx-section-header>
+        </div> -->
+        <div [ngClass]="{'content-wrapper':true, 'disable-scroll': scrollDisabled}" (scroll)="onScroll($event)">
+            <div class="content-main">
+                <div class="content-container">
+                    <ng-content select="router-outlet"></ng-content>
+                </div>
+            </div>
+            <nb-layout-footer fixed>
+                <ngx-footer></ngx-footer>
+            </nb-layout-footer>
+        </div>
+    </nb-layout-column>
+</nb-layout>
+
+<ng-template #prevButton>
+    <button class="btn btn-primary">
+        <i class="fas fa-step-backward"></i>
+        Prev</button>
+</ng-template>
+<ng-template #nextButton>
+    <button class="btn btn-primary">
+        Next
+        <i class="fas fa-step-forward"></i>
+    </button>
+</ng-template>

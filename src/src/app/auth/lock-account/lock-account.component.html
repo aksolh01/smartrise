@@ -1,0 +1,40 @@
+<form (ngSubmit)="onSubmit()">
+
+    <ng-template [ngIf]="errorMessage">
+        <div class="alert alert-danger font-weight-bold">
+            {{ errorMessage }}
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" routerLink="../login">
+                Go to Login</button>
+        </div>
+    </ng-template>
+
+    <ng-template [ngIf]="!successMessage && showForm">
+        <p>
+            Please click Confirm to complete locking your account.
+        </p>
+        <div class="actions mt-4 text-right">
+            <!-- <button class="btn btn-secondary mr-2" (click)="back()" type="button">
+                <i class="fas fa-times"></i>
+                Cancel
+            </button>
+ -->
+            <ngx-button [isLoading]="isLoading" class="btn btn-primary" type="submit">
+                <i class="fas fa-check"></i>
+                Confirm
+            </ngx-button>
+        </div>
+
+    </ng-template>
+    <ng-template [ngIf]="successMessage">
+        <div class="alert alert-success font-weight-bold">
+            {{ successMessage }}
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" (click)="backToLogin()">
+                Go to Login
+            </button>
+        </div>
+    </ng-template>
+</form>

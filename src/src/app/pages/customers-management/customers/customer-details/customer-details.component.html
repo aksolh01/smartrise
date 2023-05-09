@@ -1,0 +1,56 @@
+<nb-card size="xlarge" class="pb-1 mb-3" *ngIf="!isLoading">
+  <nb-tabset *ngIf="customer && !isLoading" (changeTab)="onChangeTab($event)" joyrideStep="customerAdminAccountsFirstStep"
+    stepPosition="center" [title]="runGuidingTour === true ? 'Admin Users' : null"
+    [stepContent]="customerAdminUsersCustomContent" [doneTemplate]="doneButton" (done)="onFinishingTour()">
+    <nb-tab [active]="infoActiveTab" tabTitle="Account Info" tabIcon="star">
+      <ngx-customer-basic-info [customer]="customer"></ngx-customer-basic-info>
+    </nb-tab>
+    <nb-tab [active]="usersActiveTab" tabTitle="Users" tabIcon="people">
+      <ngx-customer-admin-users #users *ngIf="renderUsers" [customer]="customer" [runGuidingTour]="runGuidingTour">
+      </ngx-customer-admin-users>
+    </nb-tab>
+  </nb-tabset>
+  <ng-template [ngIf]="!customer && !isLoading">
+    <div class="col-12 p-4">
+      Customer not found.
+    </div>
+  </ng-template>
+</nb-card>
+
+<div class="text-right mb-0 mx-3" *ngIf="showCloseButton">
+  <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
+    <i class="fas fa-times"></i>
+    Close
+  </button>
+</div>
+
+<ng-template [ngIf]="isLoading">
+  <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+      <div class="col-12 p-4">
+      </div>
+  </nb-card>
+</ng-template>
+
+<ng-template #customerAdminUsersCustomContent>
+  <div class='joyride-custom-content'>
+    <div style="margin-bottom: 5px;">
+      Admin Users lookup.
+    </div>
+    <div>
+      <i class="fas fa-share guiding-tour-action"></i>Resend Invitation
+    </div>
+    <div>
+      <i class="fas fa-recycle guiding-tour-action"></i>Send Password Reset Request
+    </div>
+    <div>
+      <i class="fas fa-sign-in-alt guiding-tour-action"></i>Login as a Customer User
+    </div>
+    <div>
+      <i class="fas fa-user-minus guiding-tour-action"></i>Reactivate User
+    </div>
+    <div>
+      <i class="fas fa-user-check guiding-tour-action"></i>Deactivate User
+    </div>
+  </div>
+</ng-template>
+

@@ -1,0 +1,7 @@
+<div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+<ng-template [ngIf]="!!value" [ngIfElse]="naOnMobile">
+  {{ value }} <i *ngIf="show" class="info-icon fas fa-info-circle" [tooltip]="tooltip" (click)="onClick()"></i>
+</ng-template>
+<ng-template #naOnMobile>
+  <div class="d-lg-none d-block">N/A</div>
+</ng-template>

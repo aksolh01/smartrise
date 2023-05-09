@@ -1,0 +1,236 @@
+<nb-card *ngIf="showWaitMessage">
+    <div class="wait-spinner">
+        <div class="row pb-5 pt-5">
+            <div class="col-12 text-center">
+                <ngx-wait-spinner scale="1.3"></ngx-wait-spinner>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <p>Please wait while redirecting to the Payment page...</p>
+            </div>
+        </div>
+    </div>
+</nb-card>
+
+<nb-card *ngIf="!isLoading" [ngClass]="{'hide':showWaitMessage, 'show':!showWaitMessage}">
+    <nb-card-header class="default-card-header">
+        <div class="row">
+            <div class="col-md">
+                <h2 class="card-title">Invoice Checkout</h2>
+            </div>
+        </div>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="row ">
+            <div class="col-lg-12 col-sm-12 d-flex justify-content-center">
+                <div class="invoice-card-section">
+                    <nb-card class="mb-0">
+                        <nb-card-header>
+                            <div class="invoice-card-header row">
+                                <div class="col-12 text-left">
+                                    <span class="font-weight-bold">Payment Summary</span>
+                                </div>
+                            </div>
+                        </nb-card-header>
+                        <nb-card-body>
+                            <div>
+                                <div class="items">
+                                    <div [class]="i < (invoices.length - 1) ? 'item-section' : 'item-section last-item-section'"
+                                        *ngFor="let invoice of invoices; let i=index;">
+                                        <i *ngIf="invoice?.isLocked" class="fas fa-lock locked-invoice"></i>
+                                        <div class="invoice-row">
+                                            <div class="image-section">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </div>
+                                            <div class="d-flex flex-column item-description ml-1">
+                                                <span class="invoice-number">Invoice: {{invoice?.invoiceNumber}}</span>
+                                                <span>{{invoice?.pONumbers}}</span>
+                                                <span class="invoice-message"
+                                                    *ngIf="invoice?.message">{{invoice?.message}}</span>
+                                            </div>
+                                            <div class="d-flex flex-row-reverse">
+                                                <div class="actions">
+                                                    <div *ngIf="invoices.length !== 1 && !showBackToStatementOfAccount"
+                                                        tooltip="Remove Invoice" class="action-tooltip-holder">
+                                                        <button (click)="onRemoveInvoice(invoice)"
+                                                            [disabled]="invoices.length === 1"
+                                                            data-tooltip="Remove Invoice">
+                                                            <i class="fa fa-times" disabled="true"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <span class="invoice-amount">${{ invoice?.paymentAmount | number:
+                                                    '1.2-2'
+                                                    }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </nb-card-body>
+                        <nb-card-footer>
+                            <div class="invoice-card-footer row">
+                                <div class="col-12">
+
+                                    <div *ngIf="!showBackToStatementOfAccount">
+                                        <span class="font-weight-bold">Payment Methods</span>
+                                        <div class="mt-2">
+                                            <label class="sr-radio">
+                                                <input (click)="changePaymentMethod($event)" type="radio"
+                                                    name="paymentMethod" value="paypal"
+                                                    [checked]="paymentOption === 'paypal'">
+                                                <span>Credit Card</span>
+                                            </label>
+                                            <label class="sr-radio">
+                                                <input (click)="changePaymentMethod($event)" type="radio"
+                                                    name="paymentMethod" value="ach"
+                                                    [checked]="paymentOption === 'ach'">
+                                                <span>ACH</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div *ngIf="!!paymentOption" class="invoicing-section">
+                                        <div *ngIf="paymentOption === 'paypal'">
+                                            <div class="row font-weight-bold">
+                                                <div class="col-6 text-left">
+                                                    <span>Subtotal</span>
+                                                </div>
+                                                <div class="col-6 d-flex flex-row-reverse">
+                                                    <span>${{ subTotal | number: '1.2-2' }}</span>
+                                                    <span *ngIf="invoices.length !== 1" class="total"></span>
+                                                </div>
+
+                                            </div>
+                                            <hr>
+
+                                            <div class="row font-weight-bold">
+                                                <div class="col-6 text-left">
+                                                    <span>Processing Fees</span>
+                                                </div>
+                                                <div class="col-6 d-flex flex-row-reverse">
+                                                    <span>${{ processingFees | number: '1.2-2' }}</span>
+                                                    <span *ngIf="invoices.length !== 1" class="total"></span>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                        </div>
+
+                                        <div class="row font-weight-bold">
+                                            <div class="col-6 text-left">
+                                                <span>Total</span>
+                                            </div>
+                                            <div class="col-6 d-flex flex-row-reverse">
+                                                <span>${{ total | number: '1.2-2' }}</span>
+                                                <span *ngIf="invoices.length !== 1" class="total"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form *ngIf="!showBackToStatementOfAccount && paymentOption === 'paypal'" method="post" #payPalForm target="_blank">
+
+                                        <div class="btn-checkout-container">
+                                            <ngx-button [isLoading]="isLoading" class="btn btn-checkout" type="button"
+                                                (click)="onSubmit()" [disabled]="isLoading || isLocked">
+                                                <svg width="24" height="32" viewBox="0 0 24 32"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    preserveAspectRatio="xMinYMin meet">
+                                                    <path fill="#009cde"
+                                                        d="M 20.905 9.5 C 21.185 7.4 20.905 6 19.782 4.7 C 18.564 3.3 16.411 2.6 13.697 2.6 L 5.739 2.6 C 5.271 2.6 4.71 3.1 4.615 3.6 L 1.339 25.8 C 1.339 26.2 1.62 26.7 2.088 26.7 L 6.956 26.7 L 6.675 28.9 C 6.581 29.3 6.862 29.6 7.236 29.6 L 11.356 29.6 C 11.825 29.6 12.292 29.3 12.386 28.8 L 12.386 28.5 L 13.228 23.3 L 13.228 23.1 C 13.322 22.6 13.79 22.2 14.258 22.2 L 14.821 22.2 C 18.845 22.2 21.935 20.5 22.871 15.5 C 23.339 13.4 23.153 11.7 22.029 10.5 C 21.748 10.1 21.279 9.8 20.905 9.5 L 20.905 9.5">
+                                                    </path>
+                                                    <path fill="#012169"
+                                                        d="M 20.905 9.5 C 21.185 7.4 20.905 6 19.782 4.7 C 18.564 3.3 16.411 2.6 13.697 2.6 L 5.739 2.6 C 5.271 2.6 4.71 3.1 4.615 3.6 L 1.339 25.8 C 1.339 26.2 1.62 26.7 2.088 26.7 L 6.956 26.7 L 8.267 18.4 L 8.173 18.7 C 8.267 18.1 8.735 17.7 9.296 17.7 L 11.636 17.7 C 16.224 17.7 19.782 15.7 20.905 10.1 C 20.812 9.8 20.905 9.7 20.905 9.5">
+                                                    </path>
+                                                    <path fill="#003087"
+                                                        d="M 9.485 9.5 C 9.577 9.2 9.765 8.9 10.046 8.7 C 10.232 8.7 10.326 8.6 10.513 8.6 L 16.692 8.6 C 17.442 8.6 18.189 8.7 18.753 8.8 C 18.939 8.8 19.127 8.8 19.314 8.9 C 19.501 9 19.688 9 19.782 9.1 C 19.875 9.1 19.968 9.1 20.063 9.1 C 20.343 9.2 20.624 9.4 20.905 9.5 C 21.185 7.4 20.905 6 19.782 4.6 C 18.658 3.2 16.506 2.6 13.79 2.6 L 5.739 2.6 C 5.271 2.6 4.71 3 4.615 3.6 L 1.339 25.8 C 1.339 26.2 1.62 26.7 2.088 26.7 L 6.956 26.7 L 8.267 18.4 L 9.485 9.5 Z">
+                                                    </path>
+                                                </svg>
+                                                Checkout with PayPal
+                                                <!-- <div *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm" role="status"></div> -->
+                                            </ngx-button>
+                                        </div>
+                                        <div *ngIf="showWaitMessage" class="alert alert-primary mt-2">
+                                            Please wait while redirecting to the Payment page.
+                                        </div>
+                                    </form>
+
+                                    <div class="ach-accounts" *ngIf="!showBackToStatementOfAccount && paymentOption === 'ach'">
+                                        <div *ngIf="isCheckingBankAccounts" class="text-left" role="status">
+                                            <div class="row waiting-bank-accounts">
+                                                <div class="col-2">
+                                                    <div class="spinner-border spinner-border-lg"></div>
+                                                </div>
+                                                <div class="col-10 pl-0 mt-1">
+                                                    <span>Loading Bank Accounts...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div *ngIf="noBankAccounts">
+                                            <div class="alert alert-info">
+
+                                                <p>Would you like to add a new bank account?</p>
+
+                                                <button class="btn btn-secondary btn-no mr-1"
+                                                    (click)="unSelectPaymentMethod()">No</button>
+                                                <button class="btn btn-primary btn-yes"
+                                                    (click)="goToCreateBankAccount()">Yes</button>
+                                            </div>
+                                        </div>
+
+                                        <div *ngIf="selectedAccount">
+                                            <div class="row mb-1">
+                                                <div class="col-10 text-left">
+                                                    <div>
+                                                        <span class="font-weight-bold">Selected Account:</span>
+                                                        <span> ******{{ selectedAccount.last4 }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 text-right">
+                                                    <button [disabled]="isLoadingActiveBankAccounts"
+                                                        class="change-account" tooltip="Change Account"
+                                                        (click)="onChangeBankAccount()">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="btn-checkout-container">
+                                                <ngx-button [isLoading]="isProccessing" class="btn btn-checkout"
+                                                    type="button" (click)="onSubmitACH()" [disabled]="isProccessing">
+                                                    <img [src]="stripeLogoAsBase64" height="24px" />
+                                                    Checkout with Stripe
+                                                </ngx-button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </nb-card-footer>
+                    </nb-card>
+                    <div *ngIf="showBackToStatementOfAccount" class="row">
+                        <div class="col-12">
+                            <p class="ml-3" style="color: gray;">You may go back to the Statement Of Account page.</p>
+                        </div>
+                        <div class="col-12 text-right">
+                            <button class="btn btn-secondary" tooltip="Back to Statement of Account"
+                                (click)="onClose()">
+                                <i class="fas fa-chevron-left"></i>
+                                Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!showBackToStatementOfAccount" class="form-buttons">
+            <button (click)="onClose()" type="button" class="mt-3 btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancel
+            </button>
+        </div>
+    </nb-card-body>
+</nb-card>

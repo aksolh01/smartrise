@@ -1,0 +1,235 @@
+<nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">Quote Details - {{accountName}}</h2>
+    </nb-card-header>
+
+    <nb-card-body>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <div class="form-group row" *ngIf="accountName">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="account-name form-control-plaintext">
+                                {{ accountName }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Created Date</label>
+                        <div class="col-12 col-lg-8">
+                            <input type="input" placeholder="Created Date" [nbDatepicker]="creationDateDatepicker"
+                                disabled="true" formControlName="creationDate" class="form-control">
+                            <nb-datepicker #creationDateDatepicker [format]="'MM/dd/yyyy'"></nb-datepicker>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Status</label>
+                        <div class="col-12 col-lg-8">
+                            <nb-select (click)="onFixDropdDownScroll()"
+                                [attr.placeholder-selected]="form.value.jobStatus === ''"
+                                (selectedChange)="onJobStatusChange($event)" formControlName="jobStatus" #jobStatus
+                                fullWidth scrollStrategy="close">
+                                <nb-option class="first-option" value="">Job Status</nb-option>
+                                <nb-option *ngFor="let ele of jobStatusDataSource" [value]="ele['value']">{{
+                                    ele['description'] }}</nb-option>
+                            </nb-select>
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                                !!form.get('jobStatus').errors &&
+                                form.get('jobStatus').errors['requiredWithTrim'] &&
+                                form.get('jobStatus').touched
+                              ">
+                                    Job Status is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="form.value.jobStatus === 'Bidding'" class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Bid Date</label>
+                        <div class="col-12 col-lg-8">
+                            <input [nbDatepicker]="biddingDateDatepicker" type="text" class="form-control"
+                                formControlName="biddingDate" (keydown)="dateKeyPress($event)" placeholder="Bid Date">
+                            <nb-datepicker #biddingDateDatepicker [format]="'MM/dd/yyyy'"></nb-datepicker>
+
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                                form.get('biddingDate').errors != null &&
+                                form.get('biddingDate').errors['requiredWithTrim'] &&
+                                form.get('biddingDate').touched
+                              ">
+                                    Bid Date is required
+                                </div>
+                                <div class="help-block error" *ngIf="
+                                form.get('biddingDate').errors != null &&
+                                form.get('biddingDate').errors['lessThanToday'] &&
+                                form.get('biddingDate').touched
+                              ">
+                                    Bid Date cannot be less than today
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Consultant Name</label>
+                        <div class="col-12 col-lg-8">
+                            <input type="text" maxlength="50" class="form-control" formControlName="consultantName"
+                                placeholder="Consultant Name" />
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                                form.get('consultantName').errors != null &&
+                                form.get('consultantName').errors['required'] &&
+                                form.get('consultantName').touched
+                              ">
+                                    Consultant Name is required
+                                </div>
+                                <div class="help-block error" *ngIf="
+                                form.get('consultantName').errors != null &&
+                                form.get('consultantName').errors['trimError'] &&
+                                form.get('consultantName').touched
+                              ">
+                                    This field can't start or end with a blank space
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Unknown
+                            Consultant</label>
+                        <div class="col-12 col-lg-8 d-flex justify-content-lg-center align-items-center">
+                            <nb-checkbox (checkedChange)="onUnknownConsultantChanged($event)" id="unknownConsultant"
+                                formControlName="unknownConsultant">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Modernization</label>
+                        <div class="col-12 col-lg-8 d-flex justify-content-lg-center align-items-center">
+                            <nb-checkbox id="modernization" formControlName="modernization">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">New Construction</label>
+                        <div class="col-12 col-lg-8 d-flex justify-content-lg-center align-items-center">
+                            <nb-checkbox id="newConstruction" formControlName="newConstruction">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
+                        <div class="col-12 col-lg-8">
+                            <input type="text" maxlength="20" class="form-control" formControlName="jobName"
+                                placeholder="Job Name">
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                            form.get('jobName').errors != null &&
+                            form.get('jobName').errors['requiredWithTrim'] &&
+                            form.get('jobName').touched
+                          ">
+                                    Job Name is required
+                                </div>
+                                <div class="help-block error" *ngIf="
+                                form.get('jobName').errors != null &&
+                                form.get('jobName').errors['trimError'] &&
+                                form.get('jobName').touched
+                              ">
+                                    This field can't start or end with a blank space
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Building Type</label>
+                        <div class="col-12 col-lg-8">
+                            <nb-select (click)="onFixDropdDownScroll()"
+                                [attr.placeholder-selected]="form.value.buildingType === ''"
+                                formControlName="buildingType" #buildingType fullWidth scrollStrategy="close">
+                                <nb-option class="first-option" value="">Building Type</nb-option>
+                                <nb-option *ngFor="let ele of buildingTypesDataSource" [value]="ele['value']">{{
+                                    ele['description'] }}</nb-option>
+                            </nb-select>
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                                form.get('buildingType').errors != null &&
+                                form.get('buildingType').errors[
+                                  'requiredWithTrim'
+                                ] &&
+                                form.get('buildingType').touched
+                              ">
+                                    Building Type is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Location</label>
+                        <div class="col-12 col-lg-8">
+                            <ngx-job-location-lookup [disableQuotingValidation]="true" fieldLabel="Job Location"
+                                formControlName="jobLocation" [countries]="countries"></ngx-job-location-lookup>
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                                form.get('jobLocation').errors != null &&
+                                form.get('jobLocation').errors['required'] &&
+                                form.get('jobLocation').touched
+                              ">
+                                    Job Location is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Contact</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="d-flex">
+                                <input readonly="true" type="text" class="form-control contact-input"
+                                    formControlName="contact" placeholder="Contact">
+                                <button type="button" tooltip="Search Contact"
+                                    class="btn btn-primary p-0 pr-2 pl-2 ml-1" (click)="onSelectContact()">
+                                    <i [ngClass]="{'fa fa-search': true}"></i>
+                                </button>
+                            </div>
+                            <div *ngIf="formSubmitted" class="errors">
+                                <div class="help-block error" *ngIf="
+                                form.get('contact').errors != null &&
+                                form.get('contact').errors['requiredWithTrim'] &&
+                                form.get('contact').touched
+                              ">
+                                    Contact is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
+                        <div class="col-12 col-lg-8">
+                            <input [readonly]="true" class="form-control email-input" type="email"
+                                formControlName="email" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Phone</label>
+                        <div class="col-12 col-lg-8">
+                            <input [readonly]="true" class="form-control phone-input" type="phone"
+                                formControlName="phone" placeholder="Phone">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-actions text-right">
+                <button (click)="onCancel()" type="button" class="mr-1 btn btn-lg btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button type="submit" class="mr-1 btn btn-lg btn-primary">
+                    <i class="fas fa-plus-circle"></i>
+                    Create
+                </button>
+            </div>
+        </form>
+    </nb-card-body>
+</nb-card>

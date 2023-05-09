@@ -1,0 +1,47 @@
+<!-- <agm-map [latitude]="latitude" [longitude]="longitude"></agm-map> -->
+<nb-card class="card">
+    <nb-card-header class="default-card-header">
+        <h2 class="card-title">Jobs In USA</h2>
+    </nb-card-header>
+    <nb-card-body>
+        <ngx-legend (legendClicked)="onLegendClicked($event)"></ngx-legend>
+        <google-map (boundsChanged)="onBoundsChanged()" id="map" [zoom]="zoom" [center]="center" [options]="options"
+            #map [width]="mapWidth" [height]="mapHeight" class="map">
+            <map-marker #markerElem="mapMarker" *ngFor="let marker of markers" [position]="marker.position"
+                [label]="marker.label" [title]="marker.title" [options]="marker.options"
+                (mapMouseover)="openInfo(markerElem, marker.info)" (mapMouseout)="closeInfo(markerElem)">
+            </map-marker>
+            <map-info-window class="info-window" [options]="wOptions">
+                <nb-card>
+                    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+                        <h2 class="card-title">Job Info</h2>
+                        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close"
+                            (click)="closeWindow()" style="outline: none">
+                            <i class="fas fa-times text-sm"></i>
+                        </button>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="info-row">
+                            <div class="info-label"> Job Name: </div>
+                            <div class="info-value"> {{ infoContent.jobName }} </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label"> Job Number: </div>
+                            <div class="info-value"> {{ infoContent.jobNumber }} </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label"> Alerts Count: </div>
+                            <div class="info-value"> {{ infoContent.alertsCount }} </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Status:</div>
+                            <div class="info-value">
+                                <ngx-alert-status [status]="infoContent.status"></ngx-alert-status>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </map-info-window>
+        </google-map>
+    </nb-card-body>
+</nb-card>

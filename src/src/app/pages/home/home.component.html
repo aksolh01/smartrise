@@ -1,0 +1,88 @@
+<div *ngIf="show2FAisActivated" class="alert alert-primary">
+    <i class="fas fa-times float-right close-alert" tooltip="Close Alert" (click)="onClose2FAAlert()"></i>
+    <p class="mb-0">
+        The Two-Factor Authentication is now enabled for your account. The next time you login, you will be asked to
+        enter a Security Code sent to your Email address.
+    </p>
+</div>
+
+<div joyrideStep="sixthStep" stepPosition="center" (done)="onFinishingTour()"
+    [title]="runGuidingTour === true ? 'Time to get started!' : null" [stepContent]="sixthCustomContent"
+    [prevTemplate]="prevButton" [doneTemplate]="doneButton">
+
+    <ng-template #sixthCustomContent>
+        <div class="joyride-custom-content sixth-step-content-width">
+            Click
+            <label class="imitate-link" (click)="rerunGuidingTour()">here</label> to revisit the tour.
+        </div>
+    </ng-template>
+</div>
+
+<div joyrideStep="firstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Customer Portal' : null"
+    (done)="onFinishingTour()" [stepContent]="firstCustomContent" [nextTemplate]="nextButton">
+
+    <ng-template #firstCustomContent>
+        <div class="joyride-custom-content">
+            Welcome to your Customer Portal!<br /> Let’s take a minute to go over how this portal will be useful to you
+            and your team.
+        </div>
+    </ng-template>
+</div>
+
+<div class="row">
+
+    <div class="col-12 col-md-4">
+        <nb-card size="tiny" style="height: 17.6rem;">
+            <nb-card-header class="default-card-header">
+                <h2 class="card-title">
+                    Profile
+                </h2>
+            </nb-card-header>
+            <nb-card-body class="card-body" [nbSpinner]="isLoadingUserInfo" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <ngx-profile-card-v3 *ngIf="user" [user]="user" (restartGuidingTour)="onRestartGuidingTour($event)">
+                </ngx-profile-card-v3>
+            </nb-card-body>
+        </nb-card>
+
+    </div>
+
+    <div class="col-12 col-md-4" *ngIf="hasAccessToCustomers">
+        <ngx-recent-customers [data]="recentCustomers" [isLoading]="isLoadingRecentCustomers"></ngx-recent-customers>
+    </div>
+
+    <div class="col-12 col-md-4" *ngIf="hasAccessToCustomers">
+        <ngx-favorite-customer [data]="favoriteCustomers" [isLoading]="isLoadingFavoriteCustomers">
+        </ngx-favorite-customer>
+    </div>
+
+    <div class="col-12 col-md-4" *ngIf="hasAccessToRecentJobs">
+        <ngx-recent-jobs [data]="recentJobs" [isLoading]="isLoadingRecentJobs" [displayCustomerName]="displayCustomerName">
+        </ngx-recent-jobs>
+    </div>
+
+    <div class="col-12 col-md-4" *ngIf="hasAccessToJobFiles">
+        <ngx-latest-uploaded-files-v2 [data]="latestUploadedFiles" [isLoading]="isLoadingLatestUploadedFiles"
+        [displayCustomerName]="displayCustomerName" (refresh)="onRefreshlatestUploadedFiles($event)">
+
+        </ngx-latest-uploaded-files-v2>
+    </div>
+</div>
+
+<ng-template #prevButton>
+    <button class="btn btn-primary">
+        <i class="fas fa-step-backward"></i>
+        Prev
+    </button>
+</ng-template>
+<ng-template #nextButton>
+    <button class="btn btn-primary">
+        Next
+        <i class="fas fa-step-forward"></i>
+    </button>
+</ng-template>
+<ng-template #doneButton>
+    <button class="btn btn-primary">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

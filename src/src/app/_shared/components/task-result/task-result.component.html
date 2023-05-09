@@ -1,0 +1,24 @@
+<nb-card class="in-dialog mb-0">
+  <nb-card-header *ngIf="showClose" class="p-1 pr-2 d-flex align-items-center justify-content-between">
+    <div></div>
+    <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onCancel()"
+      style="outline: none">
+      <i class="fas fa-times text-sm"></i>
+    </button>
+  </nb-card-header>
+  <nb-card-body>
+    <div>
+      <ul class="statuses pl-0">
+        <li *ngFor="let status of statuses"
+          [ngStyle]="{'display': status.status === 'Pending' ? 'none' : 'list-item' }">
+          <div>
+            <i [nbSpinner]="status.status === 'InProgress'" nbSpinnerStatus="primary" nbSpinnerSize="tiny"
+              [ngStyle]="{'padding':'2px', 'color': getStatusColor(status), 'background': status.status === 'InProgress' ? 'transperant' : ''}"
+              [ngClass]="{'mr-1 fas': true, 'fa-times-circle': status.status === 'Failed', 'fa-check-circle': status.status !== 'Failed','in-progress': status.status === 'InProgress'}"></i>
+            <span>{{ status.message }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

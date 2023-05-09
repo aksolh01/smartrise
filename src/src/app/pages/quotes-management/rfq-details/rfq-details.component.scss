@@ -1,0 +1,84 @@
+.table-container {
+    max-height: 16rem;
+    overflow: auto;
+}
+
+.totals .control-label,
+.totals .form-control-plaintext {
+    font-weight: bold;
+}
+
+::ng-deep ngx-rfq-details ng2-smart-table.default-smart-table table tbody tr td:nth-child(1) {
+    font-weight: bold;
+}
+
+::ng-deep ngx-rfq-details ng2-smart-table.default-smart-table table tbody tr td:nth-child(4) {
+    text-align: center;
+}
+
+// ::ng-deep .nb-theme-corporate  ngx-rfq-details ng2-smart-table.default-smart-table table tbody tr:nth-of-type(odd) {
+//     background-color: #acd4f0 !important;
+// }
+
+// ::ng-deep .nb-theme-corporate  ngx-rfq-details ng2-smart-table.default-smart-table table tbody tr:nth-of-type(odd) td {
+// }
+
+// ::ng-deep .nb-theme-corporate  ngx-rfq-details ng2-smart-table thead tr {
+//     background-color: rgb(113, 184, 230) !important;
+// }
+
+::ng-deep .nb-theme-corporate  ngx-rfq-details ng2-smart-table thead tr:nth-child(2) {
+    display: none;
+}
+
+// ::ng-deep .nb-theme-corporate  ngx-rfq-details ng2-smart-table thead tr th a {
+//     color: black !important;
+// }
+
+nb-card-body .form-control-plaintext {
+    background: #f4f4f4;
+}
+.form-group {
+    margin-bottom: 0;    
+}
+// .form-group:last-of-type, 
+// .form-group:last-child {
+//     margin-bottom: 1rem !important;
+// }
+
+@media (min-width: 992px) {
+    .modal-body {
+        min-width: 55rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .modal-body {
+      max-width: 40rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .modal-body {
+      max-width: 30rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .modal-body {
+      max-width: 20rem;
+    }
+  }
+  
+  nb-card-body .control-label {
+    color: black;
+  }
+
+  label.control-label {
+    font-size: 0.9rem;
+  }
+
+  .form-control-plaintext {
+    font-size: 0.9rem;
+  }
+

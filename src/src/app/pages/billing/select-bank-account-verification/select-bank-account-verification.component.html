@@ -1,0 +1,70 @@
+<nb-card class="pb-0 mb-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Add Bank Account</h2>
+        <button [disabled]="isLoading" type="button" class="close ml-5" aria-label="Close" tooltip="Close"
+            (click)="onCancel()" style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="card-body pt-0 pb-0">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 select-method-title pl-0 mb-3">Select Bank Verification Method:</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-0 d-flex">
+                            <div class="section mr-1">
+                                <div class="section-title">
+                                    Instant Verification
+                                </div>
+                                <p class="section-description">
+                                    Instantly verify your account using your online banking credentials.
+                                </p>
+                                <div class="section-action text-right">
+                                    <ngx-button [isLoading]="isLoading" type="button" (click)="onConnect()"
+                                        class="btn btn-primary">Connect
+                                        Bank</ngx-button>
+                                </div>
+                            </div>
+                            <div class="section ml-1">
+                                <div class="section-title">
+                                    Manual Verification
+                                </div>
+                                <p class="section-description">
+                                    Verify your account manually by entering your routing and account number.
+                                </p>
+                                <p class="manual-section-note">
+                                    *Note: This process can take up to 3 business days
+                                </p>
+                                <div class="section-action text-right">
+                                    <ngx-button [disabled]="isLoading" type="button" (click)="onManual()"
+                                        class="btn btn-primary">Add
+                                        Manually</ngx-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 pl-0 pt-2">
+                            <div class="bottom-note">
+                                Credentials are sent directly to your bank and are never stored.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
+        <div class="row">
+            <div class="col-12 text-right">
+                <button (click)="onCancel()" type="button" class="footer-btn btn btn-secondary">
+                    <i class="clear-icon fas fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </nb-card-footer>
+</nb-card>

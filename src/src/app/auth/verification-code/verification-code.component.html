@@ -1,0 +1,75 @@
+<form [formGroup]="twoStepForm" autocomplete="off" novalidate (ngSubmit)="loginUser(twoStepForm.value)" class="form-container">
+    <div class="input-container">
+        <div class="input-item">
+            <!--<ng-template [ngIf]="errorMessage">
+                <div class="alert alert-danger font-weight-bold">
+                    {{ errorMessage }}
+                </div>
+            </ng-template>-->
+            <!--<ng-template [ngIf]="succuessMessage">
+                <div [innerHTML]="succuessMessage" class="alert alert-success font-weight-bold">
+                </div>
+            </ng-template>-->
+            <div class=mb-3>
+                <span class="label-default txt-xl">
+                    To access the Portal, please enter the Security Code below.
+                </span>
+            </div>
+            <div>
+                <div class="mb-1 ml-1">
+                    <span class="label-default txt-base">
+                        Email Security Code
+                    </span>
+                </div>
+                <div>
+                    <input style="display: inline !important;width: auto !important;"  type="text"
+                        placeholder="Security Code" id="twoFactorCode"
+                        formControlName="twoFactorCode" class="form-control" />
+
+                    <ngx-button *ngIf="canGenerateCode === true" [disabled]="isGeneratingCode === true" [isLoading]="isGeneratingCode"
+                        class="btn btn-outline-primary ml-2 mb-1" type="button" (nClick)="onGenerateCode()">
+                        Get Code
+                    </ngx-button>
+
+                    <button *ngIf="canGenerateCode === false" disabled="true"
+                        class="btn btn-outline-primary ml-2 mb-1" >
+                        {{ timeToGenerateCode }}
+                    </button>
+                </div>
+                <div class="mt-2 ml-1 mb-3">
+                    <span class="label-default txt-base">
+                        Enter the 6-digit code sent to {{email}}
+                    </span>
+                </div>
+                <div *ngIf="formSubmitted && twoStepForm.get('twoFactorCode').touched && twoStepForm.get('twoFactorCode').errors && twoStepForm.get('twoFactorCode').errors['requiredWithTrim']"
+                    class="ml-1 mt-1 help-block error">
+                    Security Code is required
+                </div>
+                <div *ngIf="formSubmitted && twoStepForm.get('twoFactorCode').touched && twoStepForm.get('twoFactorCode').errors && twoStepForm.get('twoFactorCode').errors['verificationCode']"
+                    class="ml-1 mt-1 help-block error">
+                    Invalid format of Security Code
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!isSmall">
+        <ngx-button [isLoading]="isLoading" class="main-button px-5"
+            type="submit">
+            <i class="fas fa-check"></i>
+            Verify
+        </ngx-button>
+    </div>
+
+    <div *ngIf="isSmall" class="actions mt-4 text-right">
+
+        <div>
+            <div [ngClass]="{'col-lg-12': true, 'pr-0': isSmall}">
+                <ngx-button [isLoading]="isLoading" [disabled]="twoStepForm.invalid"
+                    class="main-button" type="submit">
+                    <i class="fas fa-check"></i>
+                    Verify
+                </ngx-button>
+            </div>
+        </div>
+    </div>
+</form>
