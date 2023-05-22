@@ -30,7 +30,6 @@ $column-xxlarge-size: 18rem;
         width: 49%;
         flex: 0 0 49% !important;
         background: white;
-        padding: 0;
         border-radius: 16px;
         padding: 20px;
         display: flex;
@@ -254,7 +253,6 @@ tfoot tr td:first-child {
 }
 
 table {
-  min-width: 48rem;
   font-size: 0.85rem;
   width: 100%;
 }
@@ -295,7 +293,6 @@ div.form-control-plaintext {
 }
 
 table tbody tr td:first-child {
-  width: 10rem;
 }
 
 ::ng-deep ng2-smart-table.history-table ngx-smr-ng2-table-cell div.d-md-block,
@@ -313,7 +310,7 @@ table tbody tr td:first-child {
 
 .section-header {
   display: flex;
-  padding: 20px 8px;
+  padding: 20px;
   border-bottom: 1px solid #d7d7d7;
   .extra {
     flex: 1; /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
@@ -894,6 +891,9 @@ td span {
     padding: 20px;
     color: black;
     font-weight: 700;
+    max-width: unset;
+    white-space: normal; 
+    max-width: 150px;
   }
 
   th {
@@ -917,10 +917,27 @@ td span {
         gap: 16px;
         .left-section,
         .right-section {
-            width: 100%;
+          width: 100%;
+          padding-left: 0;
+          padding-right: 0;
           flex: 0 0 100% !important;
         }
       }
     }
+  }
+  thead{
+    display: none !important;
+  }
+  .table-container table {
+  
+    th,
+    td {
+        max-width: unset;
+    }
+  
+    th {
+      // border-top: 1px solid gray;
+    }
+
   }
 }
