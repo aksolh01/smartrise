@@ -1,964 +1,966 @@
 <nb-card *ngIf="!isLoading" [nbSpinner]="isAddingCar" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-    <nb-card-header class="default-card-header">
-        <h2 class="card-title">Quote Details - {{quote?.createdByAccount}}</h2>
-    </nb-card-header>
-
-    <nb-card-body class="pb-0">
-
-        <div class="text-right mb-3">
-            <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked" (cancel)="onCancel()"
-                (edit)="onEdit()" (viewPricing)="onViewPricing()"
-                [canEditQuote]="canEditQuote"></ngx-detail-actions-bar>
-        </div>
-
-        <div class="row quote-level-info">
-            <div class="col-lg-6">
-
-                <div *ngIf="displayAccountName" class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">{{accountTitle}}</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.createdByAccount }}
+    <div class="table-sub-details">
+        <nb-card-header class="default-card-header">
+            <h2 class="card-title">Quote Details - {{quote?.createdByAccount}}</h2>
+        </nb-card-header>
+    
+        <nb-card-body class="pb-0">
+    
+            <div class="text-right mb-3">
+                <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked" (cancel)="onCancel()"
+                    (edit)="onEdit()" (viewPricing)="onViewPricing()"
+                    [canEditQuote]="canEditQuote"></ngx-detail-actions-bar>
+            </div>
+    
+            <div class="row quote-level-info">
+                <div class="col-lg-6 left-section">
+    
+                    <div *ngIf="displayAccountName" class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">{{accountTitle}}</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.createdByAccount }}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Created Date</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.creationDate | usdate | value }}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Status</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.jobStatus?.description | value }}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row" *ngIf="quote?.jobStatus?.value === 'Bidding'">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Bid Date</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.biddingDate | usdate | value }}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Consultant Name</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.consultantName | value }}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Unknown Consultant</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                <ngx-yes-no [value]="quote.unknownConsultant"></ngx-yes-no>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Modernization</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                <ngx-yes-no [value]="quote.modernization"></ngx-yes-no>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">New Construction</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                <ngx-yes-no [value]="quote.newConstruction"></ngx-yes-no>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Created Date</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.creationDate | usdate | value }}
+    
+                <div class="col-lg-6 right-section">
+    
+                    <!-- <div *ngIf="displayAccountName" class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.customer?.name | value }}
+                            </div>
+                        </div>
+                    </div> -->
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.jobName | value }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Status</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.jobStatus?.description | value }}
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Building Type</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.buildingType?.description | value }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group row" *ngIf="quote?.jobStatus?.value === 'Bidding'">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Bid Date</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.biddingDate | usdate | value }}
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Location</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.jobLocation?.displayLocation | value }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Consultant Name</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.consultantName | value }}
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Contact</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.contact | value }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Unknown Consultant</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            <ngx-yes-no [value]="quote.unknownConsultant"></ngx-yes-no>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.email | value }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Modernization</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            <ngx-yes-no [value]="quote.modernization"></ngx-yes-no>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">New Construction</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            <ngx-yes-no [value]="quote.newConstruction"></ngx-yes-no>
+    
+                    <div class="form-group row">
+                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Phone</label>
+                        <div class="col-12 col-lg-8">
+                            <div class="form-control-plaintext">
+                                {{ quote?.phone | value }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-6">
-
-                <!-- <div *ngIf="displayAccountName" class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.customer?.name | value }}
-                        </div>
-                    </div>
-                </div> -->
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.jobName | value }}
-                        </div>
+    
+            <div class="section-container">
+    
+                <div class="section-header">
+                    <div class="header-title">
+                        General Data
                     </div>
                 </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Building Type</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.buildingType?.description | value }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Location</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.jobLocation?.displayLocation | value }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Contact</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.contact | value }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.email | value }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Phone</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            {{ quote?.phone | value }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-container">
-
-            <div class="section-header">
-                <div class="header-title">
-                    General Data
-                </div>
-            </div>
-
-            <div class="table-container general-1-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Controller Type</th>
-                            <th>Simplex/Group</th>
-                            <th>Car Label</th>
-                            <th>Number Of Cars</th>
-                            <th>Openings</th>
-                            <th>Stops</th>
-                            <th>Number of Risers</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars; let i = index">
-                            <td class="text-center">
-                                {{ car?.group?.description }} - {{ car.carLabel }}
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.controllerType?.description | value }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.group?.description | value }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.carLabel | value }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.numberOfCars | numberValue }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.openings | numberValue }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.stops | numberValue }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.numberOfRisersAlternative | numberValue }}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container">
-
-            <div class="section-header">
-                <div class="header-title">
-                    Motor Parameters
-                </div>
-            </div>
-
-            <div class="table-container motor-parameters">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Main Line Voltage</th>
-                            <th>Motor Volts</th>
-                            <th>Speed (FPM)</th>
-                            <th>Capacity (LBS)</th>
-                            <th>Motor HP</th>
-                            <th>Full Load Amps (FLA)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars; let i = index">
-                            <td class="text-center">
-                                {{ car?.group?.description }} - {{ car.carLabel }}
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.mainLineVoltage"
-                                    [assumed]="car.mainLineVoltageAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.motorVolts"
-                                    [assumed]="car.motorVoltsAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.speedFPM"
-                                    [assumed]="car.speedFPMAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.capacity"
-                                    [assumed]="car.capacityAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.motorHP"
-                                    [assumed]="car.motorHPAssume"></ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car.fullLoadAmps | numberValue }}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container" *ngIf="showHydraulic">
-            <div class="section-header">
-                <div class="header-title">
-                    Hydraulic
-                </div>
-            </div>
-            <div class="table-container hydraulic-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>V2</th>
-                            <th>V3</th>
-                            <th>Hydro Evolved</th>
-                            <th>Starter</th>
-                            <th>Motor Leads</th>
-                            <th>Battery Lowering Device</th>
-                            <th>Load Weighing Hydro</th>
-                            <th>Roped Hydro</th>
-                            <th>Dual Soft Starts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of getHydraulicCars()">
-                            <td class="text-center">{{ car?.group?.description }} - {{
-                                car.carLabel }}</td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carHydraulicField.v2"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carHydraulicField.v3"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carHydraulicField.hydroEvolved"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted"
-                                    [value]="car?.carHydraulicField?.starter?.description"
-                                    [assumed]="car?.carHydraulicField?.starterAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted"
-                                    [value]="car.carHydraulicField.motorLeads"
-                                    [assumed]="car.carHydraulicField.motorLeadsAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSmartriseFeature.batteryLoweringDevice">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSmartriseFeature.loadWeighingHydro">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carHydraulicField.ropedHydro"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carHydraulicField.dualSoftStarts"></ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container" *ngIf="showTraction">
-            <div class="section-header">
-                <div class="header-title">
-                    Traction
-                </div>
-            </div>
-            <div>
-                <div class="table-container traction-table-1 section mb-3">
+    
+                <div class="table-container general-1-table section">
                     <table>
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>C4</th>
-                                <th>V2 Traction</th>
-                                <th>MX</th>
-                                <th>Drive Model</th>
-                                <th>Motor Type</th>
-                                <th>Motor Location</th>
-                                <th>Battery Rescue</th>
+                                <th>Controller Type</th>
+                                <th>Simplex/Group</th>
+                                <th>Car Label</th>
+                                <th>Number Of Cars</th>
+                                <th>Openings</th>
+                                <th>Stops</th>
+                                <th>Number of Risers</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let car of getTractionCars()">
+                            <tr *ngFor="let car of quote.cars; let i = index">
                                 <td class="text-center">
                                     {{ car?.group?.description }} - {{ car.carLabel }}
                                 </td>
                                 <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.c4"></ngx-yes-no>
+                                    <span>{{ car.controllerType?.description | value }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.v2Traction"></ngx-yes-no>
+                                    <span>{{ car?.group?.description | value }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.mx"></ngx-yes-no>
+                                    <span>{{ car.carLabel | value }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <span>{{ car?.carTractionField?.driveModel?.description |
-                                        value}}</span>
+                                    <span>{{ car.numberOfCars | numberValue }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <span>{{ car?.carTractionField?.motorType?.description |
-                                        value}}</span>
+                                    <span>{{ car.openings | numberValue }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <span>{{ car?.carTractionField?.motorLocation?.description |
-                                        value}}</span>
+                                    <span>{{ car.stops | numberValue }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <span>{{ car?.carTractionField?.batteryRescue?.description |
-                                        value}}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-container traction-table-2 section mb-3">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>ISO Transformer</th>
-                                <th>Regen Kit</th>
-                                <th>Governor Reset Box</th>
-                                <th>Line Reactor</th>
-                                <th>EMI/RFI Filter</th>
-                                <th>Harmonic Filter</th>
-                                <th>MAD Fixtures</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let car of getTractionCars()">
-                                <td class="text-center">
-                                    {{ car?.group?.description }} - {{ car.carLabel }}
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.isoTransformer"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.regenKit"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.governorResetBox"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.lineReactor"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.emirfiFilter"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.harmonicFilter"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.madFixtures"></ngx-yes-no>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-container traction-table-3 section mb-3">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>New Motor Provided By Smartrise</th>
-                                <th>Provider</th>
-                                <th>Mount</th>
-                                <th>Motor RPM</th>
-                                <th>Coupler</th>
-                                <th>Encoder</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let car of getTractionCars()">
-                                <td class="text-center">
-                                    {{ car?.group?.description }} - {{ car.carLabel }}
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.newMotorProvidedBySmartrise"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <span>{{ car?.carTractionField?.motorProvider?.description |
-                                        value}}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span>{{ car?.carTractionField?.motorMount?.description |
-                                        value}}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span>{{ car?.carTractionField?.motorRPM |
-                                        numberValue }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.coupler"></ngx-yes-no>
-                                </td>
-                                <td class="text-center">
-                                    <ngx-yes-no [value]="car.carTractionField.encoder"></ngx-yes-no>
+                                    <span>{{ car.numberOfRisersAlternative | numberValue }}</span>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-
-        <div class="section-container">
-
-            <div class="section-header">
-                <div class="header-title">
-                    Provided by Smartrise
-                </div>
-            </div>
-
-            <div class="table-container provided-by-smartrise-1-table section mb-3">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Cat-5 Kit</th>
-                            <th>Hall Call Security (Group Only)</th>
-                            <th>Controller Layout</th>
-                            <th>Smart Connect</th>
-                            <th>Hall Arrival Lanterns</th>
-                            <th>Door</th>
-                            <th>Rear Door Present</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{
-                                car?.group?.description }} - {{ car.carLabel }}</td>
-                            <td class="text-center">
-                                <span>{{ car.numberOfRisers | numberValue }}</span>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.v2V3HallCallSecurityCat5">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.controllerLayout?.description |
-                                    value}}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.smartConnect?.description | value
-                                    }}</span>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.hallArrivalLanterns"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted"
-                                    [value]="car?.carDoorFeature?.door?.description"
-                                    [assumed]="car?.carDoorFeature?.doorAssume"></ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carDoorFeature.rearDoorPresent"></ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-container provided-by-smartrise-2-table section mb-3">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-
-                            <th>Load Weighing Device</th>
-                            <th>Traveler Cable</th>
-                            <th>Traveler Length</th>
-                            <th>Hoistway Cable</th>
-                            <th>Hoistway Length</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{
-                                car?.group?.description }} - {{ car.carLabel }}
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.loadWeighingDeviceTraction?.description |
-                                    value}}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.travelerCable?.description |
-                                    value}}</span>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted"
-                                    [value]="car.carSmartriseFeature.travelerLength"
-                                    [assumed]="car.carSmartriseFeature.travelerLengthAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.hoistwayCable?.description | value
-                                    }}</span>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted"
-                                    [value]="car.carSmartriseFeature.hoistwayLength"
-                                    [assumed]="car.carSmartriseFeature.hoistwayLengthAssume">
-                                </ngx-assumable-field>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-container provided-by-smartrise-3-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>NEMA Rating</th>
-                            <th>NEMA Location</th>
-                            <th>Landing System Length of Travel (in feet)</th>
-                            <th>Enclosure Legs</th>
-                            <th>Cabinet Air Conditioning</th>
-                            <th>Arc Flash Protection</th>
-                            <th>Dual COP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{
-                                car?.group?.description }} - {{ car.carLabel }}</td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.nemaRating?.description | value}}</span>
-                            </td>
-                            <td class="text-center">
-                                <span>{{ car?.carSmartriseFeature?.nemaLocation?.description | value
-                                    }}</span>
-                            </td>
-                            <td class="text-center">
-                                <ngx-assumable-field [disableAssume]="isSubmitted"
-                                    [value]="car.carSmartriseFeature.landingSystemLengthOfTravel"
-                                    [assumed]="car.carSmartriseFeature.landingSystemLengthOfTravelAssume">
-                                </ngx-assumable-field>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSmartriseFeature.enclosureLegs">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSmartriseFeature.cabinetAirConditioning">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSmartriseFeature.arcFlashProtection">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSmartriseFeature.dualCOP"></ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container">
-            <div class="section-header">
-                <div class="header-title">
-                    Elevator Management Systems
-                </div>
-            </div>
-
-            <div class="table-container elevator-management-systems-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Lobby Monitoring</th>
-                            <th>V2/V3 Machine Room Monitoring</th>
-                            <th>Remote Monitoring</th>
-                            <th>Lift-Net Interface</th>
-                            <th>BACnet Interface</th>
-                            <th>V2/V3 AI Parking</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{
-                                car?.group?.description }} - {{ car.carLabel }}</td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carManagementSystem.lobbyMonitoring">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carManagementSystem.v2MachineRoomMonitoringInterface">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carManagementSystem.remoteMonitoring">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carManagementSystem.v2LiftNetReady">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carManagementSystem.v2BACnet"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carManagementSystem.aiParking"></ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-        </div>
-
-        <div class="section-container">
-
-            <div class="section-header">
-                <div class="header-title">
-                    Provisions
-                </div>
-            </div>
-
-            <div class="table-container provisions-1-table section mb-3">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Interface To Lobby Panel</th>
-                            <th>Car Call Security</th>
-                            <th>Patient Security</th>
-                            <th>Hospital Service</th>
-                            <th>EMT Service</th>
-                            <th>VIP Service</th>
-                            <th>Sabbath Operation</th>
-                            <th>Interface To Destination Dispatch</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{ car?.group?.description }} - {{car.carLabel }}</td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.interfaceToLobbyPanel">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.carCallSecurity"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.patientSecurity"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.hospitalService"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.emtService"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.vipService"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.sabbathOperation"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carProvision.interfaceToDestinationDispatch">
-                                </ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container">
-            <div class="section-header">
-                <div class="header-title">
-                    No Cost Add-Ons
-                </div>
-            </div>
-
-            <div class="table-container no-cost-add-ons-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Enclosure Light</th>
-                            <th>Enclosure GFCI</th>
-                            <th>Fan & Filter</th>
-                            <th>Interface To Emergency Power</th>
-                            <th>Interface To Earthquake Operation</th>
-                            <th>Interface To Voice Annunciator</th>
-                            <th>Brown Out Reset</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{ car?.group?.description }} - {{ car.carLabel }}</td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.enclosureLight"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.enclosureGFCI"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.fanAndFilter"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.brownOutReset">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.interfaceToEmergencyPower">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.interfaceToEarthquakeOperation">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.additionalFeature.interfaceToVoiceAnnuciator">
-                                </ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container" *ngIf="showC4RiserBoards">
-
-            <div class="section-header">
-                <div class="header-title">
-                    Additional C4 Riser Boards
-                </div>
-            </div>
-
-            <div class="table-container additional-c4-riser-boards-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Hall Call Security</th>
-                            <th>Group Interconnect</th>
-                            <th>Emergency Generator Powers Other Groups/Simplex</th>
-                            <th>More Than Two Hall Networks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of getAdditionalC4RiserBoardsCars()">
-                            <td class="text-center">{{ car?.group?.description }} - {{ car.carLabel }}</td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carAdditionalC4RiserBoards.hallCallSecurity"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carAdditionalC4RiserBoards.groupInterconnect"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no
-                                    [value]="car.carAdditionalC4RiserBoards.emergencyGeneratorPowersOtherGroupsSimplex">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carAdditionalC4RiserBoards.moreThanTwoHallNetworks">
-                                </ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container">
-            <div class="section-header">
-                <div class="header-title">
-                    Additional Features
-                </div>
-            </div>
-
-            <div class="table-container additional-features-table section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Group Redundancy</th>
-                            <th>Cross Registration</th>
-                            <th>Expansion Board</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let car of quote.cars">
-                            <td class="text-center">{{ car?.group?.description }} - {{ car.carLabel }}</td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSpecialField.groupRedundancy"></ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSpecialField.crossRegistration">
-                                </ngx-yes-no>
-                            </td>
-                            <td class="text-center">
-                                <ngx-yes-no [value]="car.carSpecialField.expansionBoard"></ngx-yes-no>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-container">
-            <div class="section-header">
-                <div class="header-title">
-                    Attachments
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="files-list row mt-0 mr-0 ml-0">
-                    <div class="single-file d-flex justify-content-center" *ngIf="!quote.attachments.length">
-                        <div>No Attachments</div>
+    
+            <div class="section-container">
+    
+                <div class="section-header">
+                    <div class="header-title">
+                        Motor Parameters
                     </div>
-                    <div [ngClass]="{'col-12 col-sm-6 col-md-4 col-lg-3':true, 'pl-0':hasLeftPadding(i), 'pr-0':hasRightPadding(i)}"
-                        *ngFor="let file of quote.attachments; let i = index">
-                        <div class="single-file">
-                            <div class="file-icon" style="width: 50px">
-                                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58 58"
-                                    style="enable-background:new 0 0 58 58;" xml:space="preserve">
-                                    <polygon style="fill:#EDEADA;" points="51.5,14 37.5,0 6.5,0 6.5,58 51.5,58 " />
-                                    <g>
-                                        <path style="fill:#CEC9AE;"
-                                            d="M16.5,23h25c0.552,0,1-0.447,1-1s-0.448-1-1-1h-25c-0.552,0-1,0.447-1,1S15.948,23,16.5,23z" />
-                                        <path style="fill:#CEC9AE;"
-                                            d="M16.5,15h10c0.552,0,1-0.447,1-1s-0.448-1-1-1h-10c-0.552,0-1,0.447-1,1S15.948,15,16.5,15z" />
-                                        <path style="fill:#CEC9AE;"
-                                            d="M41.5,29h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,29,41.5,29z" />
-                                        <path style="fill:#CEC9AE;"
-                                            d="M41.5,37h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,37,41.5,37z" />
-                                        <path style="fill:#CEC9AE;"
-                                            d="M41.5,45h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,45,41.5,45z" />
-                                    </g>
-                                    <polygon style="fill:#CEC9AE;" points="37.5,0 37.5,14 51.5,14 " />
-                                </svg>
+                </div>
+    
+                <div class="table-container motor-parameters">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Main Line Voltage</th>
+                                <th>Motor Volts</th>
+                                <th>Speed (FPM)</th>
+                                <th>Capacity (LBS)</th>
+                                <th>Motor HP</th>
+                                <th>Full Load Amps (FLA)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars; let i = index">
+                                <td class="text-center">
+                                    {{ car?.group?.description }} - {{ car.carLabel }}
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.mainLineVoltage"
+                                        [assumed]="car.mainLineVoltageAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.motorVolts"
+                                        [assumed]="car.motorVoltsAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.speedFPM"
+                                        [assumed]="car.speedFPMAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.capacity"
+                                        [assumed]="car.capacityAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted" [value]="car.motorHP"
+                                        [assumed]="car.motorHPAssume"></ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car.fullLoadAmps | numberValue }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container" *ngIf="showHydraulic">
+                <div class="section-header">
+                    <div class="header-title">
+                        Hydraulic
+                    </div>
+                </div>
+                <div class="table-container hydraulic-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>V2</th>
+                                <th>V3</th>
+                                <th>Hydro Evolved</th>
+                                <th>Starter</th>
+                                <th>Motor Leads</th>
+                                <th>Battery Lowering Device</th>
+                                <th>Load Weighing Hydro</th>
+                                <th>Roped Hydro</th>
+                                <th>Dual Soft Starts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of getHydraulicCars()">
+                                <td class="text-center">{{ car?.group?.description }} - {{
+                                    car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carHydraulicField.v2"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carHydraulicField.v3"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carHydraulicField.hydroEvolved"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted"
+                                        [value]="car?.carHydraulicField?.starter?.description"
+                                        [assumed]="car?.carHydraulicField?.starterAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted"
+                                        [value]="car.carHydraulicField.motorLeads"
+                                        [assumed]="car.carHydraulicField.motorLeadsAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSmartriseFeature.batteryLoweringDevice">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSmartriseFeature.loadWeighingHydro">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carHydraulicField.ropedHydro"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carHydraulicField.dualSoftStarts"></ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container" *ngIf="showTraction">
+                <div class="section-header">
+                    <div class="header-title">
+                        Traction
+                    </div>
+                </div>
+                <div>
+                    <div class="table-container traction-table-1 section mb-3">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>C4</th>
+                                    <th>V2 Traction</th>
+                                    <th>MX</th>
+                                    <th>Drive Model</th>
+                                    <th>Motor Type</th>
+                                    <th>Motor Location</th>
+                                    <th>Battery Rescue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let car of getTractionCars()">
+                                    <td class="text-center">
+                                        {{ car?.group?.description }} - {{ car.carLabel }}
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.c4"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.v2Traction"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.mx"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.driveModel?.description |
+                                            value}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.motorType?.description |
+                                            value}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.motorLocation?.description |
+                                            value}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.batteryRescue?.description |
+                                            value}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container traction-table-2 section mb-3">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>ISO Transformer</th>
+                                    <th>Regen Kit</th>
+                                    <th>Governor Reset Box</th>
+                                    <th>Line Reactor</th>
+                                    <th>EMI/RFI Filter</th>
+                                    <th>Harmonic Filter</th>
+                                    <th>MAD Fixtures</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let car of getTractionCars()">
+                                    <td class="text-center">
+                                        {{ car?.group?.description }} - {{ car.carLabel }}
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.isoTransformer"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.regenKit"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.governorResetBox"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.lineReactor"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.emirfiFilter"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.harmonicFilter"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.madFixtures"></ngx-yes-no>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container traction-table-3 section mb-3">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>New Motor Provided By Smartrise</th>
+                                    <th>Provider</th>
+                                    <th>Mount</th>
+                                    <th>Motor RPM</th>
+                                    <th>Coupler</th>
+                                    <th>Encoder</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let car of getTractionCars()">
+                                    <td class="text-center">
+                                        {{ car?.group?.description }} - {{ car.carLabel }}
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.newMotorProvidedBySmartrise"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.motorProvider?.description |
+                                            value}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.motorMount?.description |
+                                            value}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span>{{ car?.carTractionField?.motorRPM |
+                                            numberValue }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.coupler"></ngx-yes-no>
+                                    </td>
+                                    <td class="text-center">
+                                        <ngx-yes-no [value]="car.carTractionField.encoder"></ngx-yes-no>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="section-container">
+    
+                <div class="section-header">
+                    <div class="header-title">
+                        Provided by Smartrise
+                    </div>
+                </div>
+    
+                <div class="table-container provided-by-smartrise-1-table section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Cat-5 Kit</th>
+                                <th>Hall Call Security (Group Only)</th>
+                                <th>Controller Layout</th>
+                                <th>Smart Connect</th>
+                                <th>Hall Arrival Lanterns</th>
+                                <th>Door</th>
+                                <th>Rear Door Present</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{
+                                    car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <span>{{ car.numberOfRisers | numberValue }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.v2V3HallCallSecurityCat5">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.controllerLayout?.description |
+                                        value}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.smartConnect?.description | value
+                                        }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.hallArrivalLanterns"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted"
+                                        [value]="car?.carDoorFeature?.door?.description"
+                                        [assumed]="car?.carDoorFeature?.doorAssume"></ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carDoorFeature.rearDoorPresent"></ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="table-container provided-by-smartrise-2-table section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+    
+                                <th>Load Weighing Device</th>
+                                <th>Traveler Cable</th>
+                                <th>Traveler Length</th>
+                                <th>Hoistway Cable</th>
+                                <th>Hoistway Length</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{
+                                    car?.group?.description }} - {{ car.carLabel }}
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.loadWeighingDeviceTraction?.description |
+                                        value}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.travelerCable?.description |
+                                        value}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted"
+                                        [value]="car.carSmartriseFeature.travelerLength"
+                                        [assumed]="car.carSmartriseFeature.travelerLengthAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.hoistwayCable?.description | value
+                                        }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted"
+                                        [value]="car.carSmartriseFeature.hoistwayLength"
+                                        [assumed]="car.carSmartriseFeature.hoistwayLengthAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="table-container provided-by-smartrise-3-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>NEMA Rating</th>
+                                <th>NEMA Location</th>
+                                <th>Landing System Length of Travel (in feet)</th>
+                                <th>Enclosure Legs</th>
+                                <th>Cabinet Air Conditioning</th>
+                                <th>Arc Flash Protection</th>
+                                <th>Dual COP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{
+                                    car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.nemaRating?.description | value}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span>{{ car?.carSmartriseFeature?.nemaLocation?.description | value
+                                        }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-assumable-field [disableAssume]="isSubmitted"
+                                        [value]="car.carSmartriseFeature.landingSystemLengthOfTravel"
+                                        [assumed]="car.carSmartriseFeature.landingSystemLengthOfTravelAssume">
+                                    </ngx-assumable-field>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSmartriseFeature.enclosureLegs">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSmartriseFeature.cabinetAirConditioning">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSmartriseFeature.arcFlashProtection">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSmartriseFeature.dualCOP"></ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="header-title">
+                        Elevator Management Systems
+                    </div>
+                </div>
+    
+                <div class="table-container elevator-management-systems-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Lobby Monitoring</th>
+                                <th>V2/V3 Machine Room Monitoring</th>
+                                <th>Remote Monitoring</th>
+                                <th>Lift-Net Interface</th>
+                                <th>BACnet Interface</th>
+                                <th>V2/V3 AI Parking</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{
+                                    car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carManagementSystem.lobbyMonitoring">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carManagementSystem.v2MachineRoomMonitoringInterface">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carManagementSystem.remoteMonitoring">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carManagementSystem.v2LiftNetReady">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carManagementSystem.v2BACnet"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carManagementSystem.aiParking"></ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+            </div>
+    
+            <div class="section-container">
+    
+                <div class="section-header">
+                    <div class="header-title">
+                        Provisions
+                    </div>
+                </div>
+    
+                <div class="table-container provisions-1-table section mb-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Interface To Lobby Panel</th>
+                                <th>Car Call Security</th>
+                                <th>Patient Security</th>
+                                <th>Hospital Service</th>
+                                <th>EMT Service</th>
+                                <th>VIP Service</th>
+                                <th>Sabbath Operation</th>
+                                <th>Interface To Destination Dispatch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{ car?.group?.description }} - {{car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.interfaceToLobbyPanel">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.carCallSecurity"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.patientSecurity"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.hospitalService"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.emtService"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.vipService"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.sabbathOperation"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carProvision.interfaceToDestinationDispatch">
+                                    </ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="header-title">
+                        No Cost Add-Ons
+                    </div>
+                </div>
+    
+                <div class="table-container no-cost-add-ons-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Enclosure Light</th>
+                                <th>Enclosure GFCI</th>
+                                <th>Fan & Filter</th>
+                                <th>Interface To Emergency Power</th>
+                                <th>Interface To Earthquake Operation</th>
+                                <th>Interface To Voice Annunciator</th>
+                                <th>Brown Out Reset</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{ car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.enclosureLight"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.enclosureGFCI"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.fanAndFilter"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.brownOutReset">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.interfaceToEmergencyPower">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.interfaceToEarthquakeOperation">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.additionalFeature.interfaceToVoiceAnnuciator">
+                                    </ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container" *ngIf="showC4RiserBoards">
+    
+                <div class="section-header">
+                    <div class="header-title">
+                        Additional C4 Riser Boards
+                    </div>
+                </div>
+    
+                <div class="table-container additional-c4-riser-boards-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Hall Call Security</th>
+                                <th>Group Interconnect</th>
+                                <th>Emergency Generator Powers Other Groups/Simplex</th>
+                                <th>More Than Two Hall Networks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of getAdditionalC4RiserBoardsCars()">
+                                <td class="text-center">{{ car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carAdditionalC4RiserBoards.hallCallSecurity"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carAdditionalC4RiserBoards.groupInterconnect"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no
+                                        [value]="car.carAdditionalC4RiserBoards.emergencyGeneratorPowersOtherGroupsSimplex">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carAdditionalC4RiserBoards.moreThanTwoHallNetworks">
+                                    </ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="header-title">
+                        Additional Features
+                    </div>
+                </div>
+    
+                <div class="table-container additional-features-table section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Group Redundancy</th>
+                                <th>Cross Registration</th>
+                                <th>Expansion Board</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let car of quote.cars">
+                                <td class="text-center">{{ car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSpecialField.groupRedundancy"></ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSpecialField.crossRegistration">
+                                    </ngx-yes-no>
+                                </td>
+                                <td class="text-center">
+                                    <ngx-yes-no [value]="car.carSpecialField.expansionBoard"></ngx-yes-no>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="header-title">
+                        Attachments
+                    </div>
+                </div>
+    
+                <div class="section">
+                    <div class="files-list row mt-0 mr-0 ml-0">
+                        <div class="single-file d-flex justify-content-center" *ngIf="!quote.attachments.length">
+                            <div>No Attachments</div>
+                        </div>
+                        <div [ngClass]="{'col-12 col-sm-6 col-md-4 col-lg-3':true, 'pl-0':hasLeftPadding(i), 'pr-0':hasRightPadding(i)}"
+                            *ngFor="let file of quote.attachments; let i = index">
+                            <div class="single-file">
+                                <div class="file-icon" style="width: 50px">
+                                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58 58"
+                                        style="enable-background:new 0 0 58 58;" xml:space="preserve">
+                                        <polygon style="fill:#EDEADA;" points="51.5,14 37.5,0 6.5,0 6.5,58 51.5,58 " />
+                                        <g>
+                                            <path style="fill:#CEC9AE;"
+                                                d="M16.5,23h25c0.552,0,1-0.447,1-1s-0.448-1-1-1h-25c-0.552,0-1,0.447-1,1S15.948,23,16.5,23z" />
+                                            <path style="fill:#CEC9AE;"
+                                                d="M16.5,15h10c0.552,0,1-0.447,1-1s-0.448-1-1-1h-10c-0.552,0-1,0.447-1,1S15.948,15,16.5,15z" />
+                                            <path style="fill:#CEC9AE;"
+                                                d="M41.5,29h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,29,41.5,29z" />
+                                            <path style="fill:#CEC9AE;"
+                                                d="M41.5,37h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,37,41.5,37z" />
+                                            <path style="fill:#CEC9AE;"
+                                                d="M41.5,45h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,45,41.5,45z" />
+                                        </g>
+                                        <polygon style="fill:#CEC9AE;" points="37.5,0 37.5,14 51.5,14 " />
+                                    </svg>
+                                </div>
+                                <div class="info">
+                                    <h4 class="name" tooltip="{{file?.originalFileName}}"
+                                        data-tooltip="{{file?.originalFileName }}">
+                                        {{ file?.originalFileName }}
+                                    </h4>
+                                    <p class="size">
+                                        {{ formatBytes(file?.size) }}
+                                    </p>
+                                </div>
+                                <div class="actions">
+                                    <button tooltip="Preview File" data-tooltip="Preview File"
+                                        (click)="onPreviewAttachment(file.id)">
+                                        <i class="fas fa-eye" data-toggle="tooltip" data-original-title="Preview"></i>
+                                    </button>
+                                    <button tooltip="Download File" data-tooltip="Download File"
+                                        (click)="onDownloadAttachment(file.id)">
+                                        <i class="fas fa-download" data-toggle="tooltip" data-original-title="Download"></i>
+                                    </button>
+                                </div>
+    
                             </div>
-                            <div class="info">
-                                <h4 class="name" tooltip="{{file?.originalFileName}}"
-                                    data-tooltip="{{file?.originalFileName }}">
-                                    {{ file?.originalFileName }}
-                                </h4>
-                                <p class="size">
-                                    {{ formatBytes(file?.size) }}
-                                </p>
-                            </div>
-                            <div class="actions">
-                                <button tooltip="Preview File" data-tooltip="Preview File"
-                                    (click)="onPreviewAttachment(file.id)">
-                                    <i class="fas fa-eye" data-toggle="tooltip" data-original-title="Preview"></i>
-                                </button>
-                                <button tooltip="Download File" data-tooltip="Download File"
-                                    (click)="onDownloadAttachment(file.id)">
-                                    <i class="fas fa-download" data-toggle="tooltip" data-original-title="Download"></i>
-                                </button>
-                            </div>
-
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="section-container mb-3">
-            <div class="section-header">
-                <div class="header-title">
-                    Activity History
+    
+            <div class="section-container mb-3">
+                <div class="section-header">
+                    <div class="header-title">
+                        Activity History
+                    </div>
+                </div>
+                <div class="table-container">
+                    <ng2-smart-table class="history-table" [settings]="historySettings" [source]="historySource">
+                    </ng2-smart-table>
                 </div>
             </div>
-            <div class="table-container">
-                <ng2-smart-table class="history-table" [settings]="historySettings" [source]="historySource">
-                </ng2-smart-table>
+    
+            <div class="text-right mb-3">
+                <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked" (cancel)="onCancel()"
+                    (edit)="onEdit()" (viewPricing)="onViewPricing()"></ngx-detail-actions-bar>
             </div>
-        </div>
-
-        <div class="text-right mb-3">
-            <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked" (cancel)="onCancel()"
-                (edit)="onEdit()" (viewPricing)="onViewPricing()"></ngx-detail-actions-bar>
-        </div>
-
-    </nb-card-body>
+    
+        </nb-card-body>
+    </div>
 </nb-card>
 
 <ng-template [ngIf]="isLoading">

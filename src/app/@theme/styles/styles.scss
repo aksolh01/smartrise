@@ -122,12 +122,12 @@ body {
             position: relative;
             border-bottom: 1px solid #B2B2B2;
             .card-title {
-                font-size: 18px;
+                font-size: 28px;
                 line-height: 20px;
                 text-transform: none;
                 margin: 0;
                 font-weight: 600;
-                color: #B2B2B2;
+                color: #0088cc;
                 font-family: "Open Sans", Arial, sans-serif;
                 letter-spacing: -1px;
             }
@@ -700,7 +700,7 @@ ngx-smr-mobile-filters {
 }
 
 .form-control-plaintext {
-    background: #f4f4f4 !important;
+    background: #ffffff !important;
     padding: 0.375rem 0.75rem;
 }
 
