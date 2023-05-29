@@ -1,72 +1,64 @@
-<nb-card joyrideStep="customerUsersFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Users' : null"
-  [stepContent]="customerUsersCustomContent" [doneTemplate]="doneButton" (done)="onFinishingTour()">
+<div class="page-header-container">
+  <div class="page-header-title">
+    <span (click)="onClose()" class="cursor">Accounts</span>
+  </div>
+</div>
+<div class="margin-16"></div>
+<div class="table-container">
 
-  <nb-card-body>
-    <div class="card-body" joyrideStep="customerUsersFirstStep" stepPosition="center"
-      [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="customerUsersCustomContent"
-      [doneTemplate]="doneButton" (done)="onFinishingTour()">
+  <nb-card joyrideStep="customerUsersFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Users' : null"
+    [stepContent]="customerUsersCustomContent" [doneTemplate]="doneButton" (done)="onFinishingTour()">
 
+    <nb-card-body>
+      <div class="table-content">
 
-      <ng-template [ngIf]="isSmall === false">
-        <div class="row mb-3">
-          <div class="pl-0 col d-flex align-items-center justify-content-start">
-            <!-- <button (click)="onReset()" class="btn btn-primary">
-              <i class="fas fa-redo-alt"></i>
-              Reset Filters
-            </button> -->
-          </div>
-          <div class="pr-0 col-auto d-flex align-items-center justify-content-start">
-            <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+          <div filters class="form-container">
+            <div class="input-container">
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="First Name" [(ngModel)]="firstName" />
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="Last Name" [(ngModel)]="lastName" />
+              </div>
+              <div class="input-item">
+                <input type="email" maxlength="255" placeholder="Email" [(ngModel)]="email" />
+              </div>
+              <div class="input-item">
+                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
             </ngx-smr-records-per-page> -->
+              </div>
+            </div>
           </div>
-        </div>
-      </ng-template>
-
-      <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-        <div filters>
-          <div class="filter-control">
-            <input type="text" maxlength="255" placeholder="First Name" class="form-control" [(ngModel)]="firstName" />
-          </div>
-          <div class="filter-control">
-            <input type="text" maxlength="255" placeholder="Last Name" class="form-control" [(ngModel)]="lastName" />
-          </div>
-          <div class="filter-control">
-            <input type="email" maxlength="255" placeholder="Email" class="form-control" [(ngModel)]="email" />
-          </div>
-          <div class="filter-control">
-            <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-            </ngx-smr-records-per-page> -->
-          </div>
-        </div>
-        <div actions>
-          <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-            <i class="fas fa-search"></i>
-            Search
-          </button>
-          <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+          <div actions class="form-action">
+            <button class="main-button" (click)="onSearch(); toggleFilters()">
+              <i class="fas fa-search"></i>
+              Search
+            </button>
+            <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
             <i class="fas fa-redo-alt"></i>
             Reset Filters
           </button> -->
-        </div>
-      </ngx-smr-mobile-filters>
+          </div>
+        </ngx-smr-mobile-filters>
 
-      <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-        <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-          <button type="button" class="btn btn-primary" (click)="toggleFilters()">
-            <i class="fas fa-filter"></i>
-          </button>
-        </div>
-        <div class="col-sm-12 pl-0 pr-0" *ngIf="source">
-          <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
-            [source]="source">
-          </ng2-smart-table>
+
+        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+          <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+            <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+              <i class="fas fa-filter"></i>
+            </button>
+          </div>
+          <div class="table-content" *ngIf=" source">
+            <ng2-smart-table class="responsive-design1" #table [settings]="settings" [source]="source">
+            </ng2-smart-table>
+          </div>
         </div>
       </div>
-    </div>
 
-  </nb-card-body>
-</nb-card>
-
+    </nb-card-body>
+  </nb-card>
+</div>
 <ng-template #customerUsersCustomContent>
   <div class='joyride-custom-content'>
     <div style="margin-bottom: 5px;">
@@ -85,21 +77,21 @@
 </ng-template>
 
 <ng-template #prevButton>
-  <button class="btn btn-primary">
+  <button class="main-button">
     <i class="fas fa-step-backward"></i>
     Prev
   </button>
 </ng-template>
 
 <ng-template #nextButton>
-  <button class="btn btn-primary">
+  <button class="main-button">
     Next
     <i class="fas fa-step-forward"></i>
   </button>
 </ng-template>
 
 <ng-template #doneButton>
-  <button class="btn btn-primary">
+  <button class="main-button">
     <i class="clear-icon fas fa-check"></i>
     OK
   </button>

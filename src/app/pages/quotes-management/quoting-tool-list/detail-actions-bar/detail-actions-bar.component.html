@@ -1,15 +1,12 @@
 <div class="bottom-actions">
-    <button class="btn btn-secondary mr-1" type="button" (click)="onCancel()">
-        <i class="fa fa-times"></i>
+    <button class="secondary-button mr-1" type="button" (click)="onCancel()">
         Close
     </button>
-    <button *ngIf="canEditQuote && !isLocked" [ngClass]="{'btn btn-primary':true, 'mr-1': status === 'Generated'}"
+    <button *ngIf="canEditQuote && !isLocked" [ngClass]="{'main-button':true, 'mr-1': status === 'Generated'}"
         type="button" (click)="onEdit()">
-        <i class="fa fa-edit"></i>
         Edit
     </button>
-    <button *ngIf="status === 'Generated'" class="btn btn-primary" type="button" (click)="onViewPricing()">
-        <i class="fas fa-file-alt"></i>
+    <button *ngIf="status === 'Generated'" class="main-button" type="button" (click)="onViewPricing()">
         View Quote
     </button>
 </div>

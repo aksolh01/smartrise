@@ -1,6 +1,9 @@
 /* eslint-disable */
 import { AutoMap } from '@nartc/automapper';
 import { ISubmitQuotePayload, ISubmitCarPayload, ISubmitCarManagementSystemPayload, ISubmitCarDoorFeaturePayload, ISubmitCarAdditionalFeaturePayload, ISubmitCarSmartriseFeaturePayload, ISubmitCarHydraulicFieldPayload, ISubmitCarProvisionPayload, ISubmitCarSpecialFieldPayload, ISubmitCarTractionFieldPayload, ISubmitCarAdditionalC4RiserBoardsPayload } from './submit-quote-i.model';
+import { FunctionConstants } from '../../constants';
+import { ICarAdditionalC4RiserBoardsView, ICarAdditionalFeatureView, ICarDoorFeatureView, ICarHydraulicFieldView, ICarManagementSystemView, ICarProvisionView, ICarSmartriseFeatureView, ICarSpecialFieldView, ICarTractionFieldView, ICarView, IQuoteView } from './quote-view-i.model';
+import { CarAdditionalC4RiserBoardsView, CarAdditionalFeatureView, CarDoorFeatureView, CarHydraulicFieldView, CarManagementSystemView, CarProvisionView, CarSmartriseFeatureView, CarSpecialFieldView, CarTractionFieldView } from './quote-view.model';
 
 export class SubmitQuotePayload implements ISubmitQuotePayload {
     @AutoMap()
@@ -44,9 +47,45 @@ export class SubmitQuotePayload implements ISubmitQuotePayload {
     @AutoMap(() => SubmitCarPayload)
     cars: ISubmitCarPayload[];
     customerId: number;
+
+    static mapFromView(source: IQuoteView) {
+        const m = FunctionConstants.map(source, SubmitQuotePayload,
+            ['cars']) as SubmitQuotePayload;
+
+        m.countryValue = source?.jobLocation?.country?.value;
+        m.stateValue = source?.jobLocation?.state?.value;
+        m.city = source?.jobLocation?.city;
+
+        delete m['jobLocation'];
+        delete m['customer'];
+
+        m.cars = [];
+        source.cars.forEach(car => {
+            m.cars.push(SubmitCarPayload.mapFromView(car));
+        });
+
+        return m;
+    }
 }
 
 export class SubmitCarPayload implements ISubmitCarPayload {
+    static mapFromView(source: ICarView): SubmitCarPayload {
+        const car = FunctionConstants.map(source, SubmitCarPayload, []) as SubmitCarPayload;
+
+        car.additionalFeature = SubmitCarAdditionalFeaturePayload.mapFromView(source.additionalFeature);
+        car.carAdditionalC4RiserBoards = SubmitCarAdditionalC4RiserBoardsPayload.mapFromView(source.carAdditionalC4RiserBoards);
+        car.carDoorFeature = SubmitCarDoorFeaturePayload.mapFromView(source.carDoorFeature);
+        car.carHydraulicField = SubmitCarHydraulicFieldPayload.mapFromView(source.carHydraulicField);
+        car.carManagementSystem = SubmitCarManagementSystemPayload.mapFromView(source.carManagementSystem);
+        car.carProvision = SubmitCarProvisionPayload.mapFromView(source.carProvision);
+        car.carSmartriseFeature = SubmitCarSmartriseFeaturePayload.mapFromView(source.carSmartriseFeature);
+        car.carSpecialField = SubmitCarSpecialFieldPayload.mapFromView(source.carSpecialField);
+        car.carTractionField = SubmitCarTractionFieldPayload.mapFromView(source.carTractionField);
+
+        delete car['quote'];
+
+        return car;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -147,6 +186,11 @@ export class SubmitCarPayload implements ISubmitCarPayload {
 }
 
 export class SubmitCarManagementSystemPayload implements ISubmitCarManagementSystemPayload {
+    static mapFromView(source: CarManagementSystemView): SubmitCarManagementSystemPayload {
+        const dest = FunctionConstants.map(source, SubmitCarManagementSystemPayload, []) as SubmitCarManagementSystemPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -164,6 +208,11 @@ export class SubmitCarManagementSystemPayload implements ISubmitCarManagementSys
 }
 
 export class SubmitCarDoorFeaturePayload implements ISubmitCarDoorFeaturePayload {
+    static mapFromView(source: CarDoorFeatureView): SubmitCarDoorFeaturePayload {
+        const dest = FunctionConstants.map(source, SubmitCarDoorFeaturePayload, []) as SubmitCarDoorFeaturePayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -175,6 +224,11 @@ export class SubmitCarDoorFeaturePayload implements ISubmitCarDoorFeaturePayload
 }
 
 export class SubmitCarAdditionalFeaturePayload implements ISubmitCarAdditionalFeaturePayload {
+    static mapFromView(source: CarAdditionalFeatureView): SubmitCarAdditionalFeaturePayload {
+        const dest = FunctionConstants.map(source, SubmitCarAdditionalFeaturePayload, []) as SubmitCarAdditionalFeaturePayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -194,6 +248,11 @@ export class SubmitCarAdditionalFeaturePayload implements ISubmitCarAdditionalFe
 }
 
 export class SubmitCarSmartriseFeaturePayload implements ISubmitCarSmartriseFeaturePayload {
+    static mapFromView(source: CarSmartriseFeatureView): SubmitCarSmartriseFeaturePayload {
+        const dest = FunctionConstants.map(source, SubmitCarSmartriseFeaturePayload, []) as SubmitCarSmartriseFeaturePayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -223,9 +282,9 @@ export class SubmitCarSmartriseFeaturePayload implements ISubmitCarSmartriseFeat
     @AutoMap()
     hoistwayLengthAssumedValue?: number;
     @AutoMap()
-    nemaRating?: string;
+    machineRoomNemaRating?: string;
     @AutoMap()
-    nemaLocation?: string;
+    hoistwayNemaRating?: string;
     @AutoMap()
     landingSystemLengthOfTravel?: number;
     @AutoMap()
@@ -245,6 +304,11 @@ export class SubmitCarSmartriseFeaturePayload implements ISubmitCarSmartriseFeat
 }
 
 export class SubmitCarHydraulicFieldPayload implements ISubmitCarHydraulicFieldPayload {
+    static mapFromView(source: CarHydraulicFieldView): SubmitCarHydraulicFieldPayload {
+        const dest = FunctionConstants.map(source, SubmitCarHydraulicFieldPayload, []) as SubmitCarHydraulicFieldPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -268,6 +332,26 @@ export class SubmitCarHydraulicFieldPayload implements ISubmitCarHydraulicFieldP
 }
 
 export class SubmitCarTractionFieldPayload implements ISubmitCarTractionFieldPayload {
+    static mapFromView(source: CarTractionFieldView): SubmitCarTractionFieldPayload {
+        const m = FunctionConstants.map(source, SubmitCarTractionFieldPayload, []) as SubmitCarTractionFieldPayload;
+
+        m.c4 = Boolean(source.c4);
+        m.v2Traction = Boolean(source.v2Traction);
+        m.mx = Boolean(source.mx);
+        m.isoTransformer = Boolean(source.isoTransformer);
+        m.regenKit = Boolean(source.regenKit);
+        m.governorResetBox = Boolean(source.governorResetBox);
+        m.lineReactor = Boolean(source.lineReactor);
+        m.emirfiFilter = Boolean(source.emirfiFilter);
+        m.harmonicFilter = Boolean(source.harmonicFilter);
+        m.madFixtures = Boolean(source.madFixtures);
+        m.newMotorProvidedBySmartrise = Boolean(source.newMotorProvidedBySmartrise);
+        m.coupler = Boolean(source.coupler);
+        m.encoder = Boolean(source.encoder);
+
+        delete m['car'];
+        return m;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -313,6 +397,11 @@ export class SubmitCarTractionFieldPayload implements ISubmitCarTractionFieldPay
 }
 
 export class SubmitCarProvisionPayload implements ISubmitCarProvisionPayload {
+    static mapFromView(source: CarProvisionView): SubmitCarProvisionPayload {
+        const dest = FunctionConstants.map(source, SubmitCarProvisionPayload, []) as SubmitCarProvisionPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -338,6 +427,11 @@ export class SubmitCarProvisionPayload implements ISubmitCarProvisionPayload {
 }
 
 export class SubmitCarSpecialFieldPayload implements ISubmitCarSpecialFieldPayload {
+    static mapFromView(source: CarSpecialFieldView): SubmitCarSpecialFieldPayload {
+        const dest = FunctionConstants.map(source, SubmitCarSpecialFieldPayload, []) as SubmitCarSpecialFieldPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -349,6 +443,19 @@ export class SubmitCarSpecialFieldPayload implements ISubmitCarSpecialFieldPaylo
 }
 
 export class SubmitCarAdditionalC4RiserBoardsPayload implements ISubmitCarAdditionalC4RiserBoardsPayload {
+    static mapFromView(source: CarAdditionalC4RiserBoardsView): SubmitCarAdditionalC4RiserBoardsPayload {
+
+        const dest = FunctionConstants.map(source, SubmitCarAdditionalC4RiserBoardsPayload, []) as SubmitCarAdditionalC4RiserBoardsPayload;
+
+        dest.emergencyGeneratorPowersOtherGroupsSimplex = Boolean(source.emergencyGeneratorPowersOtherGroupsSimplex);
+        dest.groupInterconnect = Boolean(source.groupInterconnect);
+        dest.hallCallSecurity = Boolean(source.hallCallSecurity);
+        dest.id = Number(source.id);
+        dest.moreThanTwoHallNetworks = Boolean(source.moreThanTwoHallNetworks);
+
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()

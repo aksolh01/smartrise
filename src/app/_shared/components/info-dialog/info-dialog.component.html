@@ -1,15 +1,15 @@
-<nb-card class="in-dialog">
-    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-        <h2 class="card-title">{{ title }}</h2>
-        <button type="button" class="close ml-5" aria-label="Close" [tooltip]="dismissButtonLabel" (click)="dismiss()"
-            style="outline: none">
-            <i class="fas fa-times text-sm"></i>
-        </button>
-    </nb-card-header>
-    <nb-card-body class="info-card-body">
+<div class="popup-container">
+
+    <div class="popup-title">
+        {{ title }}
+    </div>
+
+    <div class="popup-content-section">
+        
         <ng-template [ngIf]="showEmptyMessage">
             <p>{{ messageIfEmpty }}</p>
         </ng-template>
+
         <ng-template [ngIf]="!showEmptyMessage && showAsGroupList">
             <ul class="titles-list">
                 <li *ngFor="let group of dialogGroupContent; let isLast = last">
@@ -20,21 +20,58 @@
                 </li>
             </ul>
         </ng-template>
+
         <ng-template [ngIf]="!showEmptyMessage && !showAsBulltes">
             <p *ngFor="let line of dialogContent; let isLast = last" [class.mb-0]="isLast">
                 {{ line }}
             </p>
         </ng-template>
+
         <ng-template [ngIf]="!showEmptyMessage && !!showAsBulltes">
             <ul style="padding-inline-start: 1rem; margin-bottom: 0;">
                 <li *ngFor="let line of dialogContent">{{ line }}</li>
             </ul>
         </ng-template>
-    </nb-card-body>
-    <nb-card-footer class="d-flex justify-content-end px-3 pt-2 pb-0" *ngIf="!!showDismissButton">
-        <button (click)="dismiss()" type="button" class="btn btn-secondary">
-            <i class="clear-icon fas fa-times"></i>
+    </div>
+
+    <div class="popup-footer">
+        <button (click)="dismiss()" type="button" class="secondary-button">
             {{ dismissButtonLabel }}
         </button>
-    </nb-card-footer>
-</nb-card>
+    </div>
+</div>
+
+<!-- <nb-card class="in-dialog">
+
+    <nb-card-body class="info-card-body">
+
+        <ng-template [ngIf]="showEmptyMessage">
+            <p>{{ messageIfEmpty }}</p>
+        </ng-template>
+
+        <ng-template [ngIf]="!showEmptyMessage && showAsGroupList">
+            <ul class="titles-list">
+                <li *ngFor="let group of dialogGroupContent; let isLast = last">
+                    <a *ngIf="group?.list?.length">{{ group.title }}</a>
+                    <ul class="items-list">
+                        <li *ngFor="let item of group.list">{{ item }}</li>
+                    </ul>
+                </li>
+            </ul>
+        </ng-template>
+
+        <ng-template [ngIf]="!showEmptyMessage && !showAsBulltes">
+            <p *ngFor="let line of dialogContent; let isLast = last" [class.mb-0]="isLast">
+                {{ line }}
+            </p>
+        </ng-template>
+
+        <ng-template [ngIf]="!showEmptyMessage && !!showAsBulltes">
+            <ul style="padding-inline-start: 1rem; margin-bottom: 0;">
+                <li *ngFor="let line of dialogContent">{{ line }}</li>
+            </ul>
+        </ng-template>
+
+    </nb-card-body>
+
+</nb-card> -->

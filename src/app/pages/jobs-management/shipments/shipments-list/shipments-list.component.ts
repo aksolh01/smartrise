@@ -16,7 +16,6 @@ import { ShipmentByCustomerParams, ShipmentParams } from '../../../../_shared/mo
 import { ITextValueLookup } from '../../../../_shared/models/text-value.lookup';
 import { ShipmentService } from '../../../../services/shipment.service';
 import { BaseComponent } from '../../../base.component';
-import { SettingService } from '../../../../services/setting.service';
 import { CpFilterComponent } from '../../../../_shared/components/table-filters/cp-filter.component';
 import { CpDateFilterComponent } from '../../../../_shared/components/table-filters/cp-date-filter.component';
 import { ShipmentActionsComponent } from './shipment-actions/shipment-actions.component';
@@ -41,6 +40,7 @@ import { MiscellaneousService } from '../../../../services/miscellaneous.service
 import { AccountInfoService } from '../../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
 import { ListTitleService } from '../../../../services/list-title.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-shipments-list',
@@ -210,9 +210,11 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
           };
           instance.setOptions({
             breakWord: true,
-            link: 'pages/jobs-management/jobs',
-            paramExps: ['jobId'],
-            tooltip: 'View Shipment Details',
+            link: 'pages/jobs-management/shipments',
+            paramExps: [
+              'jobId'
+            ],
+            tooltip: 'View Shipment Details'
           });
         },
         filter: {
@@ -312,7 +314,6 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     private shipmentService: ShipmentService,
     private jobTabService: JobTabService,
     private responsiveService: ResponsiveService,
-    private settingService: SettingService,
     private joyrideService: JoyrideService,
     private multiAccountService: MultiAccountsService,
     private miscellaneousService: MiscellaneousService,
@@ -427,7 +428,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     shipmentParams.trackingNumber = this.trackingNumber;
     shipmentParams.installedBy = this.installedBy;
     shipmentParams.maintainedBy = this.maintainedBy;
-}
+  }
 
   async ngOnInit() {
 
@@ -437,28 +438,26 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
 
     this.statuses = await this.shipmentService.getShipmentStatuses().toPromise();
 
-    this.settingService.getBusinessSettings().subscribe((rep) => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription =
-        this.responsiveService.currentBreakpoint$.subscribe((w) => {
-          if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-            if (this.isSmall !== false) {
-              this.onReset();
-              this.isSmall = false;
-            }
-          } else if (
-            w === ScreenBreakpoint.md ||
-            w === ScreenBreakpoint.xs ||
-            w === ScreenBreakpoint.sm
-          ) {
-            if (this.isSmall !== true) {
-              this.onReset();
-              this.isSmall = true;
-            }
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.responsiveSubscription =
+      this.responsiveService.currentBreakpoint$.subscribe((w) => {
+        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+          if (this.isSmall !== false) {
+            this.onReset();
+            this.isSmall = false;
           }
-        });
-    });
+        } else if (
+          w === ScreenBreakpoint.md ||
+          w === ScreenBreakpoint.xs ||
+          w === ScreenBreakpoint.sm
+        ) {
+          if (this.isSmall !== true) {
+            this.onReset();
+            this.isSmall = true;
+          }
+        }
+      });
     this.yesNoList = this.populateYesNo();
   }
 
@@ -501,22 +500,6 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     this.trackingNumber = null;
     this.installedBy = null;
     this.maintainedBy = null;
-  }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
   }
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
@@ -561,7 +544,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     }
   }
 
-  ngAfterContentInit(): void {}
+  ngAfterContentInit(): void { }
 
   onFinishingTour() {
     localStorage.setItem('GuidingTourShipments', '1');

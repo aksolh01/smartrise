@@ -1,54 +1,48 @@
+<div class="page-header-container">
+  <div class="page-header-title">
+    <span (click)="onClose()" class="cursor">Accounts</span> / {{ customer?.name | value }}
+  </div>
+</div>
+<div class="margin-16"></div>
 <div *ngIf="customer?.isDeleted" class="badge badge-pill badge-danger float-right font-weight-normal customer-deleted">
   DELETED
 </div>
+<nb-card size="xlarge">
+  <nb-card-body>
+    <div class="card-details">
 
-<div [class]="customer?.isDeleted ? 'row card-body mt-4 mr-0' : 'row card-body mr-0'">
-  <div class="col-4 col-lg-2 form-group">
-    <label class="col-lg-12 control-label text-right pt-2">Epicor No</label>
-  </div>
+      <div class="card-details-container">
+        <div class="displayData">
+          <div class="label">Epicor No</div>
+          <div class="content"> {{ customer?.epicorCustomerId | value}}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">Phone</div>
+          <div class="content"> {{ customer?.phone | value }}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">Name</div>
+          <div class="content" id="last4" value="">{{ customer?.name | value}}</div>
+        </div>
+      </div>
 
-  <div class="col-8 col-lg-4 form-group form-control-plaintext">
-    {{ customer?.epicorCustomerId | value }}
-  </div>
+      <div class="card-details-container">
+        <div class="displayData">
+          <div class="label">Address</div>
+          <div class="content"> <ngx-address-field [Address]="customer?.address"
+              [FullAddress]="customer?.addressStr"></ngx-address-field></div>
+        </div>
+      
+        <div class="displayData">
+          <div class="label">Primary Shipping Email</div>
+          <div class="content"> {{ customer?.email | value }}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">Fax</div>
+          <div class="content"> {{ customer?.fax | value }}</div>
+        </div>
+      </div>
 
-  <div class="col-4 col-lg-2 form-group">
-    <label class="col-lg-12 control-label text-right pt-2">Address</label>
-  </div>
-
-  <div class="col-8 col-lg-4 form-group form-control-plaintext pr-0">
-    <ngx-address-field [Address]="customer?.address" [FullAddress]="customer?.addressStr"></ngx-address-field>
-  </div>
-
-  <div class="col-4 col-lg-2 form-group">
-    <label class="col-lg-12 control-label text-right pt-2">Name</label>
-  </div>
-
-  <div class="col-8 col-lg-4 form-group form-control-plaintext">
-    {{ customer?.name | value }}
-  </div>
-
-  <div class="col-4 col-lg-2 form-group">
-    <label class="col-lg-12 control-label text-right pt-2">Phone</label>
-  </div>
-
-  <div class="col-8 col-lg-4 form-group form-control-plaintext">
-    {{ customer?.phone | value }}
-  </div>
-
-  <div class="col-4 col-lg-2 form-group">
-    <label class="col-lg-12 control-label text-right pt-2">Primary Shipping Email</label>
-  </div>
-
-  <div class="col-8 col-lg-4 form-group form-control-plaintext email-value">
-    {{ customer?.email | value }}
-  </div>
-
-  <div class="col-4 col-lg-2 form-group">
-    <label class="col-lg-12 control-label text-right pt-2">Fax</label>
-  </div>
-
-  <div class="col-8 col-lg-4 form-group form-control-plaintext">
-    {{ customer?.fax | value }}
-  </div>
-
-</div>
+    </div>
+  </nb-card-body>
+</nb-card>

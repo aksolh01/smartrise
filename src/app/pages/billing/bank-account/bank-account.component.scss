@@ -1,22 +1,22 @@
-.card-title {
-    font-weight: 550;
-    color: #0088cc !important;
-}
+// .card-title {
+//     font-weight: 550;
+//     color: #0088cc !important;
+// }
 
-.card-header {
-    border-bottom: 1px solid #82bddd !important;
-}
+// .card-header {
+//     border-bottom: 1px solid #82bddd !important;
+// }
 
-.pagination,
-.page-item.active,
-.page-link {
-    color: #fff;
-    border-radius: 0.125rem;
-    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    -webkit-transition: all 0.2s linear;
-    transition: all 0.2s linear;
-}
+// .pagination,
+// .page-item.active,
+// .page-link {
+//     color: #fff;
+//     border-radius: 0.125rem;
+//     -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+//     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+//     -webkit-transition: all 0.2s linear;
+//     transition: all 0.2s linear;
+// }
 
 .actions button,
 .actions button:focus {
@@ -105,4 +105,148 @@
 
 ::ng-deep ngx-bank-account nb-select[placeholder-selected="true"] button {
   color: #6d767e82 !important;
+}
+
+.form-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 10px;
+  .row-container{
+      display: flex;
+      gap: 16px;
+      .input-container{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+          width: 100%;
+          .input-sub-container{
+            display: flex;
+            width: 100%;
+            gap: 16px;
+             label{
+              width: 75%;
+              font-size: 14px;
+              font-weight: 600;
+              color: #8f8f8f;
+              &.label-align{
+                text-align: end ;
+                margin-top: 12px;
+               }
+             }
+            
+          }
+          .input-item{
+            width: 100%;
+            min-height: 56px;
+            input{
+              border: 1px solid var(--primary-color-border);
+              border-radius: 10px ;
+              padding: 0px 10px ;
+              width: 100% ;
+              min-height: 40px ;
+              outline: none ;
+              font-size: 14px;
+              font-weight: 600;
+              &::placeholder{
+                font-size: 14px;
+                font-weight: 500 ;
+                color:rgba(0, 0, 0, 0.75) !important;
+              }
+              &:disabled{
+                  background-color: #e9ecef;
+                }
+            }
+            &.check-box{
+              margin-top: 12px !important;
+            }
+            
+            .search-btn{
+              max-height: 40px ;
+            }
+          .input-item-label{
+              border: 1px solid var(--primary-color-border);
+              border-radius: 10px ;
+              padding: 8px 4px ;
+              width: 100% ;
+              min-height: 40px ;
+              outline: none ;
+              font-size: 14px;
+              font-weight: 600 ;
+              color:rgba(0, 0, 0, 0.75) !important;
+              background-color: #e9ecef;
+              
+            }
+         
+            nb-select{
+              border: 1px solid var(--primary-color-border) !important;
+              border-radius: 10px !important;
+              padding: 0px 2px !important;
+              width: 100% !important;
+              min-height: 40px !important;
+              outline: none !important;
+              font-size: 14px !important;
+              font-weight: 600 !important;
+              button{
+                font-size: 14px !important;
+                font-weight: 600 !important;
+                color:rgba(0, 0, 0, 0.75) !important;
+              }
+              &::placeholder{
+                font-size: 14px;
+                font-weight: 500;
+                color:rgba(0, 0, 0, 0.75) !important;
+              }
+            }
+            button{
+              border: none !important;
+            }
+            &.hasLabel{
+              display: flex;
+              input{
+                border: 1px solid var(--primary-color-border);
+                border-radius: 10px;
+                padding: 0px 16px;
+                width: 100%;
+                min-height: 40px;
+                outline: none;
+                font-size: 14px;
+                font-weight: 600;
+                &::placeholder{
+                  font-size: 14px;
+                  font-weight: 500;
+                  color:rgba(0, 0, 0, 0.75) !important;
+                }
+              }
+            }
+            &.search-input-icon{
+              position: relative;
+              i{
+                position: absolute;
+                padding: 12px;
+                color: grey;
+              }
+              input{
+                font-size: 14px;
+                font-weight: 600;
+                padding-left: 32px;
+              }
+            }
+            &.phone-input-item{
+              input{
+                padding-left: 46px;
+                font-size: 14px;
+                font-weight: 600;
+              }
+            }
+          }
+          .input-error{
+            font-size: 11px;
+            color:var(--primary-color-red);
+          }
+    
+        }
+  }
+  
 }

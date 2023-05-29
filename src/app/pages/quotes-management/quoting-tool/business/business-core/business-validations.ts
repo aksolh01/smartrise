@@ -29,16 +29,10 @@ return 'Value is required';
 }
 
 export function landingSystemLengthOfTravelRequired(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
-    if ((instance.nemaLocation === 'Both' || instance.nemaLocation === 'Hoistway') && !arg.newValue) {
-return 'Value is required';
-}
+    if (instance.hoistwayNemaRating && isEmptyValue(arg.newValue))
+        return 'Value is required';
 }
 
-export function nemaLocationRequired(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
-    if (instance.nemaRating && isEmptyValue(arg.newValue)) {
-return 'Value is required';
-}
-}
 export function isBetween1And8(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
     return isBetween(arg.newValue, 1, 8);
 }
@@ -80,11 +74,10 @@ export function isBetween10And1400(ctx: BusinessContext, instance: InstanceView,
 }
 
 export function validateZeroInCaseOfDCController(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
-    if(instance.isDCTraction()) {
+    if (instance.isDCTraction()) {
         const number = Number(arg.newValue);
-        if(number === 0) {
-return 'Value cannot be zero';
-}
+        if (number === 0)
+            return 'Value cannot be zero';
     }
 }
 

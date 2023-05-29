@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
@@ -6,7 +6,6 @@ import { forkJoin, Subscription } from 'rxjs';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpDateFilterComponent } from '../../../_shared/components/table-filters/cp-date-filter.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
@@ -29,6 +28,11 @@ import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
+import { RoutingService } from '../../../services/routing.service';
+import { CloneDialogComponent } from './clone-dialog/clone-dialog.component';
+import { MessageService } from '../../../services/message.service';
 
 @Component({
   selector: 'ngx-quoting-tool-list',
@@ -36,6 +40,7 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
   styleUrls: ['./quoting-tool-list.component.scss']
 })
 export class QuotingToolListComponent extends BaseComponent implements OnInit {
+  @ViewChild('table') table: Ng2SmartTableComponent;
   mRef: BsModalRef;
   source: BaseServerDataSource;
   isSmall?: boolean = null;
@@ -179,12 +184,30 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     });
     actions.viewHistory.subscribe((quote: any) => this._onViewHistory(actions, quote));
     actions.viewPricing.subscribe((quote: any) => this._onViewPricing(quote));
+    actions.cloneQuote.subscribe((quote: any) => this._onCloneQuote(quote));
+  }
+
+  private _onCloneQuote(quote: any) {
+    const modal = this.modalService.show<CloneDialogComponent>(CloneDialogComponent, {
+
+    });
+    modal.onHide.subscribe(() => {
+      if (modal.content.confirmed) {
+        this.isLoading = true;
+        this.quoteService.cloneQuote(quote.id, modal.content.jobName).subscribe(() => {
+          this.isLoading = false;
+          this.routingService.reloadCurrentRoute();
+          this.messageService.showSuccessMessage('Quote has been cloned successfully');
+        }, error => {
+          this.isLoading = false;
+        });
+      }
+    });
   }
 
   constructor(
     private router: Router,
     private quoteService: QuotingToolService,
-    private settingService: SettingService,
     private joyrideService: JoyrideService,
     private responsiveService: ResponsiveService,
     private modalService: BsModalService,
@@ -193,7 +216,9 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     private miscellaneousService: MiscellaneousService,
     private multiAccountService: MultiAccountsService,
     private accountInfoService: AccountInfoService,
+    private routingService: RoutingService,
     baseService: BaseComponentService,
+    private messageService: MessageService
   ) {
     super(baseService);
     router.events.subscribe(event => {
@@ -274,7 +299,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
       { field: 'creationDate', direction: 'desc' }  // primary sort
     ], false);
   }
-  
+
   private _getAccountTitle(): string {
     return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
   }
@@ -328,7 +353,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     this.settings.pager = {
       display: true,
       page: 1,
-        perPage: this.recordsNumber || 25
+      perPage: this.recordsNumber || 25
     };
   }
 
@@ -391,24 +416,20 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
 
     forkJoin([
       this.quotingToolService.getStatuses(),
-      this.quotingToolService.getJobStatuses(),
-      this.settingService.getBusinessSettings()]
-    ).subscribe(([
+      this.quotingToolService.getJobStatuses()
+    ]).subscribe(([
       statuses,
       jobStatuses,
-      businessSettings
-    ]) => this._onResponseReady(statuses, jobStatuses, businessSettings));
+    ]) => this._onResponseReady(statuses, jobStatuses));
   }
 
-  private _onResponseReady(statuses: IEnumValue[], jobStatuses: IEnumValue[], businessSettings: IBusinessSettings) {
+  private _onResponseReady(statuses: IEnumValue[], jobStatuses: IEnumValue[]) {
     this.statuses = statuses;
     this.jobStatuses = jobStatuses;
-    if (businessSettings) {
-        this.recordsNumber = businessSettings.numberOfRecords || 25;
-      this.initializeSource();
-      this.isImpersonate = this.miscellaneousService.isImpersonateMode();
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
-    }
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.isImpersonate = this.miscellaneousService.isImpersonateMode();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
 
   private _onScreenSizeChanged(w: ScreenBreakpoint) {
@@ -444,22 +465,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
       this.source.resetFilters();
     }
   }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
 
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
-  }
   private _resetFilterParameters() {
     this.account = null;
     this.jobName = null;
@@ -500,8 +506,8 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
 
     if (min > 0) {
       if (!charStr.match(/^[0-9]+$/)) {
-e.preventDefault();
-}
+        e.preventDefault();
+      }
     }
   }
 

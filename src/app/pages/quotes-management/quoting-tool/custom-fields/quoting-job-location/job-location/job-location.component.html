@@ -1,81 +1,82 @@
-<nb-card class="in-dialog m-0">
-    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-        <h2 class="card-title">Job Location</h2>
-        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onCancel()"
-            style="outline: none">
-            <i class="fas fa-times text-sm"></i>
+
+<div class="popup-container">
+    <div class="popup-title">
+        Job Location
+    </div>
+
+    <div class="popup-content-section">
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Country</label>
+            <div class="col-12 col-lg-8">
+                <nb-select (click)="onFixScrollIssue()" formControlName="country"
+                    (selectedChange)="onChangeCountry($event)"
+                    [attr.placeholder-selected]="locationForm.get('country').value === ''" scrollStrategy="close"
+                    class="quote-input form-control form-control-select">
+                    <nb-option value="">Country</nb-option>
+                    <nb-option *ngFor="let country of countries" [value]="country.value">{{ country.description }}
+                    </nb-option>
+                </nb-select>
+                <div *ngIf="locationForm.get('country').errors && locationForm.get('country').touched && formSubmitted">
+
+                    <div class="error" *ngIf="locationForm.get('country').errors['required']">
+                        Country is required
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Install State</label>
+            <div class="col-12 col-lg-8">
+                <nb-select (click)="onFixScrollIssue()" formControlName="state" *ngIf="!isLoadingStates"
+                    (selectedChange)="onChangeState($event)" scrollStrategy="close"
+                    [attr.placeholder-selected]="locationForm.get('state').value === ''"
+                    class="quote-input form-control form-control-select">
+                    <nb-option [value]="''">State</nb-option>
+                    <nb-option *ngFor="let state of states" [value]="state.value">{{ state.description }}
+                    </nb-option>
+                </nb-select>
+                <div
+                    *ngIf="!isLoadingStates && locationForm.get('state').errors && locationForm.get('state').touched && formSubmitted">
+
+                    <div class="error" *ngIf="locationForm.get('state').errors['required']">
+                        Install State is required
+                    </div>
+
+                </div>
+                <div *ngIf="isLoadingStates"
+                    class="d-flex justify-content-between align-items-center input-container position-relative is-busy-container">
+                    <div class="is-busy-label">Loading States...</div>
+                    <div class="is-busy" [nbSpinner]="true" nbSpinnerStatus="primary" nbSpinnerSize="large"></div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">City</label>
+            <div class="col-12 col-lg-8">
+                <input formControlName="city" placeholder="City" type="text" maxlength="255"
+                    class="quote-input form-control" />
+                <div *ngIf="locationForm.get('city').errors && locationForm.get('city').touched && formSubmitted">
+
+                    <div class="error" *ngIf="locationForm.get('city').errors['requiredWithTrim']">
+                        City is required
+                    </div>
+
+                    <div class="error" *ngIf="locationForm.get('city').errors['trimError']">
+                        This field can't start or end with a blank space
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-footer">
+        <button type="button" class="secondary-button" (click)="onCancel()">
+            Cancel
         </button>
-    </nb-card-header>
-    <nb-card-body class="pb-0">
-        <form [formGroup]="locationForm">
-            <div class="form-group row">
-                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Country</label>
-                <div class="col-12 col-lg-8">
-                    <nb-select (click)="onFixScrollIssue()" formControlName="country" (selectedChange)="onChangeCountry($event)"
-                    [attr.placeholder-selected]="locationForm.get('country').value === ''"    
-                    scrollStrategy="close" class="quote-input form-control form-control-select">
-                        <nb-option value="">Country</nb-option>
-                        <nb-option *ngFor="let country of countries" [value]="country.value">{{ country.description }}
-                        </nb-option>
-                    </nb-select>
-                    <div *ngIf="locationForm.get('country').errors && locationForm.get('country').touched && formSubmitted">
-
-                        <div class="error" *ngIf="locationForm.get('country').errors['required']">
-                            Country is required
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Install State</label>
-                <div class="col-12 col-lg-8">
-                    <nb-select (click)="onFixScrollIssue()" formControlName="state" *ngIf="!isLoadingStates" (selectedChange)="onChangeState($event)" scrollStrategy="close"
-                        [attr.placeholder-selected]="locationForm.get('state').value === ''" class="quote-input form-control form-control-select">
-                        <nb-option [value]="''">State</nb-option>
-                        <nb-option *ngFor="let state of states" [value]="state.value">{{ state.description }}
-                        </nb-option>
-                    </nb-select>
-                    <div *ngIf="!isLoadingStates && locationForm.get('state').errors && locationForm.get('state').touched && formSubmitted">
-
-                        <div class="error" *ngIf="locationForm.get('state').errors['required']">
-                            Install State is required
-                        </div>
-
-                    </div>
-                    <div *ngIf="isLoadingStates"
-                        class="d-flex justify-content-between align-items-center input-container position-relative is-busy-container">
-                        <div class="is-busy-label">Loading States...</div>
-                        <div class="is-busy" [nbSpinner]="true" nbSpinnerStatus="primary" nbSpinnerSize="large"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">City</label>
-                <div class="col-12 col-lg-8">
-                    <input formControlName="city" placeholder="City" type="text" maxlength="255" class="quote-input form-control" />
-                    <div *ngIf="locationForm.get('city').errors && locationForm.get('city').touched && formSubmitted">
-
-                        <div class="error" *ngIf="locationForm.get('city').errors['requiredWithTrim']">
-                            City is required
-                        </div>
-
-                        <div class="error" *ngIf="locationForm.get('city').errors['trimError']">
-                            This field can't start or end with a blank space
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </nb-card-body>
-    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
-        <button (click)="onCancel()" type="button" class="footer-btn btn btn-secondary mr-1">
-            <i class="fas fa-times"></i>
-            Close
-        </button>
-        <button (click)="onSelect()" type="button" class="footer-btn btn btn-primary mr-1">
-            <i class="fas fa-check"></i>
+        <div class="margin-8"></div>
+        <button (click)="onSelect()" type="button" class="main-button">
             Select
         </button>
-    </nb-card-footer>
-</nb-card>
+    </div>
+</div>

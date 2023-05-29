@@ -10,8 +10,8 @@ import { ControlContainer, ControlValueAccessor, UntypedFormControl, FormControl
       <i class="toggle-icon far" *ngIf="!!control.value?.trim()" [tooltip]="tooltip" [class]="eyeIcon"
          (click)="toggleShowPassword()"></i>
          </div>
-    <fieldset *ngIf="showValidations === true && validationShown">
-      <ul>
+    <fieldset  *ngIf="showValidations === true && validationShown">
+      <ul class="m-0 list-unstyled">
         <li *ngFor="let val of passwordValidations">
             <span>
               <i class="fas fa-check text-success" *ngIf="validateRule(val, val.rule | smrRegexText:control.value); else otherwise"></i>
@@ -69,11 +69,7 @@ export class PasswordInputComponent implements ControlValueAccessor {
   eyeIcon: 'fa-eye' | 'fa-eye-slash' = 'fa-eye';
   tooltip: 'Show Password' | 'Hide Password' = 'Show Password';
   passwordValidations = [
-    {
-      name: 'New Password is required.',
-      rule: /./,
-      isValid: false,
-    },
+   
     {
       name: 'At least 1 lowercase character.',
       rule: /[a-z]/,

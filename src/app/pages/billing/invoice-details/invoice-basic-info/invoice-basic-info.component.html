@@ -1,105 +1,101 @@
-<div class="invoice-status">
+<!-- <div class="page-header-container">
+    <div class="page-header-title">
+        <span (click)="onClose()" class="cursor">Invoices</span> / {{  invoice?.invoiceNumber | value }}
+    </div>
+</div>
+<div class="margin-16"></div> -->
+<!-- <div class="invoice-status">
     <ngx-aged-cell [rowData]="invoice" withSattled="true" isPillStyle="true"></ngx-aged-cell>
-</div>
+</div> -->
+<nb-card size="xlarge">
+  <nb-card-body nbSpinnerStatus="primary" nbSpinnerSize="giant">
+    <div class="card-details">
+      <div class="card-details-container">
 
-<div class="row">
-    <div class="col-lg-6">
-        
-        <div class="form-group row" *ngIf="displayAccountName">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.customer | value }}</div>
-            </div>
+        <div class="displayData" *ngIf="displayAccountName">
+          <label class="label">{{accountTitle}}</label>
+          <div class="content">{{ invoice?.customer | value }}</div>
         </div>
 
-        <div class="form-group row" *ngIf="!isSmartriseUser">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Number</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.jobNumber | value }}</div>
-            </div>
+        <div *ngIf="isSmartrise" class="displayData">
+          <label class="label">Installation By</label>
+          <div class="content">{{ invoice?.installedBy | value }}</div>
         </div>
 
-        <div class="form-group row" *ngIf="!isSmartriseUser">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.jobName | value }}</div>
-            </div>
+        <div *ngIf="isSmartrise" class="displayData">
+          <label class="label">Currently Maintained By</label>
+          <div class="content">{{ invoice?.maintainedBy | value }}</div>
         </div>
 
-        <div class="form-group row" *ngIf="isSmartriseUser">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Number</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.jobNumber | value }}</div>
-            </div>
+        <div class="displayData" *ngIf="!isSmartriseUser">
+          <label class="label">Job Number</label>
+          <div class="content">{{ invoice?.jobNumber | value }}</div>
+        </div>
+        <div class="displayData" *ngIf="!isSmartriseUser">
+          <div class="label">Job Name</div>
+          <div class="content" id="last4" value="">{{ invoice?.jobName | value }}</div>
         </div>
 
-        <div class="form-group row" *ngIf="isSmartriseUser">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.jobName | value }}</div>
-            </div>
+        <div class="displayData" *ngIf="isSmartriseUser">
+          <div class="label">Job Number</div>
+          <div class="content">{{ invoice?.jobNumber | value }}</div>
         </div>
 
-        <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Invoice Number</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.invoiceNumber | value }}</div>
-            </div>
+        <div class="displayData" *ngIf="isSmartriseUser">
+          <div class="label">Job Name</div>
+          <div class="content">{{ invoice?.jobName | value }}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">Invoice Number</div>
+          <div class="content">{{ invoice?.invoiceNumber | value}}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">PO Number</div>
+          <div class="content">{{ invoice?.jobName | value }}</div>
+        </div>
+        <div class="displayData" *ngIf="!isSmartriseUser">
+          <div class="label">Invoice Date</div>
+          <div class="content">{{ invoice?.invoiceDate | usdate | value }}</div>
+        </div>
+        <div class="displayData" *ngIf="isSmartriseUser">
+          <div class="label">Invoice Date</div>
+          <div class="content">{{ invoice?.invoiceDate | usdate | value}}</div>
+        </div>
+      </div>
+
+      <div class="card-details-container">
+        <div class="displayData" *ngIf="isSmartriseUser">
+          <div class="label">Invoice Date</div>
+          <div class="content"> {{ invoice?.invoiceDate | usdate | value }}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">Due Date</div>
+          <div class="content">{{ invoice?.dueDate | usdate | value }}</div>
         </div>
 
-        <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">PO Number</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.poNumbers | value }}</div>
-            </div>
+        <div class="displayData">
+          <div class="label">Payment Date</div>
+          <div class="content">{{ invoice?.paymentDate | usdate | value }}</div>
         </div>
 
-        <div class="form-group row" *ngIf="!isSmartriseUser">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Invoice Date</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.invoiceDate | usdate | value }}</div>
-            </div>
+        <div class="displayData">
+          <div class="label">Amount</div>
+          <div class="content">{{ invoice?.amount | number: '1.2-2' }}</div>
         </div>
+
+        <div class="displayData">
+          <div class="label">Balance</div>
+          <div class="content">{{ invoice?.balance | number: '1.2-2' }}</div>
+          <div *ngIf="invoice?.paymentMessage">
+            <div class="alert alert-danger message mt-3">
+              {{ invoice?.paymentMessage }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
-    <div class="col-lg-6">
-        <div class="form-group row" *ngIf="isSmartriseUser">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Invoice Date</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.invoiceDate | usdate | value }}</div>
-            </div>
-        </div>
 
-        <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Due Date</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.dueDate | usdate | value }}</div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Payment Date</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">{{ invoice?.paymentDate | usdate | value }}</div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Amount</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">${{ invoice?.amount | number: '1.2-2' }}</div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Balance</label>
-            <div class="col-12 col-lg-8">
-                <div class="form-control-plaintext">${{ invoice?.balance | number: '1.2-2' }}</div>
-                <div *ngIf="invoice?.paymentMessage">
-                    <div class="alert alert-danger message mt-3">
-                        {{ invoice?.paymentMessage }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+  </nb-card-body>
+</nb-card>

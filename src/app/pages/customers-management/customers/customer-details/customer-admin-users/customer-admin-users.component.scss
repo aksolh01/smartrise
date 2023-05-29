@@ -1,35 +1,35 @@
-:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(1){
-text-align: center;
-}
+// :host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(1){
+// text-align: center;
+// }
 
-:host ::ng-deep ng2-smart-table thead tr:nth-child(1) > th:nth-last-child(1){
-text-align: center;
-}
+// :host ::ng-deep ng2-smart-table thead tr:nth-child(1) > th:nth-last-child(1){
+// text-align: center;
+// }
 
-:host ::ng-deep ng2-smart-table input::-moz-placeholder {
-    color: #6c757d;
-    opacity: 1;
-    font-size: 0.8rem;
-    white-space: normal;
-    line-height: 1.3;
-    transform: translateY(-10px);
-}
-:host ::ng-deep ng2-smart-table input::-ms-input-placeholder {
-    color: #6c757d;
-    opacity: 1;
-    font-size: 0.8rem;
-    white-space: normal;
-    line-height: 1.3;
-    transform: translateY(-10px);
-}
-:host ::ng-deep ng2-smart-table input::-webkit-input-placeholder {
-    color: #6c757d;
-    opacity: 1;
-    font-size: 0.8rem;
-    white-space: normal;
-    line-height: 1.3;
-    transform: translateY(-10px);
-}
+// :host ::ng-deep ng2-smart-table input::-moz-placeholder {
+//     color: #6c757d;
+//     opacity: 1;
+//     font-size: 0.8rem;
+//     white-space: normal;
+//     line-height: 1.3;
+//     transform: translateY(-10px);
+// }
+// :host ::ng-deep ng2-smart-table input::-ms-input-placeholder {
+//     color: #6c757d;
+//     opacity: 1;
+//     font-size: 0.8rem;
+//     white-space: normal;
+//     line-height: 1.3;
+//     transform: translateY(-10px);
+// }
+// :host ::ng-deep ng2-smart-table input::-webkit-input-placeholder {
+//     color: #6c757d;
+//     opacity: 1;
+//     font-size: 0.8rem;
+//     white-space: normal;
+//     line-height: 1.3;
+//     transform: translateY(-10px);
+// }
 
 .guiding-tour-action{
     width: 15.75px;

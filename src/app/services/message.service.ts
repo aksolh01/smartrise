@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NbToastrService, NbComponentStatus } from '@nebular/theme';
+import { NbToastrService, NbComponentStatus, NbIconConfig } from '@nebular/theme';
 import { environment } from '../../environments/environment';
 
 @Injectable()
@@ -17,7 +17,8 @@ export class MessageService {
     }
 
     showInfoMessage(message: string) {
-        this.showToast('info', message);
+        const iconConfig: NbIconConfig = { icon: "info-outline", pack: 'eva' };
+        this.showToast('info', message, iconConfig);
     }
 
     showErrorMessage(message: string) {
@@ -32,11 +33,12 @@ export class MessageService {
         this.showToast('danger', message);
     }
 
-    showToast(status: NbComponentStatus, message: string) {
+    showToast(status: NbComponentStatus, message: string, iconConfig?: any) {
         this.toastrService.show(status, message, {
-                status,
-                duration: this.duration,
-                toastClass: 'toast-message'
+            status,
+            hasIcon: false,
+            duration: this.duration,
+            toastClass: 'toast-message'
         });
     }
 }

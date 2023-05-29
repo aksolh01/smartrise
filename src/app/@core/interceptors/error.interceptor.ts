@@ -112,6 +112,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   private _isSessionExpiry(url: string) {
     const lenth = environment.apiUrl.length;
     const pUrl = url.substring(lenth, url.length);
+
     const hideSessionExpiry = [
       'account\/login',
       'account\/[0-9]+\/resendInvitationLink\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}',
@@ -124,8 +125,9 @@ export class ErrorInterceptor implements HttpInterceptor {
       'openquotes\/[0-9]+',
       'account\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\/profile\/customeruser'
     ];
-    for (const f of hideSessionExpiry) {
-      const reg = new RegExp(`^${f}$`, 'i');
+
+    for (let f of hideSessionExpiry) {
+      var reg = new RegExp(`^${f}$`, 'i');
       if (reg.test(pUrl)) {
         return false;
       }
@@ -139,9 +141,22 @@ export class ErrorInterceptor implements HttpInterceptor {
     const hideToastMessageUrls = [
       'account/tokenValidity',
     ];
+
     if (hideToastMessageUrls.indexOf(pUrl) > -1) {
       return false;
     }
+
+    const skippedUrls = [
+      'jobs/passcode\/[0-9]+'
+    ];
+
+    for (let url of skippedUrls) {
+      var reg = new RegExp(`^${url}$`, 'i');
+      if (reg.test(pUrl)) {
+        return false;
+      }
+    }
+
     return true;
   }
 }

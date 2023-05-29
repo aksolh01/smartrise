@@ -33,13 +33,25 @@ export class QuotingToolService {
   constructor(
     private httpClient: HttpClient,
     private modalService: BsModalService
-  ) {}
+  ) { }
 
   getRfq(quoteId: number) {
     return this.httpClient
       .get<any>(this.baseUrl + `quotes/${quoteId}/rfq`)
       .pipe(map((response) => response));
   }
+
+  cloneQuote(quoteId: number, jobName: string) {
+    return this.httpClient.post<any>(this.baseUrl + `quotes/${quoteId}/clone`, {
+      jobName: jobName
+    })
+      .pipe(
+        map((response) => {
+          return response;
+        }),
+      );
+  }
+
 
   getQuoteHistory(id: any) {
     return this.httpClient
@@ -65,10 +77,9 @@ export class QuotingToolService {
       .pipe(map((response) => new CarResponse(response.body)));
   }
 
-  getQuoteDetails(quoteId: string) {
-    if (!quoteId) {
+  getQuoteDetails(quoteId: string): Observable<QuoteDetailsResponse> {
+    if (!quoteId)
       return of(null);
-    }
 
     return this.httpClient
       .get<IQuoteDetailsResponse>(this.baseUrl + 'quotes/get/' + quoteId, {
@@ -305,8 +316,8 @@ export class QuotingToolService {
     const subscribion = this.httpClient
       .get(
         this.baseUrl +
-          'quoteAttachments/quote/useractivity-downloadfile/' +
-          attachmentId.toString(),
+        'quoteAttachments/quote/useractivity-downloadfile/' +
+        attachmentId.toString(),
         {
           observe: 'body',
         }
@@ -329,31 +340,31 @@ export class QuotingToolService {
     setTimeout(() => {
       let modalRef: BsModalRef;
       const sub: Subscription = delegate.subscribe((response) => {
-          switch (response.type) {
-            case HttpEventType.DownloadProgress:
-              const percentage = Math.round(
-                (response.loaded / response.total) * 100
-              );
-              if (modalRef?.content?.progress !== undefined) {
-                modalRef.content.progress = percentage;
-              }
-              statusEvent.next({
-                status: ProgressStatusEnum.IN_PROGRESS,
-                percentage,
-              });
-              break;
-            case HttpEventType.Response:
-              modalRef?.hide();
-              const fileName = this._getFileNameFromHttpResponse(response);
-              statusEvent.next({ status: ProgressStatusEnum.COMPLETE });
-              const downloadedFile = new Blob([response.body], {
-                type: response.body.type,
-              });
-              this.createDownloadFileUserActivity(quoteId);
-              this._createLinkForDownload(fileName, downloadedFile);
-              break;
-          }
-        },
+        switch (response.type) {
+          case HttpEventType.DownloadProgress:
+            const percentage = Math.round(
+              (response.loaded / response.total) * 100
+            );
+            if (modalRef?.content?.progress !== undefined) {
+              modalRef.content.progress = percentage;
+            }
+            statusEvent.next({
+              status: ProgressStatusEnum.IN_PROGRESS,
+              percentage,
+            });
+            break;
+          case HttpEventType.Response:
+            modalRef?.hide();
+            const fileName = this._getFileNameFromHttpResponse(response);
+            statusEvent.next({ status: ProgressStatusEnum.COMPLETE });
+            const downloadedFile = new Blob([response.body], {
+              type: response.body.type,
+            });
+            this.createDownloadFileUserActivity(quoteId);
+            this._createLinkForDownload(fileName, downloadedFile);
+            break;
+        }
+      },
         (error) => {
           modalRef?.hide();
           statusEvent.next({ status: ProgressStatusEnum.ERROR, error });

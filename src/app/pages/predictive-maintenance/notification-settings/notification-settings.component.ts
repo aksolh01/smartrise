@@ -17,10 +17,10 @@ import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { NotificationSettingComponent } from '../notification-setting/notification-setting.component';
 import { NotificationSettingsActionsComponent } from './notification-settings-actions/notification-settings-actions.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-notification-settings',
@@ -176,7 +176,6 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
     baseService: BaseComponentService,
     private router: Router,
     private bsModelService: BsModalService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private notificationService: NotificationService,
   ) {
@@ -192,22 +191,20 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.onRecordsNumberChanged(rep.numberOfRecords);
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
+      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+        if (this.isSmall !== false) {
+          this.onReset();
+          this.isSmall = false;
         }
-      });
+      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+        if (this.isSmall !== true) {
+          this.onReset();
+          this.isSmall = true;
+        }
+      }
     });
 
     this.settings.pager = {

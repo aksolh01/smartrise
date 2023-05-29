@@ -1,8 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { FileUploader } from 'ng2-file-upload';
 import * as guidingTourGlobal from '../../../guiding.tour.global';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FunctionConstants } from '../../../../_shared/constants';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
@@ -13,6 +12,8 @@ import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-
 import { JoyrideService } from 'ngx-joyride';
 import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 import { ResponsiveService } from '../../../../services/responsive.service';
+import { HLinkTableCellComponent } from '../../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
+import { Tab } from '../../../../_shared/models/jobTabs';
 
 @Component({
   selector: 'ngx-upload-config-file',
@@ -54,9 +55,17 @@ export class UploadConfigFileComponent implements OnInit, OnDestroy, OnChanges {
       jobName: {
         title: 'Job Name',
         type: 'custom',
-        renderComponent: Ng2TableCellComponent,
-        onComponentInitFunction: (instance: Ng2TableCellComponent) => {
+        renderComponent: HLinkTableCellComponent,
+        onComponentInitFunction: (instance: HLinkTableCellComponent) => {
           instance.setHeader('Job Name');
+          instance.setOptions({
+            breakWord: true,
+            link: 'pages/jobs-management/jobs',
+            paramExps: [
+              'jobId'
+            ],
+            tooltip: 'View Job Details'
+          });
         },
         show: false,
         filter: false
@@ -104,8 +113,9 @@ export class UploadConfigFileComponent implements OnInit, OnDestroy, OnChanges {
     autoUpload: true,
     method: 'post',
     itemAlias: 'attachment',
-    allowedFileType: ['image', 'pdf']
+    allowedFileType: ['*.h']
   });
+
   message: string = 'File Description is required';
   showRequiredMessage: boolean = false;
   showWhitespaceMessage: boolean = false;

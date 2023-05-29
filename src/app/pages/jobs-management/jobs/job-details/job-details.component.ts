@@ -12,6 +12,7 @@ import { MultiAccountsService } from '../../../../services/multi-accounts-servic
 import { forkJoin } from 'rxjs';
 import { PasscodeService } from '../../../../services/passcode.service';
 import { IPasscode } from '../../../../_shared/models/passcode.model';
+import { URLs } from '../../../../_shared/constants';
 
 @Component({
   selector: 'ngx-job-details',
@@ -28,7 +29,6 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
   shipmentsTabSelected = false;
   resurcesTabSelected = false;
   jobTabSelected = false;
-  renderJobResources = false;
   prevUrl: string;
   passcode: IPasscode;
 
@@ -111,14 +111,6 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
     this.isLoading = false;
   }
 
-  private _isEmpty(passcode: string) {
-    if (passcode) {
-      return false;
-    }
-
-    return true;
-  }
-
   private _formatShipments() {
     this.job.shipments.forEach(shipment => {
       shipment.shippingTrackingActions.forEach(action => {
@@ -133,16 +125,8 @@ export class JobDetailsComponent extends BaseComponent implements OnInit {
     });
   }
 
-  onChangeTab($event) {
-    const tabTitle = $event.tabTitle;
-
-    if (tabTitle === 'Job Files') {
-      this.renderJobResources = true;
-    }
-  }
-
   onClose() {
-    this.router.navigateByUrl(this.prevUrl);
+    this.router.navigateByUrl('pages/jobs-management/jobs');
   }
 
   onRefresh() {

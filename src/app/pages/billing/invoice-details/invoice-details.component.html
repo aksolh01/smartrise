@@ -1,4 +1,4 @@
-<nb-card size="xlarge" class="pb-1 mb-3">
+<div size="xlarge" class="pb-1 mb-3">
     <nb-tabset *ngIf="invoice">
         <nb-tab tabTitle="Invoice Info" tabIcon="file-text">
             <ngx-invoice-basic-info [invoice]="invoice" [displayAccountName]="displayAccountName"
@@ -14,14 +14,14 @@
             Invoice not found.
         </div>
     </ng-template>
-</nb-card>
+</div>
 
-<div *ngIf="!isLoading" class="text-right mb-0 mx-3">
+<!-- <div *ngIf="!isLoading" class="text-right mb-0 mx-3">
     <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
         <i class="fas fa-times"></i>
         Close
     </button>
-</div>
+</div> -->
 
 <ng-template [ngIf]="isLoading">
     <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">

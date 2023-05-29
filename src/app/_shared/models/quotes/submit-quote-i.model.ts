@@ -116,8 +116,8 @@ export interface ISubmitCarSmartriseFeaturePayload {
     hoistwayLengthAssume: boolean;
     hoistwayLengthInfoMessage?: string;
     hoistwayLengthAssumedValue?: number;
-    nemaRating?: string;
-    nemaLocation?: string;
+    machineRoomNemaRating?: string;
+    hoistwayNemaRating?: string;
     landingSystemLengthOfTravel?: number;
     landingSystemLengthOfTravelAssume: boolean;
     loadWeighingDeviceTraction: string;

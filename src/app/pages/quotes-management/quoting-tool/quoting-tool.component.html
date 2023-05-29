@@ -862,8 +862,8 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>NEMA Rating</th>
-                                <th>NEMA Location</th>
+                                <th>Machine Room NEMA Rating</th>
+                                <th>Hoistway NEMA Rating</th>
                                 <th>Landing System Length of Travel (in feet)</th>
                                 <th>Enclosure Legs</th>
                                 <th>Cabinet Air Conditioning</th>
@@ -877,18 +877,18 @@
                                 <td class="text-center">
                                     <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
                                         [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
-                                        [carIndex]="car.carIndex" fieldLabel="NEMA Rating" valueField="nemaRating"
+                                        [carIndex]="car.carIndex" fieldLabel="Machine Room NEMA Rating" valueField="machineRoomNemaRating"
                                         [dataSource]="lookup.nemaRatings" dataSourceDisplayField="description"
-                                        dataSourceValueField="value" selectOptionLabel="NEMA Rating"
+                                        dataSourceValueField="value" selectOptionLabel="Machine Room NEMA Rating"
                                         [selectOptionValue]="defaultValue">
                                     </ngx-quoting-dropdown>
                                 </td>
                                 <td class="text-center">
                                     <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
                                         [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
-                                        [carIndex]="car.carIndex" fieldLabel="NEMA Location" valueField="nemaLocation"
-                                        [dataSource]="lookup.nemaLocations" dataSourceDisplayField="description"
-                                        dataSourceValueField="value" selectOptionLabel="NEMA Location"
+                                        [carIndex]="car.carIndex" fieldLabel="NEMA Location" valueField="hoistwayNemaRating"
+                                        [dataSource]="lookup.nemaRatings" dataSourceDisplayField="description"
+                                        dataSourceValueField="value" selectOptionLabel="Hoistway NEMA Location"
                                         [selectOptionValue]="defaultValue">
                                     </ngx-quoting-dropdown>
                                 </td>
@@ -1290,7 +1290,7 @@
 </ng-template>
 
 <ng-template #doneButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>

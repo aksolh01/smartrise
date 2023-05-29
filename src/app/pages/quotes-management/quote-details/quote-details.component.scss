@@ -24,6 +24,7 @@ $column-xxlarge-size: 18rem;
   .row {
     margin: 0 !important;
     &.quote-level-info {
+      gap: 16px;
       justify-content: space-between;
       .left-section,
       .right-section {
@@ -326,7 +327,7 @@ table tbody tr td:first-child {
     align-items: flex-end;
     color: #bdbdbd !important;
     font-weight: 550;
-    font-size: 24px;
+    font-size: 18px;
   }
 
 }
@@ -887,10 +888,10 @@ td span {
     // border-top: 1px solid gray;
   }
 
-  th:last-child,
-  td:last-child {
-    border-right: 1px solid #d7d7d7;
-  }
+  // th:last-child,
+  // td:last-child {
+  //   border-right: 1px solid #d7d7d7;
+  // }
 }
 
 @media (max-width: 992px) {
@@ -901,7 +902,7 @@ td span {
       margin: 0 !important;
       &.quote-level-info {
         flex-direction: column;
-        gap: 16px;
+        
         .left-section,
         .right-section {
           width: 100%;

@@ -24,7 +24,7 @@
 @import "./scss/table.scss";
 @import "./scss/components/button.scss";
 @import "./scss/card.scss";
-
+@import "./scss/popup.scss";
 
 // install the framework and custom global styles
 @include nb-install() {
@@ -120,13 +120,13 @@ body {
             border-radius: 5px 5px 0 0;
             padding: 12px 16px;
             position: relative;
-            border-bottom: 1px solid #B2B2B2;
+            border-bottom: 1px solid #b2b2b2;
             .card-title {
-                font-size: 28px;
+                font-size: 18px;
                 text-transform: none;
                 margin: 0;
                 font-weight: 600;
-                color: #0088cc;
+                color: #b2b2b2;
                 font-family: "Open Sans", Arial, sans-serif;
                 letter-spacing: -1px;
             }
@@ -155,7 +155,7 @@ body {
                 }
             }
             nb-menu {
-                background: #2676B5;
+                background: #2676b5;
                 -webkit-box-shadow: -5px 0 0 #f6f6f6 inset;
                 box-shadow: -5px 0 0 #f6f6f6 inset;
                 height: 100%;
@@ -165,15 +165,15 @@ body {
                         border: none;
                         background-color: transparent;
                         padding: 0px !important;
-                        &:hover{
+                        &:hover {
                             color: #ffffff !important;
                             background-color: #003656;
                             .menu-icon {
                                 color: #ffffff !important;
                             }
                         }
-                     
-                        svg{
+
+                        svg {
                             fill: #ffffff !important;
                         }
                         a {
@@ -200,7 +200,7 @@ body {
                                     color: #ffffff !important;
                                 }
                                 &[href="#"] {
-                                    background-color: #4499D3;
+                                    background-color: #4499d3;
                                     color: #ffffff !important;
                                     .menu-icon {
                                         color: #ffffff !important;
@@ -213,7 +213,7 @@ body {
                                         }
                                     }
                                     &:focus {
-                                        color: #2676B5;
+                                        color: #2676b5;
                                         .menu-icon {
                                             color: #ffffff !important;
                                         }
@@ -237,7 +237,7 @@ body {
                         > .menu-items {
                             -webkit-box-shadow: 0 -3px 3px -3px rgba(0, 0, 0, 0.1) inset;
                             box-shadow: 0 -3px 3px -3px rgba(0, 0, 0, 0.1) inset;
-                            background-color: #4499D3;
+                            background-color: #4499d3;
                             padding: 0px;
                             .menu-item {
                                 a {
@@ -262,7 +262,7 @@ body {
                 }
             }
             nb-menu {
-                background: #2676B5;
+                background: #2676b5;
                 -webkit-box-shadow: -5px 0 0 #f6f6f6 inset;
                 box-shadow: -5px 0 0 #f6f6f6 inset;
                 height: 100%;
@@ -355,7 +355,7 @@ body {
                             &.ng2-smart-th ng2-smart-table-title > *,
                             a.sort.asc,
                             a.sort.desc {
-                                color:var(--primary-color-gray);
+                                color: var(--primary-color-gray);
                                 font-weight: bold;
                             }
                             a.sort.ng2-smart-sort-link {
@@ -416,13 +416,12 @@ body {
                                             }
                                         }
                                     }
-                                   
                                 }
                             }
                         }
                     }
                     &:last-child th {
-                       // border-bottom: 2px solid #dee2e6;
+                        // border-bottom: 2px solid #dee2e6;
                     }
                 }
                 .form-control::-moz-placeholder {
@@ -453,7 +452,7 @@ body {
             tbody {
                 tr {
                     &:nth-of-type(odd) {
-                       background-color: unset !important;
+                        background-color: unset !important;
                     }
                     &:nth-of-type(even) {
                         background-color: unset !important;
@@ -466,7 +465,7 @@ body {
                 }
             }
         }
-      
+
         &:not(.responsive-design1) {
             ngx-smr-ng2-table-cell > div {
                 display: none;
@@ -565,15 +564,15 @@ body {
             }
         }
     }
-      ng2-smart-table table  td{
-         border-right: none !important;
-         border-left: none !important;
-         vertical-align: top !important;
+    ng2-smart-table table td {
+        border-right: none !important;
+        border-left: none !important;
+        vertical-align: top !important;
     }
-  
-    ng2-smart-table table tr.ng2-smart-titles th a.sort.asc, ng2-smart-table table tr.ng2-smart-titles th a.sort.desc{
+
+    ng2-smart-table table tr.ng2-smart-titles th a.sort.asc,
+    ng2-smart-table table tr.ng2-smart-titles th a.sort.desc {
         font-weight: 600 !important;
-        
     }
     nb-auth nb-layout .layout .layout-container .content .columns nb-layout-column {
         padding: 0;
@@ -688,6 +687,12 @@ ngx-smr-mobile-filters {
 
 .toast-message {
     white-space: pre-wrap;
+
+    .content-container {
+        .message {
+            display: none;
+        }
+    }
 }
 
 .card-body .control-label {
@@ -699,7 +704,7 @@ ngx-smr-mobile-filters {
 }
 
 .form-control-plaintext {
-    background: #ffffff !important;
+    background: #f4f4f4 !important;
     padding: 0.375rem 0.75rem;
 }
 
@@ -759,7 +764,8 @@ ngx-smr-mobile-filters {
 
 button:disabled {
     cursor: no-drop;
-    color: black;
+    background-color: #cccccc;
+    color: #666666;
 }
 
 .btn:focus,
@@ -816,18 +822,14 @@ button:disabled {
 }
 
 .imitate-link {
-    font-size: 0.9125rem !important;
-    color: #3366ff !important;
-    text-decoration: underline !important;
-    cursor: pointer !important;
+    color: var(--primary-color-blue);
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 .imitate-link:hover {
-    color: #598bff !important;
-}
-
-.imitate-link:hover {
-    color: #598bff;
+    text-decoration: none;
 }
 
 .joyride-button {
@@ -912,7 +914,9 @@ input::-ms-clear {
 // }
 
 .form-group label {
-    color: black !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #8f8f8f !important;
 }
 
 //Added newly after refactor forms desgin
@@ -921,7 +925,7 @@ input::-ms-clear {
         text-align: right;
     }
     .form-buttons button {
-        margin-left: .5rem;
+        margin-left: 0.5rem;
     }
 }
 
@@ -929,17 +933,17 @@ input::-ms-clear {
     .form-buttons button {
         display: block;
         width: 100%;
-        margin-bottom: .5rem;
+        margin-bottom: 0.5rem;
     }
 
     .form-buttons button:last-child {
         margin-bottom: 0rem;
     }
 
-    .form-buttons ngx-button{
+    .form-buttons ngx-button {
         display: block;
         width: 100%;
-        margin-bottom: .5rem;
+        margin-bottom: 0.5rem;
     }
 
     .form-buttons ngx-button:last-child {
@@ -1126,6 +1130,7 @@ ng2-smart-table {
 
 ng2-smart-table tbody tr td:only-child {
     text-align: center;
+    color: gray;
 }
 
 .btn-checkout-container ngx-button {
@@ -1150,15 +1155,15 @@ ng2-smart-table tbody tr td:only-child {
     }
 }
 
-.nb-theme-corporate nb-toast.status-info nb-icon {
-    background-image: url(/assets/images/info.png);
-    background-color: transparent;
-    background-size: 24px 24px;
-}
+// .nb-theme-corporate nb-toast.status-info nb-icon {
+//     background-image: url(/assets/images/info.png);
+//     background-color: transparent;
+//     background-size: 24px 24px;
+// }
 
-.nb-theme-corporate nb-toast.status-info nb-icon svg {
-    visibility:collapse;
-}
+// .nb-theme-corporate nb-toast.status-info nb-icon svg {
+//     visibility:collapse;
+// }
 .active-bank-accounts {
     min-width: 50rem;
 }
@@ -1258,7 +1263,6 @@ input::placeholder {
     }
 }
 
-
 //full-width and auto implementation for all screen sizes
 @media (min-width: 0px) {
     .width-100 {
@@ -1309,54 +1313,79 @@ input::placeholder {
 .account-info-modal {
     min-width: none;
 }
-.main-card{
+.main-card {
     display: flex;
-    gap:32px;
-     
-    .card-container{
-        width:100%;
+    gap: 32px;
+
+    .card-container {
+        width: 100%;
         background-color: white;
-        &.nobackground{
+        &.nobackground {
             background-color: transparent;
         }
-        .card-container-data{
-            width:100%;
+        .card-container-data {
+            width: 100%;
             margin-bottom: 16px;
-            
-            .label{
+
+            .label {
                 color: #9d9a9a;
                 margin-bottom: 0px;
                 font-size: 14px;
                 font-weight: 600;
             }
-            .content{
+            .content {
                 color: black;
                 font-size: 12px;
                 font-weight: 400;
-                height: 28px;
-                        }
+                height: 32px;
+            }
+        }
+        .job-history{
+            .job-history-container{
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #80808061;
+                padding-bottom: 14px;
+                margin-bottom: 14px;
+                &:last-child{
+                    border-bottom: none;
+                }
+                .job-history-label{
+                    color: var(--primary-color-black);
+                    font-size: 14px;
+
+                    &.last-label{
+                        color: var(--primary-color-blue);
+                    }
+
+                }
+                .job-history-content{
+                    color: var(--primary-color-gray);
+                    font-size: 14px;
+                }
+            }
         }
     }
 }
 @media (max-width: 992px) {
-    .main-card{
+    .main-card {
         display: flex;
-         gap:32px;
+        gap: 32px;
         flex-direction: column;
-         
-        .card-container{
-            width:100%;
+
+        .card-container {
+            width: 100%;
             background-color: white;
-            .card-container-data{
-                width:100%;
+            .card-container-data {
+                width: 100%;
                 margin-bottom: 8px;
-                .label{
+                .label {
                     color: #9d9a9a;
                     margin-bottom: 0px;
                     font-size: 14px;
                     font-weight: 600;
                 }
-                .content{
+                .content {
                     color: black;
                     font-size: 13px;
                     font-weight: 400;
@@ -1365,143 +1394,139 @@ input::placeholder {
         }
     }
 }
-nb-accordion-item-header{
-    border-bottom: 1px solid var(--primary-color-gray ) !important;
+nb-accordion-item-header {
+    border-bottom: 1px solid var(--primary-color-gray) !important;
     padding: 4px !important;
-    color:var(--primary-color-gray );
-    font-size: 14px;    
+    color: var(--primary-color-gray);
+    font-size: 14px;
 }
-.status{
+.status {
     margin-right: 40px;
     color: white;
     border-radius: 8px;
     font-size: 12px;
     padding: 2px 4px;
     font-weight: 400;
-    
-    &.status-Delivered{
+
+    &.status-Delivered {
         background-color: green;
     }
-    &.status-Unknown{
+    &.status-Unknown {
         background-color: grey;
     }
-    &.status-{
+    &.status- {
         background-color: grey;
     }
     &.status-Transit {
         background-color: darkcyan;
     }
-    
+
     &.status-Failure {
         background-color: $red-color;
     }
-    
+
     &.status-Returned {
         background-color: brown;
     }
-    
+
     &.status-Pretransit {
         background-color: orange;
     }
-    
+
     &.status-Shipped {
         background-color: greenyellow;
     }
-
 }
-.badge-info{
-    background-color:var(--primary-color-blue);
+.badge-info {
+    background-color: var(--primary-color-blue);
     width: 42px;
 }
-.badge-warning{
-    background-color:  green;
+.badge-warning {
+    background-color: green;
     width: 42px;
 }
 @media (max-width: 992px) {
-.text-center {
-    text-align: center !important;
-    display: flex;
-    padding-left: 8px;
+    .text-center {
+        text-align: center !important;
+        display: flex;
+        padding-left: 8px;
+    }
 }
-}
-.page-tab{
+.page-tab {
     display: flex;
     gap: 14px;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    .page-tab-container{
-    width: 85%;
-    display: flex;
-    gap: 14px;
-    .page-tab-item{
-        width: 100%;
-        background-color: white;
-        text-align: center;
-        padding: 10px;
-        font-size: 18px;
-        font-weight: 600;
-        color: black;
-        border-radius: 12px;
-        cursor: pointer;
-      
-        &.active{
-            background-color: var(--primary-color-blue);
-            color: white;
+    .page-tab-container {
+        width: 85%;
+        display: flex;
+        gap: 14px;
+        .page-tab-item {
+            width: 100%;
+            background-color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: black;
+            border-radius: 12px;
+            cursor: pointer;
+
+            &.active {
+                background-color: var(--primary-color-blue);
+                color: white;
+            }
         }
-        
     }
-    }
-    
 }
-.status-job-file{
+.status-job-file {
     background-color: red;
 }
-.avatar-btn-container{
+.avatar-btn-container {
     display: flex;
     justify-content: flex-end;
-    .avatar-btn{
-        button{
+    .avatar-btn {
+        button {
             border-radius: 50%;
             width: 48px;
             height: 48px;
         }
-        
     }
 }
-ng2-smart-table nav.ng2-smart-pagination-nav{
+ng2-smart-table nav.ng2-smart-pagination-nav {
     padding-left: 20px;
 }
 .error {
     color: red;
     font-size: 14px;
     padding-bottom: 6px;
-  }
-  ng2-smart-table-pager{
+}
+ng2-smart-table-pager {
     display: none !important;
-  }
-  .pagination-info{
+}
+.pagination-info {
     display: flex;
     gap: 10px;
     color: black;
     justify-content: flex-end;
     font-weight: 600;
     font-size: 16px;
-    .pagination-btn{
+    .pagination-btn {
         cursor: pointer;
     }
 }
-.privacy-policy-container{
+.privacy-policy-container {
     z-index: 1000000;
     background: white;
     padding: 20px;
     max-height: calc(100vh - 128px);
     overflow: auto;
 }
-.nodatafound{
+.nodatafound {
     text-align: center;
+    color: grey;
 }
-.actions-user-container{
+.actions-user-container {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -1512,12 +1537,12 @@ ng2-smart-table nav.ng2-smart-pagination-nav{
     margin-top: 8px !important;
 }
 .tabset .tab:first-child {
-    margin-right:8px;
+    margin-right: 8px;
 }
 .tabset .tab a {
     border-radius: 50px;
 }
-nb-tabset .tab-link{
+nb-tabset .tab-link {
     width: 100%;
     background-color: white;
     text-align: center;
@@ -1526,29 +1551,72 @@ nb-tabset .tab-link{
     font-weight: 600;
     color: black;
     border-radius: 12px;
-
 }
-nb-tabset .tab:hover .tab-link{
+nb-tabset .tab:hover .tab-link {
     background-color: white;
 }
-nb-tabset .tab.active .tab-link{
+nb-tabset .tab.active .tab-link {
     background-color: var(--primary-color-blue);
     color: white;
 }
 
-nb-tabset .tab.active .tab-link::before{
+nb-tabset .tab.active .tab-link::before {
     display: none !important;
 }
 
-nb-tabset .tabset .tab a::before{
+nb-tabset .tabset .tab a::before {
     display: none !important;
 }
-nb-tabset .tabset .tab a:hover{
+nb-tabset .tabset .tab a:hover {
     color: black;
 }
-nb-tabset .tab.active .tab-link:hover{
+nb-tabset .tab.active .tab-link:hover {
     color: white;
 }
-nb-tabset > ul.tabset > li.tab:not(.active) a{
+nb-tabset > ul.tabset > li.tab:not(.active) a {
     border: none;
+}
+
+.profile-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 16px;
+}
+.card-details {
+    display: flex;
+    margin-bottom: 14px;
+
+    .card-details-container {
+        width: 100%;
+        &:first-child {
+            margin-right: 8px;
+        }
+
+        .displayData {
+            margin-top: 8px;
+            .label {
+                color: #9d9a9a;
+                margin-bottom: 0px;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            .content {
+                color: black;
+                font-size: 13px;
+                font-weight: 400;
+            }
+        }
+    }
+}
+.margin-16 {
+    margin: 16px;
+}
+.margin-8 {
+    margin: 8px;
+}
+.table-header-no-filter {
+    color: var(--primary-color-gray) !important;
+    text-decoration: none;
+    font-weight: 600;
 }

@@ -1,25 +1,9 @@
-<div class="row direction">
-    <div class="col-sm-12 col-md-7">
-        <div class="dataTables_paginate paging_simple_numbers">
-            <ul class="pagination">
-                <button (click)="fetchPreviousPage()" class="page-item previous"
-                    [attr.disabled]="prevDisabled ? true : null">
-                    Previous
-                </button>
-                <li *ngIf="pagesCount > pagerPages && pagerArray[0] > 1" class="page-item">
-                    <a (click)="displayPreviousPagerPages()" class="page-link">...</a>
-                </li>
-                <li *ngFor="let i of pagerArray" class="page-item" [class.active]="currentPageIndex === i">
-                    <a (click)="fetchPage(i)" class="page-link">{{ i }}</a>
-                </li>
-                <li *ngIf="pagesCount > pagerPages && pagerArray[pagerPages - 1] < pagesCount" class="page-item">
-                    <a (click)="displayNextPagerPages()" class="page-link">...</a>
-                </li>
-                <button (click)="fetchNextPage()" type="button" class="page-item next"
-                    [attr.disabled]="nextDisabled ? true : null">
-                    Next
-                </button>
-            </ul>
-        </div>
-    </div>
+<div class="pagination-info" *ngIf="table">
+    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
+    {{ navigatedRecords }}
+    -
+    {{ min }}
+    of {{ recordsCount }}
+
+    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
 </div>

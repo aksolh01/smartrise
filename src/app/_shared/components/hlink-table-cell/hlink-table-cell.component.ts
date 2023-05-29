@@ -16,6 +16,7 @@ export class HLinkTableCellComponent implements ViewCell, OnInit {
   @Input() preNavigateFunction: (rowData) => void;
   breakWord: boolean;
   tooltip: string;
+  hasValidParameters: boolean = true;
   @Input() options: {
     tooltip: string;
     link?: string;
@@ -28,7 +29,7 @@ export class HLinkTableCellComponent implements ViewCell, OnInit {
 
   ngOnInit(): void {
     this.href = this.options?.link;
-    if(this.options.showHeader === false) {
+    if (this.options.showHeader === false) {
       this.showHeader = false;
     }
     if (this.options.paramExps && this.options.paramExps.length > 0) {
@@ -36,7 +37,10 @@ export class HLinkTableCellComponent implements ViewCell, OnInit {
         if (p.startsWith('#')) {
           this.href = this.href + '/' + p.substring(1);
         } else {
-          this.href = this.href + '/' + this.rowData[p];
+          if (!this.rowData[p]) {
+            this.hasValidParameters = false;
+          } else
+            this.href = this.href + '/' + this.rowData[p];
         }
       });
     }

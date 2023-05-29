@@ -17,21 +17,7 @@
     </div>
 </div>
 <div class="actions-user-container">
-    <div class="pagination-info">
-        <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
-        {{ (source?.getPaging().page - 1) * settings?.pager?.perPage + 1 }}
-        -
-        {{
-        Math.min(
-        source.count(),
-        (source?.getPaging().page - 1) * settings?.pager?.perPage +
-        settings?.pager?.perPage
-        )
-        }}
-        of {{ source ? source?.count() : null }}
-
-        <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
-    </div>
+    <ngx-pager [table]="table"></ngx-pager>
     <div class="avatar-btn-container">
         <div class="avatar-btn">
             <a>
@@ -145,7 +131,7 @@
                     </button>
                 </div> -->
                 <div class="table-content" *ngIf="source">
-                    <ng2-smart-table [settings]="settings"
+                    <ng2-smart-table #table [settings]="settings"
                         [source]="source">
                     </ng2-smart-table>
                 </div>
@@ -203,21 +189,21 @@
 </ng-template>
 
 <ng-template #prevButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="fas fa-step-backward"></i>
         Prev
     </button>
 </ng-template>
 
 <ng-template #nextButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         Next
         <i class="fas fa-step-forward"></i>
     </button>
 </ng-template>
 
 <ng-template #doneButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>

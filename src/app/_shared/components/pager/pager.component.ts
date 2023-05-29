@@ -1,94 +1,67 @@
 import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-pager',
   templateUrl: './pager.component.html',
-  styleUrls: ['./pager.component.scss']
+  styleUrls: ['./pager.component.scss'],
 })
 export class PagerComponent implements OnInit {
 
-  @Output() fetchingPage = new EventEmitter<number>();
-  prevDisabled = false;
-  nextDisabled = false;
-  pagerArray = [];
-  currentPageIndex = 0;
   @Input() pagerPages: number;
   @Input() pagesCount: number;
+  @Input() table: Ng2SmartTableComponent;
+
+
+  get min(): number {
+    if (!this.table) {
+      return null;
+    }
+    return Math.min(
+      this.table.source.count(),
+      (this.table.source.getPaging().page - 1) * (<any>this.table.settings).pager.perPage +
+      (<any>this.table.settings).pager.perPage
+    );
+  }
+
+  get recordsCount(): number {
+    if (!this.table) {
+      return null;
+    }
+    return this.table.source.count();
+  }
+
+  get navigatedRecords(): number {
+    if (!this.table) {
+      return null;
+    }
+
+    if (this.min === 0) {
+      return 0;
+    }
+
+    return (this.table.source.getPaging().page - 1) * (<any>this.table.settings).pager.perPage + 1;
+  }
+
   constructor() { }
 
   ngOnInit(): void {
-    this.fetchPage(1);
   }
 
-  updatePager() {
-
-    if (this.pagerArray.length === 0) {
-      for (let index = 1; index <= this.pagerPages; index++) {
-        this.pagerArray.push(index);
-      }
-      return;
+  onPagePrev(): void {
+    const currentPage = this.table.source.getPaging().page;
+    const perPage = this.table.source.getPaging().perPage;
+    if (currentPage > 1) {
+      this.table.source.setPaging(currentPage - 1, perPage);
     }
+  }
 
-    const firstPageIndex = this.pagerArray[0];
-    const lastPageIndex = this.pagerArray[this.pagerArray.length - 1];
-
-    const position = this.pagerArray.indexOf(this.currentPageIndex);
-    if (position === -1) {
-      if (this.currentPageIndex < firstPageIndex) {
-        for (let index = 0; index < this.pagerArray.length; index++) {
-          this.pagerArray[index] = this.pagerArray[index] - 1;
-        }
-      } else if (this.currentPageIndex > lastPageIndex) {
-        for (let index = 0; index < this.pagerArray.length; index++) {
-          this.pagerArray[index] = this.pagerArray[index] + 1;
-        }
-      }
+  onPageNext(): void {
+    const currentPage = this.table.source.getPaging().page;
+    const perPage = this.table.source.getPaging().perPage;
+    const totalPages = Math.ceil(this.table.source.count() / perPage);
+    if (currentPage < totalPages) {
+      this.table.source.setPaging(currentPage + 1, perPage);
     }
-
-    this.prevDisabled = this.pagerArray[0] === 1 || this.pagesCount < this.pagerPages;
-    this.nextDisabled = this.pagerArray[this.pagerArray.length - 1] === this.pagesCount || this.pagesCount < this.pagerPages;
-  }
-
-  fetchPage(pageIndex: number) {
-    this.currentPageIndex = pageIndex;
-    this.fetchingPage.emit(pageIndex);
-  }
-
-  fetchNextPage() {
-    this.fetchPage(this.currentPageIndex + 1);
-  }
-
-  displayNextPagerPages() {
-    const lastPagerIndex = this.pagerArray[this.pagerArray.length - 1];
-    if (lastPagerIndex + this.pagerPages > this.pagesCount) {
-      let index = this.pagerPages - 1;
-      for (let pagerIndex = this.pagesCount; pagerIndex > (this.pagesCount - this.pagerPages); pagerIndex--) {
-        this.pagerArray[index] = pagerIndex;
-        index--;
-      }
-    } else {
-      for (let index = 0; index < this.pagerArray.length; index++) {
-        this.pagerArray[index] = this.pagerArray[index] + this.pagerPages;
-      }
-    }
-    this.fetchPage(this.pagerArray[this.pagerArray.length - 1]);
-  }
-
-  fetchPreviousPage() {
-    this.fetchPage(this.currentPageIndex - 1);
-  }
-
-  displayPreviousPagerPages() {
-    const firstPagerIndex = this.pagerArray[0];
-    if (firstPagerIndex - this.pagerPages < 1) {
-      for (let index = 1; index <= this.pagerPages; index++) {
-        this.pagerArray[index - 1] = index;
-      }
-    } else {
-      for (let index = 0; index < this.pagerArray.length; index++) {
-        this.pagerArray[index] = this.pagerArray[index] - this.pagerPages;
-      }
-    }
-    this.fetchPage(this.pagerArray[0]);
   }
 }

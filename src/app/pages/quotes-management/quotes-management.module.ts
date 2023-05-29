@@ -20,6 +20,7 @@ import { BusinessContext } from './quoting-tool/business/business-context';
 import { QuotingToolValidationService } from '../../services/quoting-tool-validation.service';
 import { QuotingInputNumberComponent } from './quoting-tool/custom-fields/quoting-input-number/quoting-input-number.component';
 import { QuotingInputTextComponent } from './quoting-tool/custom-fields/quoting-input-text/quoting-input-text.component';
+import { CloneDialogComponent } from './quoting-tool-list/clone-dialog/clone-dialog.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import { QuotingInputTextComponent } from './quoting-tool/custom-fields/quoting-
     JobLocationLookupComponent,
     QuotingInputNumberComponent,
     QuotingInputTextComponent,
+    CloneDialogComponent,
   ],
   providers: [
     QuotingToolService,

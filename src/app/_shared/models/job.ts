@@ -44,6 +44,9 @@ export interface IJob {
   actualShipDate?: Date;
   shipments: IShipment[];
   resourceFiles: IJobResource[];
+  releasedToEngineering?: Date;
+  engineered?: Date;
+  releasedToProduction?: Date;
 }
 
 export interface IJobResource {

@@ -12,7 +12,6 @@ import { AlertsSettingsActionsComponent } from './alerts-settings-actions/alerts
 import { IAlertSetting } from '../../../_shared/models/alertSetting';
 import { AlertSettingComponent } from '../alert-setting/alert-setting.component';
 import { AlertSeverityCellComponent } from '../../../_shared/components/business/alert-severity.component';
-import { SettingService } from '../../../services/setting.service';
 import { ResponsiveService } from '../../../services/responsive.service';
 import { ITextValueLookup } from '../../../_shared/models/text-value.lookup';
 import { CpDateFilterComponent } from '../../../_shared/components/table-filters/cp-date-filter.component';
@@ -22,6 +21,7 @@ import { AlertSettingsParams } from '../../../_shared/models/alertSettingsParams
 import { CpListFilterComponent } from '../../../_shared/components/table-filters/cp-list-filter.component';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-alerts-settings',
@@ -397,7 +397,7 @@ export class AlertsSettingsComponent extends BaseComponent implements OnInit {
     {
       code: '69',
       description:
-      'When 01-150 is set to ON, this debugging alarm will signal when an ESTOP is commanded due to class of operation change.',
+        'When 01-150 is set to ON, this debugging alarm will signal when an ESTOP is commanded due to class of operation change.',
       correctiveAction: 'NA',
     },
     {
@@ -7857,7 +7857,6 @@ export class AlertsSettingsComponent extends BaseComponent implements OnInit {
   constructor(
     baseService: BaseComponentService,
     private modalService: BsModalService,
-    private settingsService: SettingService,
     private responsiveService: ResponsiveService,
     private alertService: AlertService,
   ) {
@@ -7929,22 +7928,20 @@ export class AlertsSettingsComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeGrid();
-    this.settingsService.getBusinessSettings().subscribe(x => {
-      this.recordsNumber = x.numberOfRecords || 25;
-      this.onRecordsNumberChanged(x.numberOfRecords);
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
+      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+        if (this.isSmall !== false) {
+          this.onReset();
+          this.isSmall = false;
         }
-      });
+      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+        if (this.isSmall !== true) {
+          this.onReset();
+          this.isSmall = true;
+        }
+      }
     });
   }
 

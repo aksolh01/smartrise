@@ -9,23 +9,18 @@
                 to authenticate the account's ownership.
             </p>
         </div>
-        <form [formGroup]="bankAccountForm" (ngSubmit)="onSubmit()" class="mt-3">
-            <div class="row">
-                <div class="col-12 col-lg-6">
-                    <div *ngIf="displayAccountName" class="form-group row">
-                        <label
-                            class="prevent-overflow-lg px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account
-                            Name</label>
-                        <div class="col-12 col-lg-8">
-                            <div class="form-control-plaintext">{{ accountName | value }}</div>
+        <form [formGroup]="bankAccountForm" (ngSubmit)="onSubmit()" class="form-container">
+            <div class="row-container">
+                <div class="input-container">
+                    <div class="input-sub-container" *ngIf="displayAccountName">
+                        <label class="label-align">Account Name</label>
+                        <div class="input-item">
+                            <div class="input-item-label"> {{ accountName | value }}</div>
                         </div>
                     </div>
-
-
-                    <div class="form-group row">
-                        <label for="accountType" class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account
-                            Type</label>
-                        <div class="col-12 col-lg-8">
+                    <div class="input-sub-container">
+                        <label class="label-align">Account Type</label>
+                        <div class="input-item">
                             <nb-select [attr.placeholder-selected]="bankAccountForm.value.accountType === ''"
                                 formControlName="accountType" class="form-control form-control-select">
                                 <nb-option value="">Account Type</nb-option>
@@ -34,131 +29,123 @@
                             </nb-select>
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
-                        bankAccountForm.get('accountType').errors != null &&
-                        bankAccountForm.get('accountType').errors[
-                          'requiredWithTrim'
-                        ] &&
-                        bankAccountForm.get('accountType').touched
-                      ">
+                    bankAccountForm.get('accountType').errors != null &&
+                    bankAccountForm.get('accountType').errors[
+                      'requiredWithTrim'
+                    ] &&
+                    bankAccountForm.get('accountType').touched
+                  ">
                                     Account Type is required
                                 </div>
                                 <div class="help-block error" *ngIf="
-                        bankAccountForm.get('accountType').errors != null &&
-                        bankAccountForm.get('accountType').errors[
-                          'trimError'
-                        ] &&
-                        bankAccountForm.get('accountType').touched
-                      ">
+                    bankAccountForm.get('accountType').errors != null &&
+                    bankAccountForm.get('accountType').errors[
+                      'trimError'
+                    ] &&
+                    bankAccountForm.get('accountType').touched
+                  ">
                                     This field can't start or end with a blank space
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group row">
-                        <label for="cardholderName"
-                            class="px-lg-0 col-lg-4 col-12 col-form-label text-left text-lg-right">Name on
-                            Account</label>
-                        <div class="col-lg-8 col-12">
+                    <div class="input-sub-container">
+                        <label class="label-align">Name on Account</label>
+                        <div class="input-item">
                             <input placeholder="Name on Account" type="text" maxlength="255" class="form-control"
                                 formControlName="cardholderName" id="cardholderName" />
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
-                            bankAccountForm.get('cardholderName').errors != null &&
-                            bankAccountForm.get('cardholderName').errors[
-                              'requiredWithTrim'
-                            ] &&
-                            bankAccountForm.get('cardholderName').touched
-                          ">
+                        bankAccountForm.get('cardholderName').errors != null &&
+                        bankAccountForm.get('cardholderName').errors[
+                          'requiredWithTrim'
+                        ] &&
+                        bankAccountForm.get('cardholderName').touched
+                      ">
                                     Name on Account is required
                                 </div>
                                 <div class="help-block error" *ngIf="
-                            bankAccountForm.get('cardholderName').errors != null &&
-                            bankAccountForm.get('cardholderName').errors[
-                              'trimError'
-                            ] &&
-                            bankAccountForm.get('cardholderName').touched
-                          ">
+                        bankAccountForm.get('cardholderName').errors != null &&
+                        bankAccountForm.get('cardholderName').errors[
+                          'trimError'
+                        ] &&
+                        bankAccountForm.get('cardholderName').touched
+                      ">
                                     This field can't start or end with a blank space
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6">
-                    <div class="form-group row">
-                        <label for="accountNumber"
-                            class="px-lg-0 col-lg-4 col-12 col-form-label text-left text-lg-right">Account
-                            Number</label>
-                        <div class="col-lg-8 col-12">
+                <div class="input-container">
+                    <div class="input-sub-container">
+                        <label class="label-align">Account Number</label>
+                        <div class="input-item">
                             <input placeholder="Account Number" type="text" maxlength="255" class="form-control"
                                 formControlName="accountNumber" id="accountNumber" />
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
-                                                bankAccountForm.get('accountNumber').errors != null &&
-                                                bankAccountForm.get('accountNumber').errors[
-                                                'requiredWithTrim'
-                                                ] &&
-                                                bankAccountForm.get('accountNumber').touched
-                                            ">
+                                            bankAccountForm.get('accountNumber').errors != null &&
+                                            bankAccountForm.get('accountNumber').errors[
+                                            'requiredWithTrim'
+                                            ] &&
+                                            bankAccountForm.get('accountNumber').touched
+                                        ">
                                     Account Number is required
                                 </div>
                                 <div class="help-block error" *ngIf="
-                                                bankAccountForm.get('accountNumber').errors != null &&
-                                                bankAccountForm.get('accountNumber').errors[
-                                                'bankAccountNumber'
-                                                ] &&
-                                                bankAccountForm.get('accountNumber').touched
-                                            ">
+                                            bankAccountForm.get('accountNumber').errors != null &&
+                                            bankAccountForm.get('accountNumber').errors[
+                                            'bankAccountNumber'
+                                            ] &&
+                                            bankAccountForm.get('accountNumber').touched
+                                        ">
                                     Invalid Bank Account Number: must be 6-17 digits long.
                                 </div>
                                 <div class="help-block error" *ngIf="
-                                                    bankAccountForm.get('accountNumber').errors != null &&
-                                                    bankAccountForm.get('accountNumber').errors[
-                                                    'trimError'
-                                                    ] &&
-                                                    bankAccountForm.get('accountNumber').touched
-                                                ">
+                                                bankAccountForm.get('accountNumber').errors != null &&
+                                                bankAccountForm.get('accountNumber').errors[
+                                                'trimError'
+                                                ] &&
+                                                bankAccountForm.get('accountNumber').touched
+                                            ">
                                     This field can't start or end with a blank space
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group row">
-                        <label for="routingNumber"
-                            class="px-lg-0 col-lg-4 col-12 col-form-label text-left text-lg-right">Routing
-                            Number</label>
-                        <div class="col-lg-8 col-12">
+                    <div class="input-sub-container">
+                        <label class="label-align">Routing Number</label>
+                        <div class="input-item">
                             <input (keypress)="onlyNumbers($event)" placeholder="Routing Number" type="text"
                                 maxlength="255" class="form-control" formControlName="routingNumber"
                                 id="routingNumber" />
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
-                                                bankAccountForm.get('routingNumber').errors != null &&
-                                                bankAccountForm.get('routingNumber').errors[
-                                                'requiredWithTrim'
-                                                ] &&
-                                                bankAccountForm.get('routingNumber').touched
-                                            ">
+                                            bankAccountForm.get('routingNumber').errors != null &&
+                                            bankAccountForm.get('routingNumber').errors[
+                                            'requiredWithTrim'
+                                            ] &&
+                                            bankAccountForm.get('routingNumber').touched
+                                        ">
                                     Routing Number is required
                                 </div>
                                 <div class="help-block error" *ngIf="
-                                                bankAccountForm.get('routingNumber').errors != null &&
-                                                bankAccountForm.get('routingNumber').errors[
-                                                'routingNumber'
-                                                ] &&
-                                                bankAccountForm.get('routingNumber').touched
-                                            ">
+                                            bankAccountForm.get('routingNumber').errors != null &&
+                                            bankAccountForm.get('routingNumber').errors[
+                                            'routingNumber'
+                                            ] &&
+                                            bankAccountForm.get('routingNumber').touched
+                                        ">
                                     Invalid Routing Number: must be 9 digits.
                                 </div>
                                 <div class="help-block error" *ngIf="
-                                                    bankAccountForm.get('routingNumber').errors != null &&
-                                                    bankAccountForm.get('routingNumber').errors[
-                                                    'trimError'
-                                                    ] &&
-                                                    bankAccountForm.get('routingNumber').touched
-                                                ">
+                                                bankAccountForm.get('routingNumber').errors != null &&
+                                                bankAccountForm.get('routingNumber').errors[
+                                                'trimError'
+                                                ] &&
+                                                bankAccountForm.get('routingNumber').touched
+                                            ">
                                     This field can't start or end with a blank space
                                 </div>
                             </div>
@@ -168,12 +155,10 @@
             </div>
 
             <div class="form-buttons">
-                <ngx-button routerLink=".." type="button" class="mr-1 btn btn-lg btn-secondary">
-                    <i class="fas fa-times"></i>
+                <ngx-button routerLink=".." type="button" class="secondary-button">
                     Cancel
                 </ngx-button>
-                <ngx-button [isLoading]="isLoading" type="submit" class="mr-1 btn btn-lg btn-primary">
-                    <i class="fas fa-plus-circle"></i>
+                <ngx-button [isLoading]="isLoading" type="submit" class="main-button">
                     Add
                 </ngx-button>
             </div>

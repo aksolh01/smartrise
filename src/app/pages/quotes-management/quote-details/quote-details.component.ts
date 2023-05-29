@@ -275,4 +275,8 @@ return true;
   getAdditionalC4RiserBoardsCars() {
     return this.quote.cars.filter(car => (car.controllerType?.value === 'Hydraulic' && car.carHydraulicField.hydroEvolved) || car.carTractionField.c4);
   }
+
+  onClose() {
+    this.router.navigateByUrl('pages/quotes-management/open-quotes');
+  }
 }

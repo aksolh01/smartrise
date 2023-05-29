@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin, switchMap } from 'rxjs';
 import { SmartriseValidators, StorageConstants } from '../../../_shared/constants';
 import { IUser } from '../../../_shared/models/IUser';
 import { AccountService } from '../../../services/account.service';
@@ -13,21 +13,28 @@ import { trimValidator } from '../../../_shared/validators/trim-validator';
 import { BrowserService, Browser } from '../../../services/browser-service';
 import { ResponsiveService } from '../../../services/responsive.service';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
+import { IUserProfileInfo } from '../../../_shared/models/IUserProfileInfo';
+import { LocationService } from '../../../services/location.service';
+import { SelectHelperService } from '../../../services/select-helper.service';
 
 @Component({
   selector: 'ngx-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
+  providers: [LocationService]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
   profileForm: UntypedFormGroup;
-  user: IUser;
+  userProfileInfo: IUserProfileInfo;
   securityIsActive = false;
   personalInfoIsActive = true;
   formSubmitted = false;
 
+  countries: any[] = [];
+  states: any[] = [];
   proflieLoading: boolean;
+  showRemoveButton: boolean;
   hasInitialProfilePicture = false;
   picurl = 'assets/profile-placeholder.png';
   imageToShow: any;
@@ -40,20 +47,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
   pUrl: string;
   isSmall = false;
   addWhiteSpace = false;
+  currentUser$: Observable<IUser>;
 
   constructor(
     private accountService: AccountService,
     private tokenService: TokenService,
     private imageService: ImageService,
     private messageService: MessageService,
+    private selectHelperService: SelectHelperService,
     private routingService: RoutingService,
     private router: Router,
     private browserService: BrowserService,
     private responsiveService: ResponsiveService,
+    private locationService: LocationService,
   ) {
   }
 
   ngOnInit(): void {
+    this.currentUser$ = this.accountService.currentUser$;
+
     this.responsiveService.currentBreakpoint$.subscribe(w => {
       if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
         if (this.isSmall !== false) {
@@ -77,32 +89,39 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.pUrl = sessionStorage.getItem(StorageConstants.PreviousUrl);
     }
     this.createProfileForm();
-    this.accountService
-      .loadCurrentUser(this.tokenService.getToken())
-      .subscribe((user: IUser) => {
-        this.user = user;
-        this.getImageFromService(this.user?.userProfileInfo?.profilePhoto?.photoGuid);
-        this.photoGuid = this.user?.userProfileInfo?.profilePhoto?.photoGuid;
-        this.fillData();
+    forkJoin([
+      this.accountService.loadProfileInfo(),
+      this.locationService.getCountries(),
+    ])
+      .pipe(switchMap(([userProfileInfo, countries]) => {
+        this.countries = countries;
+        this.userProfileInfo = userProfileInfo;
+        this.photoGuid = this.userProfileInfo?.profilePhoto?.photoGuid;
+        this.getImageFromService(this.userProfileInfo?.profilePhoto?.photoGuid);
+        return this.locationService.getStates(userProfileInfo.country);
+      }))
+      .subscribe((states) => {
+        this.states = states;
+        setTimeout(() => this.fillData());
         this.isDataLoading = false;
       });
   }
 
   fillData() {
-    this.profileForm.patchValue({ twoFactorAuthentication: this.user?.userProfileInfo?.twoFactorAuthentication });
-    this.profileForm.patchValue({ firstName: this.user?.firstName });
-    this.profileForm.patchValue({ lastName: this.user?.lastName });
-    this.profileForm.patchValue({ primaryPhoneNumber: this.user?.primaryPhoneNumber });
-    this.profileForm.patchValue({ secondaryPhoneNumber: this.user?.secondaryPhoneNumber });
-    this.profileForm.patchValue({ primaryEmailAddress: this.user?.primaryEmailAddress });
-    this.profileForm.patchValue({ secondaryEmailAddress: this.user?.secondaryEmailAddress });
-    this.profileForm.patchValue({ companyName: this.user?.companyName });
-    this.profileForm.patchValue({ businessAddress: this.user?.businessAddress });
-    this.profileForm.patchValue({ city: this.user?.city });
-    this.profileForm.patchValue({ state: this.user?.state });
-    this.profileForm.patchValue({ zipcode: this.user?.zipcode });
-    this.profileForm.patchValue({ country: this.user?.country });
-    this.profileForm.patchValue({ title: this.user?.userProfileInfo?.title });
+    this.profileForm.patchValue({ twoFactorAuthentication: this.userProfileInfo?.twoFactorAuthentication });
+    this.profileForm.patchValue({ firstName: this.userProfileInfo?.firstName });
+    this.profileForm.patchValue({ lastName: this.userProfileInfo?.lastName });
+    this.profileForm.patchValue({ primaryPhoneNumber: this.userProfileInfo?.primaryPhoneNumber });
+    this.profileForm.patchValue({ secondaryPhoneNumber: this.userProfileInfo?.secondaryPhoneNumber });
+    this.profileForm.patchValue({ primaryEmailAddress: this.userProfileInfo?.primaryEmailAddress });
+    this.profileForm.patchValue({ secondaryEmailAddress: this.userProfileInfo?.secondaryEmailAddress });
+    this.profileForm.patchValue({ companyName: this.userProfileInfo?.companyName });
+    this.profileForm.patchValue({ businessAddress: this.userProfileInfo?.businessAddress });
+    this.profileForm.patchValue({ city: this.userProfileInfo?.city });
+    this.profileForm.patchValue({ state: this.userProfileInfo?.state });
+    this.profileForm.patchValue({ zipCode: this.userProfileInfo?.zipCode });
+    this.profileForm.patchValue({ country: this.userProfileInfo?.country });
+    this.profileForm.patchValue({ title: this.userProfileInfo?.title });
   }
 
   createProfileForm() {
@@ -141,7 +160,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       state: new UntypedFormControl('', [
         trimValidator,
       ]),
-      zipcode: new UntypedFormControl('', [
+      zipCode: new UntypedFormControl('', [
         trimValidator,
       ]),
       country: new UntypedFormControl('', [
@@ -154,13 +173,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.profileForm.markAllAsTouched();
   }
 
+  onCountrySelected(country) {
+    this.locationService.getStates(country).subscribe(states => {
+      this.states = states;
+      this.profileForm.patchValue({ state: null });
+    });
+  }
+
   onSubmit() {
 
     this.formSubmitted = true;
     if (this.profileForm.invalid) {
       return;
     }
-    console.log("this.profileForm.invalid",this.profileForm)
+    console.log("this.profileForm.invalid", this.profileForm)
 
     this.isLoading = true;
 
@@ -170,26 +196,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }).subscribe(
       () => {
         this.isLoading = false;
-        this.user.displayName =this.profileForm.controls['firstName'].value + ' ' + this.profileForm.controls['lastName'].value;
-          // this.profileForm.controls['primaryPhoneNumber'].value;
-          // this.profileForm.controls['secondaryPhoneNumber'].value;
-          // this.profileForm.controls['primaryEmailAddress'].value;
-          // this.profileForm.controls['secondaryEmailAddress'].value;
-          // this.profileForm.controls['companyName'].value;
-          // this.profileForm.controls['businessAddress'].value;
-          // this.profileForm.controls['city'].value;
-          // this.profileForm.controls['state'].value;
-          // this.profileForm.controls['zipcode'].value;
-          // this.profileForm.controls['country'].value;
-        this.accountService.updateUserLocal(this.user);
+        this._notifyUserDisplayNameChanged();
+        // this.profileForm.controls['primaryPhoneNumber'].value;
+        // this.profileForm.controls['secondaryPhoneNumber'].value;
+        // this.profileForm.controls['primaryEmailAddress'].value;
+        // this.profileForm.controls['secondaryEmailAddress'].value;
+        // this.profileForm.controls['companyName'].value;
+        // this.profileForm.controls['businessAddress'].value;
+        // this.profileForm.controls['city'].value;
+        // this.profileForm.controls['state'].value;
+        // this.profileForm.controls['zipCode'].value;
+        // this.profileForm.controls['country'].value;
         this.messageService.showSuccessMessage('Profile Information has been updated successfully');
       },
       (error) => {
         this.isLoading = false;
       }
-      
+
     );
     this.router.navigateByUrl('pages/dashboard');
+  }
+
+  private _notifyUserDisplayNameChanged() {
+    this.accountService.loadCurrentUser()
+      .subscribe((user) => this.accountService.updateUserLocal(user));
   }
 
   getImageFromService(photoGuid: string) {
@@ -199,6 +229,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.imageService.getImage(photoGuid).subscribe(
         (data) => {
           this.proflieLoading = false;
+          this.showRemoveButton = data?.size > 0;
           this.createImageFromBlob(data);
         },
         (error) => {
@@ -232,13 +263,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   back() {
     if (this.pUrl.indexOf('auth/login') > -1 || this.pUrl === '/') {
-        this.router.navigateByUrl('pages/dashboard');
+      this.router.navigateByUrl('pages/dashboard');
     } else {
-  this.router.navigateByUrl(this.pUrl);
-}
+      this.router.navigateByUrl(this.pUrl);
+    }
   }
 
   checkTwoFactorAuthentication(event) {
     this.profileForm.patchValue({ twoFactorAuthentication: event });
+  }
+
+  onClickDropDownList() {
+    this.selectHelperService.allowOnScroll.next(false);
   }
 }

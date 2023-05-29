@@ -33,7 +33,7 @@
                             <div class="card-container-data">
                                 <div class="label">Tracking Number</div>
                                 <div class="content">
-                                    <a style="color:var(--primary-color-black);text-decoration: none;" *ngIf="shipment?.carrierWebsite && shipment?.trackingNumber"
+                                    <a *ngIf="shipment?.carrierWebsite && shipment?.trackingNumber"
                                         [href]="shipment?.carrierWebsite" tooltip="View Tracking Details"
                                         target="_blank">{{
                                         shipment?.trackingNumber | value

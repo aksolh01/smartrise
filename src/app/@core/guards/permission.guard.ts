@@ -63,7 +63,7 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
         this._dictionary.set((url) => this._match(url, `${URLs.ViewStatementOfAccountURL}/[0-9]+`), async () => await this._hasPermissionAsync(PERMISSIONS.StatementOfAccount));
         this._dictionary.set((url) => url === URLs.ViewBillingInvoicesURL, async () => await this._hasPermissionAsync(PERMISSIONS.InvoicesListing));
         this._dictionary.set((url) => this._match(url, `${URLs.ViewBillingInvoicesURL}/[0-9]+`), async () => await this._hasPermissionAsync(PERMISSIONS.InvoicesListing));
-        this._dictionary.set((url) => url === URLs.ViewBankAccountsURL, async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts));
+        this._dictionary.set((url) => url.startsWith(URLs.ViewBankAccountsURL), async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts));
         this._dictionary.set((url) => url === URLs.CreateBankAccountURL, async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts) && !this.miscellaneousService.isImpersonateMode());
         this._dictionary.set((url) => url.startsWith(URLs.EditBankAccountURL), async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts) && !this.miscellaneousService.isImpersonateMode());
         this._dictionary.set((url) => this._match(url, `${URLs.ViewBankAccountsURL}/[0-9]+`), async () => await this._hasPermissionAsync(PERMISSIONS.ManageBankAccounts));

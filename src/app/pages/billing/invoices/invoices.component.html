@@ -5,7 +5,7 @@
             <div class="input-item search-input-icon">
                 <i class="fa fa-search"></i>
                 <input type="text" placeholder="Search">
-              </div>
+            </div>
         </div>
     </div>
     <div *ngIf="isSmall">
@@ -14,21 +14,7 @@
         </button>
     </div>
 </div>
-<div class="pagination-info">
-    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
-    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
-    -
-    {{
-    Math.min(
-    source.count(),
-    (source.getPaging().page - 1) * settings.pager.perPage +
-    settings.pager.perPage
-    )
-    }}
-    of {{ source.count() }}
-  
-    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
-  </div>
+<ngx-pager [table]="table"></ngx-pager>
 <div class="table-container">
     <nb-card joyrideStep="invoicesFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Invoices' : null"
         [doneTemplate]="doneButton" [stepContent]="firstCustomContent" (done)="onFinishingTour()">
@@ -129,7 +115,7 @@
 </div>
 
 <ng-template #doneButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>

@@ -16,7 +16,6 @@ import { IGetCustomerUser } from '../../../_shared/models/IGetCustomerUser';
 import { MessageService } from '../../../services/message.service';
 import { PermissionService } from '../../../services/permission.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { CustomerUserActionsComponent } from './customer-user-actions/customer-user-actions.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -36,6 +35,8 @@ import { ListTitleService } from '../../../services/list-title.service';
 import { BaseParams } from '../../../_shared/models/baseParams';
 import { IPagination } from '../../../_shared/models/pagination';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { environment } from '../../../../environments/environment';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-customer-users',
@@ -44,6 +45,7 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
 })
 export class CustomerUsersComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild('search', { static: false }) searchRef: ElementRef;
+  @ViewChild('table') table: Ng2SmartTableComponent;
 
   source: BaseServerDataSource;
   runGuidingTour = true;
@@ -142,7 +144,6 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
 
   constructor(
     private router: Router,
-    private settingService: SettingService,
     private accountService: AccountService,
     private responsiveService: ResponsiveService,
     private messageService: MessageService,
@@ -199,7 +200,7 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
     this.settings.pager = {
       display: true,
       page: 1,
-        perPage: this.recordsNumber || 25
+      perPage: this.recordsNumber || 25
     };
   }
 
@@ -242,11 +243,7 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
   async ngOnInit() {
     this.title = await this.listTitleService.buildTitle('Account Users');
     this.enableCreateCustomerUser();
-    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
-  }
-
-  private _onBusinessSettingsReady(rep: IBusinessSettings) {
-      this.recordsNumber = rep.numberOfRecords || 25;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
@@ -269,7 +266,7 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasManyAccountsAndOneSelectedAccount()) {
       this.canCreateCustomerUser = await this.permissionService.hasPermissionInAccountAsync(
-        "CustomerUsersCreate", 
+        "CustomerUsersCreate",
         this.multiAccountService.getSelectedAccount());
     }
     else {

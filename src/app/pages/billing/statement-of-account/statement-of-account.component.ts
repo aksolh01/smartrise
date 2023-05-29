@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpDateFilterComponent } from '../../../_shared/components/table-filters/cp-date-filter.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
@@ -12,7 +12,6 @@ import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { InvoiceService } from '../../../services/invoice.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { AgedRecievablesActionsComponent } from './statement-of-account-actions/statement-of-account-actions.component';
 import { NavigationStart, Router } from '@angular/router';
@@ -39,6 +38,8 @@ import { BaseParams } from '../../../_shared/models/baseParams';
 import { Observable } from 'rxjs';
 import { IPagination } from '../../../_shared/models/pagination';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-statement-of-account',
@@ -46,6 +47,8 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
   styleUrls: ['./statement-of-account.component.scss'],
 })
 export class StatementOfAccountComponent extends BaseComponent implements OnInit, OnDestroy {
+
+  @ViewChild('table') table: Ng2SmartTableComponent;
 
   private sub = this.router.events
     .pipe(
@@ -312,7 +315,6 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     private accountService: AccountService,
     private miscellaneousService: MiscellaneousService,
     private invoiceService: InvoiceService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private router: Router,
     private joyrideService: JoyrideService,
@@ -325,7 +327,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
   }
 
   async ngOnInit(): Promise<void> {
-    
+
     await this._loadUserAccounts();
 
     if (this.accounts.length === 1) {
@@ -335,11 +337,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     this.canMakePayment = this.permissionService.hasPermission(PERMISSIONS.MakePayment);
     this.showList = true;
     this.markedAsPay = this.invoiceService.releaseToBePaidInvoices();
-    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
-  }
-
-  private _onBusinessSettingsReady(rep: IBusinessSettings) {
-      this.recordsNumber = rep.numberOfRecords || 25;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
@@ -415,7 +413,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     }
 
     this.settings.columns.account.title = this._getAccountTitle();
-    
+
     if (this.miscellaneousService.isCustomerUser()) {
       delete this.settings.columns.maintainedBy;
       delete this.settings.columns.installedBy;
@@ -438,7 +436,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     ], false);
     this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
   }
-  
+
   private _getAccountTitle(): string {
     return this.miscellaneousService.isCustomerUser() ? 'Account' : 'Ordered By';
   }
@@ -576,22 +574,6 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
     this.accountId = event;
     this._saveAccountInfoToStorage(this.accountId);
     this.onSearch();
-  }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
   }
   private _saveAccountInfoToStorage(accountId: number) {
     sessionStorage.setItem(StorageConstants.StatementOfAccountSelectedAccount, accountId.toString());

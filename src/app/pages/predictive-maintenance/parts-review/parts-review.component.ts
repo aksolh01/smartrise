@@ -17,9 +17,9 @@ import { BaseComponentService } from '../../../services/base-component.service';
 import { PartsService } from '../../../services/parts.service';
 import { PredictiveMaintenanceService } from '../../../services/predictiveMaintenanceService';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { PartsReviewActionsComponent } from './parts-review-actions/parts-review-actions.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-parts-review',
@@ -179,7 +179,6 @@ export class PartsReviewComponent extends BaseComponent implements OnInit {
     private route: ActivatedRoute,
     private predictiveMaintenanceService: PredictiveMaintenanceService,
     private router: Router,
-    private settingsService: SettingService,
     private partsService: PartsService,
     private responsiveService: ResponsiveService,
   ) {
@@ -206,10 +205,8 @@ export class PartsReviewComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.settingsService.getBusinessSettings().subscribe(bs => {
-      this.recordsNumber = bs.numberOfRecords || 25;
-      this.onRecordsNumberChanged(bs.numberOfRecords);
-    });
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
     this.pParts = this.populateLookupAsFilterList(Part);
     this.statuses = this.populateLookupAsFilterList(AlertStatus);
 

@@ -4,7 +4,7 @@ import { ViewCell } from 'ng2-smart-table';
 @Component({
   selector: 'ngx-smr-ng2-table-cell',
   template: `
-    <div class="d-md-block d-lg-none p-2 font-weight-bold">{{ header }}</div>
+    
     <ng-template [ngIf]="!!value" [ngIfElse]="naOnMobile">
       {{ value }}
     </ng-template>

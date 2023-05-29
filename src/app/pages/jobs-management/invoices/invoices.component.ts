@@ -11,11 +11,11 @@ import { InvoiceService } from '../../../services/invoice.service';
 import { MessageService } from '../../../services/message.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { InvoicesActionsComponent } from './invoices-actions/invoices-actions.component';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-invoices',
@@ -136,7 +136,6 @@ export class InvoicesComponent extends BaseComponent implements OnInit {
   constructor(
     baseService: BaseComponentService,
     private router: Router,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private invoicesService: InvoiceService,
     private messageService: MessageService,
@@ -147,12 +146,15 @@ export class InvoicesComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+
 
     if (this.miscellaneousService.isCustomerUser() && this.multiAccountService.hasOneAccount()) {
       delete this.settings.columns.account;
     }
-    
+
     this.source.serviceCallBack = (param) => {
       const invoiceParams = param as InvoiceParams;
       if (this.isSmall) {
@@ -164,9 +166,6 @@ export class InvoicesComponent extends BaseComponent implements OnInit {
   }
 
   private _onBusinessSettingsReady(rep: IBusinessSettings) {
-      this.recordsNumber = rep.numberOfRecords || 25;
-    this.onRecordsNumberChanged(rep.numberOfRecords);
-    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
 
   private _onScreenSizeChanged(w: ScreenBreakpoint) {
@@ -235,8 +234,8 @@ export class InvoicesComponent extends BaseComponent implements OnInit {
 
     if (min > 0) {
       if (!charStr.match(/^[0-9]+$/)) {
-e.preventDefault();
-}
+        e.preventDefault();
+      }
     }
   }
 

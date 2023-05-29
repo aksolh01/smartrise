@@ -1,20 +1,26 @@
-<div class="card-body">
-    <div class="row mb-4" *ngIf="hasPaypalPayments">
-        <div class="col-12 pr-0 pl-0">
-            <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="paypalSettings"
+<nb-card size="xlarge" *ngIf="hasStripePayments || hasPaypalPayments" class="table-container">
+    <nb-card-body nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div class="card-body">
+            <div class="table-content" *ngIf="hasPaypalPayments">
+                <ng2-smart-table  #table [settings]="paypalSettings"
                 [source]="paypalSource">
             </ng2-smart-table>
-        </div>
-    </div>
+            </div>
 
-    <div *ngIf="hasStripePayments" class="row">
-        <div class="col-12 pr-0 pl-0">
-            <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="stripeSettings"
-                [source]="stripeSource">
-            </ng2-smart-table>
+            <div *ngIf="hasStripePayments" class="row">
+                <div class="table-content">
+                    <ng2-smart-table  #table [settings]="stripeSettings"
+                        [source]="stripeSource">
+                    </ng2-smart-table>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="no-data-found" *ngIf="!hasStripePayments && !hasPaypalPayments">
-        No data found
-    </div>
+    </nb-card-body>
+</nb-card>
+<div class="nodatafound" *ngIf="!hasStripePayments && !hasPaypalPayments">
+    <nb-card>
+        <nb-card-body>
+            No data found
+        </nb-card-body>
+    </nb-card>
 </div>

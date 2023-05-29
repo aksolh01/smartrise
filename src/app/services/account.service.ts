@@ -44,6 +44,7 @@ import { IRefreshToken } from '../_shared/models/token.model';
 import { UpdateUserProfile } from '../_shared/models/UpdateUserProfile';
 import { MultiAccountsService } from './multi-accounts-service';
 import { TokenService } from './token.service';
+import { IUserProfileInfo } from '../_shared/models/IUserProfileInfo';
 
 @Injectable()
 export class AccountService {
@@ -132,16 +133,8 @@ export class AccountService {
     );
   }
 
-  loadProfileInfo(token: string) {
-    if (token === null) {
-      this.currentUserSource.next(null);
-      return of(null);
-    }
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', `Bearer ${token}`);
-    return this.http
-      .get(this.baseUrl + 'account/whoAmI', { headers })
-      .pipe(map((user: IUser) => user.userProfileInfo));
+  loadProfileInfo() {
+    return this.http.get<IUserProfileInfo>(this.baseUrl + 'account/profile');
   }
 
   canGenerateCodeAfter(email: string): Observable<any> {

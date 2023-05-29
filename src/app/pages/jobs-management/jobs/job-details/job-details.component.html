@@ -1,6 +1,6 @@
 <div class="page-header-container">
     <div class="page-header-title" *ngIf="job">
-        <span>Jobs</span> / {{ job.jobName }}
+        <span (click)="onClose()" class="cursor">Jobs</span> / {{ job.jobName }}
     </div>
     <!-- <div *ngIf="!isSmall" class="form-container mx-w-400" style="width: 40%;">
         <div class="input-container">
@@ -20,7 +20,8 @@
                     <h2 class="card-title">Job Details</h2>
                 </nb-card-header>
                 <nb-card-body>
-                    <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job" [passcode]="passcode" [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
+                    <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job" [passcode]="passcode"
+                        [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
                 </nb-card-body>
 
             </nb-card>
@@ -31,8 +32,19 @@
                     <h2 class="card-title">Job History</h2>
                 </nb-card-header>
                 <nb-card-body>
-                    <div class="nodatafound">
-                        No data found
+                    <div class="job-history">
+                        <div class="job-history-container">
+                            <div class="job-history-label">Released to Engineering</div>
+                            <div class="job-history-content"> {{job?.releasedToEngineering | value}}</div>
+                        </div>
+                        <div class="job-history-container">
+                            <div class="job-history-label">Engineerd</div>
+                            <div class="job-history-content"> {{job?.engineered | value}}</div>
+                        </div>
+                        <div class="job-history-container">
+                            <div class="job-history-label last-label">Released to Production</div>
+                            <div class="job-history-content"> {{job?.releasedToProduction | value}}</div>
+                        </div>
                     </div>
                 </nb-card-body>
             </nb-card>
@@ -56,8 +68,7 @@
                     <h2 class="card-title">Job Files</h2>
                 </nb-card-header>
                 <nb-card-body>
-                    <ngx-job-resources *ngIf="renderJobResources === true" [jobId]="job?.id"
-                        [resourceFiles]="job?.resourceFiles" [runGuidingTour]="runGuidingTour">
+                    <ngx-job-resources [jobId]="job?.id" [resourceFiles]="job?.resourceFiles">
                     </ngx-job-resources>
                 </nb-card-body>
             </nb-card>

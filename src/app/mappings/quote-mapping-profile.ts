@@ -1,7 +1,7 @@
 import { AutoMapper, ProfileBase, mapFrom } from "@nartc/automapper";
 import { CreateQuotePayload } from "../_shared/models/quotes/create-quote-payload.model";
 import { CreateQuoteView } from "../_shared/models/quotes/create-quote-view.model";
-import { CarAdditionalC4RiserBoardsResponse, CarAdditionalFeatureResponse, CarDoorFeatureResponse, CarHydraulicFieldResponse, CarManagementSystemResponse, CarProvisionResponse, CarResponse, CarSmartriseFeatureResponse, CarSpecialFieldResponse, CarTractionFieldReponse, JobLocationReponse, QuoteAttachmentResponse, QuoteCustomerResponse, QuoteResponse } from "../_shared/models/quotes/quote-response.model";
+import { CarAdditionalC4RiserBoardsResponse, CarAdditionalFeatureResponse, CarDoorFeatureResponse, CarHydraulicFieldResponse, CarManagementSystemResponse, CarProvisionResponse, CarResponse, CarSmartriseFeatureResponse, CarSpecialFieldResponse, CarTractionFieldResponse, JobLocationReponse, QuoteAttachmentResponse, QuoteCustomerResponse, QuoteResponse } from "../_shared/models/quotes/quote-response.model";
 import { CarAdditionalC4RiserBoardsView, CarAdditionalFeatureView, CarDoorFeatureView, CarHydraulicFieldView, CarManagementSystemView, CarProvisionView, CarSmartriseFeatureView, CarSpecialFieldView, CarTractionFieldView, CarView, JobLocationView, QuoteAttachmentView, QuoteCustomerView, QuoteView } from "../_shared/models/quotes/quote-view.model";
 import { SaveCarAdditionalC4RiserBoardsPayload, SaveCarAdditionalFeaturePayload, SaveCarDoorFeaturePayload, SaveCarHydraulicFieldPayload, SaveCarManagementSystemPayload, SaveCarPayload, SaveCarProvisionPayload, SaveCarSmartriseFeaturePayload, SaveCarSpecialFieldPayload, SaveCarTractionFieldPayload, SaveQuotePayload } from "../_shared/models/quotes/save-qoute.model";
 import { SubmitQuotePayload, SubmitCarPayload, SubmitCarManagementSystemPayload, SubmitCarDoorFeaturePayload, SubmitCarAdditionalFeaturePayload, SubmitCarSmartriseFeaturePayload, SubmitCarHydraulicFieldPayload, SubmitCarProvisionPayload, SubmitCarSpecialFieldPayload, SubmitCarTractionFieldPayload, SubmitCarAdditionalC4RiserBoardsPayload } from "../_shared/models/quotes/submit-quote.model";
@@ -100,7 +100,7 @@ export class QuoteProfile extends ProfileBase {
         mapper.createMap(CarAdditionalFeatureResponse, CarAdditionalFeatureView);
         mapper.createMap(CarSmartriseFeatureResponse, CarSmartriseFeatureView);
         mapper.createMap(CarHydraulicFieldResponse, CarHydraulicFieldView);
-        mapper.createMap(CarTractionFieldReponse, CarTractionFieldView);
+        mapper.createMap(CarTractionFieldResponse, CarTractionFieldView);
         mapper.createMap(CarProvisionResponse, CarProvisionView);
         mapper.createMap(CarSpecialFieldResponse, CarSpecialFieldView);
         mapper.createMap(CarAdditionalC4RiserBoardsResponse, CarAdditionalC4RiserBoardsView);

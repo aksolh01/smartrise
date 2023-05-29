@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../../_shared/components/table-filters/cp-filter.component';
@@ -16,7 +16,6 @@ import { JobTabService } from '../../../../services/job-tabs.service';
 import { MessageService } from '../../../../services/message.service';
 import { ResourceService } from '../../../../services/resource.service';
 import { ResponsiveService } from '../../../../services/responsive.service';
-import { SettingService } from '../../../../services/setting.service';
 import { BaseComponent } from '../../../base.component';
 import { JobFilesListActionsComponent } from './job-files-list-actions/job-files-list-actions.component';
 import { ResourceTaskStatusCellComponent } from '../../../../_shared/components/business/status.component';
@@ -44,6 +43,8 @@ import { MultiAccountsService } from '../../../../services/multi-accounts-servic
 import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
 import { ListTitleService } from '../../../../services/list-title.service';
 import { IBusinessSettings } from '../../../../_shared/models/settings';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-job-files-list',
@@ -51,6 +52,7 @@ import { IBusinessSettings } from '../../../../_shared/models/settings';
   styleUrls: ['./job-files-list.component.scss'],
 })
 export class JobFilesListComponent extends BaseComponent implements OnInit, OnDestroy {
+  @ViewChild('table') table: Ng2SmartTableComponent;
   recordsNumber: number;
   title: string;
   public Math = Math;
@@ -92,7 +94,6 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     private jobTabServive: JobTabService,
     private messageService: MessageService,
     private jobTabService: JobTabService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private joyrideService: JoyrideService,
     private miscellaneousService: MiscellaneousService,
@@ -318,7 +319,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     }
 
     this.settings.columns.account.title = this._getAccountTitle();
-    
+
     if (this.miscellaneousService.isCustomerUser()) {
       delete this.settings.columns.maintainedBy;
       delete this.settings.columns.installedBy;
@@ -326,7 +327,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
         delete this.settings.columns.account;
       }
     }
-    
+
     if (!this.canManageFiles) {
       delete this.settings.columns.fileDescription;
     }
@@ -571,7 +572,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
           this.source.updateRecord(oldRecord, response.newResource);
         }
       },
-      () => {}
+      () => { }
     );
   }
 
@@ -670,22 +671,6 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
         }
       );
   }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
-  }
   async ngOnInit() {
 
     this.title = await this.listTitleService.buildTitle('Job Files');
@@ -694,7 +679,9 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
     this.canManageFiles = this.permissionService.hasPermission(PERMISSIONS.ManageJobFiles);
     this.resourceTypes = await this.resourceService.getResourceTypes().toPromise();
     this.statuses = await this.resourceService.getStatuses().toPromise();
-    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe((w) => this._onScreenSizeChanged(w));
 
     this.backgroundCall = setInterval(() => {
       if (this.source && !this.isLoading) {
@@ -711,9 +698,6 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   }
 
   private _onBusinessSettingsReady(rep: IBusinessSettings) {
-    this.recordsNumber = rep.numberOfRecords;
-    this.initializeSource();
-    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe((w) => this._onScreenSizeChanged(w));
   }
 
   private _onScreenSizeChanged(w: ScreenBreakpoint) {

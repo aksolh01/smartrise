@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { JoyrideService } from 'ngx-joyride';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,6 @@ import { ShipmentStatus } from '../../../_shared/models/shipment';
 import { JobTabService } from '../../../services/job-tabs.service';
 import { QuoteService } from '../../../services/quote.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { OpenQuoteActionsComponent } from './open-quote-actions/open-quote-actions.component';
 import * as guidingTourGlobal from '../../guiding.tour.global';
@@ -31,6 +30,8 @@ import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { URLs } from '../../../_shared/constants';
 import { QuotingToolService } from '../../../services/quoting-tool.service';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-open-quotes',
@@ -39,6 +40,7 @@ import { QuotingToolService } from '../../../services/quoting-tool.service';
 })
 export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDestroy {
 
+  @ViewChild('table') table: Ng2SmartTableComponent;
   mRef: BsModalRef;
   source: BaseServerDataSource;
   isSmall?: boolean = null;
@@ -256,7 +258,6 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
     private jobTabService: JobTabService,
     private quoteService: QuoteService,
     private quotingToolService: QuotingToolService,
-    private settingService: SettingService,
     private joyrideService: JoyrideService,
     private responsiveService: ResponsiveService,
     private modalService: BsModalService,
@@ -392,8 +393,7 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
 
   async ngOnInit() {
     // this.controllerTypes = await this.quoteService.getControllerTypes().toPromise();
-    const settings = await this.settingService.getBusinessSettings().toPromise();
-    this.recordsNumber = settings.numberOfRecords || 25;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
       if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
@@ -449,22 +449,6 @@ export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDest
   onFinishingTour() {
     localStorage.setItem('GuidingTourOpenQuotes', '1');
     this.runGuidingTour = false;
-  }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
   }
   preventNonNumericalInput(e) {
 

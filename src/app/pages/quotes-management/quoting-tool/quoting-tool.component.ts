@@ -288,7 +288,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
       }
     }
 
-    this.quote = Mapper.map(quoteResponse, QuoteView);
+    this.quote = QuoteView.mapFromResponse(quoteResponse);
     this.customerId = quoteResponse.customer.id;
 
     forkJoin([
@@ -429,7 +429,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
 
   private _saveCurrentQuote() {
     setTimeout(() => {
-      this._oldQuote = stringifyObject(Mapper.map(this.quote, SaveQuotePayload));
+      this._oldQuote = stringifyObject(SaveQuotePayload.mapFromView(this.quote));
     });
   }
 
@@ -441,7 +441,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
       return false;
     }
 
-    let _newQuoteSerialized = stringifyObject(Mapper.map(this.quote, SaveQuotePayload));
+    let _newQuoteSerialized = stringifyObject(SaveQuotePayload.mapFromView(this.quote));
     if (_newQuoteSerialized !== this._oldQuote) {
       return true;
     }
@@ -747,7 +747,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
 
   private _saveQuote() {
     this.isSaving = true;
-    const saveQuotePayload = Mapper.map(this.quote, SaveQuotePayload);
+    const saveQuotePayload = SaveQuotePayload.mapFromView(this.quote);
     saveQuotePayload.customerId = this.customerId;
 
     this.quotingToolService.saveQuote(saveQuotePayload).subscribe(result => {
@@ -764,7 +764,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
 
   private _submitQuote() {
     this.isGenerating = true;
-    const submitQuotePayload = Mapper.map(this.quote, SubmitQuotePayload);
+    const submitQuotePayload = SubmitQuotePayload.mapFromView(this.quote);
     submitQuotePayload.customerId = this.customerId;
 
     this.quotingToolService.submitQuote(submitQuotePayload).subscribe(result => {
@@ -780,7 +780,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
   }
 
   private _registerSaveQuoteTask() {
-    const saveQuotePayload = Mapper.map(this.quote, SaveQuotePayload);
+    const saveQuotePayload = SaveQuotePayload.mapFromView(this.quote);
     saveQuotePayload.customerId = this.customerId;
 
     this.taskSyncronizerService.registerTask(
@@ -791,7 +791,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
   }
 
   private _registerGenerateQuoteTask() {
-    const submitQuotePayload = Mapper.map(this.quote, SubmitQuotePayload);
+    const submitQuotePayload = SubmitQuotePayload.mapFromView(this.quote);
     submitQuotePayload.customerId = this.customerId;
 
     this.taskSyncronizerService.registerTask(

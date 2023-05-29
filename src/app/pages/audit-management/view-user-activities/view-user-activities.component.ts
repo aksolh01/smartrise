@@ -16,7 +16,6 @@ import { ActivityService } from '../../../services/activity.service';
 import { CustomerService } from '../../../services/customer.service';
 import { MessageService } from '../../../services/message.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { ViewUserActivityActionsComponent } from './view-user-activity-actions/view-user-activity-actions.component';
 import { JoyrideService } from 'ngx-joyride';
@@ -30,6 +29,8 @@ import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { ListTitleService } from '../../../services/list-title.service';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-view-user-activities',
@@ -38,6 +39,7 @@ import { ListTitleService } from '../../../services/list-title.service';
 })
 export class ViewUserActivitiesComponent extends BaseComponent implements OnInit, OnDestroy {
 
+  @ViewChild('table') table: Ng2SmartTableComponent;
   source: BaseServerDataSource;
   runGuidingTour: boolean = true;
   title: string;
@@ -204,7 +206,6 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
   constructor(
     private activityService: ActivityService,
     private accountService: AccountService,
-    private settingService: SettingService,
     private customerService: CustomerService,
     private responsiveService: ResponsiveService,
     private miscellaneousService: MiscellaneousService,
@@ -266,7 +267,7 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
       return this._getActivitiesByCustomerUser(activityParams as ActivitySearchByCustomerUser);
     }
   }
-  
+
   private _getActivitiesByCustomerUser(searchParams: ActivitySearchByCustomerUser) {
     searchParams.customerId = this.multiAccountService.getSelectedAccount();
     return this.activityService.getActivitiesByCustomerUser(searchParams);
@@ -282,11 +283,11 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
   }
 
   private _initializePager() {
-      this.settings.pager = {
-          display: true,
-          page: 1,
-          perPage: this.recordsNumber || 25
-      };
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber || 25
+    };
   }
 
   private _fillFilterParameters(activityParams: ActivityParams) {
@@ -321,25 +322,23 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
     this.objectTypes = await this.activityService.getObjectTypes().toPromise();
     this.actions = await this.activityService.getActions().toPromise();
 
-    this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.originRecordsNumber = rep.numberOfRecords;
-      this.activityParams.pageSize = +this.recordsNumber;
-      this.initializeCustomersLookup();
-      this.initializeSource();
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
+    this.recordsNumber = environment.recordsPerPage;
+    this.originRecordsNumber = environment.recordsPerPage;
+    this.activityParams.pageSize = +this.recordsNumber;
+    this.initializeCustomersLookup();
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
+      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+        if (this.isSmall !== false) {
+          this.onReset();
+          this.isSmall = false;
         }
-      });
+      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+        if (this.isSmall !== true) {
+          this.onReset();
+          this.isSmall = true;
+        }
+      }
     });
   }
 
@@ -441,22 +440,6 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
   stopGuidingTour() {
     if (this.joyrideService && this.joyrideService.isTourInProgress()) {
       this.joyrideService.closeTour();
-    }
-  }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
     }
   }
   onFinishingTour() {

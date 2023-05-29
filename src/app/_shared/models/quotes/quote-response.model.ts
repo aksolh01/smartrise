@@ -114,7 +114,7 @@ export class CarResponse implements ICarResponse {
 
         this.carDoorFeature = new CarDoorFeatureResponse(props?.carDoorFeature);
         this.carHydraulicField = new CarHydraulicFieldResponse(props?.carHydraulicField);
-        this.carTractionField = new CarTractionFieldReponse(props?.carTractionField);
+        this.carTractionField = new CarTractionFieldResponse(props?.carTractionField);
         this.carManagementSystem = new CarManagementSystemResponse(props?.carManagementSystem);
         this.carProvision = new CarProvisionResponse(props?.carProvision);
         this.carSpecialField = new CarSpecialFieldResponse(props?.carSpecialField);
@@ -217,7 +217,7 @@ export class CarResponse implements ICarResponse {
     @AutoMap(() => CarHydraulicFieldResponse)
     carHydraulicField: ICarHydraulicFieldResponse;
 
-    @AutoMap(() => CarTractionFieldReponse)
+    @AutoMap(() => CarTractionFieldResponse)
     carTractionField: ICarTractionFieldResponse;
 
     @AutoMap(() => CarProvisionResponse)
@@ -337,9 +337,9 @@ export class CarSmartriseFeatureResponse implements ICarSmartriseFeatureResponse
     @AutoMap()
     loadWeighingDeviceTraction: string;
     @AutoMap()
-    nemaRating?: string;
+    machineRoomNemaRating?: string;
     @AutoMap()
-    nemaLocation?: string;
+    hoistwayNemaRating?: string;
     @AutoMap()
     landingSystemLengthOfTravel?: number;
     @AutoMap()
@@ -386,9 +386,9 @@ export class CarHydraulicFieldResponse implements ICarHydraulicFieldResponse {
     v3: boolean;
 }
 
-export class CarTractionFieldReponse implements ICarTractionFieldResponse {
+export class CarTractionFieldResponse implements ICarTractionFieldResponse {
 
-    constructor(props?: Partial<CarTractionFieldReponse>) {
+    constructor(props?: Partial<CarTractionFieldResponse>) {
         if (props) {
             Object.assign(this, props);
         }

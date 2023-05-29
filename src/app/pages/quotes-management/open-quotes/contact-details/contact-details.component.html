@@ -1,112 +1,49 @@
-<nb-card class="mb-0" size="xlarge">
-    <!-- joyrideStep="contactDetailsFirstStep" stepPosition="center"
-    [title]="runGuidingTour === true ? 'Open Quote Details' : null" 
-    [stepContent]="contactDetailsContent"
-    [doneTemplate]="doneButton" (done)="onFinishingTour()" -->
-
-    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-        <h2 class="card-title">Contact Details</h2>
-        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onCancel()"
-            style="outline: none">
-            <i class="fas fa-times text-sm"></i>
-        </button>
-    </nb-card-header>
-    <nb-card-body>
-        <!-- <div *ngIf="contact?.isDeleted"
-            class="badge badge-pill badge-danger float-right font-weight-normal open-quote-deleted">
-            DELETED
-        </div> -->
-        <!-- <div [class]="!contact?.isDeleted ? 'card-body' : 'card-body mt-4'"> -->
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="row">
-                                <div class="col-4 col-lg-4 form-group pr-0">
-                                    <label class="col-lg-12 control-label text-right pt-2">Name</label>
-                                </div>
-                                <div class="col-8 col-lg-8 form-group form-control-plaintext">
-                                    {{ contact?.name | value }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="row">
-                                <div class="col-4 col-lg-4 form-group pr-0">
-                                    <label class="col-lg-12 control-label text-right pt-2">Title</label>
-                                </div>
-
-                                <div class="col-8 col-lg-8 form-group form-control-plaintext">
-                                    {{ contact?.title | value }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="row">
-                                <div class="col-4 col-lg-4 form-group pr-0">
-                                    <label class="col-lg-12 control-label text-right pt-2">Email</label>
-                                </div>
-
-                                <div class="col-8 col-lg-8 form-group form-control-plaintext">
-                                    {{ contact?.email | value }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="row">
-                                <div class="col-4 col-lg-4 form-group pr-0">
-                                    <label class="col-lg-12 control-label text-right pt-2">Phone</label>
-                                </div>
-
-                                <div class="col-8 col-lg-8 form-group form-control-plaintext">
-                                    {{ contact?.phone | value }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="row">
-                                <div class="col-4 col-lg-4 form-group pr-0">
-                                    <label class="col-lg-12 control-label text-right pt-2">Mobile</label>
-                                </div>
-
-                                <div class="col-8 col-lg-8 form-group form-control-plaintext">
-                                    {{ contact?.mobilePhone | value }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="row">
-                                <div class="col-4 col-lg-4 form-group pr-0">
-                                    <label class="col-lg-12 control-label text-right pt-2">Fax</label>
-                                </div>
-
-                                <div class="col-8 col-lg-8 form-group form-control-plaintext">
-                                    {{ contact?.fax | value }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="popup-container">
+    <div class="popup-title">
+        Contact Details
+    </div>
+    <div>
+        <div class="popup-content-section">
+            <div class="popup-item">
+                <div class="label">Name</div>
+                <div class="content"> {{ contact?.name | value }}</div>
+            </div>
+            <div class="popup-item">
+                <div class="label">Title</div>
+                <div class="content"> {{ contact?.title | value }}</div>
+            </div>
+            <div class="popup-item">
+                <div class="label">Email</div>
+                <div class="content"> {{ contact?.email | value }}</div>
+            </div>
+            <div class="popup-item">
+                <div class="label">Phone</div>
+                <div class="content"> {{ contact?.phone | value }}</div>
+            </div>
+            <div class="popup-item">
+                <div class="label">Mobile</div>
+                <div class="content"> {{ contact?.mobilePhone | value }}</div>
+            </div>
+            <div class="popup-item">
+                <div class="label">Fax</div>
+                <div class="content"> {{ contact?.fax | value }}</div>
             </div>
         </div>
-
         <ng-template [ngIf]="!contact">
             <div class="col-12 p-4">
                 Open quote not found.
             </div>
         </ng-template>
-    </nb-card-body>
-    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
-        <button (click)="onCancel()" type="button" class="btn btn-secondary">
-            <i class="fas fa-times"></i>
+    </div>
+    <div class="popup-footer">
+        <button (click)="onCancel()" type="button" class="secondary-button">
             Close
         </button>
-    </nb-card-footer>
-</nb-card>
+    </div>
+</div>
+
 <ng-template #doneButton>
-    <button class="btn btn-primary">
-        <i class="clear-icon fas fa-check"></i>
+    <button class="main-button">
         OK
     </button>
 </ng-template>

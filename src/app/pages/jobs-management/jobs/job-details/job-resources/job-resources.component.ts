@@ -1,24 +1,23 @@
 import {
   Component,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { JoyrideService } from 'ngx-joyride';
 import { Ng2TableCellComponent } from '../../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
-import { CommonValues, PERMISSIONS, TaskStatusConstants } from '../../../../../_shared/constants';
+import { PERMISSIONS, TaskStatusConstants } from '../../../../../_shared/constants';
 import { IJobResource } from '../../../../../_shared/models/job';
 import { MessageService } from '../../../../../services/message.service';
 import { ResourceService } from '../../../../../services/resource.service';
 import { BaseComponent } from '../../../../base.component';
 import { JobResourcesActionsComponent } from './job-resources-actions/job-resources-actions.component';
-import * as guidingTourGlobal from '../../../../guiding.tour.global';
 import { BaseComponentService } from '../../../../../services/base-component.service';
 import { PermissionService } from '../../../../../services/permission.service';
 import { Router } from '@angular/router';
 import { ResourceTaskStatusCellComponent } from '../../../../../_shared/components/business/status.component';
-import { CpListFilterComponent } from '../../../../../_shared/components/table-filters/cp-list-filter.component';
 
 
 @Component({
@@ -26,7 +25,7 @@ import { CpListFilterComponent } from '../../../../../_shared/components/table-f
   templateUrl: './job-resources.component.html',
   styleUrls: ['./job-resources.component.scss'],
 })
-export class JobResourcesComponent extends BaseComponent implements OnInit, OnDestroy {
+export class JobResourcesComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
 
   backgroundCall: NodeJS.Timeout;
   showFilters = false;
@@ -43,17 +42,22 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
     private router: Router,
     private resourceService: ResourceService,
     private messageService: MessageService,
-    private joyrideService: JoyrideService,
     private permissionService: PermissionService,
     baseService: BaseComponentService,
   ) {
     super(baseService);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['resourceFiles']) {
+      this.source = new LocalDataSource(this.resourceFiles ?? []);
+    }
+  }
+
   settings = {
     mode: 'external',
     hideSubHeader: true,
-    hideHeader:true,
+    hideHeader: true,
     actions: {
       position: 'right',
       add: false,
@@ -77,7 +81,7 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
         title: '',
         type: 'custom',
         renderComponent: ResourceTaskStatusCellComponent,
-        
+
         filter: false,
         sort: false,
         width: '10%',
@@ -87,7 +91,7 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
         sort: false,
         title: '',
         type: 'custom',
-        
+
         renderComponent: JobResourcesActionsComponent,
         onComponentInitFunction: this.onActionsInit.bind(this),
       },
@@ -95,13 +99,10 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
   };
 
   ngOnInit(): void {
-    
+
     this.canGenerateFiles = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
 
-    this.source = new LocalDataSource(this.resourceFiles);
-    console.log("this.source",this.source)
-    
-    this.startGuidingTour();
+    this.source = new LocalDataSource(this.resourceFiles ?? []);
 
     this.backgroundCall = setInterval(() => {
       if (this.source) {
@@ -245,43 +246,6 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
     }
 
     this.resourceService.dispose();
-    this.stopGuidingTour();
-  }
-
-  stopGuidingTour() {
-    if (this.joyrideService && this.joyrideService.isTourInProgress()) {
-      this.joyrideService.closeTour();
-    }
-  }
-
-  startGuidingTour() {
-    if (localStorage.getItem('GuidingTourJobResources') === null) {
-      this.runGuidingTour = true;
-      this.openGuidingTour();
-    } else {
-      this.runGuidingTour = false;
-    }
-  }
-
-  openGuidingTour() {
-    if (this.joyrideService) {
-      this.joyrideService.startTour(
-        {
-          steps: ['jobResourceFirstStep', ],
-          themeColor: guidingTourGlobal.guidingTourThemeColor,
-          customTexts: {
-            prev: guidingTourGlobal.guidingTourPrevButtonText,
-            next: guidingTourGlobal.guidingTourNextButtonText,
-            done: guidingTourGlobal.guidingTourDoneButtonText
-          }
-        }
-      );
-    }
-  }
-
-  onFinishingTour() {
-    localStorage.setItem('GuidingTourJobResources', '1');
-    this.runGuidingTour = true;
   }
 
   onClose() {

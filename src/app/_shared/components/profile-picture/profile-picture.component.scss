@@ -19,14 +19,14 @@ div.profile-picture img {
 }
 .profile-image{
     display: flex;
-    width: 70%;
+    width: 86%;
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 32px;
     .profile-image-container{
         img{
-            height: 50px;
-            width: 50px;
+            height: 100px;
+            width: 100px;
             border-radius: 50%;
             margin-right: 8px;
         }
@@ -35,6 +35,16 @@ div.profile-picture img {
         background-color: transparent;
         border: none;
         color: var(--primary-color-blue);
+        font-size: .9rem;
+        margin-right: 2rem;
+    }
+    .remove-photo {
+        background-color: transparent;
+        border: none;
+        color: red;
+        display: block;
+        font-size: .9rem;
+        margin-top: 0.5rem;
     }
 }
 

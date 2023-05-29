@@ -1,6 +1,9 @@
 import { AutoMap } from "@nartc/automapper";
 import { EnumValueView, IEnumValueView } from "../enumValue.model";
 import { IQuoteView, ICarView, ICarManagementSystemView, ICarDoorFeatureView, ICarAdditionalFeatureView, ICarSmartriseFeatureView, ICarHydraulicFieldView, ICarProvisionView, ICarSpecialFieldView, IJobLocationView, IQuoteAttachmentView, ICarTractionFieldView, ICarAdditionalC4RiserBoardsView, IQuoteCustomerView } from "./quote-view-i.model";
+import { CarAdditionalC4RiserBoardsResponse, CarAdditionalFeatureResponse, CarDoorFeatureResponse, CarHydraulicFieldResponse, CarManagementSystemResponse, CarProvisionResponse, CarResponse, CarSmartriseFeatureResponse, CarSpecialFieldResponse, CarTractionFieldResponse, JobLocationReponse, QuoteCustomerResponse, QuoteResponse } from "./quote-response.model";
+import { FunctionConstants } from "../../constants";
+import { ICarAdditionalC4RiserBoardsResponse, ICarAdditionalFeatureResponse, ICarDoorFeatureResponse, ICarHydraulicFieldResponse, ICarManagementSystemResponse, ICarProvisionResponse, ICarResponse, ICarSmartriseFeatureResponse, ICarSpecialFieldResponse, ICarTractionFieldResponse, IQuoteCustomerResponse, IQuoteResponse } from "./quote-response-i.model";
 
 export class QuoteView implements IQuoteView {
     @AutoMap()
@@ -51,6 +54,20 @@ export class QuoteView implements IQuoteView {
     isCanadaOntario(): boolean {
         return this.jobLocation?.country?.value === 'Canada' && this.jobLocation?.state?.value === 'Ontario';
     }
+
+    static mapFromResponse(source: IQuoteResponse): QuoteView {
+        const m = FunctionConstants.map(source, QuoteView,
+            ['cars', 'customer', 'attachments', 'jobLocation']) as QuoteView;
+
+        m.customer = QuoteCustomerView.mapFromResponse(source.customer);
+        m.jobLocation = JobLocationView.mapFromResponse(source.jobLocation);
+        m.cars = [];
+        source.cars.forEach(car => {
+            m.cars.push(CarView.mapFromResponse(car));
+        });
+
+        return m;
+    }
 }
 
 export class QuoteCustomerView implements IQuoteCustomerView {
@@ -58,9 +75,17 @@ export class QuoteCustomerView implements IQuoteCustomerView {
     id: number;
     @AutoMap()
     name: string;
+
+    static mapFromResponse(source: QuoteCustomerResponse): QuoteCustomerView {
+        return FunctionConstants.map(source, QuoteCustomerView, []);
+    }
 }
 
 export class JobLocationView implements IJobLocationView {
+
+    static mapFromResponse(source: JobLocationReponse): JobLocationView {
+        return FunctionConstants.map(source, JobLocationView, []);
+    }
 
     constructor(props?: Partial<JobLocationView>) {
         if (props) {
@@ -93,6 +118,22 @@ export class JobLocationView implements IJobLocationView {
 }
 
 export class CarView implements ICarView {
+
+    static mapFromResponse(source: CarResponse): CarView {
+        const car = FunctionConstants.map(source, CarView, []) as CarView;
+
+        car.additionalFeature = CarAdditionalFeatureView.mapFromResponse(source.additionalFeature);
+        car.carAdditionalC4RiserBoards = CarAdditionalC4RiserBoardsView.mapFromResponse(source.carAdditionalC4RiserBoards);
+        car.carDoorFeature = CarDoorFeatureView.mapFromResponse(source.carDoorFeature);
+        car.carHydraulicField = CarHydraulicFieldView.mapFromResponse(source.carHydraulicField);
+        car.carManagementSystem = CarManagementSystemView.mapFromResponse(source.carManagementSystem);
+        car.carProvision = CarProvisionView.mapFromResponse(source.carProvision);
+        car.carSmartriseFeature = CarSmartriseFeatureView.mapFromResponse(source.carSmartriseFeature);
+        car.carSpecialField = CarSpecialFieldView.mapFromResponse(source.carSpecialField);
+        car.carTractionField = CarTractionFieldView.mapFromResponse(source.carTractionField);
+        return car;
+    }
+
     ref?: string;
     @AutoMap()
     id?: number;
@@ -247,6 +288,9 @@ export class CarView implements ICarView {
 }
 
 export class CarManagementSystemView implements ICarManagementSystemView {
+    static mapFromResponse(source: CarManagementSystemResponse): CarManagementSystemView {
+        return FunctionConstants.map(source, CarManagementSystemView, []) as CarManagementSystemView;
+    }
     car: ICarView;
     @AutoMap()
     id?: number;
@@ -267,6 +311,9 @@ export class CarManagementSystemView implements ICarManagementSystemView {
 }
 
 export class CarDoorFeatureView implements ICarDoorFeatureView {
+    static mapFromResponse(source: CarDoorFeatureResponse): CarDoorFeatureView {
+        return FunctionConstants.map(source, CarDoorFeatureView, []) as CarDoorFeatureView;
+    }
     car: ICarView;
     @AutoMap()
     id?: number;
@@ -279,6 +326,9 @@ export class CarDoorFeatureView implements ICarDoorFeatureView {
 }
 
 export class CarAdditionalFeatureView implements ICarAdditionalFeatureView {
+    static mapFromResponse(source: CarAdditionalFeatureResponse): CarAdditionalFeatureView {
+        return FunctionConstants.map(source, CarAdditionalFeatureView, []) as CarAdditionalFeatureView;
+    }
     car: ICarView;
     @AutoMap()
     id?: number;
@@ -299,6 +349,9 @@ export class CarAdditionalFeatureView implements ICarAdditionalFeatureView {
 }
 
 export class CarSmartriseFeatureView implements ICarSmartriseFeatureView {
+    static mapFromResponse(source: CarSmartriseFeatureResponse): CarSmartriseFeatureView {
+        return FunctionConstants.map(source, CarSmartriseFeatureView, []) as CarSmartriseFeatureView;
+    }
     landingSystemLengthOfTravelIsRequired: boolean;
     nemaLocationIsRequired: boolean;
     hoistwayLengthIsRequired: boolean;
@@ -333,9 +386,9 @@ export class CarSmartriseFeatureView implements ICarSmartriseFeatureView {
     @AutoMap()
     hoistwayLengthAssumedValue?: number;
     @AutoMap()
-    nemaRating?: string;
+    machineRoomNemaRating?: string;
     @AutoMap()
-    nemaLocation?: string;
+    hoistwayNemaRating?: string;
     @AutoMap()
     landingSystemLengthOfTravel?: number;
     @AutoMap()
@@ -369,6 +422,9 @@ export class CarSmartriseFeatureView implements ICarSmartriseFeatureView {
 }
 
 export class CarHydraulicFieldView implements ICarHydraulicFieldView {
+    static mapFromResponse(source: CarHydraulicFieldResponse): CarHydraulicFieldView {
+        return FunctionConstants.map(source, CarHydraulicFieldView, []) as CarHydraulicFieldView;
+    }
     hide: boolean;
     @AutoMap()
     id?: number;
@@ -397,6 +453,10 @@ export class CarHydraulicFieldView implements ICarHydraulicFieldView {
 }
 
 export class CarTractionFieldView implements ICarTractionFieldView {
+    static mapFromResponse(source: CarTractionFieldResponse): CarTractionFieldView {
+        return FunctionConstants.map(source, CarTractionFieldView, []) as CarTractionFieldView;
+    }
+
     motorProviderAvailable: boolean;
     motorMountAvailable: boolean;
     motorRPMAvailable: boolean;
@@ -486,6 +546,9 @@ export class CarTractionFieldView implements ICarTractionFieldView {
 }
 
 export class CarProvisionView implements ICarProvisionView {
+    static mapFromResponse(source: CarProvisionResponse): CarProvisionView {
+        return FunctionConstants.map(source, CarProvisionView, []) as CarProvisionView;
+    }
     v2V3HallCallSecurityCat5Available: boolean;
     @AutoMap()
     id?: number;
@@ -515,6 +578,9 @@ export class CarProvisionView implements ICarProvisionView {
 }
 
 export class CarSpecialFieldView implements ICarSpecialFieldView {
+    static mapFromResponse(source: CarSpecialFieldResponse): ICarSpecialFieldView {
+        return FunctionConstants.map(source, CarSpecialFieldView, []) as CarSpecialFieldView;
+    }
     car: ICarView;
     groupRedundancyIsClickable: boolean;
     @AutoMap()
@@ -543,6 +609,9 @@ export class QuoteAttachmentView implements IQuoteAttachmentView {
 }
 
 export class CarAdditionalC4RiserBoardsView implements ICarAdditionalC4RiserBoardsView {
+    static mapFromResponse(source: CarAdditionalC4RiserBoardsResponse): CarAdditionalC4RiserBoardsView {
+        return FunctionConstants.map(source, CarAdditionalC4RiserBoardsView, []) as CarAdditionalC4RiserBoardsView;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()

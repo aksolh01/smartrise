@@ -24,6 +24,7 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
   passcodeSource: LocalDataSource;
   passcodeSettings: any = {
     mode: 'external',
+    hideSubHeader: true,
     actions: {
       position: 'right',
       add: false,
@@ -39,7 +40,8 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
           instance.setHeader('Car');
         },
         show: false,
-        filter: false
+        filter: false,
+        sort: false
       },
       passcode: {
         title: 'Passcode',
@@ -49,7 +51,8 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
           instance.setHeader('Passcode');
         },
         show: false,
-        filter: false
+        filter: false,
+        sort: false
       },
     }
   };
@@ -69,7 +72,8 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   private _initializePasscodeTable() {
-    this.passcodeSource = new LocalDataSource(this.passcode.lines);
+    const data = this.passcode?.lines ?? [];
+    this.passcodeSource = new LocalDataSource(data);
     this.passcodeSource.refresh();
   }
 

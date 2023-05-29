@@ -50,21 +50,18 @@ export class ChangePasswordComponent implements OnInit, IAuthPageComponent {
       return;
     }
 
-
     this.isLoading = true;
+
     this.accountService.changePassword({
       ...this.changePasswordForm.value,
-    }).subscribe(() => {
-      this.isLoading = false;
-      // this.router.navigateByUrl(this.returnUrl);
-      this.succuessMessage = 'Password has been changed successfully.';
-    }, error => {
-      this.isLoading = false;
-    });
-  }
-
-  back() {
-    this.router.navigate(['pages/dashboard'], {});
+    }).subscribe({
+      complete: () => {
+        this.isLoading = false;
+        this.messageService.showSuccessMessage('Password has been changed successfully');
+        this.router.navigate(['pages/dashboard'], {});
+      },
+      error: () => this.isLoading = false
+    })
   }
 
   confirmPassordsMatching(confirmPasswordControl: UntypedFormControl) {
@@ -109,8 +106,8 @@ export class ChangePasswordComponent implements OnInit, IAuthPageComponent {
   static password(control: UntypedFormControl): { [key: string]: boolean } {
 
     if (control.value === '') {
-return null;
-}
+      return null;
+    }
 
 
     const hasAlpabetSmall = /[a-z]+/.test(control.value);
@@ -126,8 +123,8 @@ return null;
       moreThan8Char &&
       hasAtLeastOneNumber
     ) {
-return null;
-}
+      return null;
+    }
     return { invalidPassword: true };
   }
 }

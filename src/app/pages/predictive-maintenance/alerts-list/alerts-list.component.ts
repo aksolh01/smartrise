@@ -13,9 +13,9 @@ import { AlertDetailsSingleComponent } from '../alert-details-single/alert-detai
 import { AlertsListActionsComponent } from './alerts-list-actions/alerts-list-actions.component';
 import { AlertSeverityCellComponent } from '../../../_shared/components/business/alert-severity.component';
 import { BaseComponent } from '../../base.component';
-import { SettingService } from '../../../services/setting.service';
 import { AlertParams } from '../../../_shared/models/alertParams';
 import { BaseComponentService } from '../../../services/base-component.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-alerts-list',
@@ -156,16 +156,13 @@ export class AlertsListComponent extends BaseComponent implements OnInit {
     private predictiveMaintenance: PredictiveMaintenanceService,
     private alertService: AlertService,
     private modelService: BsModalService,
-    private settingsService: SettingService,
   ) {
     super(baseService);
   }
 
   ngOnInit(): void {
-    this.settingsService.getBusinessSettings().subscribe(x => {
-      this.recordsNumber = x.numberOfRecords || 25;
-      this.onRecordsNumberChanged(x.numberOfRecords);
-    });
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
     const filter = this.route.snapshot.queryParams['filter'];
     if (filter === 'jobid') {
       this.jobData = this.predictiveMaintenance.getFilterData();

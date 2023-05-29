@@ -50,3 +50,13 @@ label {
     font-size: 13.6px;
     font-weight: bold;
 }
+
+a:not([tabindex]) {
+    text-decoration: underline !important;
+    color:var(--primary-color-gray);
+    cursor: pointer;
+}
+
+a:not([tabindex]):hover {
+    color:var(--primary-color-gray);
+}

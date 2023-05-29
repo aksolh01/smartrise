@@ -13,6 +13,7 @@ import { TokenService } from '../../../services/token.service';
   styleUrls: ['./profile-picture.component.scss'],
 })
 export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() allowRemovePhoto: boolean;
   @Input() profileLoading: boolean;
   @Input() url: any;
   @Input() photoGuid: string;
@@ -123,6 +124,7 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
       reader.onload = () => {
         if (this.canRenderImage) {
           this.url = reader.result;
+          this.allowRemovePhoto = true;
         }
       };
 
@@ -144,10 +146,15 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
         this.photoGuid = null;
         this.url = this.refernceUrl;
         this.uploadPictureText = 'Edit Photo';
+        this.allowRemovePhoto = false;
         this.messageService.showSuccessMessage('Profile Picture has been removed successfully');
       },
         () => {
         });
     }
+  }
+
+  onRemovePhoto() {
+    this.confirmDeleteProfilePhoto();
   }
 }

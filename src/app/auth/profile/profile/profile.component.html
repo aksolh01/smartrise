@@ -1,6 +1,10 @@
 <div [class]="isDataLoading ? 'form-container data-loading' : 'form-container'" [nbSpinner]="isDataLoading"
     nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="">
 
+    <div *ngIf="currentUser$ | async as currentUser" class="profile-title">
+        <div>{{currentUser.displayName}}</div>
+    </div>
+
     <div class="main-card">
         <div class="card-container">
             <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
@@ -9,7 +13,7 @@
                         <h2 class="card-title">Edit Profile</h2>
                     </nb-card-header>
                     <nb-card-body>
-                        <ngx-profile-picture [profileLoading]="proflieLoading" [photoGuid]="photoGuid"
+                        <ngx-profile-picture [allowRemovePhoto]="showRemoveButton" [profileLoading]="proflieLoading" [photoGuid]="photoGuid"
                             [(url)]="imageToShow">
                         </ngx-profile-picture>
                         <div class="input-container">
@@ -17,7 +21,7 @@
                                 <label for="fistName" class="pt-2 required label-align">First Name</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="fistName" formControlName="firstName"
-                                        placeholder="First Name" class="form-control" />
+                                        placeholder="First Name" />
 
                                     <div *ngIf="formSubmitted &&
                                             profileForm.get('firstName').touched &&
@@ -43,7 +47,7 @@
 
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="lastName" formControlName="lastName"
-                                        placeholder="Last Name" class="form-control" />
+                                        placeholder="Last Name" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('lastName').touched &&
@@ -67,8 +71,8 @@
                                 <label for="title" class="pt-2 required label-align">Title</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="title" formControlName="title"
-                                        placeholder="Title" class="form-control" />
-                                        
+                                        placeholder="Title" />
+
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('title').touched &&
@@ -81,11 +85,11 @@
                                 </div>
                             </div>
                             <div class="input-sub-container">
-                                <label for="primaryPhoneNumber" class="pt-2 required label-align">Primary Phone Number</label>
+                                <label for="primaryPhoneNumber" class="pt-2 required label-align">Primary Phone
+                                    Number</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="primaryPhoneNumber"
-                                        formControlName="primaryPhoneNumber" placeholder="Primary Phone Number"
-                                        class="form-control" />
+                                        formControlName="primaryPhoneNumber" placeholder="Primary Phone Number" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('primaryPhoneNumber').touched &&
@@ -102,8 +106,7 @@
                                     Number</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="secondaryPhoneNumber"
-                                        formControlName="secondaryPhoneNumber" placeholder="Secondary Phone Number"
-                                        class="form-control" />
+                                        formControlName="secondaryPhoneNumber" placeholder="Secondary Phone Number" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('secondaryPhoneNumber').touched &&
@@ -116,11 +119,11 @@
                                 </div>
                             </div>
                             <div class="input-sub-container">
-                                <label for="primaryEmailAddress" class="pt-2 required label-align">Primary Email Address</label>
+                                <label for="primaryEmailAddress" class="pt-2 required label-align">Primary Email
+                                    Address</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="primaryEmailAddress"
-                                        formControlName="primaryEmailAddress" placeholder="Primary Email Address"
-                                        class="form-control" />
+                                        formControlName="primaryEmailAddress" placeholder="Primary Email Address" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('primaryEmailAddress').touched &&
@@ -137,8 +140,7 @@
                                     Address</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="secondaryEmailAddress"
-                                        formControlName="secondaryEmailAddress" placeholder="Secondary Email Address"
-                                        class="form-control" />
+                                        formControlName="secondaryEmailAddress" placeholder="Secondary Email Address" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('secondaryEmailAddress').touched &&
@@ -154,7 +156,7 @@
                                 <label for="companyName" class="pt-2 required label-align">Company Name</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="companyName" formControlName="companyName"
-                                        placeholder="Company Name" class="form-control" />
+                                        placeholder="Company Name" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('companyName').touched &&
@@ -170,8 +172,7 @@
                                 <label for="businessAddress" class="pt-2 required label-align">Business Address</label>
                                 <div class="input-item">
                                     <input type="text" maxlength="255" id="businessAddress"
-                                        formControlName="businessAddress" placeholder="Business Address"
-                                        class="form-control" />
+                                        formControlName="businessAddress" placeholder="Business Address" />
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('businessAddress').touched &&
@@ -184,15 +185,18 @@
                                 </div>
                             </div>
                             <div class="input-sub-container">
-                                <label for="city" class="pt-2 required label-align">City</label>
+                                <label for="country" class="pt-2 required label-align">Country</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="city" formControlName="city"
-                                        placeholder="City" class="form-control" />
-
+                                    <nb-select (click)="onClickDropDownList()" scrollStrategy="close" [attr.isselected]="profileForm.value.country ? true : false" class="full-width" (selectedChange)="onCountrySelected($event)" placeholder="Country"
+                                        formControlName="country">
+                                        <nb-option [value]="">Country</nb-option>
+                                        <nb-option *ngFor="let cnt of countries" [value]="cnt.value">{{ cnt.description
+                                            }}</nb-option>
+                                    </nb-select>
                                     <div *ngIf="formSubmitted &&
-                                        profileForm.get('city').touched &&
-                                        profileForm.get('city').errors &&
-                                        profileForm.get('city').errors['trimError']
+                                        profileForm.get('country').touched &&
+                                        profileForm.get('country').errors &&
+                                        profileForm.get('country').errors['trimError']
                                       " class="mt-1 help-block error">
                                         This field can't start or end with a blank space
                                     </div>
@@ -202,8 +206,11 @@
                             <div class="input-sub-container">
                                 <label for="state" class="pt-2 required label-align">State/Province</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="state" formControlName="state"
-                                        placeholder="State/Province" class="form-control" />
+                                    <nb-select (click)="onClickDropDownList()" scrollStrategy="close" class="full-width" [attr.isselected]="profileForm.value.state ? true : false" placeholder="State/Province" formControlName="state">
+                                        <nb-option [value]="">State/Province</nb-option>
+                                        <nb-option *ngFor="let state of states" [value]="state.value">{{
+                                            state.description }}</nb-option>
+                                    </nb-select>
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('state').touched &&
@@ -216,15 +223,15 @@
                                 </div>
                             </div>
                             <div class="input-sub-container">
-                                <label for="zipcode" class="pt-2 required label-align">ZIP Code</label>
+                                <label for="city" class="pt-2 required label-align">City</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="zipcode" formControlName="zipcode"
-                                        placeholder="ZIP Code" class="form-control" />
+                                    <input type="text" maxlength="255" id="city" formControlName="city"
+                                        placeholder="City" />
 
                                     <div *ngIf="formSubmitted &&
-                                        profileForm.get('zipcode').touched &&
-                                        profileForm.get('zipcode').errors &&
-                                        profileForm.get('zipcode').errors['trimError']
+                                        profileForm.get('city').touched &&
+                                        profileForm.get('city').errors &&
+                                        profileForm.get('city').errors['trimError']
                                       " class="mt-1 help-block error">
                                         This field can't start or end with a blank space
                                     </div>
@@ -232,15 +239,15 @@
                                 </div>
                             </div>
                             <div class="input-sub-container">
-                                <label for="country" class="pt-2 required label-align">Country</label>
+                                <label for="zipCode" class="pt-2 required label-align">ZIP Code</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="country" formControlName="country"
-                                        placeholder="Country" class="form-control" />
+                                    <input type="text" maxlength="255" id="zipCode" formControlName="zipCode"
+                                        placeholder="ZIP Code" />
 
                                     <div *ngIf="formSubmitted &&
-                                        profileForm.get('country').touched &&
-                                        profileForm.get('country').errors &&
-                                        profileForm.get('country').errors['trimError']
+                                        profileForm.get('zipCode').touched &&
+                                        profileForm.get('zipCode').errors &&
+                                        profileForm.get('zipCode').errors['trimError']
                                       " class="mt-1 help-block error">
                                         This field can't start or end with a blank space
                                     </div>

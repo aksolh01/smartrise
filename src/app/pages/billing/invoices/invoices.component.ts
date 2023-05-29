@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpDateFilterComponent } from '../../../_shared/components/table-filters/cp-date-filter.component';
@@ -10,7 +10,6 @@ import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { InvoiceService } from '../../../services/invoice.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { BaseComponent } from '../../base.component';
 import { InvoicesActionsComponent } from './invoices-actions/invoices-actions.component';
@@ -29,6 +28,8 @@ import { BaseParams } from '../../../_shared/models/baseParams';
 import { IPagination } from '../../../_shared/models/pagination';
 import { Observable } from 'rxjs';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-invoices',
@@ -36,6 +37,7 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
   styleUrls: ['./invoices.component.scss']
 })
 export class InvoicesComponent extends BaseComponent implements OnInit, OnDestroy {
+  @ViewChild('table') table: Ng2SmartTableComponent;
   account: string;
   invoiceNumber: string;
   jobNumber: string;
@@ -221,7 +223,6 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
   constructor(
     private miscellaneousService: MiscellaneousService,
     private invoiceService: InvoiceService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private router: Router,
     private joyrideService: JoyrideService,
@@ -261,13 +262,12 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
 
   async ngOnInit() {
     this.title = await this.listTitleService.buildTitle('Invoices');
-    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
 
   private _onBusinessSettingsReady(rep: IBusinessSettings) {
-    this.recordsNumber = rep.numberOfRecords || 25;
-    this.initializeSource();
-    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
 
   private _onScreenSizeChanged(w: ScreenBreakpoint) {
@@ -404,13 +404,6 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
       }
     }
   }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
 
   private _resetFilterParameters() {
     this.account = null;
@@ -427,14 +420,6 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
     this.maintainedBy = null;
   }
 
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
-  }
   onRecordsNumberChanged(value: number) {
     this.recordsNumber = value;
     this.source.setPaging(1, value);

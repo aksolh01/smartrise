@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { EpicoreIdCellComponent } from '../../../_shared/components/epicore-id-cell/epicore-id-cell.component';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
@@ -9,7 +9,6 @@ import { CustomerParams } from '../../../_shared/models/CustomerParams';
 import { CustomerService } from '../../../services/customer.service';
 import { MessageService } from '../../../services/message.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { CustomerActionsComponent } from './customer-actions/customer-actions.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -22,6 +21,8 @@ import { BaseComponentService } from '../../../services/base-component.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { HLinkTableCellComponent } from '../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-customers-list',
@@ -30,6 +31,7 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
 })
 export class CustomersListComponent extends BaseComponent implements OnInit, OnDestroy {
 
+  @ViewChild('table') table: Ng2SmartTableComponent;
   hasLogin?: boolean;
   isFavorite?: boolean;
   public Math = Math;
@@ -148,7 +150,6 @@ export class CustomersListComponent extends BaseComponent implements OnInit, OnD
     private router: Router,
     private miscellaneousService: MiscellaneousService,
     private customerService: CustomerService,
-    private settingService: SettingService,
     private messageService: MessageService,
     private responsiveService: ResponsiveService,
     private modalService: BsModalService,
@@ -237,11 +238,7 @@ export class CustomersListComponent extends BaseComponent implements OnInit, OnD
 
   ngOnInit(): void {
     // this.recordsNumber = null;
-    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
-  }
-
-  private _onBusinessSettingsReady(rep: IBusinessSettings) {
-      this.recordsNumber = rep.numberOfRecords || 25;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe((w) => this._onScreenSizeChanged(w));
   }
@@ -259,22 +256,6 @@ export class CustomersListComponent extends BaseComponent implements OnInit, OnD
         this.onReset();
         this.isSmall = true;
       }
-    }
-  }
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
     }
   }
   onSearch() {

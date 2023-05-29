@@ -7,7 +7,6 @@ import { BaseComponentService } from '../../../services/base-component.service';
 import { MessageService } from '../../../services/message.service';
 import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import * as guidingTourGlobal from '../../guiding.tour.global';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
@@ -33,6 +32,8 @@ import { map, tap } from 'rxjs/operators';
 import { IUserAccountLookup } from '../../../_shared/models/IUser';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -43,6 +44,7 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
 })
 export class BankAccountsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   recordsNumber: number;
+  @ViewChild('table') table: Ng2SmartTableComponent;
   @ViewChild('search') search: ElementRef;
   public Math = Math;
   // set isLoading as true by default to avoid the following exception
@@ -230,7 +232,6 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     private router: Router,
     private messageService: MessageService,
     private responsiveService: ResponsiveService,
-    private settingService: SettingService,
     private joyrideService: JoyrideService,
     private accountService: AccountService,
     private bankAccountService: BankAccountService,
@@ -342,22 +343,6 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
       return null;
     return value;
   }
-  onPagePrev(): void {
-    const currentPage = this.source?.getPaging().page;
-    const perPage = this.source?.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source?.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source?.getPaging().page;
-    const perPage = this.source?.getPaging().perPage;
-    const totalPages = Math.ceil(this.source?.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source?.setPaging(currentPage + 1, perPage);
-    }
-  }
   private _getBankAccounts(params: any) {
     if (this.hasMultipleAccounts && !this.accountSelected) {
       return this.emptyData();
@@ -420,7 +405,9 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     this.accountTypes = this._getAccountTypes();
     this.accountStatuses = await this.bankAccountService.getAccountStatuses().toPromise();
 
-    this.settingService.getBusinessSettings().subscribe((bs) => this._onBusinessSettingResponseReady(bs));
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
 
     this.plaidSuccessSub = this.plaidService.success.subscribe(r => this._onPlaidSuccess(r));
     this.plaidExitSub = this.plaidService.exit.subscribe(r => this.accountService.checkSession());
@@ -476,9 +463,6 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
   }
 
   private _onBusinessSettingResponseReady(businessSettings: IBusinessSettings) {
-    this.recordsNumber = businessSettings.numberOfRecords;
-    this.initializeSource();
-    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
 
   private _onScreenSizeChanged(w: ScreenBreakpoint) {

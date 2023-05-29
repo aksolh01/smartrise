@@ -17,29 +17,15 @@
     </div>
 </div>
 <div class="actions-user-container">
-    <div class="pagination-info">
-        <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
-        {{ (source?.getPaging().page - 1) * settings?.pager?.perPage + 1 }}
-        -
-        {{
-        Math.min(
-        source.count(),
-        (source?.getPaging().page - 1) * settings?.pager?.perPage +
-        settings?.pager?.perPage
-        )
-        }}
-        of {{ source ? source?.count() : null }}
-
-        <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
-    </div>
+    <ngx-pager [table]="table"></ngx-pager>
     <div class="avatar-btn-container">
         <div class="avatar-btn">
             <a>
                 <button [disabled]="!canCreateAccountUser" (click)="onCreateUser()" class="main-button"
                     joyrideStep="accountUserSecondStep" stepPosition="left" [prevTemplate]="prevButton"
-                    [nextTemplate]="nextButton" [doneTemplate]="doneButton"
+                    [nextTemplate]="nextButton" [doneTemplate]="doneButton" 
                     [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="secondCustomContent"
-                    (done)="onFinishingTour()" tooltip="Create User">
+                    (done)="onFinishingTour()" tooltip="Create New User">
                     <i class="fas fa-user-plus"></i>
                 </button>
             </a>
@@ -142,21 +128,21 @@
 </ng-template>
 
 <ng-template #prevButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="fas fa-step-backward"></i>
         Prev
     </button>
 </ng-template>
 
 <ng-template #nextButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         Next
         <i class="fas fa-step-forward"></i>
     </button>
 </ng-template>
 
 <ng-template #doneButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>

@@ -13,8 +13,9 @@ export const environment = {
   testing: false,
   paypalGatewayUrl: 'https://pilot-payflowlink.paypal.com',
   paypalProcessingFeesPercentage: 3.09,
-  apiUrl: 'https://portaltestapi.smartrise.us/api/',
+  apiUrl: 'http://seportalapi.beytek.co/api/',
   socketApiUrl: 'wss://portaltestapi.smartrise.us/api/',
   toastMessageShowDuration: 5000,
   stripeKey: 'pk_test_51Kbp70AOD8pjxE7i8AuhyxhcSNJBwRwDJevj5miLdZTY0ZNt2XFiO9CaNGf3F01ixRfs5QnKVfEDkHVGDtEJf8iQ00m8tffmWE',
+  recordsPerPage: 25
 };

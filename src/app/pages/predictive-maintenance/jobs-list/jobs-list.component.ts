@@ -15,9 +15,9 @@ import { BaseComponentService } from '../../../services/base-component.service';
 import { JobService } from '../../../services/job.service';
 import { PredictiveMaintenanceService } from '../../../services/predictiveMaintenanceService';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { JobsListActionsComponent } from './jobs-list-actions/jobs-list-actions.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-jobs-list',
@@ -121,7 +121,6 @@ export class JobsListComponent extends BaseComponent implements OnInit {
     baseService: BaseComponentService,
     private router: Router,
     private predictiveMaintenanceService: PredictiveMaintenanceService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private jobService: JobService,
   ) {
@@ -130,11 +129,9 @@ export class JobsListComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.onRecordsNumberChanged(rep.numberOfRecords);
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
-    });
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
     this.source.serviceCallBack = (param) => {
       const predictiveJobBaseParams = param as PredictiveJobBaseParams;
       if (this.isSmall) {

@@ -14,7 +14,6 @@ import { JoyrideService } from 'ngx-joyride';
 import { CpFilterComponent } from '../../../../../_shared/components/table-filters/cp-filter.component';
 import { ResponsiveService } from '../../../../../services/responsive.service';
 import { ScreenBreakpoint } from '../../../../../_shared/models/screenBreakpoint';
-import { SettingService } from '../../../../../services/setting.service';
 import { ICustomerUserRoleLookup } from '../../../../../_shared/models/ICustomerUserRoleLookup';
 import { PermissionService } from '../../../../../services/permission.service';
 import { PERMISSIONS } from '../../../../../_shared/constants';
@@ -24,6 +23,7 @@ import { BaseComponentService } from '../../../../../services/base-component.ser
 import { CustomerUsersParams } from '../../../../../_shared/models/customerUsersParams';
 import { MiscellaneousService } from '../../../../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../../../../services/multi-accounts-service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-customer-admin-users',
@@ -49,7 +49,6 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
   showFilters = false;
 
   constructor(
-    private settingService: SettingService,
     private reponsiveService: ResponsiveService,
     private router: Router,
     private accountService: AccountService,
@@ -81,22 +80,20 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
   ngOnInit(): void {
 
     this.canCreateCustomerUser = this.permissionService.hasPermission(PERMISSIONS.AdministratorAccountCreate);
-    this.settingService.getBusinessSettings().subscribe(r => {
-      this.recordsNumber = r.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription = this.reponsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.responsiveSubscription = this.reponsiveService.currentBreakpoint$.subscribe(w => {
+      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+        if (this.isSmall !== false) {
+          this.onReset();
+          this.isSmall = false;
         }
-      });
+      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+        if (this.isSmall !== true) {
+          this.onReset();
+          this.isSmall = true;
+        }
+      }
     });
   }
 
@@ -116,7 +113,7 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
       }, this.isSmall ? guidingTourGlobal.smallScreenSuspensionTimeInterval : guidingTourGlobal.wideScreenSuspensionTimeInterval);
     });
   }
-  
+
   private _convertFilterValue(field: string, value: string): any {
     if (this.isEmpty(value))
       return null;
@@ -145,7 +142,7 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
     this.settings.pager = {
       display: true,
       page: 1,
-        perPage: this.recordsNumber || 25
+      perPage: this.recordsNumber || 25
     };
   }
 
@@ -239,8 +236,8 @@ export class CustomerAdminUsersComponent extends BaseComponent implements OnInit
   concatRoles(_roles: ICustomerUserRoleLookup[]) {
     let roles = '';
     if (_roles.length > 0) {
-roles = _roles[0].displayName;
-}
+      roles = _roles[0].displayName;
+    }
     for (let index = 1; index < _roles.length; index++) {
       roles = roles + ', ' + _roles[index].displayName;
     }

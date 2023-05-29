@@ -5,7 +5,7 @@
 // }
 
 // .row {
-//     margin-right: -13px !important; 
+//     margin-right: -13px !important;
 // }
 
 // .actions{
@@ -34,3 +34,10 @@
 // .data-loading {
 //     visibility: hidden;
 // }
+::ng-deep ngx-profile nb-select .select-button {
+    padding-left: 0 !important;
+}
+::ng-deep ngx-profile nb-select[isselected=true] .select-button span {
+    font-weight: 600;
+    color: black;
+}

@@ -18,23 +18,9 @@
   <div class="page-tab-container">
     <div class="page-tab-item" (click)="goToJobs()">Jobs</div>
     <div class="page-tab-item active" (click)="goToShipments()">Shipments</div>
-    <div class="page-tab-item last" (click)="goToJobsFile()">Job files</div>
+    <div class="page-tab-item last" (click)="goToJobsFile()">Job Files</div>
   </div>
-  <div class="pagination-info">
-    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
-    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
-    -
-    {{
-    Math.min(
-    source.count(),
-    (source.getPaging().page - 1) * settings.pager.perPage +
-    settings.pager.perPage
-    )
-    }}
-    of {{ source.count() }}
-
-    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
-  </div>
+  <ngx-pager [table]="table"></ngx-pager>
 </div>
 <div class="table-container">
   <nb-card joyrideStep="shipmentFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Shipments' : null"
@@ -114,9 +100,9 @@
                   [(selectedDate)]="shipDate"></ngx-cp-datepicker>
               </div>
               <!-- <div class="filter-control">
-          <ngx-cp-datepicker class="form-group" memberName="Delivery Date" displayPlaceholder="Delivery Date/Time"
-            [(selectedDate)]="deliveryDate"></ngx-cp-datepicker>
-        </div> -->
+                <ngx-cp-datepicker class="form-group" memberName="Delivery Date" displayPlaceholder="Delivery Date/Time"
+                  [(selectedDate)]="deliveryDate"></ngx-cp-datepicker>
+              </div> -->
               <div class="input-item">
                 <nb-select [(ngModel)]="status">
                   <nb-option value="">Status</nb-option>
@@ -147,7 +133,7 @@
       <div [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
 
         <div class="table-content" *ngIf="source">
-          <ng2-smart-table #table [settings]="settings" [source]="source">
+          <ng2-smart-table class="responsive-design1" #table [settings]="settings" [source]="source">
           </ng2-smart-table>
         </div>
       </div>
@@ -157,7 +143,7 @@
 </div>
 
 <ng-template #doneButton>
-  <button class="btn btn-primary">
+  <button class="main-button">
     <i class="clear-icon fas fa-check"></i>
     OK
   </button>

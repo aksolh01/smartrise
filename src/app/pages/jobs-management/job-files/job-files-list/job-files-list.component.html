@@ -21,23 +21,9 @@
     <div class="page-tab-container">
         <div class="page-tab-item" (click)="goToJobs()">Jobs</div>
         <div class="page-tab-item" (click)="goToShipments()">Shipments</div>
-        <div class="page-tab-item last active" (click)="goToJobsFile()">Job files</div>
+        <div class="page-tab-item last active" (click)="goToJobsFile()">Job Files</div>
     </div>
-    <div class="pagination-info">
-        <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
-        {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
-        -
-        {{
-        Math.min(
-        source.count(),
-        (source.getPaging().page - 1) * settings.pager.perPage +
-        settings.pager.perPage
-        )
-        }}
-        of {{ source.count() }}
-
-        <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
-    </div>
+    <ngx-pager [table]="table"></ngx-pager>
 </div>
 
 <div class="table-container">
@@ -140,16 +126,17 @@
 
             <div [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
                 <div class="table-content" *ngIf="source">
-                    <ng2-smart-table [settings]="settings" [source]="source">
+                    <ng2-smart-table #table [settings]="settings" [source]="source">
                     </ng2-smart-table>
                 </div>
             </div>
         </nb-card-body>
     </nb-card>
 </div>
+
 <ng-template #doneButton>
-    <button>
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>
-</ng-template>
+  </ng-template>

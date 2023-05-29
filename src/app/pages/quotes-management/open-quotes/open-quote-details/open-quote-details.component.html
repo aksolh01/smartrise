@@ -1,3 +1,10 @@
+<div class="page-header-container">
+    <div class="page-header-title" *ngIf="openQuote">
+        <span (click)="onClose()" class="cursor">Open Quote</span> / {{ openQuote?.jobName}}
+    </div>
+</div>
+
+<div class="margin-16"></div>
 <nb-card size="xlarge" *ngIf="openQuote">
 
     <nb-card-header class="default-card-header">
@@ -8,95 +15,59 @@
             class="badge badge-pill badge-danger float-right font-weight-normal open-quote-deleted">
             DELETED
         </div>
+        <div class="card-details">
 
-        <div class="row">
-            <div class="col-12 col-lg-6">
-
-                <div *ngIf="displayAccountName" class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">{{accountTitle}}</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext" id="last4">{{ openQuote?.customer | value }}</div>
-                    </div>
+            <div class="card-details-container">
+              <div class="displayData" *ngIf="displayAccountName" >
+                <div class="label">{{ accountTitle }}</div>
+                <div class="content"> {{ openQuote?.customer | value}}</div>
+              </div>
+              <div class="displayData">
+                <div class="label">Job Name</div>
+                <div class="content"> {{ openQuote?.jobName | value }}</div>
+              </div>
+              <div class="displayData">
+                <div class="label">Quote Number</div>
+                <div class="content" id="last4" value="">{{ openQuote?.quoteNumber | value }}</div>
+              </div>
+          
+              <div class="displayData">
+                <div class="label">Contact Name</div>
+                <div class="content">
+                    <a tooltip="View Contact Details" *ngIf="openQuote.contact" (click)="onShowContact()">{{
+                        openQuote?.contact?.name | value }}</a>
+                    {{ !openQuote?.contact ? 'N/A' : '' }}
                 </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext" id="last4"
-                            value="{{ openQuote?.jobName | value }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Quote Number</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext"
-                            value="{{ openQuote?.quoteNumber | value }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Contact Name</label>
-                    <div class="col-12 col-lg-8">
-                        <div class="form-control-plaintext">
-                            <a tooltip="View Contact Details" *ngIf="openQuote.contact" (click)="onShowContact()">{{
-                                openQuote?.contact?.name | value }}</a>
-                            {{ !openQuote?.contact ? 'N/A' : '' }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Created By</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext"
-                            value="{{ openQuote?.createdBy | value }}">
-                    </div>
-                </div>
-
+              </div>
+          
+              <div class="displayData">
+                <div class="label">Created By</div>
+                <div class="content">{{ openQuote?.createdBy | value }}</div>
+              </div>
             </div>
-            <div class="col-12 col-lg-6">
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Controller Type</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext"
-                            value="{{ openQuote?.controllerType | value }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Number of Cars</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext"
-                            value="{{ openQuote?.numberOfCars }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Amount</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext"
-                            value="${{ openQuote?.amount | number: '1.2-2' }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Created Date</label>
-                    <div class="col-12 col-lg-8">
-                        <input readonly type="text" class="form-control-plaintext"
-                            value="${{ openQuote?.amount | number: '1.2-2' }}">
-                    </div>
-                </div>
-
+          
+            <div class="card-details-container">
+              <div class="displayData">
+                <div class="label">Controller Type</div>
+                <div class="content"> {{ openQuote?.controllerType | value }}</div>
+              </div>
+              <div class="displayData">
+                <div class="label">Number of Cars</div>
+                <div class="content">{{ openQuote?.numberOfCars}}</div>
+              </div>
+          
+              <div class="displayData">
+                <div class="label">Amount</div>
+                <div class="content">{{ openQuote?.amount | number: '1.2-2' }}</div>
+              </div>
+          
+              <div class="displayData">
+                <div class="label">Created Date</div>
+                <div class="content">{{  openQuote?.quoteCreated | usdate | value }}</div>
+              </div>
+          
             </div>
-        </div>
-
-        <div class="form-buttons">
-            <button class="btn btn-secondary" (click)="onClose()">
-                <i class="fas fa-times"></i>
-                Close
-            </button>
-        </div>
+          
+          </div>
     </nb-card-body>
 </nb-card>

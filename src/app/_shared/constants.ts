@@ -146,47 +146,47 @@ export const SmartriseValidators = {
   routingNumber: ((control: UntypedFormControl): { 'routingNumber': boolean } => {
 
     if (control.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
 
     const trimmedValue = control.value?.trim();
     if (trimmedValue != null && trimmedValue.length === 9) {
-return null;
-}
+      return null;
+    }
 
     return { routingNumber: true };
   }),
   whitespace: ((control: AbstractControl): { 'whitespace': boolean } => {
 
     if (control.value?.trim() === '' && control.value.length > 0) {
-return { whitespace: true };
-}
+      return { whitespace: true };
+    }
 
     return null;
   }),
   bankAccountNumber: ((control: UntypedFormControl): { 'bankAccountNumber': boolean } => {
 
     if (control.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
 
     const trimmedValue = control.value?.trim();
     if (trimmedValue != null && trimmedValue.length <= 17 && trimmedValue.length > 5) {
-return null;
-}
+      return null;
+    }
 
     return { bankAccountNumber: true };
   }),
   greaterThanZero: ((control: UntypedFormControl): { 'greaterThanZero': boolean } => {
 
     if (control.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
 
     const trimmedValue = control.value?.trim();
     if (trimmedValue === null || trimmedValue === undefined || trimmedValue === '') {
-return null;
-}
+      return null;
+    }
 
     if (+trimmedValue === 0) {
       return { greaterThanZero: true };
@@ -201,26 +201,26 @@ return null;
   email: ((control: AbstractControl): { 'smartriseEmail': boolean } => {
 
     if (control.value === '') {
-return { smartriseEmail: true };
-}
+      return { smartriseEmail: true };
+    }
 
     if (control.value?.trim() === '' && control.value.length > 0) {
-return { smartriseEmail: true };
-}
+      return { smartriseEmail: true };
+    }
 
     const trimmedValue = control.value?.trim();
     const isValidEmail = trimmedValue.match(SmartriseValidators.emailRegex);
     if (isValidEmail != null && isValidEmail.length > 0) {
-return null;
-}
+      return null;
+    }
 
     return { smartriseEmail: true };
   }),
   smartriseEmail: ((control: AbstractControl): { 'smartriseEmail': boolean } => {
 
     if (control.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
 
     const trimmedValue = control.value?.trim();
     if (trimmedValue === null || trimmedValue === undefined) {
@@ -228,27 +228,27 @@ return null;
     }
     const isValidEmail = trimmedValue.match(SmartriseValidators.emailRegex);
     if (isValidEmail != null && isValidEmail.length > 0) {
-return null;
-}
+      return null;
+    }
 
     return { smartriseEmail: true };
   }),
   verificationCode: ((control: UntypedFormControl): { 'verificationCode': boolean } => {
     if (control.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
     if (/^[0-9]{6}$/.test(control.value)) {
-return null;
-}
+      return null;
+    }
     return { verificationCode: true };
   }),
   creditCardNumber: ((control: UntypedFormControl): { 'creditCardNumber': boolean } => {
     if (control.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
     if (/^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/.test(control.value)) {
-return null;
-}
+      return null;
+    }
     return { creditCardNumber: true };
   }),
   trimError: (control: AbstractControl) => {
@@ -266,8 +266,8 @@ return null;
     }
 
     if (control?.value?.trim() === '') {
-return null;
-}
+      return null;
+    }
     if (control?.value?.startsWith(' ')) {
       return {
         trimError: { value: 'control has leading whitespace' },
@@ -350,6 +350,14 @@ export const Regex = {
 };
 
 export const FunctionConstants = {
+  map(source: any, destinationType: any, execluded: string[]) {
+    const destination = Object.create(destinationType.prototype);
+    Object.assign(destination, source);
+    [].forEach(prop => {
+      delete destination[prop];
+    });
+    return destination;
+  },
   FormatBytes(bytes, decimals) {
     if (bytes === 0) {
       return '0 Bytes';

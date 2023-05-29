@@ -1,18 +1,4 @@
-<div class="pagination-info">
-    <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
-    {{ (source.getPaging().page - 1) * settings.pager.perPage + 1 }}
-    -
-    {{
-    Math.min(
-    source.count(),
-    (source.getPaging().page - 1) * settings.pager.perPage +
-    settings.pager.perPage
-    )
-    }}
-    of {{ source.count() }}
-
-    <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
-</div>
+<ngx-pager [table]="table"></ngx-pager>
 <div class="table-container">
     <nb-card joyrideStep="openQuoteFirstStep" stepPosition="center"
         [title]="runGuidingTour === true ? 'Open Quotes' : null" [stepContent]="firstCustomContent"
@@ -50,21 +36,20 @@
                 <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
                     <div class="form-container" filters>
                         <div class="input-container">
-                            <div class="input-item"*ngIf="settings?.columns?.account">
+                            <div class="input-item" *ngIf="settings?.columns?.account">
                                 <input type="text" maxlength="255" [placeholder]="settings?.columns?.account?.title"
                                     [(ngModel)]="account" />
                             </div>
                             <div class="input-item">
-                                <input type="text" maxlength="255" placeholder="Job Name" 
-                                    [(ngModel)]="jobName" />
+                                <input type="text" maxlength="255" placeholder="Job Name" [(ngModel)]="jobName" />
                             </div>
                             <div class="input-item">
-                                <input type="text" maxlength="255" placeholder="Quote Number" 
+                                <input type="text" maxlength="255" placeholder="Quote Number"
                                     (keypress)="onKeyPress($event)" [(ngModel)]="quoteNumber" />
                             </div>
                             <div class="input-item">
                                 <input type="number" (keypress)="preventNonNumericalInput($event)" min="1"
-                                    maxlength="10" placeholder="Cars"  [(ngModel)]="numberOfCars" />
+                                    maxlength="10" placeholder="Cars" [(ngModel)]="numberOfCars" />
                             </div>
                             <div class="input-item">
                                 <input type="text" maxlength="255" placeholder="Controller Type"
@@ -72,19 +57,17 @@
                             </div>
                             <div class="input-item">
                                 <input type="number" min="0" (keypress)="preventNonNumericalInput($event)"
-                                    maxlength="10" placeholder="Amount"  [(ngModel)]="amount" />
+                                    maxlength="10" placeholder="Amount" [(ngModel)]="amount" />
                             </div>
                             <div class="input-item">
-                                <input type="text" maxlength="255" placeholder="Created By" 
-                                    [(ngModel)]="createdBy" />
+                                <input type="text" maxlength="255" placeholder="Created By" [(ngModel)]="createdBy" />
                             </div>
                             <div class="input-item">
                                 <ngx-cp-datepicker memberName="Created Date" displayPlaceholder="Created Date"
                                     [(selectedDate)]="quoteCreated"></ngx-cp-datepicker>
                             </div>
                             <div class="input-item">
-                                <input type="text" maxlength="255" placeholder="Contact" 
-                                    [(ngModel)]="contact" />
+                                <input type="text" maxlength="255" placeholder="Contact" [(ngModel)]="contact" />
                             </div>
                             <div class="input-item">
                                 <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber"
@@ -113,8 +96,7 @@
                     </button>
                 </div>
                 <div class="table-content" *ngIf="source">
-                    <ng2-smart-table  #table [settings]="settings"
-                        [source]="source">
+                    <ng2-smart-table #table [settings]="settings" [source]="source">
                     </ng2-smart-table>
                 </div>
             </div>
@@ -124,7 +106,7 @@
 </div>
 
 <ng-template #doneButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>

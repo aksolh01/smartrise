@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 import { JobTabService } from '../../../../services/job-tabs.service';
 import { JobService } from '../../../../services/job.service';
 import { ResponsiveService } from '../../../../services/responsive.service';
-import { SettingService } from '../../../../services/setting.service';
 import { HLinkTableCellComponent } from '../../../../_shared/components/hlink-table-cell/hlink-table-cell.component';
 import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpDateFilterComponent } from '../../../../_shared/components/table-filters/cp-date-filter.component';
@@ -37,6 +36,8 @@ import { UploadConfigFileComponent } from '../upload-config-file/upload-config-f
 import { BaseComponent } from '../../../base.component';
 import { JobActionsComponent } from './job-actions/job-actions.component';
 import { PendingInfoCellComponent } from './pending-info-cell.component';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-jobs-list',
@@ -44,6 +45,7 @@ import { PendingInfoCellComponent } from './pending-info-cell.component';
   styleUrls: ['./jobs-list.component.scss'],
 })
 export class JobsListComponent extends BaseComponent implements OnInit, OnDestroy, AfterContentInit {
+  @ViewChild('table') table: Ng2SmartTableComponent;
   @ViewChild('search') search: ElementRef;
   recordsNumber: number;
   public Math = Math;
@@ -278,7 +280,6 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     private jobService: JobService,
     private router: Router,
     private responsiveService: ResponsiveService,
-    private settingService: SettingService,
     private jobTabService: JobTabService,
     private modalService: BsModalService,
     private joyrideService: JoyrideService,
@@ -394,15 +395,11 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
 
   async ngOnInit() {
     this.jobsListTitle = await this.listTitleService.buildTitle('Jobs');
-    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
-
-    this.yesNoList = this.populateYesNo();
-  }
-
-  private _onBusinessSettingsReady(rep: IBusinessSettings) {
-    this.recordsNumber = rep.numberOfRecords;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+
+    this.yesNoList = this.populateYesNo();
   }
 
   private _onScreenSizeChanged(w: ScreenBreakpoint) {
@@ -421,22 +418,6 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
 
   onJobFilterChange() { }
   
-  onPagePrev(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source.getPaging().page;
-    const perPage = this.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.source.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source.setPaging(currentPage + 1, perPage);
-    }
-  }
   onSearch() {
     this.source.setPage(1, false);
     this.source.refresh();

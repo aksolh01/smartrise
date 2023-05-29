@@ -33,7 +33,7 @@ export class BusinessSettingsComponent extends BaseComponent implements OnInit {
     private permissionService: PermissionService,
     private selectHelperService: SelectHelperService,
     baseService: BaseComponentService,
-    ) {
+  ) {
     super(baseService);
   }
 
@@ -56,7 +56,7 @@ export class BusinessSettingsComponent extends BaseComponent implements OnInit {
   onSubmit() {
 
     this.formSubmitted = true;
-    if(this.businessSettingsForm.invalid) {
+    if (this.businessSettingsForm.invalid) {
       return;
     }
 

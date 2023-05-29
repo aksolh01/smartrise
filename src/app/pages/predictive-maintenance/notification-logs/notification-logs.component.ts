@@ -15,8 +15,8 @@ import { ITextValueLookup } from '../../../_shared/models/text-value.lookup';
 import { BaseComponentService } from '../../../services/base-component.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-notification-logs',
@@ -77,7 +77,7 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
       },
       severity: {
         sort: true,
-        title: 'Severity ' ,
+        title: 'Severity ',
         type: 'custom',
         valuePrepareFunction: (value) => Severity[value],
         renderComponent: AlertSeverityCellComponent,
@@ -170,7 +170,6 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
 
   constructor(
     baseService: BaseComponentService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private notificationService: NotificationService,
     private router: Router,
@@ -180,22 +179,20 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe(bs => {
-      this.recordsNumber = bs.numberOfRecords || 25;
-      this.onRecordsNumberChanged(bs.numberOfRecords);
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
+    this.recordsNumber = environment.recordsPerPage;
+    this.onRecordsNumberChanged(this.recordsNumber);
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
+      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+        if (this.isSmall !== false) {
+          this.onReset();
+          this.isSmall = false;
         }
-      });
+      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+        if (this.isSmall !== true) {
+          this.onReset();
+          this.isSmall = true;
+        }
+      }
     });
 
     this.notificationLogs = [

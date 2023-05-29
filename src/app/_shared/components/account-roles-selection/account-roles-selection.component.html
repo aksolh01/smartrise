@@ -5,14 +5,14 @@
 <div class="card-container">
     <div class="card" *ngFor="let account of accounts">
         <div class="card-content">
-            <nb-list class="account-name">
+            <nb-list class="account-name" style="padding-left: 8px;">
                 {{account.name}}
             </nb-list>
             <div>
                 <hr>
             </div>
             <div>
-                <div *ngFor="let role of roles">
+                <div *ngFor="let role of roles" style="padding-left: 8px;">
                     <nb-checkbox [disabled]="!account.isSelected && allowAccountsSelection"
                         [checked]="isRoleSelected(account, role)"
                         (checkedChange)="roleChecked($event, account, role)">{{role.displayName}}</nb-checkbox>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="bottom-0 text-center">
-                <button *ngIf="allowRemoveAccount" type="button" class="btn btn-danger mt-3"
+                <button *ngIf="allowRemoveAccount" type="button" class="btn btn-danger mt-3 mb-2"
                     (click)="onRemove(account)">Remove</button>
                 <div *ngIf="allowAccountsSelection" class="d-flex justify-content-center align-items-center  mt-3">
                     <nb-toggle [ngModel]="account.isSelected" (checkedChange)="onSelectUnSelect($event, account)"

@@ -1,10 +1,10 @@
-*{
+* {
   line-height: normal;
 }
-.auth-layout{
+.auth-layout {
   position: relative;
   min-height: 100%;
-  padding:20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,21 +12,20 @@
   background-size: cover;
   overflow: auto;
   justify-content: center;
-  &:after{
+  &:after {
     content: "";
     background-color: var(--primary-color-bg);
     opacity: 0.9;
     position: absolute;
     top: 0;
     height: 100%;
-    width:100%;
-
+    width: 100%;
   }
 
-  .auth-layout-title{
+  .auth-layout-title {
     z-index: 100;
   }
-  .auth-layout-container{
+  .auth-layout-container {
     background-color: var(--primary-color-white);
     width: 100%;
     max-width: 1000px;
@@ -34,14 +33,14 @@
     border-radius: 8px;
     // margin-top: 20px;
     z-index: 100;
-    .auth-layout-container-left-section{
+    .auth-layout-container-left-section {
       width: 40%;
       border-radius: 8px 0 0 8px;
-      .auth-layout-container-left-section-image{
+      .auth-layout-container-left-section-image {
         height: 100%;
         width: 100%;
         border-radius: 8px 0 0 8px;
-        img{
+        img {
           height: 100%;
           width: 100%;
           border-radius: 8px 0 0 8px;
@@ -49,52 +48,52 @@
         }
       }
     }
-    .auth-layout-container-right-section{
+    .auth-layout-container-right-section {
       width: 60%;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
-      .auth-layout-container-right-section-content{
+      .auth-layout-container-right-section-content {
         width: 90%;
         height: 100%;
-      .auth-layout-container-right-section-content-title{
-        font-size: 24px;
-        color: var(--primary-color-black);
-        font-weight: 600;
+        .auth-layout-container-right-section-content-title {
+          font-size: 24px;
+          color: var(--primary-color-black);
+          font-weight: 600;
         }
       }
     }
   }
-  .privacy-policy{
+  .privacy-policy {
     z-index: 100000;
     position: absolute;
     bottom: 20px;
     right: 20px;
-    a{
-      color: white !important;
+    a {
+      color: var(--card-text-color) !important;
+      font-size: 14px !important;
+      font-weight: var(--card-text-font-weight);
       text-decoration: none;
     }
   }
-
 }
 
-
-@media (max-width:1281px) {
+@media (max-width: 1281px) {
   .auth-layout {
-    .auth-layout-container{
+    .auth-layout-container {
       // max-width: 100%;
     }
   }
 }
-@media (max-width:641px) {
+@media (max-width: 641px) {
   .auth-layout {
-    .auth-layout-container{
-      .auth-layout-container-left-section{
+    .auth-layout-container {
+      .auth-layout-container-left-section {
         display: none;
       }
-      .auth-layout-container-right-section{
+      .auth-layout-container-right-section {
         width: 100%;
       }
     }

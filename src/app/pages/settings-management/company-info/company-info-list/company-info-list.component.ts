@@ -5,7 +5,6 @@ import { Observable, Subscription } from 'rxjs';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { CustomerService } from '../../../../services/customer.service';
 import { ResponsiveService } from '../../../../services/responsive.service';
-import { SettingService } from '../../../../services/setting.service';
 import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../../_shared/components/table-filters/cp-filter.component';
 import { BaseServerDataSource } from '../../../../_shared/datasources/base-server.datasource';
@@ -19,6 +18,7 @@ import { HLinkTableCellComponent } from '../../../../_shared/components/hlink-ta
 import { BaseParams } from '../../../../_shared/models/baseParams';
 import { IPagination } from '../../../../_shared/models/pagination';
 import { IBusinessSettings } from '../../../../_shared/models/settings';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'ngx-company-info-list',
@@ -116,7 +116,6 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
 
   constructor(
     private customerService: CustomerService,
-    private settingService: SettingService,
     private responsiveService: ResponsiveService,
     private router: Router,
     private joyrideService: JoyrideService,
@@ -125,11 +124,7 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
   }
 
   ngOnInit(): void {
-    this.settingService.getBusinessSettings().subscribe((rep) => this._onBusinessSettingsReady(rep));
-  }
-
-  private _onBusinessSettingsReady(rep: IBusinessSettings) {
-      this.recordsNumber = rep.numberOfRecords || 25;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
@@ -196,7 +191,7 @@ export class CompanyInfoListComponent extends BaseComponent implements OnInit, O
     this.settings.pager = {
       display: true,
       page: 1,
-        perPage: this.recordsNumber || 25
+      perPage: this.recordsNumber || 25
     };
   }
 

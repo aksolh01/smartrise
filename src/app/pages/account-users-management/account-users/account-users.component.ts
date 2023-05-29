@@ -6,7 +6,6 @@ import * as guidingTourGlobal from '../../guiding.tour.global';
 import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 import { AccountUsersParams, IAccountUserLookup, IAccountUserRoleLookup } from '../../../_shared/models/account-user.model';
 import { Subscription } from 'rxjs';
-import { SettingService } from '../../../services/setting.service';
 import { MessageService } from '../../../services/message.service';
 import { ResponsiveService } from '../../../services/responsive.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -26,6 +25,8 @@ import { count } from 'console';
 import { AccountService } from '../../../services/account.service';
 import { InfoDialogData } from '../../../_shared/components/info-dialog/info-dialog-data';
 import { InfoDialogComponent } from '../../../_shared/components/info-dialog/info-dialog.component';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-account-users',
@@ -34,6 +35,7 @@ import { InfoDialogComponent } from '../../../_shared/components/info-dialog/inf
 })
 
 export class AccountUsersComponent extends BaseComponent implements OnInit {
+  @ViewChild('table') table: Ng2SmartTableComponent;
   source: BaseServerDataSource;
   runGuidingTour = true;
   public Math = Math;
@@ -134,7 +136,6 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private settingService: SettingService,
     private messageService: MessageService,
     private responsiveService: ResponsiveService,
     private modalService: BsModalService,
@@ -233,22 +234,20 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.enableCreateAccountUser();
-    this.settingService.getBusinessSettings().subscribe(rep => {
-      this.recordsNumber = rep.numberOfRecords || 25;
-      this.initializeSource();
-      this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
-        if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
-          if (this.isSmall !== false) {
-            this.onReset();
-            this.isSmall = false;
-          }
-        } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
-          if (this.isSmall !== true) {
-            this.onReset();
-            this.isSmall = true;
-          }
+    this.recordsNumber = environment.recordsPerPage;
+    this.initializeSource();
+    this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
+      if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
+        if (this.isSmall !== false) {
+          this.onReset();
+          this.isSmall = false;
         }
-      });
+      } else if (w === ScreenBreakpoint.md || w === ScreenBreakpoint.xs || w === ScreenBreakpoint.sm) {
+        if (this.isSmall !== true) {
+          this.onReset();
+          this.isSmall = true;
+        }
+      }
     });
   }
 
@@ -260,22 +259,6 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
     this.isLoading = true;
     this.router.navigateByUrl(URLs.CreateAccountUsersURL);
     this.isLoading = false;
-  }
-  onPagePrev(): void {
-    const currentPage = this.source?.getPaging().page;
-    const perPage = this.source?.getPaging().perPage;
-    if (currentPage > 1) {
-      this.source?.setPaging(currentPage - 1, perPage);
-    }
-  }
-
-  onPageNext(): void {
-    const currentPage = this.source?.getPaging().page;
-    const perPage = this.source?.getPaging().perPage;
-    const totalPages = Math.ceil(this.source?.count() / perPage);
-    if (currentPage < totalPages) {
-      this.source?.setPaging(currentPage + 1, perPage);
-    }
   }
   onEditUser(user: IAccountUserLookup) {
     this.router.navigateByUrl(`${URLs.ViewAccountUsersURL}/${user.id}`);

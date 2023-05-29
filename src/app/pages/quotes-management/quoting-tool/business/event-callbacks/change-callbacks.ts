@@ -375,12 +375,8 @@ export function reevaluateCarLabelDependents(ctx: BusinessContext, instance: Ins
     });
 }
 
-export function reevaluateNemaLocationDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
+export function reevaluateHoistwayNemaRatingDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
     ctx.actions.revalidateField(instance, 'landingSystemLengthOfTravel');
-}
-
-export function reevaluateNemaRatingDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {
-    ctx.actions.revalidateField(instance, 'nemaLocation');
 }
 
 export function reevaluateHoistwayCableDependents(ctx: BusinessContext, instance: InstanceView, arg: EventArg) {

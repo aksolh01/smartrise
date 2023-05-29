@@ -1,103 +1,121 @@
-<nb-card joyrideStep="customerUserFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Users' : null"
-    [stepContent]="firstCustomContent" (done)="onFinishingTour()" [nextTemplate]="nextButton">
+<div class="page-header-container">
+    <div class="page-header-title">Account Users</div>
+    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
+        <div class="input-container">
+            <div class="input-item search-input-icon">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search">
+            </div>
+        </div>
+    </div>
 
-    <ng-template #firstCustomContent>
-        <div class='joyride-custom-content'>
-            <div style="margin-bottom: 5px;">
-                Manage Account users.
-            </div>
-            <div>
-                <i class="fas fa-pencil-alt guiding-tour-action"></i>Update Account Roles
-            </div>
-            <div>
-                <i class="fas fa-share guiding-tour-action"></i>Resend Invitation
-            </div>
-            <div>
-                <i class="fas fa-recycle guiding-tour-action"></i>Send Password Reset Request
-            </div>
+    <div *ngIf="isSmall">
+        <button class="main-button" type="button" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+</div>
+<div class="actions-user-container">
+    <ngx-pager [table]="table"></ngx-pager>
+    <div class="avatar-btn-container">
+        <div class="avatar-btn">
+            <a>
+                <button [disabled]="!canCreateCustomerUser" (click)="onCreateUser()" class="main-button"
+                    joyrideStep="accountUserSecondStep" stepPosition="left" [prevTemplate]="prevButton"
+                    [nextTemplate]="nextButton" [doneTemplate]="doneButton"
+                    [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="secondCustomContent"
+                    (done)="onFinishingTour()" tooltip="Create User">
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            </a>
         </div>
-    </ng-template>
-    
-    <nb-card-header class="default-card-header">
-        <div class="row">
-            <div class="col-md">
-                <h2 class="card-title">{{ title }}</h2>
-            </div>
-            <div class="col-md">
-                <div class="card-actions">
-                    <a>
-                        <button *ngIf="canCreateCustomerUser" (click)="onCreateUser()" class="btn btn-primary"
-                            joyrideStep="customerUserSecondStep" stepPosition="left" [prevTemplate]="prevButton"
-                            [nextTemplate]="nextButton" [doneTemplate]="doneButton"
-                            [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="secondCustomContent"
-                            (done)="onFinishingTour()">
-                            <i class="fas fa-plus-circle"></i>
-                            Create User
-                        </button>
-                    </a>
+    </div>
+
+</div>
+
+<div class="table-container">
+    <nb-card joyrideStep="customerUserFirstStep" stepPosition="center"
+        [title]="runGuidingTour === true ? 'Users' : null" [stepContent]="firstCustomContent" (done)="onFinishingTour()"
+        [nextTemplate]="nextButton">
+
+        <ng-template #firstCustomContent>
+            <div class='joyride-custom-content'>
+                <div style="margin-bottom: 5px;">
+                    Manage Account users.
                 </div>
-            </div>
-        </div>
-    </nb-card-header>
-    <nb-card-body>
-        <ng-template [ngIf]="isSmall === false">
-            <div class="row mb-3">
-                <div class="col d-flex align-items-center justify-content-start">
-                    <!-- <button (click)="onReset()" class="btn btn-primary">
-                        <i class="fas fa-redo-alt"></i>
-                        Reset Filters
-                    </button> -->
+                <div>
+                    <i class="fas fa-pencil-alt guiding-tour-action"></i>Update Account Roles
                 </div>
-                <div class="col-auto d-flex align-items-center justify-content-start">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page> -->
+                <div>
+                    <i class="fas fa-share guiding-tour-action"></i>Resend Invitation
+                </div>
+                <div>
+                    <i class="fas fa-recycle guiding-tour-action"></i>Send Password Reset Request
                 </div>
             </div>
         </ng-template>
 
-        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-            <div filters>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="First Name" class="form-control"
-                        [(ngModel)]="firstName" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Last Name" class="form-control"
-                        [(ngModel)]="lastName" />
-                </div>
-                <div class="filter-control">
-                    <input type="email" maxlength="255" placeholder="Email" class="form-control" [(ngModel)]="email" />
-                </div>
-                <div class="filter-control">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+        <nb-card-body>
+            <ng-template [ngIf]="isSmall === false">
+                <div class="row mb-3">
+                    <div class="col d-flex align-items-center justify-content-start">
+                        <!-- <button (click)="onReset()" class="btn btn-primary">
+                        <i class="fas fa-redo-alt"></i>
+                        Reset Filters
+                    </button> -->
+                    </div>
+                    <div class="col-auto d-flex align-items-center justify-content-start">
+                        <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
                     </ngx-smr-records-per-page> -->
+                    </div>
                 </div>
-            </div>
-            <div actions>
-                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-                    <i class="fas fa-search"></i>
-                    Search
-                </button>
-                <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+            </ng-template>
+
+            <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                <div filters>
+                    <div class="filter-control">
+                        <input type="text" maxlength="255" placeholder="First Name" class="form-control"
+                            [(ngModel)]="firstName" />
+                    </div>
+                    <div class="filter-control">
+                        <input type="text" maxlength="255" placeholder="Last Name" class="form-control"
+                            [(ngModel)]="lastName" />
+                    </div>
+                    <div class="filter-control">
+                        <input type="email" maxlength="255" placeholder="Email" class="form-control"
+                            [(ngModel)]="email" />
+                    </div>
+                    <div class="filter-control">
+                        <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+                    </ngx-smr-records-per-page> -->
+                    </div>
+                </div>
+                <div actions>
+                    <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                    <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
                     <i class="fas fa-redo-alt"></i>
                     Reset Filters
                 </button> -->
+                </div>
+            </ngx-smr-mobile-filters>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                    <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                <div class="col-sm-12" *ngIf="source">
+                    <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
+                </div>
             </div>
-        </ngx-smr-mobile-filters>
-        <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-            <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-                <button type="button" class="btn btn-primary" (click)="toggleFilters()">
-                    <i class="fas fa-filter"></i>
-                </button>
-            </div>
-            <div class="col-sm-12" *ngIf="source">
-                <ng2-smart-table class="default-smart-table responsive-design1" #table [settings]="settings"
-                    [source]="source">
-                </ng2-smart-table>
-            </div>
-        </div>
-    </nb-card-body>
-</nb-card>
+        </nb-card-body>
+    </nb-card>
+</div>
 
 <ng-template #secondCustomContent>
     <div class='joyride-custom-content'>
@@ -108,19 +126,19 @@
 </ng-template>
 
 <ng-template #prevButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="fas fa-step-backward"></i>
         Prev
     </button>
 </ng-template>
 <ng-template #nextButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         Next
         <i class="fas fa-step-forward"></i>
     </button>
 </ng-template>
 <ng-template #doneButton>
-    <button class="btn btn-primary">
+    <button class="main-button">
         <i class="clear-icon fas fa-check"></i>
         OK
     </button>

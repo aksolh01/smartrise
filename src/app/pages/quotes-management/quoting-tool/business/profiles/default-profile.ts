@@ -3,9 +3,18 @@ import { BuisnessBuilder } from "../builder/business-builder";
 import { WorkingMode } from "../types";
 import { BusinessContext } from "../business-context";
 import { BusinessProfile } from "../business-profile";
-import { isLessThanToday, hoistwayLengthRequired, landingSystemLengthOfTravelRequired, nemaLocationRequired, isBetween1And8, validateStopsIfInRangeBasedOnControllerType, validateOpeningsIfInRangeBasedOnControllerType, isBetween100And600, isBetween10And1400, isBetween500And20000, consultantNameRequired, travelerLengthRequired, alwaysRequired, hasSpace, validateMotorHPIfInRangeBasedOnControllerType, validateZeroInCaseOfDCController } from "../business-core/business-validations";
+import {
+    isLessThanToday,
+    hoistwayLengthRequired,
+    landingSystemLengthOfTravelRequired,
+    isBetween1And8,
+    validateStopsIfInRangeBasedOnControllerType,
+    validateOpeningsIfInRangeBasedOnControllerType,
+    isBetween100And600,
+    isBetween10And1400, isBetween500And20000, consultantNameRequired, travelerLengthRequired, alwaysRequired, hasSpace, validateMotorHPIfInRangeBasedOnControllerType, validateZeroInCaseOfDCController
+} from "../business-core/business-validations";
 import { reevaluateMainLineVoltageDependentsOnAssume, canAssumeMotorVolts, canAssumeSpeedFPM, canAssumeCapacity, canAssumeMotorHP, canAssumeHoistwayLength, canAssumeTravelerLength, canAssumeLandingSystemLengthOfTravel, canAssumeFullLoadAmps } from "../event-callbacks/assume-callbacks";
-import { reevaluateJobStatusDependents, reevaluateJobLocationDependents, reevaluateUnknownConsultantDependents, reevaluateGroupDependents, reevaluateCarLabelDependents, reevaluateControllerTypeDependents, reevaluateMainLineVoltageDependents, reevaluateMotorLocationDependents, reevaluateMotorTypeDependents, reevaluateMotorVoltsDependents, reevaluateTravelerCableDependents, reevaluateHoistwayCableDependents, reevaluateNemaRatingDependents, reevaluateNemaLocationDependents, reevaluateHydroEvolvedDependents, reevaluateC4Dependents, reevaluateNewMotorProvidedBySmartrise, reevaluateStopsDependents, reevaluateSpeedDependents, reevaluateCapacityDependents, reevaluateMotorHPDependents, reevaluateMotorRPM, reevaluateV2Traction, reevaluateV2HydrualicDependents } from "../event-callbacks/change-callbacks";
+import { reevaluateJobStatusDependents, reevaluateJobLocationDependents, reevaluateUnknownConsultantDependents, reevaluateGroupDependents, reevaluateCarLabelDependents, reevaluateControllerTypeDependents, reevaluateMainLineVoltageDependents, reevaluateMotorLocationDependents, reevaluateMotorTypeDependents, reevaluateMotorVoltsDependents, reevaluateTravelerCableDependents, reevaluateHoistwayCableDependents, reevaluateHydroEvolvedDependents, reevaluateC4Dependents, reevaluateNewMotorProvidedBySmartrise, reevaluateStopsDependents, reevaluateSpeedDependents, reevaluateCapacityDependents, reevaluateMotorHPDependents, reevaluateMotorRPM, reevaluateV2Traction, reevaluateV2HydrualicDependents, reevaluateHoistwayNemaRatingDependents } from "../event-callbacks/change-callbacks";
 import { initializeQuoteStatuses } from "../event-callbacks/initialize-callbacks";
 import { validateV2TractionPreConditions, validateC4PreConditions, validateV2HydraulicPreConditions, validateHydroEvolvedPreConditions } from "../event-callbacks/changing-callbacks";
 
@@ -80,10 +89,8 @@ export class DefaultProfile extends BusinessProfile {
             .call(reevaluateTravelerCableDependents)
             .onChange(CarSmartriseFeatureView, 'hoistwayCable')
             .call(reevaluateHoistwayCableDependents)
-            .onChange(CarSmartriseFeatureView, 'nemaRating')
-            .call(reevaluateNemaRatingDependents)
-            .onChange(CarSmartriseFeatureView, 'nemaLocation')
-            .call(reevaluateNemaLocationDependents)
+            .onChange(CarSmartriseFeatureView, 'hoistwayNemaRating')
+            .call(reevaluateHoistwayNemaRatingDependents)
             .onChange(CarTractionFieldView, 'c4')
             .call(reevaluateC4Dependents)
             .onChange(CarHydraulicFieldView, 'hydroEvolved')
@@ -108,8 +115,6 @@ export class DefaultProfile extends BusinessProfile {
             .call(hoistwayLengthRequired)
             .onValidate(CarSmartriseFeatureView, 'landingSystemLengthOfTravel', WorkingMode.Generate)
             .call(landingSystemLengthOfTravelRequired)
-            .onValidate(CarSmartriseFeatureView, 'nemaLocation', WorkingMode.Generate)
-            .call(nemaLocationRequired)
             .onValidate(CarView, 'numberOfCars', WorkingMode.Generate)
             .call(isBetween1And8)
             .onValidate(CarView, 'stops', WorkingMode.Generate)

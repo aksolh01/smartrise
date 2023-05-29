@@ -4,17 +4,17 @@
     </nb-card-header>
     <nb-card-body>
         <form [ngClass]="{'hide': isLoadingForm}" [nbSpinner]="isLoadingForm" nbSpinnerStatus="primary"
-            nbSpinnerSize="large" nbSpinnerMessage="" [formGroup]="customerUserForm" (ngSubmit)="onSubmit()">
+            nbSpinnerSize="large" nbSpinnerMessage="" [formGroup]="customerUserForm" (ngSubmit)="onSubmit()"
+            class="form-container">
 
-            <div class="row">
+            <div class="row-container">
 
-                <div class="col-12 col-lg-6">
-
-                    <div class="form-group row">
-                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
-                        <div class="col-12 col-lg-8">
+                <div class="input-container">
+                    <div class="input-sub-container">
+                        <label class="label-align">First Name</label>
+                        <div class="input-item">
                             <input type="text" #firstName placeholder="First Name" formControlName="firstName"
-                                class="form-control" id="firstName">
+                                id="firstName">
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
     customerUserForm.get('firstName').errors != null &&
@@ -38,11 +38,10 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Last Name</label>
-                        <div class="col-12 col-lg-8">
-                            <input type="text" placeholder="Last Name" formControlName="lastName" class="form-control"
-                                id="lastName">
+                    <div class="input-sub-container">
+                        <label class="label-align">Last Name</label>
+                        <div class="input-item">
+                            <input type="text" placeholder="Last Name" formControlName="lastName" id="lastName">
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
     customerUserForm.get('lastName').errors != null &&
@@ -66,11 +65,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
-                        <div class="col-12 col-lg-8">
+                    <div class="input-sub-container">
+                        <label class="label-align">Email</label>
+                        <div class="input-item">
                             <input type="text" (keydown.space)="$event.preventDefault()" placeholder="Email"
-                                formControlName="email" class="form-control" id="email">
+                                formControlName="email" id="email">
                             <div *ngIf="formSubmitted">
                                 <div class="help-block error" *ngIf="
                     customerUserForm.get('email').errors != null &&
@@ -93,18 +92,16 @@
                             </div>
                         </div>
                     </div>
-
-                </div>
-
-                <div class="col-12 mb-2 mt-4">
-
-                    <div class="row">
-
-                        <div class="col-12">
-                            <ngx-search-accounts-lookup (accountSelected)="onSelectionChange($event)"></ngx-search-accounts-lookup>
+                    <div class="input-sub-container">
+                        <label class="label-align">Choose account</label>
+                        <div class="input-item">
+                            <ngx-search-accounts-lookup
+                                (accountSelected)="onSelectionChange($event)"></ngx-search-accounts-lookup>
                         </div>
                     </div>
+
                 </div>
+
             </div>
 
             <div class="col-12 mb-2 px-0">
@@ -113,12 +110,10 @@
             </div>
 
             <div [ngClass]="{'form-buttons': true, 'mt-3': customerUserForm.get('accounts')?.value?.length}">
-                <button routerLink=".." type="button" class="btn btn-secondary">
-                    <i class="fas fa-times"></i>
+                <button routerLink=".." type="button" class="secondary-button">
                     Cancel
                 </button>
-                <ngx-button [isLoading]="isSaving" type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i>
+                <ngx-button [isLoading]="isSaving" type="submit" class="main-button">
                     Create
                 </ngx-button>
             </div>

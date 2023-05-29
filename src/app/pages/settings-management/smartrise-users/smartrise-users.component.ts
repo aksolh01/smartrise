@@ -12,7 +12,6 @@ import { AccountService } from '../../../services/account.service';
 import { MessageService } from '../../../services/message.service';
 import { PermissionService } from '../../../services/permission.service';
 import { ResponsiveService } from '../../../services/responsive.service';
-import { SettingService } from '../../../services/setting.service';
 import { BaseComponent } from '../../base.component';
 import { SmartriseUserActionsComponent } from './smartrise-user-actions/smartrise-user-actions.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -25,6 +24,8 @@ import { MiscellaneousService } from '../../../services/miscellaneous.service';
 import { BaseParams } from '../../../_shared/models/baseParams';
 import { IPagination } from '../../../_shared/models/pagination';
 import { IBusinessSettings } from '../../../_shared/models/settings';
+import { environment } from '../../../../environments/environment';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-smartrise-users',
@@ -33,6 +34,7 @@ import { IBusinessSettings } from '../../../_shared/models/settings';
 })
 export class SmartriseUsersComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild('search', { static: false }) searchRef: ElementRef;
+  @ViewChild('table') table: Ng2SmartTableComponent;
 
   source: BaseServerDataSource;
   runGuidingTour = true;
@@ -126,7 +128,6 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private settingService: SettingService,
     private messageService: MessageService,
     private responsiveService: ResponsiveService,
     private modalService: BsModalService,
@@ -179,7 +180,7 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
     this.settings.pager = {
       display: true,
       page: 1,
-        perPage: this.recordsNumber || 25
+      perPage: this.recordsNumber || 25
     };
   }
 
@@ -199,11 +200,7 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
 
   ngOnInit(): void {
     this.enableCreateSmartriseUser();
-    this.settingService.getBusinessSettings().subscribe(rep => this._onBusinessSettingsReady(rep));
-  }
-
-  private _onBusinessSettingsReady(rep: IBusinessSettings) {
-      this.recordsNumber = rep.numberOfRecords || 25;
+    this.recordsNumber = environment.recordsPerPage;
     this.initializeSource();
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
   }
@@ -294,8 +291,8 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
   concatRoles(roleNames: ISmartriseUserRoleLookup[]) {
     let roles = '';
     if (roleNames.length > 0) {
-roles = roleNames[0].displayName;
-}
+      roles = roleNames[0].displayName;
+    }
     for (let index = 1; index < roleNames.length; index++) {
       roles = roles + ', ' + roleNames[index].displayName;
     }

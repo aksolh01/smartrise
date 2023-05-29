@@ -330,7 +330,8 @@ export class CreateOpenQuoteComponent extends BaseComponent implements OnInit, O
     if (this.form.value.creationDate)
       this.form.value.creationDate = this.mockUtcDate(this.form.value.creationDate);
 
-    const createQuotePayload = Mapper.map(new CreateQuoteView(this.form.value), CreateQuotePayload);
+    const quoteView = new CreateQuoteView(this.form.value);
+    const createQuotePayload = CreateQuotePayload.mapFromView(quoteView);
     createQuotePayload.customerId = this.accountId;
 
     this.quotingToolService.createQuote(createQuotePayload).subscribe((result: any) => {

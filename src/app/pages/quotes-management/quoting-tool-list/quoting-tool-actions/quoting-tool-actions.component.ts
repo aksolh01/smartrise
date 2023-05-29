@@ -16,6 +16,7 @@ export class QuotingToolActionsComponent implements OnInit, ViewCell {
   view = new EventEmitter<any>();
   viewHistory = new EventEmitter<any>();
   viewPricing = new EventEmitter<any>();
+  cloneQuote = new EventEmitter<any>();
   isImpersonate: boolean;
   isSmartriseUser: boolean;
   generated = 'Generated';
@@ -71,5 +72,9 @@ export class QuotingToolActionsComponent implements OnInit, ViewCell {
 
   onViewPricing() {
     this.viewPricing.next(this.rowData);
+  }
+
+  onCloneQuote() {
+    this.cloneQuote.next(this.rowData);
   }
 }

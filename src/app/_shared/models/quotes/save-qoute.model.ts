@@ -1,6 +1,9 @@
 /* eslint-disable */
 import { AutoMap } from '@nartc/automapper';
 import { ISaveQuotePayload, ISaveCarPayload, ISaveCarManagementSystemPayload, ISaveCarDoorFeaturePayload, ISaveCarAdditionalFeaturePayload, ISaveCarSmartriseFeaturePayload, ISaveCarHydraulicFieldPayload, ISaveCarProvisionPayload, ISaveCarSpecialFieldPayload, ISaveCarTractionFieldPayload, ISaveCarAdditionalC4RiserBoardsPayload } from './save-quote-i.model';
+import { CarAdditionalC4RiserBoardsView, CarAdditionalFeatureView, CarDoorFeatureView, CarHydraulicFieldView, CarManagementSystemView, CarProvisionView, CarSmartriseFeatureView, CarSpecialFieldView, CarTractionFieldView, CarView, QuoteView } from './quote-view.model';
+import { FunctionConstants } from '../../constants';
+import { ICarAdditionalC4RiserBoardsView, ICarAdditionalFeatureView, ICarDoorFeatureView, ICarHydraulicFieldView, ICarManagementSystemView, ICarProvisionView, ICarSmartriseFeatureView, ICarSpecialFieldView, ICarTractionFieldView, ICarView, IQuoteView } from './quote-view-i.model';
 
 export class SaveQuotePayload implements ISaveQuotePayload {
     @AutoMap()
@@ -44,9 +47,47 @@ export class SaveQuotePayload implements ISaveQuotePayload {
     @AutoMap(() => SaveCarPayload)
     cars: ISaveCarPayload[];
     customerId: number;
+
+    static mapFromView(source: IQuoteView) {
+        const m = FunctionConstants.map(source, SaveQuotePayload,
+            ['cars']) as SaveQuotePayload;
+
+        delete m['customer'];
+        delete m['jobLocation'];
+
+        m.countryValue = source?.jobLocation?.country?.value;
+        m.stateValue = source?.jobLocation?.state?.value;
+        m.city = source?.jobLocation?.city;
+
+        m.cars = [];
+        source.cars.forEach(car => {
+            m.cars.push(SaveCarPayload.mapFromView(car));
+        });
+
+        return m;
+    }
 }
 
 export class SaveCarPayload implements ISaveCarPayload {
+
+    static mapFromView(source: CarView): SaveCarPayload {
+        const car = FunctionConstants.map(source, SaveCarPayload, []) as SaveCarPayload;
+
+        delete car['quote'];
+
+        car.additionalFeature = SaveCarAdditionalFeaturePayload.mapFromView(source.additionalFeature);
+        car.carAdditionalC4RiserBoards = SaveCarAdditionalC4RiserBoardsPayload.mapFromView(source.carAdditionalC4RiserBoards);
+        car.carDoorFeature = SaveCarDoorFeaturePayload.mapFromView(source.carDoorFeature);
+        car.carHydraulicField = SaveCarHydraulicFieldPayload.mapFromView(source.carHydraulicField);
+        car.carManagementSystem = SaveCarManagementSystemPayload.mapFromView(source.carManagementSystem);
+        car.carProvision = SaveCarProvisionPayload.mapFromView(source.carProvision);
+        car.carSmartriseFeature = SaveCarSmartriseFeaturePayload.mapFromView(source.carSmartriseFeature);
+        car.carSpecialField = SaveCarSpecialFieldPayload.mapFromView(source.carSpecialField);
+        car.carTractionField = SaveCarTractionFieldPayload.mapFromView(source.carTractionField);
+
+        return car;
+    }
+
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -147,6 +188,11 @@ export class SaveCarPayload implements ISaveCarPayload {
 }
 
 export class SaveCarManagementSystemPayload implements ISaveCarManagementSystemPayload {
+    static mapFromView(source: CarManagementSystemView): SaveCarManagementSystemPayload {
+        const dest = FunctionConstants.map(source, SaveCarManagementSystemPayload, []) as SaveCarManagementSystemPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -164,6 +210,11 @@ export class SaveCarManagementSystemPayload implements ISaveCarManagementSystemP
 }
 
 export class SaveCarDoorFeaturePayload implements ISaveCarDoorFeaturePayload {
+    static mapFromView(source: CarDoorFeatureView): SaveCarDoorFeaturePayload {
+        const dest = FunctionConstants.map(source, SaveCarDoorFeaturePayload, []) as SaveCarDoorFeaturePayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -175,6 +226,11 @@ export class SaveCarDoorFeaturePayload implements ISaveCarDoorFeaturePayload {
 }
 
 export class SaveCarAdditionalFeaturePayload implements ISaveCarAdditionalFeaturePayload {
+    static mapFromView(source: CarAdditionalFeatureView): SaveCarAdditionalFeaturePayload {
+        const additionalFeature = FunctionConstants.map(source, SaveCarAdditionalFeaturePayload, []) as SaveCarAdditionalFeaturePayload;
+        delete additionalFeature['car'];
+        return additionalFeature;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -194,6 +250,11 @@ export class SaveCarAdditionalFeaturePayload implements ISaveCarAdditionalFeatur
 }
 
 export class SaveCarSmartriseFeaturePayload implements ISaveCarSmartriseFeaturePayload {
+    static mapFromView(source: CarSmartriseFeatureView): SaveCarSmartriseFeaturePayload {
+        const dest = FunctionConstants.map(source, SaveCarSmartriseFeaturePayload, []) as SaveCarSmartriseFeaturePayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -223,9 +284,9 @@ export class SaveCarSmartriseFeaturePayload implements ISaveCarSmartriseFeatureP
     @AutoMap()
     hoistwayLengthAssumedValue?: number;
     @AutoMap()
-    nemaRating?: string;
+    machineRoomNemaRating?: string;
     @AutoMap()
-    nemaLocation?: string;
+    hoistwayNemaRating?: string;
     @AutoMap()
     landingSystemLengthOfTravel?: number;
     @AutoMap()
@@ -245,6 +306,11 @@ export class SaveCarSmartriseFeaturePayload implements ISaveCarSmartriseFeatureP
 }
 
 export class SaveCarHydraulicFieldPayload implements ISaveCarHydraulicFieldPayload {
+    static mapFromView(source: CarHydraulicFieldView): SaveCarHydraulicFieldPayload {
+        const dest = FunctionConstants.map(source, SaveCarHydraulicFieldPayload, []) as SaveCarHydraulicFieldPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -268,6 +334,27 @@ export class SaveCarHydraulicFieldPayload implements ISaveCarHydraulicFieldPaylo
 }
 
 export class SaveCarTractionFieldPayload implements ISaveCarTractionFieldPayload {
+    static mapFromView(source: CarTractionFieldView): SaveCarTractionFieldPayload {
+        const dest = FunctionConstants.map(source, SaveCarTractionFieldPayload, []) as SaveCarTractionFieldPayload;
+
+        dest.c4 = Boolean(source.c4);
+        dest.v2Traction = Boolean(source.v2Traction);
+        dest.mx = Boolean(source.mx);
+        dest.isoTransformer = Boolean(source.isoTransformer);
+        dest.regenKit = Boolean(source.regenKit);
+        dest.governorResetBox = Boolean(source.governorResetBox);
+        dest.lineReactor = Boolean(source.lineReactor);
+        dest.emirfiFilter = Boolean(source.emirfiFilter);
+        dest.harmonicFilter = Boolean(source.harmonicFilter);
+        dest.madFixtures = Boolean(source.madFixtures);
+        dest.newMotorProvidedBySmartrise = Boolean(source.newMotorProvidedBySmartrise);
+        dest.coupler = Boolean(source.coupler);
+        dest.encoder = Boolean(source.encoder);
+
+        delete dest['car'];
+
+        return dest;
+    }
 
     @AutoMap()
     id?: number;
@@ -314,6 +401,11 @@ export class SaveCarTractionFieldPayload implements ISaveCarTractionFieldPayload
 }
 
 export class SaveCarProvisionPayload implements ISaveCarProvisionPayload {
+    static mapFromView(source: CarProvisionView): SaveCarProvisionPayload {
+        const dest = FunctionConstants.map(source, SaveCarProvisionPayload, []) as SaveCarProvisionPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -339,6 +431,11 @@ export class SaveCarProvisionPayload implements ISaveCarProvisionPayload {
 }
 
 export class SaveCarSpecialFieldPayload implements ISaveCarSpecialFieldPayload {
+    static mapFromView(source: CarSpecialFieldView): SaveCarSpecialFieldPayload {
+        const dest = FunctionConstants.map(source, SaveCarSpecialFieldPayload, []) as SaveCarSpecialFieldPayload;
+        delete dest['car'];
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()
@@ -351,6 +448,20 @@ export class SaveCarSpecialFieldPayload implements ISaveCarSpecialFieldPayload {
 
 
 export class SaveCarAdditionalC4RiserBoardsPayload implements ISaveCarAdditionalC4RiserBoardsPayload {
+    static mapFromView(source: CarAdditionalC4RiserBoardsView): SaveCarAdditionalC4RiserBoardsPayload {
+
+        const dest = FunctionConstants.map(source, SaveCarAdditionalC4RiserBoardsPayload, []) as SaveCarAdditionalC4RiserBoardsPayload;
+
+        dest.emergencyGeneratorPowersOtherGroupsSimplex = Boolean(source.emergencyGeneratorPowersOtherGroupsSimplex);
+        dest.groupInterconnect = Boolean(source.groupInterconnect);
+        dest.hallCallSecurity = Boolean(source.hallCallSecurity);
+        dest.id = Number(source.id);
+        dest.moreThanTwoHallNetworks = Boolean(source.moreThanTwoHallNetworks);
+
+        delete dest['car'];
+
+        return dest;
+    }
     @AutoMap()
     id?: number;
     @AutoMap()

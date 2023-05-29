@@ -1,9 +1,14 @@
+<div class="page-header-container">
+    <div class="page-header-title">
+        Open Quotes
+    </div>
+</div>
 
-    <nb-tabset (changeTab)="onChangeTab($event)">
-        <nb-tab [active]="customerActiveTab" class="m-0 p-0" tabTitle="Created By Account">
-            <ngx-quoting-tool-list #customerQuotes></ngx-quoting-tool-list>
-        </nb-tab>
-        <nb-tab [active]="smartriseActiveTab" class="m-0 p-0" tabTitle="Created By Smartrise Sales">
-            <ngx-open-quotes #smartriseQuotes></ngx-open-quotes>
-        </nb-tab>
-    </nb-tabset>
+<nb-tabset (changeTab)="onChangeTab($event)">
+    <nb-tab [active]="customerActiveTab" class="m-0 p-0" tabTitle="Created By Account">
+        <ngx-quoting-tool-list #customerQuotes></ngx-quoting-tool-list>
+    </nb-tab>
+    <nb-tab [active]="smartriseActiveTab" class="m-0 p-0" tabTitle="Created By Smartrise Sales">
+        <ngx-open-quotes #smartriseQuotes></ngx-open-quotes>
+    </nb-tab>
+</nb-tabset>
