@@ -1,5 +1,5 @@
 <nb-card *ngIf="!isLoading" [nbSpinner]="isBusy" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-
+    <div class="table-sub-details">
     <nb-card-header class="default-card-header">
         <h2 class="card-title">Quote Details - {{ quote?.customer?.name }}</h2>
     </nb-card-header>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="row quote-level-info">
-            <div class="col-lg-6">
+            <div class="right-section">
 
                 <div *ngIf="showAccountName" class="form-group row">
                     <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="left-section">
 
                 <div class="form-group row">
                     <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
@@ -169,7 +169,7 @@
 
         <div class="section-container">
             <div class="section-header">
-                <div *ngIf="!isSmall" class="extra"></div>
+                <!-- <div *ngIf="!isSmall" class="extra"></div> -->
                 <div class="header-title">General Data</div>
                 <div class="add-car-action">
                     <button joyrideStep="quoteFirstStep" stepPosition="bottom" [doneTemplate]="doneButton"
@@ -209,7 +209,7 @@
                     <tbody>
                         <tr *ngFor="let car of quote.cars; let i = index">
                             <td>
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-center">
                                     <span>
                                         {{ displayGroup(car.group) }} - {{ car.carLabel }}
                                     </span>
@@ -1268,7 +1268,7 @@
         </div>
 
         <div *ngIf="quote.status === 'Saved' && !hideBottomMessage" class="alert alert-primary">
-            <i class="fas fa-times float-right close-alert bottom-message" tooltip="Close Alert"
+            <i class="fas fa-times float-right close-alert bottom-actionmessage" tooltip="Close Alert"
                 (click)="onCloseBottomMessage()"></i>
             <p class="mb-0">Generate Quote for pricing.</p>
         </div>
@@ -1280,6 +1280,7 @@
         </div>
 
     </nb-card-body>
+    </div>
 </nb-card>
 
 <ng-template [ngIf]="isLoading">

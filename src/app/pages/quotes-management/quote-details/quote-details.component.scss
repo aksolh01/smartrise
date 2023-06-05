@@ -14,12 +14,16 @@ $column-xxlarge-size: 18rem;
     max-width: 48.666667%;
   }
 }
+.table-container{
+  margin-top: 0;
+}
 
 .table-sub-details {
   background-color: #ecedf0;
     .bottom-actions{
         display: flex;
         justify-content: flex-start !important;
+        flex-wrap: wrap;
     }
   .row {
     margin: 0 !important;
@@ -198,7 +202,6 @@ th {
 }
 
 thead tr th {
-  color: black;
   font-size: 14px !important;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
