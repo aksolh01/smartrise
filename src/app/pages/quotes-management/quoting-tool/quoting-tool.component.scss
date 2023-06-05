@@ -24,6 +24,39 @@ $column-xxlarge-size: 18rem;
         }
     }
 
+    .table-sub-details {
+        background-color: #ecedf0;
+          .bottom-actions{
+              display: flex;
+              justify-content: flex-start !important;
+          }
+        .row {
+          margin: 0 !important;
+          &.quote-level-info {
+            gap: 16px;
+            justify-content: space-between;
+            .left-section,
+            .right-section {
+              width: 49%;
+              flex: 0 0 49% !important;
+              background: white;
+              border-radius: 16px;
+              padding: 20px;
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+              .form-group {
+                margin: 0 !important;
+                text-align: left !important;
+                label {
+                  text-align: left !important;
+                  font-weight: bold;
+                }
+              }
+            }
+          }
+        }
+      }
     ngx-quoting-input input::placeholder {
         color: $placeholder-color;
     }
@@ -350,19 +383,32 @@ textarea.quote-input,
 .table-container {
     overflow-x: auto;
 }
-
+.bottom-actions{
+    flex-wrap: wrap !important;
+}
 .table-container td,
 .table-container th {
     height: 2.2rem !important;
+    background: white !important;
 }
-
+.table-container {
+    margin-top: 0;
+}
+.text-left{
+    background-color: unset !important;
+}
 thead tr th {
-    background-color: #f4f4f4;
-    color: #0088cc;
+    font-size: 14px !important;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    min-width: $column-width;
-}
+    min-width: 8rem;
+    color: var(--primary-color-gray) !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px !important;
+    // min-width: 15rem;
+    padding: 20px;
+  }
 
 thead tr th:first-child {
     background-color: transparent;
@@ -487,7 +533,7 @@ table {
 @media (min-width: 992px) {
     .col-lg-cust {
         flex: 0 0 48.6666667%;
-        max-width: 48.666667%;
+        max-width: fit-content;
     }
     ngx-quoting-checkbox {
         display: flex !important;
@@ -755,28 +801,31 @@ th {
 
 .section-container {
     margin-top: 1.5rem;
+    background: #ffffff;
+    border-radius: 16px;
+    padding-bottom: 20px;
 }
 
 .section-header {
     display: flex;
-    margin-bottom: 1rem;
-
+    padding: 20px;
+    border-bottom: 1px solid #d7d7d7;
     .extra {
-        flex: 1; /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
+      flex: 1; /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
     }
 
     .header-title {
         flex: 1;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-end;
-        font-size: 1.3rem;
-        color: #0088cc !important;
+        color: #bdbdbd !important;
         font-weight: 550;
-    }
+        font-size: 18px;
+      }
 
     @media (max-width: 992px) {
         .header-title {
@@ -801,7 +850,31 @@ th {
 .table-container table {
     border-collapse: initial;
     border-spacing: 0px;
-}
+  
+    th,
+    td {
+      border: none;
+      text-align: center;
+      white-space: nowrap;
+      border-bottom: 1px solid #d7d7d7;
+      // max-width: 1rem;
+      padding: 20px;
+      color: black;
+      font-weight: 700;
+      max-width: unset;
+      white-space: normal; 
+      max-width: 150px;
+    }
+  
+    th {
+      // border-top: 1px solid gray;
+    }
+  
+    // th:last-child,
+    // td:last-child {
+    //   border-right: 1px solid #d7d7d7;
+    // }
+  }
 
 .hide-row {
     visibility: collapse;
@@ -816,3 +889,39 @@ th {
     border-radius: 0.25rem;
     background-color: #e9ecef !important;
 }
+
+@media (max-width: 992px) {
+    .table-sub-details {
+      background-color: #ecedf0;
+  
+      .row {
+        margin: 0 !important;
+        &.quote-level-info {
+          flex-direction: column;
+          
+          .left-section,
+          .right-section {
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+            flex: 0 0 100% !important;
+          }
+        }
+      }
+    }
+    thead{
+      display: none !important;
+    }
+    .table-container table {
+    
+      th,
+      td {
+          max-width: unset;
+      }
+    
+      th {
+        // border-top: 1px solid gray;
+      }
+  
+    }
+  }
