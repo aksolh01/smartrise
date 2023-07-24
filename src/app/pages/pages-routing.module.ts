@@ -18,6 +18,11 @@ const routes: Routes = [
           import('./home/home.module').then((m) => m.HomeModule),
       },
       {
+        path: 'search',
+        loadChildren: () =>
+          import('./search/search.module').then((m) => m.SearchModule),
+      },
+      {
         path: 'jobs-management',
         loadChildren: () => import('./jobs-management/jobs-management.module').then((m) => m.JobsManagementModule),
         data: { breadcrumb: { label: 'Jobs Management', skip: true } },
@@ -44,6 +49,12 @@ const routes: Routes = [
         loadChildren: () =>
           import('./audit-management/audit-management.module').then((m) => m.AuditManagementModule),
         data: { breadcrumb: { label: 'Audit Management', skip: 'true' } },
+      },
+      {
+        path: 'parts-management',
+        loadChildren: () =>
+          import('./parts-management/parts-management.module').then((m) => m.PartsManagementModule),
+        data: { breadcrumb: { label: 'Parts Management', skip: 'true' } },
       },
       // {
       //   path: 'support-management',

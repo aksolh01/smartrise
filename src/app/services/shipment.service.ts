@@ -10,6 +10,18 @@ import { ShipmentByCustomerParams, ShipmentParams } from '../_shared/models/ship
 
 @Injectable()
 export class ShipmentService {
+    searchAllShipmentsByCustomerUser(searchParameters: ShipmentByCustomerParams) {
+        return this.httpClient.post<Pagination<IShipmentRecord>>(this.baseUrl + 'shipment/customer/searchAll', searchParameters, { observe: 'response' })
+            .pipe(map(response => {
+                return response.body;
+            }));
+    }
+    searchAllShipmentsBySmartriseUser(shipmentParams: ShipmentParams) {
+        return this.httpClient.post<Pagination<IShipmentRecord>>(this.baseUrl + 'shipment/smartrise/searchAll', shipmentParams, { observe: 'response' })
+            .pipe(map(response => {
+                return response.body;
+            }));
+    }
 
     baseUrl: string = environment.apiUrl;
 

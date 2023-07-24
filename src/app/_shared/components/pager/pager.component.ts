@@ -46,22 +46,25 @@ export class PagerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
   onPagePrev(): void {
     const currentPage = this.table.source.getPaging().page;
-    const perPage = this.table.source.getPaging().perPage;
     if (currentPage > 1) {
-      this.table.source.setPaging(currentPage - 1, perPage);
+      this.table.source.setPaging(currentPage - 1, this.pageSize);
     }
   }
 
   onPageNext(): void {
     const currentPage = this.table.source.getPaging().page;
-    const perPage = this.table.source.getPaging().perPage;
-    const totalPages = Math.ceil(this.table.source.count() / perPage);
+    const totalPages = Math.ceil(this.table.source.count() / this.pageSize);
     if (currentPage < totalPages) {
-      this.table.source.setPaging(currentPage + 1, perPage);
+      this.table.source.setPaging(currentPage + 1, this.pageSize);
     }
+  }
+
+  get pageSize() : number {
+    return this.table?.source?.getPaging()?.perPage ?? 0;
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription, forkJoin, switchMap } from 'rxjs';
-import { SmartriseValidators, StorageConstants } from '../../../_shared/constants';
+import { FunctionConstants, SmartriseValidators, StorageConstants } from '../../../_shared/constants';
 import { IUser } from '../../../_shared/models/IUser';
 import { AccountService } from '../../../services/account.service';
 import { ImageService } from '../../../services/image.service';
@@ -127,26 +127,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
   createProfileForm() {
     this.profileForm = new UntypedFormGroup({
       firstName: new UntypedFormControl('', [
-        Validators.required,
         trimValidator,
         SmartriseValidators.requiredWithTrim,
       ]),
       lastName: new UntypedFormControl('', [
-        Validators.required,
         trimValidator,
         SmartriseValidators.requiredWithTrim,
       ]),
       primaryPhoneNumber: new UntypedFormControl('', [
         trimValidator,
+        SmartriseValidators.phone,
+        SmartriseValidators.requiredWithTrim,
       ]),
       secondaryPhoneNumber: new UntypedFormControl('', [
         trimValidator,
+        SmartriseValidators.phone
       ]),
       primaryEmailAddress: new UntypedFormControl('', [
         trimValidator,
+        SmartriseValidators.smartriseEmail,
+        SmartriseValidators.requiredWithTrim,
       ]),
       secondaryEmailAddress: new UntypedFormControl('', [
-        trimValidator,
+        trimValidator, SmartriseValidators.smartriseEmail
       ]),
       companyName: new UntypedFormControl('', [
         trimValidator,
@@ -178,6 +181,43 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.states = states;
       this.profileForm.patchValue({ state: null });
     });
+  }
+
+  async validateZipCode(control: UntypedFormControl) {
+
+    if (!control.value) {
+      return null;
+    }
+
+    if (control.value.trim() === '') {
+      return null;
+    }
+    if (control.value.startsWith(' ')) {
+      return {
+        trimError: { value: 'control has leading whitespace' },
+      };
+    }
+    if (control.value.endsWith(' ')) {
+      return {
+        trimError: { value: 'control has trailing whitespace' },
+      };
+    }
+    return null;
+  }
+
+  onPhone(e) {
+    const charCode = (typeof e.which === 'undefined') ? e.keyCode : e.which;
+    const charStr = String.fromCharCode(charCode);
+  
+    // Exclude Ctrl, Shift, Backspace, and similar keys
+    if (e.ctrlKey || e.altKey || e.metaKey || charCode === 8) {
+      return;
+    }
+  
+    if (!/^[0-9]$/.test(charStr)) {
+      e.preventDefault();
+      return;
+    }
   }
 
   onSubmit() {

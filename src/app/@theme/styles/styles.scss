@@ -88,7 +88,7 @@ body {
 }
 
 .impersonatedHeader {
-    background-color: #ff000054;
+    background-color: rgb(255 ,0, 0, 71%);
 }
 
 // nb-card:first-child:last-child {
@@ -106,6 +106,7 @@ body {
         color: #6c757d;
     }
     nb-card {
+        
         &.in-dialog {
             nb-card-header,
             nb-card-header.default-card-header {
@@ -121,6 +122,26 @@ body {
             padding: 12px 16px;
             position: relative;
             border-bottom: 1px solid #b2b2b2;
+            &.has-action{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+            }
+            .download-rfq{
+                a{
+                    text-decoration: none;
+                    font-size: 12px;
+                    padding-top: 2px;
+                }
+            }
+            .view-all-jobs{
+                a{
+                    text-decoration: none;
+                    font-size: 12px;
+                    padding-top: 2px;
+                }
+            }
             .card-title {
                 font-size: 18px;
                 text-transform: none;
@@ -129,6 +150,15 @@ body {
                 color: #b2b2b2;
                 font-family: "Open Sans", Arial, sans-serif;
                 letter-spacing: -1px;
+            }
+            .card-action-header{
+                button {
+                    border-radius: 8px;
+                    width: 38px;
+                    height: 32px;
+                    padding: 0px;
+                }
+
             }
         }
         nb-tabset {
@@ -765,7 +795,6 @@ ngx-smr-mobile-filters {
 button:disabled {
     cursor: no-drop;
     background-color: #cccccc;
-    color: #666666;
 }
 
 .btn:focus,
@@ -1188,11 +1217,11 @@ ng2-smart-table tbody tr td:only-child {
     border-color: gray;
 }
 .sr-radio > input[type="radio"]:checked + * {
-    color: #0088cc;
+    color: var(--primary-color-blue);
 }
 .sr-radio > input[type="radio"]:checked + *::before {
-    background: radial-gradient(#0088cc 0%, #0088cc 40%, transparent 50%, transparent);
-    border-color: #0088cc;
+    background: radial-gradient(var(--primary-color-blue) 0%, var(--primary-color-blue) 40%, transparent 50%, transparent);
+    border-color: var(--primary-color-blue);
 }
 
 /* basic layout */
@@ -1533,14 +1562,11 @@ ng2-smart-table-pager {
     justify-content: flex-end;
 }
 .tabset {
-    margin-bottom: 16px !important;
+    margin-bottom: 24px !important;
     margin-top: 8px !important;
 }
 .tabset .tab:first-child {
     margin-right: 8px;
-}
-.tabset .tab a {
-    border-radius: 50px;
 }
 nb-tabset .tab-link {
     width: 100%;
@@ -1619,4 +1645,17 @@ nb-tabset > ul.tabset > li.tab:not(.active) a {
     color: var(--primary-color-gray) !important;
     text-decoration: none;
     font-weight: 600;
+}
+
+nb-tabset nb-tab {
+    padding: 0 !important;
+}
+.card-titile-with-icon{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+.y-scrollable {
+    overflow-y: auto !important;
 }

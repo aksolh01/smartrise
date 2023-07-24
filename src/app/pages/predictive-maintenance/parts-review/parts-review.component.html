@@ -1,103 +1,90 @@
-<nb-card class="in-dialog">
+<div class="table-container">
+    <div class="page-header-container">
+        <div class="page-header-title">{{ jobName ? 'Parts Review' : 'My Jobs Parts Review' }}</div>
+    </div>
+    <nb-card class="in-dialog">
+        <nb-card-body>
 
-    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-        <h2 class="card-title">{{ jobName ? 'Parts Review' : 'My Jobs Parts Review' }}</h2>
-    </nb-card-header>
-    <nb-card-body>
+            <div class="row card-body" *ngIf="jobName">
 
-        <div class="row card-body" *ngIf="jobName">
-
-            <div class="col-lg-2 label-max-width" *ngIf="jobName">
-                <label class="control-label mt-2">Job Name</label>
-            </div>
-            <div class="col-lg-3 form-control-plaintext" *ngIf="jobName">
-                {{ jobName }}
-            </div>
-            <div class="col-lg-2" *ngIf="jobName"></div>
-            <div class="col-lg-2 label-max-width" *ngIf="jobName">
-                <label class="control-label mt-2">Job Number</label>
-            </div>
-            <div class="col-lg-3 form-control-plaintext" *ngIf="jobName">
-                {{ jobNumber }}
-            </div>
-
-        </div>
-
-        <ng-template [ngIf]="isSmall === false">
-            <div class="row mb-3">
-                <div class="col d-flex align-items-center justify-content-start">
-                    <!-- <button (click)="onReset()" class="btn btn-primary">
-                        <i class="fas fa-redo-alt"></i>
-                        Reset Filters
-                    </button> -->
+                <div class="col-lg-2 label-max-width" *ngIf="jobName">
+                    <label class="control-label mt-2">Job Name</label>
                 </div>
-                <div class="col-auto d-flex align-items-center justify-content-start">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+                <div class="col-lg-3 form-control-plaintext" *ngIf="jobName">
+                    {{ jobName }}
+                </div>
+                <div class="col-lg-2" *ngIf="jobName"></div>
+                <div class="col-lg-2 label-max-width" *ngIf="jobName">
+                    <label class="control-label mt-2">Job Number</label>
+                </div>
+                <div class="col-lg-3 form-control-plaintext" *ngIf="jobName">
+                    {{ jobNumber }}
+                </div>
+
+            </div>
+            <div class="table-content">
+                <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Job Number" [(ngModel)]="pJobNumber" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Job Name" [(ngModel)]="pJobName" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Group" [(ngModel)]="group" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Car" [(ngModel)]="car" />
+                            </div>
+                            <div class="input-item">
+                                <nb-select [(ngModel)]="part">
+                                    <nb-option value="">Part</nb-option>
+                                    <nb-option *ngFor="let c of pParts" [value]="c.value">
+                                        {{ c.title }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Part Type" [(ngModel)]="partType" />
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Alerts Count"
+                                    [(ngModel)]="alertsCount" />
+                            </div>
+                            <div class="input-item">
+                                <nb-select [(ngModel)]="status">
+                                    <nb-option value="">Status</nb-option>
+                                    <nb-option *ngFor="let c of statuses" [value]="c.value">
+                                        {{ c.title }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+
+                            <div class="filter-control">
+                                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
                     </ngx-smr-records-per-page> -->
-                </div>
-            </div>
-        </ng-template>
-
-        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-            <div filters>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Job Number" class="form-control"
-                        [(ngModel)]="pJobNumber" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Job Name" class="form-control"
-                        [(ngModel)]="pJobName" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Group" class="form-control" [(ngModel)]="group" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Car" class="form-control" [(ngModel)]="car" />
-                </div>
-                <div class="filter-control">
-                    <nb-select [(ngModel)]="part" class="form-control">
-                        <nb-option value="">Part</nb-option>
-                        <nb-option *ngFor="let c of pParts" [value]="c.value">
-                            {{ c.title }}
-                        </nb-option>
-                    </nb-select>
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Part Type" class="form-control"
-                        [(ngModel)]="partType" />
-                </div>
-                <div class="filter-control">
-                    <input type="text" maxlength="255" placeholder="Alerts Count" class="form-control"
-                        [(ngModel)]="alertsCount" />
-                </div>
-                <div class="filter-control">
-                    <nb-select [(ngModel)]="status" class="form-control">
-                        <nb-option value="">Status</nb-option>
-                        <nb-option *ngFor="let c of statuses" [value]="c.value">
-                            {{ c.title }}
-                        </nb-option>
-                    </nb-select>
-                </div>
-
-                <div class="filter-control">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page> -->
-                </div>
-            </div>
-            <div actions>
-                <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
-                    <i class="fas fa-search"></i>
-                    Search
-                </button>
-                <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div actions class="form-action">
+                        <button class="main-button" (click)="onSearch(); toggleFilters()">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                        <!-- <button (click)="onReset(); toggleFilters()" class="btn btn-block btn-primary my-2">
                     <i class="fas fa-redo-alt"></i>
                     Reset Filters
                 </button> -->
+                    </div>
+                </ngx-smr-mobile-filters>
             </div>
-        </ngx-smr-mobile-filters>
+            <div class="table-content">
+                <ng2-smart-table class="responsive-design1" [settings]="settings" [source]="source">
+                </ng2-smart-table>
+            </div>
 
-        <ng2-smart-table class="default-smart-table responsive-design1" [settings]="settings" [source]="source">
-        </ng2-smart-table>
-
-    </nb-card-body>
-</nb-card>
+        </nb-card-body>
+    </nb-card>
+</div>

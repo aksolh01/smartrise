@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { JoyrideService } from 'ngx-joyride';
 import * as guidingTourGlobal from '../../../guiding.tour.global';
@@ -18,34 +18,29 @@ import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 import { BaseComponentService } from '../../../../services/base-component.service';
 import { MiscellaneousService } from '../../../../services/miscellaneous.service';
 import { CommonValues, URLs } from '../../../../_shared/constants';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { FillPasscodeComponent } from '../fill-passcode/fill-passcode.component';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { AccountService } from '../../../../services/account.service';
 import { MultiAccountsService } from '../../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
-import { MatLine } from '@angular/material/core';
-import { tap } from 'rxjs/operators';
 import { ListTitleService } from '../../../../services/list-title.service';
-import { IBusinessSettings } from '../../../../_shared/models/settings';
-import { FileUploaderComponent } from '../../job-files/file-uploader/file-uploader.component';
 import { PasscodeService } from '../../../../services/passcode.service';
-import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { MessageService } from '../../../../services/message.service';
-import { UploadConfigFileComponent } from '../upload-config-file/upload-config-file.component';
 import { BaseComponent } from '../../../base.component';
 import { JobActionsComponent } from './job-actions/job-actions.component';
 import { PendingInfoCellComponent } from './pending-info-cell.component';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../../environments/environment';
+import { PagerComponent } from '../../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-jobs-list',
   templateUrl: './jobs-list.component.html',
   styleUrls: ['./jobs-list.component.scss'],
 })
-export class JobsListComponent extends BaseComponent implements OnInit, OnDestroy, AfterContentInit {
+export class JobsListComponent extends BaseComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   @ViewChild('search') search: ElementRef;
   recordsNumber: number;
   public Math = Math;
@@ -69,7 +64,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
   epicorWaitingInfo: string;
   jobsListTitle: string;
   yesNoList: { value?: boolean; title: string }[];
-
+  selectedAccountName = this.getSelectedAccountsLabel();
   settings: any = {
     mode: 'external',
     actions: {
@@ -294,6 +289,12 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     super(baseService);
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
+  }
+
   onActionsInit(actions: JobActionsComponent) {
     actions.showDetails.subscribe(id => this._showJobDetails(id));
   }
@@ -350,7 +351,7 @@ export class JobsListComponent extends BaseComponent implements OnInit, OnDestro
     this.settings.pager = {
       display: true,
       page: 1,
-      perPage: this.recordsNumber ||25
+      perPage: this.recordsNumber || 25
     };
   }
 

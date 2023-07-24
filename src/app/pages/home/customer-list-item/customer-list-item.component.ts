@@ -37,7 +37,10 @@ export class CustomerListItemComponent implements OnInit {
   }
 
   goToCustomerDetail() {
-    this.router
-    .navigateByUrl(`pages/customers-management/customers/${this.customer.id}`);
+    this.router.navigateByUrl(`pages/customers-management/customers/${this.customer.id}`);
+  }
+
+  navigateToAccountDetails(customerId: number, event: MouseEvent) {
+    this.router.navigateByUrl(`pages/customers-management/customers/${customerId}`);
   }
 }

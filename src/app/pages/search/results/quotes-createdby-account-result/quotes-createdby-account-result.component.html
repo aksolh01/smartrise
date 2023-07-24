@@ -1,0 +1,29 @@
+<div class="page-header-container">
+    <div class="page-header-title">Quotes Created By Account</div>
+    <ngx-pager #pager [table]="table"></ngx-pager>
+</div>
+<div class="table-container">
+    <nb-card>
+        <nb-card-body>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                    <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table #table [settings]="settings" [source]="source">
+                    </ng2-smart-table>
+                </div>
+            </div>
+
+        </nb-card-body>
+    </nb-card>
+</div>
+
+<ng-template #doneButton>
+    <button class="main-button">
+        <i class="clear-icon fas fa-check"></i>
+        OK
+    </button>
+</ng-template>

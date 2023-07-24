@@ -1,68 +1,66 @@
-<nb-card>
-    <nb-card-header class="default-card-header">
-        <h2 class="card-title">User Information</h2>
-    </nb-card-header>
-    <nb-card-body>
-        <form [formGroup]="customerUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady">
+<div class="page-header-container">
+    <div class="page-header-title" *ngIf="user">
+        <span (click)="onClose()" class="cursor">Account Users</span> / {{ user.firstName }} {{ user.lastName }}
+    </div>
+</div>
 
-            <div class="row">
+<form [formGroup]="customerUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady" class="form-container">
+    <nb-card>
+        <nb-card-header class="default-card-header">
+            <h2 class="card-title">User Information</h2>
+        </nb-card-header>
+        <nb-card-body>
 
-                <div class="col-12 col-lg-6">
+            <div class="row-container">
 
-                    <div class="form-group row">
-                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
-                        <div class="col-12 col-lg-8">
+                <div class="input-container">
+
+                    <div class="input-sub-container">
+                        <label class="label-align">First Name</label>
+                        <div class="input-item">
                             <input readonly type="text" placeholder="First Name"
-                                value="{{ customerUserForm.value.firstName }}" class="form-control-plaintext"
-                                id="firstName">
+                                value="{{ customerUserForm.value.firstName }}" id="firstName">
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Last Name</label>
-                        <div class="col-12 col-lg-8">
+                    <div class="input-sub-container">
+                        <label class="label-align">Last Name</label>
+                        <div class="input-item">
                             <input readonly type="text" placeholder="Last Name"
-                                value="{{ customerUserForm.value.lastName }}" class="form-control-plaintext"
-                                id="lastName">
+                                value="{{ customerUserForm.value.lastName }}" id="lastName">
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
-                        <div class="col-12 col-lg-8">
+                    <div class="input-sub-container">
+                        <label class="label-align">Email</label>
+                        <div class="input-item">
                             <input readonly type="text" placeholder="Email" value="{{ customerUserForm.value.email }}"
-                                class="form-control-plaintext" id="email">
+                                id="email">
+                        </div>
+                    </div>
+
+                    <div class="input-sub-container">
+                        <label class="label-align">Choose Account</label>
+                        <div class="input-item">
+                            <ngx-search-accounts-lookup
+                                (accountSelected)="onSelectionChange($event)"></ngx-search-accounts-lookup>
                         </div>
                     </div>
 
                 </div>
-
-                <div class="col-12 mb-2 mt-4">
-
-                    <div class="row">
-
-                        <div class="col-12">
-                            <ngx-search-accounts-lookup (accountSelected)="onSelectionChange($event)"></ngx-search-accounts-lookup>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 mb-2">
-                    <ngx-account-roles-selection #accounts [roles]="roles"
-                        formControlName="accounts"></ngx-account-roles-selection>
-                </div>
             </div>
-
-            <div [ngClass]="{'form-buttons': true, 'mt-2': customerUserForm.get('accounts')?.value?.length}">
-                <button routerLink=".." type="button" class="mr-1 btn btn-lg btn-secondary">
-                    <i class="fas fa-times"></i>
-                    Cancel
-                </button>
-                <ngx-button [isLoading]="isSaving" type="submit" class="mr-1 btn btn-lg btn-primary">
-                   
-                    Update
-                </ngx-button>
+            <div class="col-12 mb-2 px-0">
+                <ngx-account-roles-selection #accounts [roles]="roles"
+                    formControlName="accounts"></ngx-account-roles-selection>
             </div>
-        </form>
-    </nb-card-body>
-</nb-card>
+        </nb-card-body>
+    </nb-card>
+    <div [ngClass]="{'form-buttons': true, 'mt-0': customerUserForm.get('accounts')?.value?.length}">
+        <ngx-button routerLink=".." type="button" class="secondary-button">
+            Cancel
+        </ngx-button>
+        <ngx-button [isLoading]="isSaving" type="submit" class="main-button">
+            Update
+        </ngx-button>
+    </div>
+</form>

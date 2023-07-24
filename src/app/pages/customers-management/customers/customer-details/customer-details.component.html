@@ -1,12 +1,18 @@
+<div *ngIf="customer" class="page-header-container">
+  <div class="page-header-title">
+    <span (click)="onClose()" class="cursor"> <i class="fa fa-arrow-left"></i> Accounts</span> / {{ customer?.name | value }}
+  </div>
+</div>
+
 <div size="xlarge" class="pb-1 mb-3" *ngIf="!isLoading">
   <nb-tabset *ngIf="customer && !isLoading" (changeTab)="onChangeTab($event)"
     joyrideStep="customerAdminAccountsFirstStep" stepPosition="center"
     [title]="runGuidingTour === true ? 'Admin Users' : null" [stepContent]="customerAdminUsersCustomContent"
     [doneTemplate]="doneButton" (done)="onFinishingTour()">
-    <nb-tab [active]="infoActiveTab" tabTitle="Account Info" tabIcon="star">
+    <nb-tab [active]="infoActiveTab" tabTitle="Account Info">
       <ngx-customer-basic-info [customer]="customer"></ngx-customer-basic-info>
     </nb-tab>
-    <nb-tab [active]="usersActiveTab" tabTitle="Users" tabIcon="people">
+    <nb-tab [active]="usersActiveTab" tabTitle="Users">
       <ngx-customer-admin-users #users *ngIf="renderUsers" [customer]="customer" [runGuidingTour]="runGuidingTour">
       </ngx-customer-admin-users>
     </nb-tab>

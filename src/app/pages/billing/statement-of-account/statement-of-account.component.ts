@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpDateFilterComponent } from '../../../_shared/components/table-filters/cp-date-filter.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
@@ -33,22 +33,23 @@ import { MessageService } from '../../../services/message.service';
 import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
 import { IUserAccountLookup } from '../../../_shared/models/IUser';
-import { ListTitleService } from '../../../services/list-title.service';
 import { BaseParams } from '../../../_shared/models/baseParams';
 import { Observable } from 'rxjs';
 import { IPagination } from '../../../_shared/models/pagination';
-import { IBusinessSettings } from '../../../_shared/models/settings';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-statement-of-account',
   templateUrl: './statement-of-account.component.html',
   styleUrls: ['./statement-of-account.component.scss'],
 })
-export class StatementOfAccountComponent extends BaseComponent implements OnInit, OnDestroy {
+export class StatementOfAccountComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
+  selectedAccountName = this.multiAccountService.getSelectedAccountName();
 
   private sub = this.router.events
     .pipe(
@@ -355,6 +356,15 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
       }
     }
   }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      // console.log(this.pager);
+      // console.log(this.table);
+      this.pager.table = this.table;
+    }, 1000);
+  }
+
 
   private _handleSingleAccount() {
     this.accountId = this.accounts[0].accountId;
@@ -722,7 +732,7 @@ export class StatementOfAccountComponent extends BaseComponent implements OnInit
         invoiceNumber: rowData.invoiceNumber,
         pONumbers: rowData.poNumbers,
         paymentAmount: rowData.balance,
-        customerId: rowData.customerId,
+        customerId: rowData?.account?.id,
       });
     } else {
       this._unmarkInvoiceToBePiad(rowData);

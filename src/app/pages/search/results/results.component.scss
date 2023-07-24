@@ -1,0 +1,25 @@
+.result-title {
+    color: #333333;
+    background-color: white;
+}
+
+.view-more {
+    font-size: 0.9rem;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+
+.alert-orange {
+    background-color: #ffa50073;
+    border-color: #ffa5006b;
+}
+
+.fa-exclamation-triangle {
+    border-color: #ffa50073;
+    color: #ffa5006b;
+    font-size: 1.2rem;
+}
+
+:ng-deep ngx-result {
+    
+}

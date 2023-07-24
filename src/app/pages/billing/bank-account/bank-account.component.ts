@@ -146,4 +146,8 @@ export class BankAccountComponent implements OnInit, OnDestroy {
       account_holder_type: this.bankAccountForm.value.accountType,
     });
   }
+
+  onCancel() {
+    this.router.navigateByUrl(URLs.ViewBankAccountsURL);
+  }
 }

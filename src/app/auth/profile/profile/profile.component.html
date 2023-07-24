@@ -13,8 +13,8 @@
                         <h2 class="card-title">Edit Profile</h2>
                     </nb-card-header>
                     <nb-card-body>
-                        <ngx-profile-picture [allowRemovePhoto]="showRemoveButton" [profileLoading]="proflieLoading" [photoGuid]="photoGuid"
-                            [(url)]="imageToShow">
+                        <ngx-profile-picture [allowRemovePhoto]="showRemoveButton" [profileLoading]="proflieLoading"
+                            [photoGuid]="photoGuid" [(url)]="imageToShow">
                         </ngx-profile-picture>
                         <div class="input-container">
                             <div class="input-sub-container">
@@ -88,8 +88,16 @@
                                 <label for="primaryPhoneNumber" class="pt-2 required label-align">Primary Phone
                                     Number</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="primaryPhoneNumber"
+                                    <input type="text" (keydown)="onPhone($event)" maxlength="255" id="primaryPhoneNumber"
                                         formControlName="primaryPhoneNumber" placeholder="Primary Phone Number" />
+
+                                    <div *ngIf="formSubmitted &&
+                                        profileForm.get('primaryPhoneNumber').touched &&
+                                        profileForm.get('primaryPhoneNumber').errors &&
+                                        profileForm.get('primaryPhoneNumber').errors['requiredWithTrim']
+                                      " class="mt-1 help-block error">
+                                      Primary Phone Number is required
+                                    </div>
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('primaryPhoneNumber').touched &&
@@ -99,13 +107,21 @@
                                         This field can't start or end with a blank space
                                     </div>
 
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('primaryPhoneNumber').touched &&
+                                    profileForm.get('primaryPhoneNumber').errors &&
+                                    profileForm.get('primaryPhoneNumber').errors['phone']
+                                  " class="mt-1 help-block error">
+                                        Invalid Phone Number
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="input-sub-container">
                                 <label for="secondaryPhoneNumber" class="pt-2 required label-align">Secondary Phone
                                     Number</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="secondaryPhoneNumber"
+                                    <input type="text" (keydown)="onPhone($event)" maxlength="255" id="secondaryPhoneNumber"
                                         formControlName="secondaryPhoneNumber" placeholder="Secondary Phone Number" />
 
                                     <div *ngIf="formSubmitted &&
@@ -116,14 +132,30 @@
                                         This field can't start or end with a blank space
                                     </div>
 
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('secondaryPhoneNumber').touched &&
+                                    profileForm.get('secondaryPhoneNumber').errors &&
+                                    profileForm.get('secondaryPhoneNumber').errors['phone']
+                                  " class="mt-1 help-block error">
+                                        Invalid Phone Number
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="input-sub-container">
                                 <label for="primaryEmailAddress" class="pt-2 required label-align">Primary Email
                                     Address</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="primaryEmailAddress"
+                                    <input type="email" (keydown.space)="$event.preventDefault()" maxlength="255" id="primaryEmailAddress"
                                         formControlName="primaryEmailAddress" placeholder="Primary Email Address" />
+
+                                        <div *ngIf="formSubmitted &&
+                                        profileForm.get('primaryEmailAddress').touched &&
+                                        profileForm.get('primaryEmailAddress').errors &&
+                                        profileForm.get('primaryEmailAddress').errors['requiredWithTrim']
+                                      " class="mt-1 help-block error">
+                                      Primary Email Address is required
+                                    </div>
 
                                     <div *ngIf="formSubmitted &&
                                         profileForm.get('primaryEmailAddress').touched &&
@@ -133,13 +165,21 @@
                                         This field can't start or end with a blank space
                                     </div>
 
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('primaryEmailAddress').touched &&
+                                    profileForm.get('primaryEmailAddress').errors &&
+                                    profileForm.get('primaryEmailAddress').errors['smartriseEmail']
+                                  " class="mt-1 help-block error">
+                                        Invalid Email
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="input-sub-container">
                                 <label for="secondaryEmailAddress" class="pt-2 required label-align">Secondary Email
                                     Address</label>
                                 <div class="input-item">
-                                    <input type="text" maxlength="255" id="secondaryEmailAddress"
+                                    <input type="email" (keydown.space)="$event.preventDefault()" maxlength="255" id="secondaryEmailAddress"
                                         formControlName="secondaryEmailAddress" placeholder="Secondary Email Address" />
 
                                     <div *ngIf="formSubmitted &&
@@ -148,6 +188,14 @@
                                         profileForm.get('secondaryEmailAddress').errors['trimError']
                                       " class="mt-1 help-block error">
                                         This field can't start or end with a blank space
+                                    </div>
+
+                                    <div *ngIf="formSubmitted &&
+                                    profileForm.get('secondaryEmailAddress').touched &&
+                                    profileForm.get('secondaryEmailAddress').errors &&
+                                    profileForm.get('secondaryEmailAddress').errors['smartriseEmail']
+                                  " class="mt-1 help-block error">
+                                        Invalid Email
                                     </div>
 
                                 </div>
@@ -187,7 +235,9 @@
                             <div class="input-sub-container">
                                 <label for="country" class="pt-2 required label-align">Country</label>
                                 <div class="input-item">
-                                    <nb-select (click)="onClickDropDownList()" scrollStrategy="close" [attr.isselected]="profileForm.value.country ? true : false" class="full-width" (selectedChange)="onCountrySelected($event)" placeholder="Country"
+                                    <nb-select (click)="onClickDropDownList()" scrollStrategy="close"
+                                        [attr.isselected]="profileForm.value.country ? true : false" class="full-width"
+                                        (selectedChange)="onCountrySelected($event)" placeholder="Country"
                                         formControlName="country">
                                         <nb-option [value]="">Country</nb-option>
                                         <nb-option *ngFor="let cnt of countries" [value]="cnt.value">{{ cnt.description
@@ -206,7 +256,9 @@
                             <div class="input-sub-container">
                                 <label for="state" class="pt-2 required label-align">State/Province</label>
                                 <div class="input-item">
-                                    <nb-select (click)="onClickDropDownList()" scrollStrategy="close" class="full-width" [attr.isselected]="profileForm.value.state ? true : false" placeholder="State/Province" formControlName="state">
+                                    <nb-select (click)="onClickDropDownList()" scrollStrategy="close" class="full-width"
+                                        [attr.isselected]="profileForm.value.state ? true : false"
+                                        placeholder="State/Province" formControlName="state">
                                         <nb-option [value]="">State/Province</nb-option>
                                         <nb-option *ngFor="let state of states" [value]="state.value">{{
                                             state.description }}</nb-option>

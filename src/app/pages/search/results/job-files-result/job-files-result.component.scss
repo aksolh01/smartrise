@@ -1,0 +1,13 @@
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(1) {
+    text-align: center;
+}
+
+:host ::ng-deep ng2-smart-table thead tr:nth-child(1) > th:nth-last-child(1) {
+    text-align: center;
+}
+
+:host ::ng-deep ng2-smart-table tbody > tr > td:nth-last-child(2) {
+    div.container {
+        text-align: center;
+    }
+}

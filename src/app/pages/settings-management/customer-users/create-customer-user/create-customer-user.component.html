@@ -1,110 +1,115 @@
-<nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-  <nb-card-header class="default-card-header">
-    <h2 class="card-title">User Information</h2>
-  </nb-card-header>
-  <nb-card-body>
-    <form [ngClass]="{'hide': isLoadingForm}" [nbSpinner]="isLoadingForm" nbSpinnerStatus="primary"
-      nbSpinnerSize="large" nbSpinnerMessage="" [formGroup]="customerUserForm" (ngSubmit)="onSubmit()" class="form-container">
+<div class="page-header-container">
+  <div class="page-header-title">
+      <span (click)="onClose()" class="cursor">Account Users</span> / Create Account User
+  </div>
+</div>
 
-      <div class="row-container">
+<form [formGroup]="customerUserForm" (ngSubmit)="onSubmit()">
+  <nb-card>
+    <nb-card-header class="default-card-header">
+      <h2 class="card-title">User Information</h2>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="form-container min-height" [nbSpinner]="isLoadingForm" nbSpinnerStatus="primary" nbSpinnerSize="large"
+      nbSpinnerMessage="">
+        <div class="row-container" *ngIf="!isLoadingForm">
 
-        <div class="input-container">
-          <div class="input-sub-container">
-            <label class="label-align">First Name</label>
-            <div class="input-item">
-              <input type="text" #firstName placeholder="First Name" formControlName="firstName"
-                id="firstName">
-              <div *ngIf="formSubmitted">
-                <div class="help-block error" *ngIf="
+          <div class="input-container">
+            <div class="input-sub-container">
+              <label class="label-align">First Name</label>
+              <div class="input-item">
+                <input type="text" #firstName placeholder="First Name" formControlName="firstName" id="firstName">
+                <div *ngIf="formSubmitted">
+                  <div class="help-block error" *ngIf="
 customerUserForm.get('firstName').errors != null &&
 customerUserForm.get('firstName').errors[
 'requiredWithTrim'
 ] &&
 customerUserForm.get('firstName').touched
 ">
-                  First Name is required
-                </div>
-                <div class="help-block error" *ngIf="
+                    First Name is required
+                  </div>
+                  <div class="help-block error" *ngIf="
 customerUserForm.get('firstName').errors != null &&
 customerUserForm.get('firstName').errors[
 'trimError'
 ] &&
 customerUserForm.get('firstName').touched
 ">
-                  This field can't start or end with a blank space
+                    This field can't start or end with a blank space
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="input-sub-container">
-            <label class="label-align">Last Name</label>
-            <div class="input-item">
-              <input type="text" placeholder="Last Name" formControlName="lastName" class="form-control"
-                id="lastName">
-              <div *ngIf="formSubmitted">
-                <div class="help-block error" *ngIf="
+            <div class="input-sub-container">
+              <label class="label-align">Last Name</label>
+              <div class="input-item">
+                <input type="text" placeholder="Last Name" formControlName="lastName" id="lastName">
+                <div *ngIf="formSubmitted">
+                  <div class="help-block error" *ngIf="
   customerUserForm.get('lastName').errors != null &&
   customerUserForm.get('lastName').errors[
   'requiredWithTrim'
   ] &&
   customerUserForm.get('lastName').touched
   ">
-                  Last Name is required
-                </div>
-                <div class="help-block error" *ngIf="
+                    Last Name is required
+                  </div>
+                  <div class="help-block error" *ngIf="
   customerUserForm.get('lastName').errors != null &&
   customerUserForm.get('lastName').errors[
   'trimError'
   ] &&
   customerUserForm.get('lastName').touched
   ">
-                  This field can't start or end with a blank space
+                    This field can't start or end with a blank space
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="input-sub-container">
-            <label class="label-align">Email</label>
-            <div class="input-item">
-              <input type="text" (keydown.space)="$event.preventDefault()" placeholder="Email" formControlName="email"
-                class="form-control" id="email">
-              <div *ngIf="formSubmitted">
-                <div class="help-block error" *ngIf="
+            <div class="input-sub-container">
+              <label class="label-align">Email</label>
+              <div class="input-item">
+                <input type="text" (keydown.space)="$event.preventDefault()" placeholder="Email" formControlName="email" id="email">
+                <div *ngIf="formSubmitted">
+                  <div class="help-block error" *ngIf="
                 customerUserForm.get('email').errors != null &&
                 customerUserForm.get('email').errors['requiredWithTrim'] &&
                 customerUserForm.get('email').touched">
-                  Email is required
-                </div>
-                <div class="help-block error"
-                  *ngIf="
+                    Email is required
+                  </div>
+                  <div class="help-block error"
+                    *ngIf="
                 customerUserForm.get('email').dirty &&
                 customerUserForm.get('email').errors &&
                 (customerUserForm.get('email').errors['smartriseEmail'] && !customerUserForm.get('email').errors['trimError'])">
-                  Please enter a valid email
-                </div>
-                <div *ngIf="customerUserForm.get('email').touched && 
+                    Please enter a valid email
+                  </div>
+                  <div *ngIf="customerUserForm.get('email').touched && 
               customerUserForm.get('email').errors && 
               customerUserForm.get('email').errors['trimError']" class="mt-1 help-block error">
-                  This field can't start or end with a blank space
+                    This field can't start or end with a blank space
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="w-100">
+              <ngx-account-roles-selection #accounts [roles]="roles" formControlName="accounts"
+                [allowAccountsSelection]="true" [allowRemoveAccount]="false"
+                ></ngx-account-roles-selection>
+            </div>
           </div>
-        </div>
-        <div class="input-container">
-          <ngx-account-roles-selection #accounts [roles]="roles" formControlName="accounts"
-            [allowAccountsSelection]="true" [allowRemoveAccount]="false" style="width:100%"></ngx-account-roles-selection>
+
         </div>
       </div>
-      <div class="bottom-actions">
-        <button routerLink=".." type="button" class="secondary-button">
-          Cancel
-        </button>
-        <div class="margin-8"></div>
-        <ngx-button [isLoading]="isSaving" type="submit" class="btn btn-primary">
-          Create
-        </ngx-button>
-      </div>
-    </form>
-  </nb-card-body>
-</nb-card>
+    </nb-card-body>
+  </nb-card>
+  <div class="form-buttons">
+    <ngx-button routerLink=".." type="button" class="secondary-button">
+      Cancel
+    </ngx-button>
+    <ngx-button [isLoading]="isSaving" type="submit" class="main-button">
+      Create
+    </ngx-button>
+  </div>
+</form>

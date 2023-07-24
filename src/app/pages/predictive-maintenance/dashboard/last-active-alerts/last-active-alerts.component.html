@@ -1,11 +1,14 @@
 <nb-card class="card">
     <nb-card-header class="default-card-header">
-        <div class="d-flex align-items-center">
-            <h2 class="card-title">Latest Alerts</h2>
-            <button type="button" class="btn btn-primary ml-auto" tooltip="View All My Alerts"
-                (click)="onViewAllMyAlerts()">
-                View All My Alerts
-            </button>
+        <div class="card-titile-with-icon">
+            <div class="card-title">Latest Alerts</div>
+            <div class="avatar-btn-container">
+                <div class="avatar-btn">
+                    <button (click)="onViewAllMyAlerts()" class="main-button" tooltip="View All My Alerts">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </nb-card-header>
     <nb-card-body>

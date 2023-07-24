@@ -1,4 +1,10 @@
-<ngx-pager [table]="table"></ngx-pager>
+<div class="page-tab">
+    <div class="page-tab-container">
+        <div class="page-tab-item" (click)="goToCreatedByAccount()">Created By Account</div>
+        <div class="page-tab-item last active" (click)="goToCreatedBySmartriseSales()">Created By Smartrise Sales</div>
+    </div>
+    <ngx-pager #pager></ngx-pager>
+</div>
 <div class="table-container">
     <nb-card joyrideStep="openQuoteFirstStep" stepPosition="center"
         [title]="runGuidingTour === true ? 'Open Quotes' : null" [stepContent]="firstCustomContent"

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
@@ -27,20 +27,22 @@ import { JobNameCellComponent } from './job-name-cell/job-name-cell.component';
 import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { AccountInfoService } from '../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../_shared/components/account-table-cell/account-table-cell.component';
-import { IBusinessSettings } from '../../../_shared/models/settings';
-import { Ng2SmartTableComponent } from 'ng2-smart-table';
-import { environment } from '../../../../environments/environment';
 import { RoutingService } from '../../../services/routing.service';
 import { CloneDialogComponent } from './clone-dialog/clone-dialog.component';
 import { MessageService } from '../../../services/message.service';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
+import { JobStatusCellComponent } from '../quoting-tool/custom-components/job-status-cell/job-status-cell.component';
 
 @Component({
   selector: 'ngx-quoting-tool-list',
   templateUrl: './quoting-tool-list.component.html',
   styleUrls: ['./quoting-tool-list.component.scss']
 })
-export class QuotingToolListComponent extends BaseComponent implements OnInit {
+export class QuotingToolListComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   mRef: BsModalRef;
   source: BaseServerDataSource;
   isSmall?: boolean = null;
@@ -120,8 +122,8 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
       jobStatus: {
         title: 'Job Status',
         type: 'custom',
-        renderComponent: Ng2TableCellComponent,
-        onComponentInitFunction: (instance: Ng2TableCellComponent) => {
+        renderComponent: JobStatusCellComponent,
+        onComponentInitFunction: (instance: JobStatusCellComponent) => {
           instance.setHeader('Job Status');
         },
         valuePrepareFunction: this.getEnumDescription.bind(this),
@@ -180,6 +182,7 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
       this.router.navigateByUrl(`${URLs.ViewOpenQuotesURL}/customer/${quote.id}`);
     });
     actions.view.subscribe((quote: any) => {
+      console.log(`${URLs.ViewOpenQuotesURL}/customer/${quote.id}/view`);
       this.router.navigateByUrl(`${URLs.ViewOpenQuotesURL}/customer/${quote.id}/view`);
     });
     actions.viewHistory.subscribe((quote: any) => this._onViewHistory(actions, quote));
@@ -231,6 +234,12 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
         this._isCreatingQuote = true;
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    }, 1000);
   }
 
   private _onViewPricing(quote: any) {
@@ -417,10 +426,10 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     forkJoin([
       this.quotingToolService.getStatuses(),
       this.quotingToolService.getJobStatuses()
-    ]).subscribe(([
-      statuses,
-      jobStatuses,
-    ]) => this._onResponseReady(statuses, jobStatuses));
+    ]).subscribe(([statuses, jobStatuses]) => {
+      this._onResponseReady(statuses, jobStatuses)
+    });
+
   }
 
   private _onResponseReady(statuses: IEnumValue[], jobStatuses: IEnumValue[]) {
@@ -517,5 +526,17 @@ export class QuotingToolListComponent extends BaseComponent implements OnInit {
     }
     this._isCreatingQuote = true;
     this.router.navigateByUrl(URLs.CreateOnlineQuote);
+  }
+
+  goToCreatedByAccount() {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('pages/quotes-management/open-quotes');
+    });
+  }
+
+  goToCreatedBySmartriseSales() {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('pages/quotes-management/open-quotes?tab=smartrise');
+    });
   }
 }

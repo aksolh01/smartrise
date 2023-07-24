@@ -1,18 +1,25 @@
-<div class="card-details">
+<div *ngIf="isSmartrise" class="card-details">
 
   <div class="card-details-container">
+
     <div class="displayData" *ngIf="displayAccountName">
       <div class="label">{{ accountTitle }}</div>
       <div class="content"> {{ isSmartrise ? (job?.customerName | value) : (job?.primaryCustomer | value) }}</div>
     </div>
-    <div class="displayData" *ngIf="isSmartrise">
+
+    <div class="displayData">
       <div class="label">Installation By</div>
       <div class="content"> {{ job?.installedBy | value }}</div>
     </div>
 
-    <div class="displayData" *ngIf="isSmartrise">
+    <div class="displayData">
       <div class="label">Currently Maintained By</div>
       <div class="content"> {{ job?.maintainedBy | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Job Name</div>
+      <div class="content">{{ job?.jobName | value }}</div>
     </div>
 
     <div class="displayData">
@@ -24,14 +31,15 @@
       <div class="label">PO Number</div>
       <div class="content">{{ job?.customerPONumber | value }}</div>
     </div>
-  </div>
 
-  <div class="card-details-container">
-    
     <div class="displayData">
       <div class="label">Desired Ship Date</div>
       <div class="content">{{ job?.shipDate | usdate | value }}</div>
     </div>
+
+  </div>
+
+  <div class="card-details-container">
 
     <div class="displayData">
       <div class="label">Tentative Ship Date</div>
@@ -43,42 +51,91 @@
       <div class="content">{{ job?.actualShipDate | usdate | value }}</div>
     </div>
 
-  </div>
-
-</div>
-<div *ngIf="passcode?.displayPasscode">
-  <nb-accordion>
-    <nb-accordion-item>
-        <nb-accordion-item-header>
-            <div class="w-100  d-flex justify-content-between align-items-center">
-              Passcodes
-            </div>
-        </nb-accordion-item-header>
-        <nb-accordion-item-body>
-          <ng2-smart-table class="default-smart-table responsive-design1" [settings]="passcodeSettings"
-          [source]="passcodeSource">
-        </ng2-smart-table>
-        </nb-accordion-item-body>
-    </nb-accordion-item>
-</nb-accordion>
-</div>
-<!-- <div class="col-lg-12">
-  <div class="row">
-    <div class="col-12" *ngIf="passcode?.displayPasscode; else passcodeMessage">
-      <div class="activity-history-title">
-        Passcodes
-      </div>
-      <ng2-smart-table class="default-smart-table responsive-design1" [settings]="passcodeSettings"
-        [source]="passcodeSource">
-      </ng2-smart-table>
+    <div class="displayData">
+      <div class="label">Engineering Completed</div>
+      <div class="content">{{ job?.engineeringCompleted | usdate | value }}</div>
     </div>
 
-    <ng-template #passcodeMessage>
-      <div class="col-12" *ngIf="passcode?.message">
-        <div class="alert alert-info mb-0">
-          {{passcode.message}}
-        </div>
-      </div>
-    </ng-template>
+    <div class="displayData">
+      <div class="label">Testing Completed</div>
+      <div class="content">{{ job?.testingCompleted | usdate | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Status</div>
+      <div class="content">{{ job?.status | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Ship To Address</div>
+      <div class="content">{{ job?.shipToAddress | value }}</div>
+    </div>
   </div>
-</div> -->
+</div>
+
+<div *ngIf="!isSmartrise" class="card-details">
+
+  <div class="card-details-container">
+
+    <div class="displayData" *ngIf="displayAccountName">
+      <div class="label">{{ accountTitle }}</div>
+      <div class="content"> {{ isSmartrise ? (job?.customerName | value) : (job?.primaryCustomer | value) }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Job Name</div>
+      <div class="content">{{ job?.jobName | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Job Number</div>
+      <div class="content">{{ job?.jobNumber | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">PO Number</div>
+      <div class="content">{{ job?.customerPONumber | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Desired Ship Date</div>
+      <div class="content">{{ job?.shipDate | usdate | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Tentative Ship Date</div>
+      <div class="content">{{ job?.grantedShipDate | usdate | value }}</div>
+    </div>
+
+  </div>
+
+  <div class="card-details-container">
+
+
+    <div class="displayData">
+      <div class="label">Actual Ship Date</div>
+      <div class="content">{{ job?.actualShipDate | usdate | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Engineering Completed</div>
+      <div class="content">{{ job?.engineeringCompleted | usdate | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Testing Completed</div>
+      <div class="content">{{ job?.testingCompleted | usdate | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Status</div>
+      <div class="content">{{ job?.status | value }}</div>
+    </div>
+
+    <div class="displayData">
+      <div class="label">Ship To Address</div>
+      <div class="content">{{ job?.shipToAddress | value }}</div>
+    </div>
+
+  </div>
+</div>

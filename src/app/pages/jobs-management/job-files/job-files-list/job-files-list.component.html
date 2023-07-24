@@ -1,14 +1,6 @@
 <div class="page-header-container">
     <div class="page-header-title">
-        Jobs & Tracking
-    </div>
-    <div *ngIf="!isSmall" class="form-container" style="width: 25%;">
-        <div class="input-container">
-            <div class="input-item search-input-icon">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Search">
-            </div>
-        </div>
+        Jobs & Tracking {{ selectedAccountName }}
     </div>
     <div *ngIf="isSmall">
         <button class="main-button" type="button" (click)="toggleFilters()">
@@ -23,7 +15,7 @@
         <div class="page-tab-item" (click)="goToShipments()">Shipments</div>
         <div class="page-tab-item last active" (click)="goToJobsFile()">Job Files</div>
     </div>
-    <ngx-pager [table]="table"></ngx-pager>
+    <ngx-pager #pager></ngx-pager>
 </div>
 
 <div class="table-container">

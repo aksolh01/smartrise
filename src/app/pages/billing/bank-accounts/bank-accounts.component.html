@@ -1,15 +1,5 @@
 <div class="page-header-container">
     <div class="page-header-title">Bank Accounts</div>
-    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
-        <div class="input-container">
-            <div class="input-item search-input-icon">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Search">
-            </div>
-        </div>
-
-    </div>
-
     <div *ngIf="isSmall">
         <button class="main-button" type="button" (click)="toggleFilters()">
             <i class="fas fa-filter"></i>
@@ -26,8 +16,8 @@
                     joyrideStep="bankAccountSecondStep" stepPosition="left" [prevTemplate]="prevButton"
                     [nextTemplate]="nextButton" [doneTemplate]="doneButton"
                     [title]="runGuidingTour === true ? 'Bank Accounts' : null" [stepContent]="secondCustomContent"
-                    (done)="onFinishingTour()" tooltip="Add Account">
-                    <i class="fas fa-user-plus"></i>
+                    (done)="onFinishingTour()" tooltip="Add Bank Account">
+                    <i class="fas fa-plus"></i>
                 </button>
             </a>
         </div>

@@ -21,8 +21,18 @@ export class ActivityService {
             .pipe(map(response => response.body));
     }
 
+    searchAllActivitiesBySmartriseUser(activityParams: ActivityParams) {
+        return this.httpClient.post<Pagination<IActivity>>(this.baseUrl + 'useractivity/smartrise/searchAll', activityParams, { observe: 'response' })
+            .pipe(map(response => response.body));
+    }
+
     getActivitiesByCustomerUser(activityParams: ActivitySearchByCustomerUser) {
         return this.httpClient.post<Pagination<IActivity>>(this.baseUrl + 'useractivity/customer/search', activityParams, { observe: 'response' })
+            .pipe(map(response => response.body));
+    }
+
+    searchAllActivitiesByCustomerUser(activityParams: ActivitySearchByCustomerUser) {
+        return this.httpClient.post<Pagination<IActivity>>(this.baseUrl + 'useractivity/customer/searchAll', activityParams, { observe: 'response' })
             .pipe(map(response => response.body));
     }
 

@@ -17,6 +17,7 @@ import { StorageConstants, URLs } from '../../../_shared/constants';
 })
 export class InvoiceDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
 
+  invoiceDetailsTitle: string;
   isSmartriseUser = false;
   invoice: IAgedInvoiceDetails;
   SecureToken: string;
@@ -48,6 +49,12 @@ export class InvoiceDetailsComponent extends BaseComponent implements OnInit, On
   ngOnInit(): void {
 
     this.prevUrl = this.router.url.substring(0, this.router.url.lastIndexOf('/'));
+
+    if (this.prevUrl === URLs.ViewBillingInvoicesURL) {
+      this.invoiceDetailsTitle = 'Invoices';
+    } else if (this.prevUrl === URLs.ViewStatementOfAccountURL) {
+      this.invoiceDetailsTitle = 'Statement Of Accounts';
+    }
 
     const invoiceID = +this.activatedRoute.snapshot.paramMap.get('id');
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../../_shared/components/table-filters/cp-filter.component';
@@ -45,14 +45,16 @@ import { ListTitleService } from '../../../../services/list-title.service';
 import { IBusinessSettings } from '../../../../_shared/models/settings';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../../environments/environment';
+import { PagerComponent } from '../../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-job-files-list',
   templateUrl: './job-files-list.component.html',
   styleUrls: ['./job-files-list.component.scss'],
 })
-export class JobFilesListComponent extends BaseComponent implements OnInit, OnDestroy {
+export class JobFilesListComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   recordsNumber: number;
   title: string;
   public Math = Math;
@@ -86,6 +88,7 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   canGenerateFile: boolean;
   installedBy: string;
   maintainedBy: string;
+  selectedAccountName = this.multiAccountService.getSelectedAccountName();
 
   constructor(
     baseService: BaseComponentService,
@@ -105,6 +108,12 @@ export class JobFilesListComponent extends BaseComponent implements OnInit, OnDe
   ) {
     super(baseService);
     // this.res$ = timerService.refreshResource();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    }, 500);
   }
 
   settings: any = {

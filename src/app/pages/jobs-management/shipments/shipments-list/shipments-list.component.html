@@ -1,13 +1,5 @@
 <div class="page-header-container">
-  <div class="page-header-title">Jobs & Tracking</div>
-  <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
-    <div class="input-container">
-      <div class="input-item search-input-icon">
-        <i class="fa fa-search"></i>
-        <input type="text" placeholder="Search">
-      </div>
-    </div>
-  </div>
+  <div class="page-header-title">Jobs & Tracking {{ selectedAccountName }}</div>
   <div *ngIf="isSmall">
     <button class="main-button" type="button" (click)="toggleFilters()">
       <i class="fas fa-filter"></i>
@@ -20,7 +12,7 @@
     <div class="page-tab-item active" (click)="goToShipments()">Shipments</div>
     <div class="page-tab-item last" (click)="goToJobsFile()">Job Files</div>
   </div>
-  <ngx-pager [table]="table"></ngx-pager>
+  <ngx-pager #pager></ngx-pager>
 </div>
 <div class="table-container">
   <nb-card joyrideStep="shipmentFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Shipments' : null"

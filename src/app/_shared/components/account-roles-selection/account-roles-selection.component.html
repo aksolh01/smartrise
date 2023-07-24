@@ -2,9 +2,9 @@
 
 </ng2-smart-table> -->
 
-<div class="card-container">
-    <div class="card" *ngFor="let account of accounts">
-        <div class="card-content">
+<div class="card-container-role">
+    <div class="card-role" *ngFor="let account of accounts" style="margin-top: 16px;">
+        <div class="card-content-role">
             <nb-list class="account-name" style="padding-left: 8px;">
                 {{account.name}}
             </nb-list>
@@ -21,12 +21,12 @@
                 </div>
             </div>
 
-            <div class="bottom-0 text-center">
-                <button *ngIf="allowRemoveAccount" type="button" class="btn btn-danger mt-3 mb-2"
+            <div class="mt-3 text-center">
+                <button *ngIf="allowRemoveAccount" type="button" class="danger-button"
                     (click)="onRemove(account)">Remove</button>
-                <div *ngIf="allowAccountsSelection" class="d-flex justify-content-center align-items-center  mt-3">
+                <div *ngIf="allowAccountsSelection" class="d-flex ml-2  mt-1" >
                     <nb-toggle [ngModel]="account.isSelected" (checkedChange)="onSelectUnSelect($event, account)"
-                        class="px-2 px-md-0">
+                        class="px-2 px-md-0" style="width: 60px;">
                     </nb-toggle>
                     <label class="ml-2">Grant Access</label>
                 </div>

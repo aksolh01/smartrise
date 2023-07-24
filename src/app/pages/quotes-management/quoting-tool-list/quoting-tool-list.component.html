@@ -1,33 +1,50 @@
-<ngx-pager [table]="table"></ngx-pager>
+<div class="page-tab">
+    <div class="page-tab-container">
+        <div class="page-tab-item active" (click)="goToCreatedByAccount()">Created By Account</div>
+        <div class="page-tab-item last" (click)="goToCreatedBySmartriseSales()">Created By Smartrise Sales</div>
+    </div>
+    <ngx-pager #pager></ngx-pager>
+    <div class="avatar-btn-container">
+        <div class="avatar-btn">
+            <button *ngIf="canEditQuote" (click)="onRequestQuote()" class="btn btn-primary mr-1"
+                joyrideStep="quoteSecondStep" stepPosition="left" [prevTemplate]="prevButton"
+                [nextTemplate]="nextButton" [doneTemplate]="doneButton"
+                [title]="runGuidingTour === true ? 'Quotes' : null" [stepContent]="secondCustomContent"
+                (done)="onFinishingTour()" tooltip="Create A Quote">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+    </div>
+</div>
 <div class="table-container">
     <nb-card joyrideStep="quoteFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Quotes' : null"
         [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">
 
-    <ng-template #firstCustomContent>
-        <div class='joyride-custom-content'>
-            <div *ngIf="!canEditQuote" style="margin-bottom: 5px;">
-                View details and show history for the list of quotes associated with your account.<br />
+        <ng-template #firstCustomContent>
+            <div class='joyride-custom-content'>
+                <div *ngIf="!canEditQuote" style="margin-bottom: 5px;">
+                    View details and show history for the list of quotes associated with your account.<br />
+                </div>
+                <div *ngIf="canEditQuote" style="margin-bottom: 5px;">
+                    View, update, and show history for the list of quotes associated with your account.<br />
+                </div>
+                <div>
+                    <i class="fas fa-eye guiding-tour-action"></i>View Quote Details
+                </div>
+                <div *ngIf="canEditQuote">
+                    <i class="fas fa-pencil-alt guiding-tour-action"></i>Update Quote Information
+                </div>
+                <div>
+                    <i class="fas fa-history guiding-tour-action"></i>View Activity History
+                </div>
+                <div>
+                    <i class="fas fa-file-alt guiding-tour-action view-pricing-action"></i>View Quote
+                </div>
+                <div *ngIf="canEditQuote">
+                    <i class="fas fa-clone guiding-tour-action"></i>Clone Quote
+                </div>
             </div>
-            <div *ngIf="canEditQuote" style="margin-bottom: 5px;">
-                View, update, and show history for the list of quotes associated with your account.<br />
-            </div>
-            <div>
-                <i class="fas fa-eye guiding-tour-action"></i>View Quote Details
-            </div>
-            <div *ngIf="canEditQuote">
-                <i class="fas fa-pencil-alt guiding-tour-action"></i>Update Quote Information
-            </div>
-            <div>
-                <i class="fas fa-history guiding-tour-action"></i>View Activity History
-            </div>
-            <div>
-                <i class="fas fa-file-alt guiding-tour-action view-pricing-action"></i>View Quote
-            </div>
-            <div>
-                <i class="fas fa-clone guiding-tour-action"></i>Clone Quote
-            </div>
-        </div>
-    </ng-template>
+        </ng-template>
 
         <ng-template #secondCustomContent>
             <div class='joyride-custom-content'>
@@ -40,17 +57,6 @@
         <nb-card-body>
 
             <ng-template [ngIf]="isSmall === false">
-                <div class="avatar-btn-container">
-                    <div class="avatar-btn">
-                        <button *ngIf="canEditQuote" (click)="onRequestQuote()" class="main-button"
-                            joyrideStep="quoteSecondStep" stepPosition="left" [prevTemplate]="prevButton"
-                            [nextTemplate]="nextButton" [doneTemplate]="doneButton"
-                            [title]="runGuidingTour === true ? 'Quotes' : null" [stepContent]="secondCustomContent"
-                            (done)="onFinishingTour()" tooltip="Create A Quote">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
 
                 <div class="row mb-3">
                     <div class="col d-flex justfiy-content-start align-items-center">
@@ -119,17 +125,6 @@
 
             <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
                 <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
-                    <div class="avatar-btn-container">
-                        <div class="avatar-btn">
-                            <button *ngIf="canEditQuote" (click)="onRequestQuote()" class="btn btn-primary mr-1"
-                                joyrideStep="quoteSecondStep" stepPosition="left" [prevTemplate]="prevButton"
-                                [nextTemplate]="nextButton" [doneTemplate]="doneButton"
-                                [title]="runGuidingTour === true ? 'Quotes' : null" [stepContent]="secondCustomContent"
-                                (done)="onFinishingTour()" tooltip="Create A Quote">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
                     <button type="button" class="btn btn-primary" (click)="toggleFilters()">
                         <i class="fas fa-filter"></i>
                     </button>

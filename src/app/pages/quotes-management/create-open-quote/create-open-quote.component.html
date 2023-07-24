@@ -11,7 +11,8 @@
                     <div class="input-sub-container">
                         <label class="label-align">Account Name</label>
                         <div class="input-item">
-                            <div class="input-item-label"> {{ accountName }}</div>
+                            <div *ngIf="!accountName" class="input-item-label placeholder">Account Name</div>
+                            <div *ngIf="accountName" class="input-item-label">{{ accountName }}</div>
                         </div>
                     </div>
 

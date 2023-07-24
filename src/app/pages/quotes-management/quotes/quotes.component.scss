@@ -2,3 +2,7 @@
 ::ng-deep ngx-open-quotes nb-card {
     margin: 0 !important;
 }
+
+::ng-deep ngx-quotes nb-tabset ul {
+    display: none !important;
+}

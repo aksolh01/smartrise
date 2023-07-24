@@ -6,6 +6,8 @@ import { PermissionService } from '../services/permission.service';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { IPagination } from '../_shared/models/pagination';
+import { MultiAccountsService } from '../services/multi-accounts-service';
+import { MiscellaneousService } from '../services/miscellaneous.service';
 
 export class BaseComponent {
 
@@ -13,11 +15,15 @@ export class BaseComponent {
 
   private __datePipe: DatePipe;
   private __router: Router;
+  private __multiAccountService: MultiAccountsService;
+  private __miscellaneousService: MiscellaneousService;
 
   constructor(baseComponentService: BaseComponentService) {
     this.__permissionService = baseComponentService.permissionService;
     this.__datePipe = baseComponentService.datePipe;
     this.__router = baseComponentService.router;
+    this.__multiAccountService = baseComponentService.multiAccountService;
+    this.__miscellaneousService = baseComponentService.miscellaneousService;
   }
 
   maskInput(e) {
@@ -55,8 +61,8 @@ export class BaseComponent {
 
   getInstance<T>(error): T {
     if (!error?.error?.instance) {
-return null;
-}
+      return null;
+    }
     return JSON.parse(error.error.instance);
   }
 
@@ -79,8 +85,8 @@ return null;
 
   getEnumDescription(enumValue: IEnumValue) {
     if (enumValue != null) {
-return enumValue.description;
-}
+      return enumValue.description;
+    }
     return null;
   }
 
@@ -239,4 +245,14 @@ return enumValue.description;
       form.get(field).touched;
   }
 
+  getSelectedAccountsLabel() {
+    const selectedAccountName = this.__multiAccountService.getSelectedAccountName();
+    if (this.__miscellaneousService.isSmartriseUser()) {
+      return '';
+    }
+    if (selectedAccountName) {
+      return ` - ${selectedAccountName}`;
+    }
+    return ' - All Accounts'
+  }
 }

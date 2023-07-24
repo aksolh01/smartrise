@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpDateFilterComponent } from '../../../_shared/components/table-filters/cp-date-filter.component';
@@ -30,14 +30,16 @@ import { Observable } from 'rxjs';
 import { IBusinessSettings } from '../../../_shared/models/settings';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-invoices',
   templateUrl: './invoices.component.html',
   styleUrls: ['./invoices.component.scss']
 })
-export class InvoicesComponent extends BaseComponent implements OnInit, OnDestroy {
+export class InvoicesComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   account: string;
   invoiceNumber: string;
   jobNumber: string;
@@ -50,6 +52,7 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
   showFilters = false;
   runGuidingTour = true;
   public Math = Math;
+  selectedAccountName = this.getSelectedAccountsLabel();
   source: BaseServerDataSource;
   settings: any = {
     mode: 'external',
@@ -243,6 +246,12 @@ export class InvoicesComponent extends BaseComponent implements OnInit, OnDestro
 
   onlyNumbers(event) {
     allowOnlyNumbers(event);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
   }
 
   onActionsInit(actions: InvoicesActionsComponent) {

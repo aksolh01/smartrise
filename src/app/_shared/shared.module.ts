@@ -93,6 +93,7 @@ import { SelectableAccountCellComponent } from './components/selectable-account-
 import { RemoveAccountCellComponent } from './components/remove-account-cell/remove-account-cell.component';
 import { AccountInfoComponent } from './components/account-info/account-info.component';
 import { AccountTableCellComponent } from './components/account-table-cell/account-table-cell.component';
+import { JobLocationLookupComponent } from './components/job-location-lookup/job-location-lookup.component';
 
 @NgModule({
   declarations: [
@@ -167,6 +168,7 @@ import { AccountTableCellComponent } from './components/account-table-cell/accou
     RemoveAccountCellComponent,
     AccountInfoComponent,
     AccountTableCellComponent,
+    JobLocationLookupComponent
   ],
   imports: [
     CommonModule,
@@ -271,6 +273,7 @@ import { AccountTableCellComponent } from './components/account-table-cell/accou
     RolesChecklistCellComponent,
     AccountRolesSelectionComponent,
     RemoveAccountCellComponent,
+    JobLocationLookupComponent
   ],
   providers: [
     {

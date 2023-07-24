@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   NbMenuService,
@@ -19,6 +19,9 @@ import { MultiAccountsService } from '../../../services/multi-accounts-service';
 import { PermissionService } from '../../../services/permission.service';
 import { StorageConstants } from '../../../_shared/constants';
 import { RoutingService } from '../../../services/routing.service';
+import { SearchService } from '../../../services/search.service';
+import { ResponsiveService } from '../../../services/responsive.service';
+import { ScreenBreakpoint } from '../../../_shared/models/screenBreakpoint';
 
 @Component({
   selector: 'ngx-header',
@@ -41,7 +44,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Log out' },
   ];
 
+  @ViewChild('search') searchInput: ElementRef<HTMLInputElement>;
+
   currentUser$: Observable<IUser>;
+  isSmall: boolean;
   public constructor(
     private router: Router,
     private menuService: NbMenuService,
@@ -55,7 +61,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private guidingTourService: GuidingTourService,
     private miscellaneousService: MiscellaneousService,
     private permissionService: PermissionService,
-    private routingService: RoutingService
+    private routingService: RoutingService,
+    private searchService: SearchService,
+    private responsiveService: ResponsiveService
   ) { }
 
   toggleSidebar(): boolean {
@@ -70,10 +78,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    this.responsiveService.currentBreakpoint$.subscribe(w => {
+      this.isSmall = (w !== ScreenBreakpoint.lg && w !== ScreenBreakpoint.xl);
+    });
+
+    this.searchService.resetSearch$.subscribe(() => {
+      this.searchInput.nativeElement.value = '';
+    });
+
     this.testingEnvironment = environment.testing;
 
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
     this.userHasMoreThanOneAccount = !this.multiAccountsService.hasOneAccount();
+
+
 
     this.getLoggedUser();
 
@@ -90,6 +109,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     if (localStorage.getItem('GuidingTourHome') !== null) {
       this.runGuidingTour = false;
+    }
+  }
+
+  onSearchChanged(searchValue) {
+    if (searchValue?.trim()) {
+      this.searchService.resetSearch();
+      this.searchService.search(searchValue?.trim());
+      this.router.navigateByUrl(`pages/search/result?search=${encodeURIComponent(searchValue?.trim())}`);
     }
   }
 

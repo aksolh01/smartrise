@@ -39,5 +39,6 @@ export class QuotingDropdownComponent extends QuotingInputBaseComponent implemen
       this._oldValue = this.item[this.valueField];
     });
     this.unAssume();
+    this.changed.next(event);
   }
 }

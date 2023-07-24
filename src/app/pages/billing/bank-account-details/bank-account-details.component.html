@@ -1,6 +1,6 @@
 <div class="page-header-container">
-    <div class="page-header-title">
-        <span (click)="onClose()" class="cursor">Bank Accounts</span> / {{ bankAccount?.customer.name | value }}
+    <div *ngIf="bankAccount?.bankName" class="page-header-title">
+        <span (click)="onClose()" class="cursor"><i class="fa fa-arrow-left"></i>Bank Accounts</span> / {{bankAccount?.last4}}
     </div>
 </div>
 <div class="margin-16"></div>

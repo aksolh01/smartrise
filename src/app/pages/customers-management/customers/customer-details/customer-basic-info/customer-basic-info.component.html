@@ -1,9 +1,3 @@
-<div class="page-header-container">
-  <div class="page-header-title">
-    <span (click)="onClose()" class="cursor">Accounts</span> / {{ customer?.name | value }}
-  </div>
-</div>
-<div class="margin-16"></div>
 <div *ngIf="customer?.isDeleted" class="badge badge-pill badge-danger float-right font-weight-normal customer-deleted">
   DELETED
 </div>
@@ -16,13 +10,14 @@
           <div class="label">Epicor No</div>
           <div class="content"> {{ customer?.epicorCustomerId | value}}</div>
         </div>
-        <div class="displayData">
-          <div class="label">Phone</div>
-          <div class="content"> {{ customer?.phone | value }}</div>
-        </div>
+       
         <div class="displayData">
           <div class="label">Name</div>
           <div class="content" id="last4" value="">{{ customer?.name | value}}</div>
+        </div>
+        <div class="displayData">
+          <div class="label">Primary Shipping Email</div>
+          <div class="content"> {{ customer?.email | value }}</div>
         </div>
       </div>
 
@@ -32,11 +27,11 @@
           <div class="content"> <ngx-address-field [Address]="customer?.address"
               [FullAddress]="customer?.addressStr"></ngx-address-field></div>
         </div>
-      
         <div class="displayData">
-          <div class="label">Primary Shipping Email</div>
-          <div class="content"> {{ customer?.email | value }}</div>
+          <div class="label">Phone</div>
+          <div class="content"> {{ customer?.phone | value }}</div>
         </div>
+        
         <div class="displayData">
           <div class="label">Fax</div>
           <div class="content"> {{ customer?.fax | value }}</div>

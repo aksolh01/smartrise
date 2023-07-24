@@ -1,0 +1,43 @@
+<div class="page-header-container">
+    <div class="page-header-title" *ngIf="part">
+        <span (click)="onClose()" class="cursor"><i class="fa fa-arrow-left"></i> Parts</span> / {{ part?.partNumber }}
+    </div>
+</div>
+<div class="form-container">
+    <nb-card>
+        <nb-card-body>
+
+            <div class="card-details" *ngIf="part">
+
+                <div class="card-details-container">
+                    <div class="displayData">
+                        <div class="label">Part Number</div>
+                        <div class="content"> {{ part?.partNumber | value }}</div>
+                    </div>
+                    <div class="displayData">
+                        <div class="label">Model Number</div>
+                        <div class="content"> {{ part?.modelNumber | value }}</div>
+                    </div>
+                    <div class="displayData">
+                        <div class="label">Description</div>
+                        <div class="content">{{ part?.description | value}}</div>
+                    </div>
+                </div>
+    
+                <div class="card-details-container">
+                    <div class="displayData">
+                        <div class="label">Price</div>
+                        <div class="content"> {{ part?.price | number: '1.2-2' }}</div>
+                    </div>
+                    <div class="displayData">
+                        <div class="label">Inactive</div>
+                        <div class="content">  <ngx-yes-no [value]="part?.inactiveFlag"></ngx-yes-no></div>
+                    </div>
+                    
+                </div>
+    
+            </div>
+
+        </nb-card-body>
+    </nb-card>
+</div>

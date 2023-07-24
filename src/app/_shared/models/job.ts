@@ -14,6 +14,7 @@ export interface IJob {
   epicorWaitingInfo?: boolean;
   shipments: IShipment[];
   resourceFiles: IJobResource[];
+  linkedToEpicorSalesOrder: boolean;
 }
 
 export interface IRecentJob {
@@ -47,6 +48,20 @@ export interface IJob {
   releasedToEngineering?: Date;
   engineered?: Date;
   releasedToProduction?: Date;
+  linkedToEpicorSalesOrder: boolean;
+  engineeringCompleted: Date;
+  testingCompleted: Date;
+  status: string;
+  shipToAddress: string;
+}
+
+export interface IActiveJob {
+  status: string;
+  shipDate?: Date;
+  grantedShipDate?: Date;
+  actualShipDate?: Date;
+  trackingNumber: string;
+  jobFiles: [];
 }
 
 export interface IJobResource {

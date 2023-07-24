@@ -52,7 +52,6 @@ export class QuotingToolService {
       );
   }
 
-
   getQuoteHistory(id: any) {
     return this.httpClient
       .get<any>(this.baseUrl + `quotes/${id}/history`)
@@ -199,6 +198,16 @@ export class QuotingToolService {
       .pipe(map((response) => response.body));
   }
 
+  searchAllQuotesBySmartriseUsers(quoteParams: QuoteToolParams) {
+    return this.httpClient
+      .post<Pagination<any>>(
+        this.baseUrl + 'quotes/smartrise/searchAll',
+        quoteParams,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
+
   searchQuotesByCustomerUsers(
     quoteParams: SearchQuotesByCustomerParams
   ): Observable<IPagination> {
@@ -206,6 +215,16 @@ export class QuotingToolService {
       .post<Pagination<any>>(
         this.baseUrl + 'quotes/customer/search',
         quoteParams,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
+
+  searchAllQuotesByCustomerUsers(searchParams: SearchQuotesByCustomerParams) {
+    return this.httpClient
+      .post<Pagination<any>>(
+        this.baseUrl + 'quotes/customer/searchAll',
+        searchParams,
         { observe: 'response' }
       )
       .pipe(map((response) => response.body));
@@ -220,6 +239,12 @@ export class QuotingToolService {
   createQuote(quote: any) {
     return this.httpClient
       .post(this.baseUrl + 'quotes/create', quote, { observe: 'response' })
+      .pipe(map((response) => response.body));
+  }
+
+  createOnlineQuote(quote: any) {
+    return this.httpClient
+      .post(this.baseUrl + 'quotes/online/create', quote, { observe: 'response' })
       .pipe(map((response) => response.body));
   }
 

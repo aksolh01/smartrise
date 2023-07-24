@@ -1,13 +1,11 @@
-<div class="container">
-    <p class="customer-name">
-        {{customer.name}}
-    </p>
+<div class="customer-container">
+    <div class="customer-name">
+        <a (click)="navigateToAccountDetails(customer.id, $event)">{{customer.name}}</a> 
+    </div>
     <div class="actions text-center">
         <button data-tooltip="View Details" tooltip="View Details" (click)="goToCustomerDetail()">
             <i class="fas fa-eye" data-toggle="tooltip" data-original-title="View"></i>
-            <!-- <i *ngIf="isSmall" class="fas fa-eye" data-toggle="tooltip" data-original-title="View">
-                View Details
-            </i> -->
+           
         </button>
     </div>
 </div>

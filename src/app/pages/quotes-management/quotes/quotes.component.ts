@@ -1,27 +1,36 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { OpenQuotesComponent } from '../open-quotes/open-quotes.component';
 import { QuotingToolListComponent } from '../quoting-tool-list/quoting-tool-list.component';
+import { MultiAccountsService } from '../../../services/multi-accounts-service';
+import { BaseComponent } from '../../base.component';
+import { BaseComponentService } from '../../../services/base-component.service';
 
 @Component({
   selector: 'ngx-quotes',
   templateUrl: './quotes.component.html',
   styleUrls: ['./quotes.component.scss']
 })
-export class QuotesComponent implements OnInit {
+export class QuotesComponent extends BaseComponent implements OnInit {
 
   customerActiveTab = false;
   smartriseActiveTab = false;
+  prevUrl = '';
   selectedTab: Observable<string>;
+  selectedAccountName = this.getSelectedAccountsLabel();
 
   @ViewChild('smartriseQuotes') smartriseQuotes: OpenQuotesComponent;
   @ViewChild('customerQuotes') customerQuotes: QuotingToolListComponent;
 
   constructor(
-    private route: ActivatedRoute) {
+    private multiAccountService: MultiAccountsService,
+    private route: ActivatedRoute,
+    baseService: BaseComponentService) {
+    super(baseService);
     this.selectedTab = history?.state?.tab;
   }
+
 
   ngOnInit(): void {
     this._setActiveTab();
@@ -29,7 +38,7 @@ export class QuotesComponent implements OnInit {
 
   private _setActiveTab() {
     const tab = this.route.snapshot.queryParamMap.get('tab');
-    
+
     if (tab === null) {
       this.customerActiveTab = true;
       this.smartriseActiveTab = false;
@@ -50,4 +59,5 @@ export class QuotesComponent implements OnInit {
       this.customerQuotes?.onSearch();
     }
   }
+
 }

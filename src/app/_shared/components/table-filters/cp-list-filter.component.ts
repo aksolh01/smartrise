@@ -17,7 +17,7 @@ import { SelectHelperService } from '../../../services/select-helper.service';
   scrollStrategy="close"
   [fullWidth]="true"
   [formControl]="inputControl" [placeholder]="selectText"
-  ngxSelectAutoWidth>
+  ngxSelectAutoWidth [attr.filter-placeholder-selected]="!inputControl.value">
     <nb-option value="">{{ selectText }}</nb-option>
     <nb-option *ngFor="let option of optionsList" [value]="option.value">
       {{ option.title }}
@@ -30,6 +30,9 @@ import { SelectHelperService } from '../../../services/select-helper.service';
   styles: [
     `nb-select {
       width: 100%;
+    }
+    ::ng-deep nb-select[filter-placeholder-selected="true"] button span {
+      font-weight: normal !important;
     }
     `
   ]

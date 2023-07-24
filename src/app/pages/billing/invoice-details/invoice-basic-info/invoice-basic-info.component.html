@@ -14,7 +14,8 @@
 
         <div class="displayData" *ngIf="displayAccountName">
           <label class="label">{{accountTitle}}</label>
-          <div class="content">{{ invoice?.customer | value }}</div>
+          <div *ngIf="isSmartrise" class="content">{{ invoice?.customer | value }}</div>
+          <div *ngIf="!isSmartrise" class="content">{{ invoice?.primaryCustomer | value }}</div>
         </div>
 
         <div *ngIf="isSmartrise" class="displayData">
@@ -51,7 +52,7 @@
         </div>
         <div class="displayData">
           <div class="label">PO Number</div>
-          <div class="content">{{ invoice?.jobName | value }}</div>
+          <div class="content">{{ invoice?.poNumbers | value }}</div>
         </div>
         <div class="displayData" *ngIf="!isSmartriseUser">
           <div class="label">Invoice Date</div>

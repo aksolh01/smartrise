@@ -1,10 +1,28 @@
-
-
 <div>
+  <ng-template #jobResourcesCustomContent>
+    <div class='joyride-custom-content'>
+      <div *ngIf="canGenerateFiles" style="margin-bottom: 5px;">
+        Request and download job documents and software.
+      </div>
+      <div *ngIf="!canGenerateFiles" style="margin-bottom: 5px;">
+        Download job documents and software.
+      </div>
+      <div *ngIf="canGenerateFiles">
+        <i class="fas fa-plus-circle guiding-tour-action"></i>Generate Request to Download Job File
+      </div>
+      <div>
+        <i class="fas fa-download guiding-tour-action"></i>Download Job File
+      </div>
+    </div>
+  </ng-template>
+
+  <div *ngIf="jobIsBefore2008" class="alert alert-orange">
+    Please contact <a href="mailto:sales@smartrise.us">sales@smartrise.us</a> to get the Job Files
+  </div>
+
   <div [nbSpinner]="isRefreshing" nbSpinnerStatus="primary" nbSpinnerSize="giant">
 
-    <ng2-smart-table class="default-smart-table  w-100" #table [settings]="settings"
-      [source]="source">
+    <ng2-smart-table class="default-smart-table  w-100" #table [settings]="settings" [source]="source">
     </ng2-smart-table>
   </div>
 </div>

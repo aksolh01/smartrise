@@ -28,6 +28,7 @@ export class UpdateCustomerUserComponent implements OnInit {
   formSubmitted = false;
   rolesTouched: boolean;
   isSaving = false;
+  user: ICustomerUserResponse;
 
   constructor(
     private router: Router,
@@ -51,6 +52,8 @@ export class UpdateCustomerUserComponent implements OnInit {
       this.accountService.getCustomerUserByCustomerAdmin(userId),
     ]).subscribe(([linkedAccounts, roles, user]) => {
       
+      this.user = user;
+
       if (this.multiAccountsService.hasManyAccountsAndOneSelectedAccount()) {
         const hasAccess = user.accounts.some(account => account.accountId == this.multiAccountsService.getSelectedAccount());
 
@@ -201,5 +204,9 @@ export class UpdateCustomerUserComponent implements OnInit {
     return accounts
       .filter((account) => account.isSelected)
       .some((account) => account.roles.length === 0);
+  }
+
+  onClose() {
+    this.router.navigateByUrl(URLs.CustomerUsersURL);
   }
 }

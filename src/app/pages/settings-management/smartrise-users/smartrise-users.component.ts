@@ -1,4 +1,4 @@
-import { ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
@@ -26,15 +26,17 @@ import { IPagination } from '../../../_shared/models/pagination';
 import { IBusinessSettings } from '../../../_shared/models/settings';
 import { environment } from '../../../../environments/environment';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-smartrise-users',
   templateUrl: './smartrise-users.component.html',
   styleUrls: ['./smartrise-users.component.scss']
 })
-export class SmartriseUsersComponent extends BaseComponent implements OnInit, OnDestroy {
+export class SmartriseUsersComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('search', { static: false }) searchRef: ElementRef;
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
 
   source: BaseServerDataSource;
   runGuidingTour = true;
@@ -146,6 +148,12 @@ export class SmartriseUsersComponent extends BaseComponent implements OnInit, On
     this.source.convertFilterValue = (field, value) => this._convertFilterValue(field, value);
     this.source.serviceCallBack = (params) => this._getSmartriseUsers(params);
     this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
   }
 
   private _onDataLoading(isLoading: any) {

@@ -1,12 +1,10 @@
-<nb-card class="in-dialog">
-  <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-    <h2 class="card-title">Upload File</h2>
-    <button [disabled]="progress === 100" type="button" class="close ml-5" aria-label="Close" tooltip="Close"
-      (click)="onClose()" style="outline: none">
-      <i class="fas fa-times text-sm"></i>
-    </button>
-  </nb-card-header>
-  <nb-card-body>
+<div class="popup-container">
+
+  <div class="popup-title">
+    Upload File
+  </div>
+
+  <div class="popup-content-section">
     <form [formGroup]="fileUpload">
       <div class="file-upload-container">
         <input class="hidden-file" type="file" #fileInput ng2FileSelect [uploader]="uploader" accept=".zip,.pdf"
@@ -17,7 +15,7 @@
               <button type="button" class="btn btn-primary btn-group-icon btn-group-divider hidden-file">
                 <i class="ion-plus-round"></i>
               </button>
-              <button [disabled]="isUploading" class="btn btn-primary mr-0 mb-0 browse">
+              <button [disabled]="isUploading" class="main-button mr-0 mb-0 browse">
                 <i class="fas fa-folder-open"></i>
                 Browse
               </button>
@@ -70,11 +68,31 @@
         </div>
       </div>
     </form>
-  </nb-card-body>
-  <nb-card-footer class="d-flex justify-content-end px-3 py-2">
-    <button type="button" [disabled]="isUploading" (click)="onUpload()" class="btn btn-primary">
+  </div>
+
+  <div class="popup-footer">
+    <button type="button" [disabled]="isUploading" (click)="onClose()" class="secondary-button">
+      <i class="fas fa-times"></i>
+      Cancel
+    </button>
+    <button type="button" [disabled]="isUploading" (click)="onUpload()" class="main-button">
       <i class="fas fa-upload"></i>
       Upload
     </button>
+  </div>
+
+</div>
+
+<!-- <nb-card class="in-dialog">
+  <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+    <h2 class="card-title">Upload File</h2>
+    <button [disabled]="progress === 100" type="button" class="close ml-5" aria-label="Close" tooltip="Close"
+      (click)="onClose()" style="outline: none">
+      <i class="fas fa-times text-sm"></i>
+    </button>
+  </nb-card-header>
+  <nb-card-body>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-end px-3 py-2">
   </nb-card-footer>
-</nb-card>
+</nb-card> -->

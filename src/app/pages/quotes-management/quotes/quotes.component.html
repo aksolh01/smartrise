@@ -1,9 +1,8 @@
 <div class="page-header-container">
     <div class="page-header-title">
-        Open Quotes
+        Open Quotes {{ selectedAccountName }}
     </div>
 </div>
-
 <nb-tabset (changeTab)="onChangeTab($event)">
     <nb-tab [active]="customerActiveTab" class="m-0 p-0" tabTitle="Created By Account">
         <ngx-quoting-tool-list #customerQuotes></ngx-quoting-tool-list>

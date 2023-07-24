@@ -1,65 +1,72 @@
-<div class="update-customer-user">
-  <div class="user-information-container">
-    <nb-card size="small">
-      <nb-card-header class="default-card-header has-action">
-        <h2 class="card-title">User Information</h2>
-        <div>
-          <ngx-button [isLoading]="isSaving" type="submit" class="main-button">
+<div class="page-header-container">
+  <div class="page-header-title" *ngIf="customerUser">
+      <span (click)="onGoToAccounts()" class="cursor"> <i class="fa fa-arrow-left"></i> Accounts</span> / 
+      <span (click)="onGoToAccount()" class="cursor">{{ customerUser.account.name }}</span>
+      / {{ customerUser.firstName }} {{ customerUser.lastName }}
+  </div>
+</div>
 
-            Update
-          </ngx-button>
-        </div>
-      </nb-card-header>
-      <nb-card-body>
-        <form [formGroup]="customerUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady" class="form-container">
-
-          <div class="row-container">
-
-            <div class="input-container">
-
-              <div class="input-sub-container">
-                <label class="label-align">First Name</label>
-                <div class="input-item">
-                  <input readonly type="text" placeholder="First Name" value="{{ customerUser.firstName }}"
-                    id="firstName">
+<form [formGroup]="customerUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady">
+  <div class="update-customer-user">
+    <div class="user-information-container">
+      <nb-card size="small">
+        <nb-card-header class="default-card-header has-action">
+          <h2 class="card-title">User Information</h2>
+          <!-- <div class="card-action-header">
+            <button tooltip="Update" class="main-button">
+              <i class="fa fa-pencil-alt"></i>
+            </button>
+          </div> -->
+        </nb-card-header>
+        <nb-card-body>
+          <div class="form-container">
+            <div class="row-container">
+              <div class="input-container">
+                <div class="input-sub-container">
+                  <label class="label-align">First Name</label>
+                  <div class="input-item">
+                    <input readonly type="text" placeholder="First Name" value="{{ customerUser.firstName }}"
+                      id="firstName">
+                  </div>
                 </div>
+
+                <div class="input-sub-container">
+                  <label class="label-align">Last Name</label>
+                  <div class="input-item">
+                    <input readonly type="text" placeholder="Last Name" value="{{ customerUser.lastName }}"
+                      id="lastName">
+                  </div>
+                </div>
+
+                <div class="input-sub-container">
+                  <label class="label-align">Email</label>
+                  <div class="input-item">
+                    <input readonly type="text" placeholder="Email" value="{{ customerUser.email }}" id="email">
+                  </div>
+                </div>
+
               </div>
 
-              <div class="input-sub-container">
-                <label class="label-align">Last Name</label>
-                <div class="input-item">
-                  <input readonly type="text" placeholder="Last Name" value="{{ customerUser.lastName }}" id="lastName">
-                </div>
-              </div>
-
-              <div class="input-sub-container">
-                <label class="label-align">Email</label>
-                <div class="input-item">
-                  <input readonly type="text" placeholder="Email" value="{{ customerUser.email }}" id="email">
-                </div>
-              </div>
 
             </div>
 
 
           </div>
-
-
-        </form>
-      </nb-card-body>
-    </nb-card>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <div class="roles-list">
+      <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="roles"
+        [roles]="roles"></ngx-smr-roles-checklist>
+    </div>
   </div>
-  <div class="roles-list">
-    <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="roles"
-      [roles]="roles"></ngx-smr-roles-checklist>
+  <div class="form-buttons">
+    <ngx-button  routerLink=".." type="button" class="secondary-button">
+      Cancel
+    </ngx-button >
+    <ngx-button [isLoading]="isSaving" type="submit" class="main-button">
+      Update
+    </ngx-button>
   </div>
 
-
-</div>
-<div class="form-buttons">
-  <button routerLink=".." type="button" class="secondary-button">
-
-    Cancel
-  </button>
- 
-</div>
+</form>

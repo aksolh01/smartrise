@@ -18,6 +18,8 @@ import { ShipmentActionsComponent } from './shipments/shipments-list/shipment-ac
 import { ShipmentsListComponent } from './shipments/shipments-list/shipments-list.component';
 import { FileUploaderComponent } from './job-files/file-uploader/file-uploader.component';
 import { UploadConfigFileComponent } from './jobs/upload-config-file/upload-config-file.component';
+import { JobPasscodesComponent } from './job-passcodes/job-passcodes.component';
+import { PasscodeCellComponent } from './jobs/job-details/job-basiic-info/passcode-cell/passcode-cell.component';
 
 const routedShipmentComponents = [
     ShipmentsListComponent,
@@ -55,5 +57,7 @@ export const routedComponents = [
     ...routedShipmentComponents,
     ...routedResourceComponents,
     ...routedInvoiceComponents,
-    UploadConfigFileComponent
+    UploadConfigFileComponent,
+    JobPasscodesComponent,
+    PasscodeCellComponent
 ];

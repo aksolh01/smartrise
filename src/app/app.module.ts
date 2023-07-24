@@ -45,6 +45,7 @@ import { SelectHelperService } from './services/select-helper.service';
 import { ScrollingService } from './services/scrolling.servive';
 import { MultiAccountsService } from './services/multi-accounts-service';
 import { AccountInfoService } from './services/account-info.service';
+import { SearchService } from './services/search.service';
 
 @NgModule({
   declarations: [AppComponent],

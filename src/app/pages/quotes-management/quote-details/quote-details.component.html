@@ -1,119 +1,111 @@
 <div class="page-header-container">
     <div class="page-header-title" *ngIf="quote">
-        <span (click)="onClose()" class="cursor">Quotes</span> / {{ quote?.jobName }}
+        <span (click)="onClose()" class="cursor"><i class="fa fa-arrow-left"></i> Open Quotes</span> / {{ quote?.jobName
+        }}
+    </div>
+    <div *ngIf="quote">
+        <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked" (cancel)="onCancel()"
+            (edit)="onEdit()" (viewPricing)="onViewPricing()" [canEditQuote]="canEditQuote"></ngx-detail-actions-bar>
     </div>
 </div>
-
-<div class="margin-16"></div>
 <nb-card *ngIf="!isLoading" [nbSpinner]="isAddingCar" nbSpinnerStatus="primary" nbSpinnerSize="giant">
     <div class="table-sub-details">
-
         <nb-card-body class="pb-0">
-
-            <div class="text-right mb-3">
-                <ngx-detail-actions-bar [status]="quote?.status?.value" [isLocked]="quote.isLocked"
-                    (cancel)="onCancel()" (edit)="onEdit()" (viewPricing)="onViewPricing()"
-                    [canEditQuote]="canEditQuote"></ngx-detail-actions-bar>
-            </div>
-
             <div class="row quote-level-info ">
                 <div class="left-section">
                     <nb-card>
-                        <nb-card-body>
-                            <div class="card-details">
-                                <div class="card-details-container">
-                                    <div class="displayData" *ngIf="displayAccountName">
-                                        <div class="label">{{ accountTitle }}</div>
-                                        <div class="content"> {{ quote?.createdByAccount }}</div>
-                                    </div>
-                                    <div class="displayData">
-                                        <div class="label">Created Date</div>
-                                        <div class="content"> {{ quote?.creationDate | usdate | value }}</div>
-                                    </div>
+                        <div class="card-details">
+                            <div class="card-details-container">
+                                <div class="displayData" *ngIf="displayAccountName">
+                                    <div class="label">{{ accountTitle }}</div>
+                                    <div class="content"> {{ quote?.createdByAccount }}</div>
+                                </div>
+                                <div class="displayData">
+                                    <div class="label">Created Date</div>
+                                    <div class="content"> {{ quote?.creationDate | usdate | value }}</div>
+                                </div>
 
-                                    <div class="displayData">
-                                        <div class="label">Job Status</div>
-                                        <div class="content"> {{ quote?.jobStatus?.description | value }}</div>
-                                    </div>
-
-                                    <div class="displayData" *ngIf="quote?.jobStatus?.value === 'Bidding'">
-                                        <div class="label">Bid Date</div>
-                                        <div class="content"> {{ quote?.biddingDate | usdate | value }}</div>
+                                <div class="displayData">
+                                    <div class="label">Job Status</div>
+                                    <div class="content">
+                                        <ngx-job-status-cell [value]="quote?.jobStatus?.value"></ngx-job-status-cell> 
                                     </div>
                                 </div>
 
-                                <div class="card-details-container">
+                                <div class="displayData" *ngIf="quote?.jobStatus?.value === 'Bidding'">
+                                    <div class="label">Bid Date</div>
+                                    <div class="content"> {{ quote?.biddingDate | usdate | value }}</div>
+                                </div>
+                            </div>
 
-                                    <div class="displayData">
-                                        <div class="label">Consultant Name</div>
-                                        <div class="content"> {{ quote?.consultantName | value }}</div>
+                            <div class="card-details-container">
+
+                                <div class="displayData">
+                                    <div class="label">Consultant Name</div>
+                                    <div class="content"> {{ quote?.consultantName | value }}</div>
+                                </div>
+
+                                <div class="displayData">
+                                    <div class="label"> Unknown Consultant</div>
+                                    <div class="content"> <ngx-yes-no [value]="quote.unknownConsultant"></ngx-yes-no>
                                     </div>
+                                </div>
 
-                                    <div class="displayData">
-                                        <div class="label"> Unknown Consultant</div>
-                                        <div class="content"> <ngx-yes-no
-                                                [value]="quote.unknownConsultant"></ngx-yes-no>
-                                        </div>
+                                <div class="displayData">
+                                    <div class="label">Modernization</div>
+                                    <div class="content"> <ngx-yes-no [value]="quote.modernization"></ngx-yes-no>
                                     </div>
+                                </div>
 
-                                    <div class="displayData">
-                                        <div class="label">Modernization</div>
-                                        <div class="content"> <ngx-yes-no [value]="quote.modernization"></ngx-yes-no>
-                                        </div>
+                                <div class="displayData">
+                                    <div class="label">New Construction</div>
+                                    <div class="content"> <ngx-yes-no [value]="quote.newConstruction"></ngx-yes-no>
                                     </div>
-
-                                    <div class="displayData">
-                                        <div class="label">New Construction</div>
-                                        <div class="content"> <ngx-yes-no [value]="quote.newConstruction"></ngx-yes-no>
-                                        </div>
-                                    </div>
-
                                 </div>
 
                             </div>
-                        </nb-card-body>
+
+                        </div>
                     </nb-card>
                 </div>
                 <div class="right-section">
                     <nb-card>
-                        <nb-card-body>
-                            <div class="card-details">
-                                <div class="card-details-container">
-                                    <div class="displayData">
-                                        <div class="label">Job Name</div>
-                                        <div class="content"> {{ quote?.jobName | value }}</div>
-                                    </div>
-                                    <div class="displayData">
-                                        <div class="label">Building Type</div>
-                                        <div class="content"> {{ quote?.buildingType?.description | value }}</div>
-                                    </div>
-
-                                    <div class="displayData">
-                                        <div class="label">Job Location</div>
-                                        <div class="content"> {{ quote?.jobLocation?.displayLocation | value }}</div>
-                                    </div>
+                        <div class="card-details">
+                            <div class="card-details-container">
+                                <div class="displayData">
+                                    <div class="label">Job Name</div>
+                                    <div class="content"> {{ quote?.jobName | value }}</div>
+                                </div>
+                                <div class="displayData">
+                                    <div class="label">Building Type</div>
+                                    <div class="content"> {{ quote?.buildingType?.description | value }}</div>
                                 </div>
 
-                                <div class="card-details-container">
-
-                                    <div class="displayData">
-                                        <div class="label">Contact</div>
-                                        <div class="content"> {{ quote?.contact | value }}</div>
-                                    </div>
-
-                                    <div class="displayData">
-                                        <div class="label"> Email</div>
-                                        <div class="content"> {{ quote?.email | value }}</div>
-                                    </div>
-
-                                    <div class="displayData">
-                                        <div class="label">Phone</div>
-                                        <div class="content"> {{ quote?.phone | value }}</div>
-                                    </div>
+                                <div class="displayData">
+                                    <div class="label">Job Location</div>
+                                    <div class="content"> {{ quote?.jobLocation?.displayLocation | value }}</div>
                                 </div>
-
                             </div>
-                        </nb-card-body>
+
+                            <div class="card-details-container">
+
+                                <div class="displayData">
+                                    <div class="label">Contact</div>
+                                    <div class="content"> {{ quote?.contact | value }}</div>
+                                </div>
+
+                                <div class="displayData">
+                                    <div class="label"> Email</div>
+                                    <div class="content"> {{ quote?.email | value }}</div>
+                                </div>
+
+                                <div class="displayData">
+                                    <div class="label">Phone</div>
+                                    <div class="content"> {{ quote?.phone | value }}</div>
+                                </div>
+                            </div>
+
+                        </div>
                     </nb-card>
                 </div>
             </div>
@@ -469,8 +461,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let car of quote.cars">
-                                <td>{{
-                                    car?.group?.description }} - {{ car.carLabel }}</td>
+                                <td>{{car?.group?.description }} - {{ car.carLabel }}</td>
                                 <td>
                                     <span>{{ car.numberOfRisers | numberValue }}</span>
                                 </td>
@@ -479,12 +470,10 @@
                                     </ngx-yes-no>
                                 </td>
                                 <td>
-                                    <span>{{ car?.carSmartriseFeature?.controllerLayout?.description |
-                                        value}}</span>
+                                    <span>{{ car?.carSmartriseFeature?.controllerLayout?.description | value}}</span>
                                 </td>
                                 <td>
-                                    <span>{{ car?.carSmartriseFeature?.smartConnect?.description | value
-                                        }}</span>
+                                    <span>{{ car?.carSmartriseFeature?.smartConnect?.description | value}}</span>
                                 </td>
                                 <td>
                                     <ngx-yes-no [value]="car.carProvision.hallArrivalLanterns"></ngx-yes-no>
@@ -928,13 +917,6 @@
         </nb-card-body>
     </div>
 </nb-card>
-
-<ng-template [ngIf]="isLoading">
-    <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-        <div class="col-12 p-4">
-        </div>
-    </nb-card>
-</ng-template>
 
 <ng-template [ngIf]="isLoading">
     <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">

@@ -107,6 +107,10 @@
   color: #6d767e82 !important;
 }
 
+::ng-deep ngx-bank-account nb-select[placeholder-selected="true"] button span {
+  font-weight: 500 !important;
+}
+
 .form-container{
   display: flex;
   flex-direction: column;

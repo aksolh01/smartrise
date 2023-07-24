@@ -67,11 +67,11 @@ export class CustomerDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   getValue(value: any) {
     if (value === null) {
-return 'N/A';
-}
+      return 'N/A';
+    }
     if (value.toString().trim() === '') {
-return 'N/A';
-}
+      return 'N/A';
+    }
     return value;
   }
 

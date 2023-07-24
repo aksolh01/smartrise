@@ -103,15 +103,21 @@ export const MENU_ITEMS: NbMenuItem[] = [
     pathMatch: 'prefix'
   },
   {
+    title: 'Parts',
+    link: URLs.ViewPartsURL,
+    data: PERMISSIONS.PartsListing,
+    icon: 'hard-drive-outline'
+  },
+  {
     title: 'Settings',
     icon: 'settings',
     pathMatch: 'prefix',
     children: [
-      {
-        title: 'Business Settings',
-        link: URLs.BusinessSettingsURL,
-        data: PERMISSIONS.BusinessSettingsDisplay,
-      },
+      // {
+      //   title: 'Business Settings',
+      //   link: URLs.BusinessSettingsURL,
+      //   data: PERMISSIONS.BusinessSettingsDisplay,
+      // },
       {
         title: 'System Settings',
         link: URLs.SystemSettingsURL,

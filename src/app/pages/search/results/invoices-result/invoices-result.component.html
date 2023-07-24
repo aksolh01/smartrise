@@ -1,0 +1,14 @@
+<div class="page-header-container">
+    <div class="page-header-title">Invoices</div>
+    <ngx-pager #pager></ngx-pager>
+</div>
+<div class="table-container">
+    <nb-card>
+        <nb-card-body>
+            <div class="table-content" *ngIf="source">
+                <ng2-smart-table #table [settings]="settings" [source]="source">
+                </ng2-smart-table>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>

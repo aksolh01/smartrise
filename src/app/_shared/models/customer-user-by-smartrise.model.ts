@@ -5,6 +5,7 @@ export interface ICustomerUserBySmartriseResponse {
     userName: string;
     email: string;
     emailConfirmed: boolean;
+    account: any;
     roles: ICustomerUserBySmartriseRoleResponse[];
 }
 

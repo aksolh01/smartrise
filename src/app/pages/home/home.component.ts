@@ -2,10 +2,10 @@ import { Component, OnInit, AfterContentInit, OnDestroy } from '@angular/core';
 import { JoyrideService } from 'ngx-joyride';
 import { JoyrideStepInfo } from 'ngx-joyride/lib/models/joyride-step-info.class';
 import { Observable, Subscription } from 'rxjs';
-import { PERMISSIONS } from '../../_shared/constants';
+import { PERMISSIONS, URLs } from '../../_shared/constants';
 import { ICustomerRecord, IRecentCustomer } from '../../_shared/models/customer-lookup';
 import { SortDirection } from '../../_shared/models/enums';
-import { IUser } from '../../_shared/models/IUser';
+import { IUser, IUserAccountLookup } from '../../_shared/models/IUser';
 import { IRecentJob } from '../../_shared/models/job';
 import { ResourceByCustomerUserParams, ResourceParams } from '../../_shared/models/resourceParams';
 import { ScreenBreakpoint } from '../../_shared/models/screenBreakpoint';
@@ -21,6 +21,9 @@ import * as guidingTourGlobal from '../guiding.tour.global';
 import { MiscellaneousService } from '../../services/miscellaneous.service';
 import { MultiAccountsService } from '../../services/multi-accounts-service';
 import { CustomerParams } from '../../_shared/models/CustomerParams';
+import { LocationService } from '../../services/location.service';
+import { ContactService } from '../../services/contact.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-smr-home',
@@ -36,8 +39,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
   show2FAisActivated = false;
 
   hasAccessToCustomers = false;
-  hasAccessToRecentJobs = false;
+  hasAccessToJobListing = false;
+  hasAccessToActiveJobs = false;
   hasAccessToJobFiles = false;
+  hasAccessToCreateOnlineQuote = false;
 
   portalTitle = '';
   responsiveSubscription: Subscription;
@@ -87,6 +92,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
   };
 
   guidingTourSubscription: Subscription;
+  countries: any[];
+  isLoadingCountries: boolean = true;
+  accounts: IUserAccountLookup[];
+  customerContacts: any[];
+  activeJobIDs: number[];
 
   constructor(
     private _guidingTourService: GuidingTourService,
@@ -99,7 +109,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
     private readonly _customerService: CustomerService,
     private readonly _resourceService: ResourceService,
     private readonly _miscellaneousService: MiscellaneousService,
-    private readonly _multiAccountService: MultiAccountsService) { }
+    private readonly _locationService: LocationService,
+    private readonly _multiAccountService: MultiAccountsService,
+    private readonly _router: Router) { }
 
   ngOnInit() {
 
@@ -169,6 +181,27 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
     this._loadRecentCustomers();
     this._loadFavoriteCustomers();
     this._loadLatestUploadedFiles();
+    this._loadCountries();
+    this._loadLoggedInUserAccounts();
+    if (this._miscellaneousService.isCustomerUser())
+      this._loadActiveJobIDs();
+  }
+
+  private _loadActiveJobIDs() {
+    this._jobService.getActiveJobIDs().subscribe(IDs => {
+      this.activeJobIDs = IDs;
+    });
+  }
+
+  private _loadLoggedInUserAccounts() {
+    this._accountService.loadCurrentUser().subscribe(x => this.accounts = x.accounts);
+  }
+
+  private _loadCountries() {
+    this._locationService.getCountries().subscribe(countries => {
+      this.countries = countries;
+      this.isLoadingCountries = false;
+    });
   }
 
   private _loadProfileData() {
@@ -186,7 +219,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private _loadRecentJobs() {
-    if (!this.hasAccessToRecentJobs) {
+    if (!this.hasAccessToJobListing) {
       return;
     }
 
@@ -333,9 +366,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private async _getAccess() {
     this.hasAccessToCustomers = await this._permissionService.hasPermissionAsync(PERMISSIONS.CustomerListing);
-    this.hasAccessToRecentJobs = await this._permissionService.hasPermissionAsync(PERMISSIONS.JobsListing);
+    this.hasAccessToCreateOnlineQuote = await this._permissionService.hasPermission(PERMISSIONS.SaveOnlineQuote);
+    this.hasAccessToJobListing = await this._permissionService.hasPermissionAsync(PERMISSIONS.JobsListing);
     this.hasAccessToJobFiles = await this._permissionService.hasPermissionAsync(PERMISSIONS.ManageJobFiles)
       || await this._permissionService.hasPermissionAsync(PERMISSIONS.ViewResourcesList);
+    this.hasAccessToActiveJobs = this._miscellaneousService.isCustomerUser();
   }
 
   private _fetchCustomerInfoFromToken() {
@@ -427,5 +462,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterContentInit {
   onClose2FAAlert() {
     sessionStorage.removeItem('2FAIsActivated');
     this.show2FAisActivated = false;
+  }
+
+  onViewAllJobs(event: MouseEvent) {
+    event.preventDefault();
+    this._router.navigateByUrl(URLs.JobsURL);
   }
 }

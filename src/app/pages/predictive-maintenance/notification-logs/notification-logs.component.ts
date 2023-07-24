@@ -17,6 +17,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ResponsiveService } from '../../../services/responsive.service';
 import { BaseComponent } from '../../base.component';
 import { environment } from '../../../../environments/environment';
+import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
 
 @Component({
   selector: 'ngx-notification-logs',
@@ -48,7 +49,6 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
     },
     columns: {
       reciepients: {
-        filter: true,
         sort: false,
         title: 'Recipient',
         type: 'custom',
@@ -56,6 +56,10 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
         onComponentInitFunction: (instance: Ng2TableCellComponent) => {
           instance.setHeader('Recipient');
         },
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        }
       },
       notificationMethod: {
         sort: true,
@@ -129,7 +133,6 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
         },
       },
       alert: {
-        filter: true,
         sort: true,
         title: 'Alert',
         type: 'custom',
@@ -137,6 +140,10 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
         onComponentInitFunction: (instance: Ng2TableCellComponent) => {
           instance.setHeader('Alert');
         },
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        }
       },
       sentTime: {
         sort: true,
@@ -400,7 +407,7 @@ export class NotificationLogsComponent extends BaseComponent implements OnInit {
   }
 
   onRecordsNumberChanged(value: number) {
-    this.source.setPaging(1, value);
+    //this.source.setPaging(1, value);
   }
 
   toggleFilters(): void {

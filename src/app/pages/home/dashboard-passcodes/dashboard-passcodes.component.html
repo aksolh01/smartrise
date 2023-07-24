@@ -1,0 +1,20 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+    <div class="row-container">
+        <div class="input-container">
+            <div class="input-item">
+                <input type="text" formControlName="searchText" placeholder="Job Number/PO Number" maxlength="255" />
+                <div *ngIf="formSubmitted &&
+                    form.get('searchText').touched &&
+                    form.get('searchText').errors &&
+                    form.get('searchText').errors['requiredWithTrim']" class="mt-1 help-block error">
+                    Job Number or PO Number is required
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-action">
+    <ngx-button [isLoading]="isLoading" class="main-button" type="submit">
+        Get Passcodes
+    </ngx-button>
+    </div>
+</form>

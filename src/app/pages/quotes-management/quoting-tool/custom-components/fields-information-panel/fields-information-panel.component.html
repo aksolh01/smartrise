@@ -1,0 +1,26 @@
+<nb-card class="mb-0">
+    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
+        <h2 class="card-title">Fields Descriptions</h2>
+        <button type="button" class="close ml-5" aria-label="Close" tooltip="Close" (click)="onClose()"
+            style="outline: none">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="d-flex">
+            <input class="form-control mb-3" type="text" placeholder="Search" (keyup)="onSearch($event.target.value)">
+        </div>
+        <div class="table-container">
+            <ng2-smart-table class="default-smart-table" [source]="source" [settings]="settings">
+            </ng2-smart-table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="text-right">
+            <button (click)="onClose()" type="button" class="footer-btn btn btn-secondary">
+                <i class="clear-icon fas fa-times"></i>
+                Close
+            </button>
+        </div>
+    </nb-card-footer>
+</nb-card>

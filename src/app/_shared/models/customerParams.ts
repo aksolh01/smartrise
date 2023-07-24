@@ -11,7 +11,7 @@ export class CustomerParams extends BaseParams {
     favoriteCustomer?: boolean = true;
 }
 
-export class searchCompanyInfoParams extends BaseParams {
+export class SearchCompanyInfoParams extends BaseParams {
     name: string;
     phone: string;
     fax: string;

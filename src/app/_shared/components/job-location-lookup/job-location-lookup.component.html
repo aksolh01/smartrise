@@ -1,0 +1,12 @@
+<div class="d-flex">
+    <input #i readonly type="text" [value]="rednerDisplay()" [placeholder]="fieldLabel"
+    [ngClass]="{'quote-input form-control': true, 'error': hasErrors, 'blink': blink}">
+    <button type="button" tooltip="Search Location" class="btn btn-primary p-0 pr-2 pl-2 ml-1"
+        (click)="onSelectLocation()">
+        <i [ngClass]="{'fa fa-search': true}"></i>
+    </button>
+    <button type="button" *ngIf="allowRemoveJobLocation && jobLocation?.country && jobLocation?.state && jobLocation?.city"
+        tooltip="Remove Location" class="remove-item btn p-0 pr-2 pl-2 ml-1" (click)="onRemoveLocation()">
+        <i [ngClass]="{'fa fa-trash': true}"></i>
+    </button>
+</div>

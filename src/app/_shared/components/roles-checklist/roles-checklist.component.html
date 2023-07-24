@@ -3,7 +3,7 @@
 <nb-card class="roles-checklist-container" size="small">
   <nb-card-header class="default-card-header" >
     <h2 class="card-title" *ngIf="!hideTitle">{{ title }}</h2>
-    <h2 class="help-block error" *ngIf="!anyRolesSelected && isTouched && !hideError"> At least one role must be selected</h2>
+   
   </nb-card-header>
   <nb-card-body>
     <div class="checkbox-custom" *ngFor="let role of roles; let i = index">
@@ -11,5 +11,6 @@
       <i class="privileges-icon ml-2 fas fa-info-circle" (click)="showPrivileges(role)"
         tooltip="Show Role Privileges"></i>
     </div>
+     <div class="error" *ngIf="!anyRolesSelected && isTouched && !hideError"> At least one role must be selected</div>
   </nb-card-body>
 </nb-card>

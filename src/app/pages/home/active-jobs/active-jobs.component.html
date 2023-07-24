@@ -1,0 +1,44 @@
+<div *ngIf="activeJobIDs && activeJobIDs.length > 0" [nbSpinner]="isLoading" nbSpinnerStatus="primary"
+    nbSpinnerSize="large">
+    <div [ngClass]="{'hide': isLoading}">
+        <div class="slide-container">
+            <div><button tooltip="Previous" class="navigate-button" [disabled]="index <= 0" (click)="onPrev()" type="button">&lt;</button></div>
+            <div class="job-info">
+                <div class="job-name"><a (click)="onGoToJobDetails(activeJob?.id)">{{ activeJob?.jobName | value }}</a></div>
+                <div class="job-number">{{ activeJob?.jobNumber | value }}</div>
+                <div class="poNumber">{{ activeJob?.poNumber | value }}</div>
+                <div class="address">{{ activeJob?.address | value }}</div>
+            </div>
+            <div> <button tooltip="Next" class="navigate-button" [disabled]="index >= activeJobIDs.length - 1" (click)="onNext()" type="button">&gt;</button>
+            </div>
+        </div>
+        <div class="data-container">
+            <div class="data-container-item">
+                <div class="label">Status</div>
+                <div class="value">{{ activeJob?.status | value }}</div>
+            </div>
+            <div class="data-container-item">
+                <div class="label">Desired Ship Date</div>
+                <div class="value">{{ activeJob?.shipDate | usdate | value }}</div>
+            </div>
+            <div class="data-container-item">
+                <div class="label">Tentative Ship Date</div>
+                <div class="value">{{ activeJob?.grantedShipDate | usdate | value }}</div>
+            </div>
+            <div class="data-container-item">
+                <div class="label">Actual Ship Date</div>
+                <div class="value">{{ activeJob?.actualShipDate | usdate | value }}</div>
+            </div>
+            <div class="data-container-item">
+                <div class="label">Tracking Number</div>
+                <div class="value">{{ activeJob?.trackingNumber | value }}</div>
+            </div>
+        </div>
+        <div class="job-files">
+            <div (click)="onDownloadJobFile(jobFile)" class="job-file" *ngFor="let jobFile of activeJob?.jobFiles">
+                <div class="file"> {{ jobFile?.name }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center" *ngIf="!activeJobIDs || activeJobIDs.length === 0">No Jobs found</div>

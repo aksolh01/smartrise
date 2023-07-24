@@ -148,9 +148,8 @@ export class ProfilePictureComponent implements OnInit, OnChanges, OnDestroy {
         this.uploadPictureText = 'Edit Photo';
         this.allowRemovePhoto = false;
         this.messageService.showSuccessMessage('Profile Picture has been removed successfully');
-      },
-        () => {
-        });
+      }, () => {
+      });
     }
   }
 

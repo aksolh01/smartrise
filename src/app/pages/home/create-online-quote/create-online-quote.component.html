@@ -1,0 +1,71 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+    <div class="row-container">
+        <div class="input-container">
+            <div class="input-item">
+                <input type="text" formControlName="jobName" placeholder="Job Name" maxlength="255" />
+                <div *ngIf="formSubmitted &&
+                    form.get('jobName').touched &&
+                    form.get('jobName').errors &&
+                    form.get('jobName').errors['requiredWithTrim']" class="mt-1 help-block error">
+                    Job Name is required
+                </div>
+                <div *ngIf="formSubmitted &&
+                    form.get('jobName').touched &&
+                    form.get('jobName').errors &&
+                    form.get('jobName').errors['trimError']" class="mt-1 help-block error">
+                    This field can't start or end with a blank space
+                </div>
+            </div>
+        </div>
+        <div class="input-container">
+            <div class="input-item">
+                <input disabled="true" *ngIf="accounts && accounts.length === 1" type="text"
+                    value="{{accounts[0].name}}">
+                <nb-select fullWidth placeholder="Select Account" (selectedChange)="onAccountChanged($event)" *ngIf="accounts && accounts.length > 1"
+                    formControlName="customerId">
+                    <nb-option *ngFor="let account of accounts" [value]="account.accountId">{{ account.name
+                        }}</nb-option>
+                </nb-select>
+                <div *ngIf="formSubmitted &&
+                    form.get('customerId').touched &&
+                    form.get('customerId').errors &&
+                    form.get('customerId').errors['required']" class="mt-1 help-block error">
+                    Account is required
+                </div>
+            </div>
+        </div>
+        <div class="input-container">
+            <div class="input-item">
+                <ngx-job-location-lookup fieldLabel="Job Location" formControlName="jobLocation"
+                    [countries]="countries"></ngx-job-location-lookup>
+                <div *ngIf="formSubmitted &&
+                    form.get('jobLocation').touched &&
+                    form.get('jobLocation').errors &&
+                    form.get('jobLocation').errors['required']" class="mt-1 help-block error">
+                    Location is required
+                </div>
+            </div>
+        </div>
+        <div class="input-container">
+            <div class="input-item checkbox">
+                <div class="d-flex justify-content-between">
+                    <nb-checkbox [checked]="form.value.controllerType === 'Hydraulic'"
+                        (checkedChange)="onControllerTypeChanged('Hydraulic', $event)"
+                        type="checkbox">Hydro</nb-checkbox>
+                    <nb-checkbox [checked]="form.value.controllerType === 'ACTraction'"
+                        (checkedChange)="onControllerTypeChanged('ACTraction', $event)" type="checkbox">AC</nb-checkbox>
+                    <nb-checkbox [checked]="form.value.controllerType === 'DCTraction'"
+                        (checkedChange)="onControllerTypeChanged('DCTraction', $event)" type="checkbox">DC</nb-checkbox>
+                </div>
+                <div *ngIf="formSubmitted && !form.value.controllerType" class="mt-1 help-block error">
+                    Controller Type is required
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-action">
+        <ngx-button [isLoading]="isLoading" class="main-button" type="submit">
+            Create
+        </ngx-button>
+    </div>
+</form>

@@ -36,6 +36,8 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
         this._dictionary.set((url) => url === URLs.HomeURL, () => true);
         this._dictionary.set((url) => url === URLs.BusinessSettingsURL, async () => await this._hasPermissionAsync(PERMISSIONS.BusinessSettingsDisplay));
         this._dictionary.set((url) => url === URLs.JobsURL, async () => await this._hasPermissionAsync(PERMISSIONS.JobsListing));
+        this._dictionary.set((url) => url === URLs.ViewPartsURL, async () => await this._hasPermissionAsync(PERMISSIONS.PartsListing));
+        this._dictionary.set((url) => this._match(url, `${URLs.ViewPartsURL}\/[0-9]+\/view`), async () => await this._hasPermissionAsync(PERMISSIONS.PartsListing));
         this._dictionary.set((url) => url === URLs.GeneratePasscode, async () => await this._hasPermissionAsync(PERMISSIONS.GeneratePasscode));
         this._dictionary.set((url) => url.startsWith('/pages/jobs-management/jobs/') ||
             url.startsWith('/pages/jobs-management/shipments/') ||
@@ -81,6 +83,7 @@ export class PermissionGuard implements CanActivate, CanActivateChild {
         this._dictionary.set((url) => url === URLs.ViewAccountUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.AccountUsersListing));
         this._dictionary.set((url) => url === URLs.CreateAccountUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.AccountUsersCreate));
         this._dictionary.set((url) => url.startsWith(URLs.ViewAccountUsersURL) && url !== URLs.ViewAccountUsersURL, async () => await this._hasPermissionAsync(PERMISSIONS.AccountUsersUpdate));
+        this._dictionary.set((url) => url.startsWith('/pages/search'), async () => true);
     }
 
     private _match(url: string, pattern: string) {

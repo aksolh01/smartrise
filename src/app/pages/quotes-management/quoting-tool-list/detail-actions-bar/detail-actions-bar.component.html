@@ -1,7 +1,7 @@
 <div class="bottom-actions">
-    <button class="secondary-button mr-1" type="button" (click)="onCancel()">
+    <!-- <button class="secondary-button mr-1" type="button" (click)="onCancel()">
         Close
-    </button>
+    </button> -->
     <button *ngIf="canEditQuote && !isLocked" [ngClass]="{'main-button':true, 'mr-1': status === 'Generated'}"
         type="button" (click)="onEdit()">
         Edit

@@ -8,201 +8,233 @@
     </nb-card-header>
     <nb-card-body class="card-body">
 
-        <form [formGroup]="alertSettingsForm" (ngSubmit)="onSubmit()">
-            <div class="row mb-4">
+        <form [formGroup]="alertSettingsForm" (ngSubmit)="onSubmit()" class="form-container">
+            <div class="row-container">
+                <div class="input-container">
+                    <div class="input-sub-container">
+                        <label class="label-align" for="alertName">Alert Name</label>
+                        <div class="input-item">
+                            <input formControlName="alertName" type="text" placeholder="Alert Name" />
+                        </div>
+                    </div>
+                    <div class="input-sub-container">
+                        <label class="label-align" for="alertDescription">Description</label>
+                        <div class="input-item">
+                            <input formControlName="alertDescription" type="text" placeholder="Alert Description" />
+                        </div>
+                    </div>
 
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="alertName">Alert Name</label>
                 </div>
-                <div class="form-group col-lg-4">
-                    <input formControlName="alertName" type="text" placeholder="Alert Name" class="form-control" />
-                </div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="severity">Severity</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <nb-select formControlName="severity" class="col-lg-12 p-0" placeholder="Severity">
-                        <nb-option *ngFor="let sev of severities;" [value]="sev.value">{{ sev.title }}</nb-option>
-                    </nb-select>
+                <div class="input-container">
+                    <div class="input-sub-container">
+                        <label class="label-align" for="severity">Severity</label>
+                        <div class="input-item">
+                            <nb-select formControlName="severity" class="col-lg-12 p-0" placeholder="Severity">
+                                <nb-option *ngFor="let sev of severities;" [value]="sev.value">{{ sev.title
+                                    }}</nb-option>
+                            </nb-select>
+                        </div>
+                    </div>
+                    <div class="input-sub-container">
+                        <label class="label-align" for="alertType">Alert Type</label>
+                        <div class="input-item">
+                            <nb-select formControlName="alertType" placeholder="Alert Type" optionsListClass="options"
+                                (selectedChange)="onAlertTypeChange($event)" class="col-lg-12 p-0">
+                                <nb-option *ngFor="let _alertType of alertTypes;" [value]="_alertType.value">{{
+                                    _alertType.title
+                                    }}
+                                </nb-option>
+                            </nb-select>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="alertDescription">Description</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <input formControlName="alertDescription" type="text" placeholder="Alert Description"
-                        class="form-control" />
+            </div>
+            <div *ngIf="alertType === faultAlertType">
+                <div class="form-group section-title">Fault Alert</div>
+
+                <div class="row-container">
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align" for="fault">Fault</label>
+                            <div class="input-item">
+                                <input #autoFaultInput formControlName="fault" nbInput type="text"
+                                    (input)="onFaultChange()" placeholder="Enter value" [nbAutocomplete]="autoFault" />
+
+                                <nb-autocomplete #autoFault (selectedChange)="onFaultSelectionChange($event)">
+
+                                    <nb-option value="">Fault</nb-option>
+                                    <nb-option *ngFor="let fault of filteredfaults$ | async"
+                                        [value]="fault.description">
+                                        {{ fault.description }}
+                                    </nb-option>
+
+                                </nb-autocomplete>
+                            </div>
+                        </div>
+                        <div class="input-sub-container">
+                            <label class="label-align" for="faultThreshold">Fault Threshold</label>
+                            <div class="input-item">
+                                <input formControlName="faultThreshold" type="number" placeholder="Threshold" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align">Possible Affected Parts</label>
+                            <div class="input-item">
+                                <nb-select multiple placeholder="Part Type">
+                                    <nb-option *ngFor="let partType of possiblePartTypes;" [value]="partType.name">{{
+                                        partType.name
+                                        }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="alertType">Alert Type</label>
+            </div>
+
+            <div *ngIf="alertType === alarmAlertType">
+                <div class="form-group  section-title">Alarm Alert</div>
+                <div class="row-container">
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align" for="alarm">Alarm</label>
+                            <div class="input-item">
+                                <input #autoAlarmInput nbInput class="form-control" formControlName="alarm" type="text"
+                                    (input)="onAlarmChange()" placeholder="Enter value" [nbAutocomplete]="autoAlarm" />
+
+                                <nb-autocomplete #autoAlarm (selectedChange)="onAlarmSelectionChange($event)">
+                                    <nb-option *ngFor="let alarm of filteredalarms$ | async"
+                                        [value]="alarm.description">
+                                        {{ alarm.description }}
+                                    </nb-option>
+
+                                </nb-autocomplete>
+                            </div>
+                        </div>
+                        <div class="input-sub-container">
+                            <label class="label-align" for="alarmThreshold">Alarm Threshold</label>
+                            <div class="input-item">
+                                <input formControlName="alarmThreshold" type="number" placeholder="Threshold" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align">Possible Affected Parts</label>
+                            <div class="input-item">
+                                <nb-select multiple placeholder="Part Type">
+                                    <nb-option *ngFor="let partType of possiblePartTypes;" [value]="partType.name">{{
+                                        partType.name
+                                        }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="form-group col-lg-4">
-                    <nb-select formControlName="alertType" placeholder="Alert Type" optionsListClass="options"
-                        (selectedChange)="onAlertTypeChange($event)" class="col-lg-12 p-0">
-                        <nb-option *ngFor="let _alertType of alertTypes;" [value]="_alertType.value">{{ _alertType.title
-                            }}
-                        </nb-option>
-                    </nb-select>
+
+
+            </div>
+
+            <div *ngIf="alertType === countBasedPartAlertType">
+                <div class="form-group section-title">Count-based Part Alert</div>
+                <div class="row-container">
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align" for="countBasedPart">Part</label>
+                            <div class="input-item">
+                                <nb-select formControlName="countBasedPart" placeholder="Part Type"
+                                    class="col-lg-12 p-0">
+                                    <nb-option *ngFor="let partType of partTypes;" [value]="partType.name">{{
+                                        partType.name }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                        </div>
+                        <div class="input-sub-container">
+                            <label class="label-align" for="countBasedVendor">Vendor</label>
+                            <div class="input-item">
+                                <nb-select id="countBasedVendor" placeholder="Vendor" formControlName="countBasedVendor"
+                                    class="col-lg-12 p-0">
+                                    <nb-option *ngFor="let vendor of vendors;" [value]="vendor.name">{{ vendor.name
+                                        }}</nb-option>
+                                </nb-select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align" for="nbOfLatchesOfTurnsThreshold">Latches Or Turns
+                                Threshold</label>
+                            <div class="input-item">
+                                <input formControlName="nbOfLatchesOfTurnsThreshold" type="number"
+                                    placeholder="Threshold (Nb of latches or turns)" />
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
 
-            <div *ngIf="alertType === faultAlertType" class="row mb-2">
-                <div class="form-group col-lg-12  section-title">Fault Alert</div>
+            <div *ngIf="alertType === timeBasedPartAlertType">
+                <div class="form-group section-title">Time-based Part Alert</div>
+                <div class="row-container">
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align" for="timeBasedPart">Part</label>
+                            <div class="input-item">
+                                <nb-select placeholder="Part Type" formControlName="timeBasedPart"
+                                    class="col-lg-12 p-0">
+                                    <nb-option *ngFor="let partType of partTypes;" [value]="partType.name">{{
+                                        partType.name }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                        </div>
+                        <div class="input-sub-container">
+                            <label class="label-align" for="timeBasedVendor">Vendor</label>
+                            <div class="input-item">
+                                <nb-select placeholder="Vendor" formControlName="timeBasedVendor" class="col-lg-12 p-0">
+                                    <nb-option *ngFor="let vendor of vendors;" [value]="vendor.name">{{ vendor.name
+                                        }}</nb-option>
+                                </nb-select>
+                            </div>
+                        </div>
 
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="fault">Fault</label>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-sub-container">
+                            <label class="label-align" for="nbOfDays">Number of Days</label>
+                            <div class="input-item">
+                                <input formControlName="nbOfDays" type="number" placeholder="Period (Number of Days)" />
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="form-group col-lg-4">
 
-                    <input #autoFaultInput formControlName="fault" nbInput class="form-control" type="text"
-                        (input)="onFaultChange()" placeholder="Enter value" [nbAutocomplete]="autoFault" />
-
-                    <nb-autocomplete #autoFault (selectedChange)="onFaultSelectionChange($event)">
-
-                        <nb-option value="">Fault</nb-option>
-                        <nb-option *ngFor="let fault of filteredfaults$ | async" [value]="fault.description">
-                            {{ fault.description }}
-                        </nb-option>
-
-                    </nb-autocomplete>
-
-                </div>
-
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="faultThreshold">Fault Threshold</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <input formControlName="faultThreshold" type="number" placeholder="Threshold"
-                        class="form-control" />
-                </div>
-
-                <div class="col-lg-2 text-right">
-                    <label class="control-label pt-2">Possible Affected Parts</label>
-                </div>
-                <div class="col-lg-4">
-                    <nb-select multiple class="col-lg-12 p-0" placeholder="Part Type">
-                        <nb-option *ngFor="let partType of possiblePartTypes;" [value]="partType.name">{{ partType.name
-                            }}
-                        </nb-option>
-                    </nb-select>
-                </div>
             </div>
-
-            <div *ngIf="alertType === alarmAlertType" class="row mb-2">
-                <div class="form-group col-lg-12 section-title">Alarm Alert</div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="alarm">Alarm</label>
-                </div>
-                <div class="form-group col-lg-4">
-
-                    <input #autoAlarmInput nbInput class="form-control" formControlName="alarm" type="text"
-                        (input)="onAlarmChange()" placeholder="Enter value" [nbAutocomplete]="autoAlarm" />
-
-                    <nb-autocomplete #autoAlarm (selectedChange)="onAlarmSelectionChange($event)">
-                        <nb-option *ngFor="let alarm of filteredalarms$ | async" [value]="alarm.description">
-                            {{ alarm.description }}
-                        </nb-option>
-
-                    </nb-autocomplete>
-                </div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="alarmThreshold">Alarm Threshold</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <input formControlName="alarmThreshold" type="number" placeholder="Threshold"
-                        class="form-control" />
-                </div>
-                <div class="col-lg-2  text-right">
-                    <label class="control-label pt-2">Possible Affected Parts</label>
-                </div>
-                <div class="col-lg-4">
-                    <nb-select multiple class="col-lg-12 p-0" placeholder="Part Type">
-                        <nb-option *ngFor="let partType of possiblePartTypes;" [value]="partType.name">{{ partType.name
-                            }}
-                        </nb-option>
-                    </nb-select>
-                </div>
-            </div>
-
-            <div *ngIf="alertType === countBasedPartAlertType" class="row mb-2">
-                <div class="form-group col-lg-12 section-title">Count-based Part Alert</div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="countBasedPart">Part</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <nb-select formControlName="countBasedPart" placeholder="Part Type" class="col-lg-12 p-0">
-                        <nb-option *ngFor="let partType of partTypes;" [value]="partType.name">{{ partType.name }}
-                        </nb-option>
-                    </nb-select>
-                </div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="countBasedVendor">Vendor</label>
-                </div>
-                <div class="col-lg-4">
-                    <nb-select id="countBasedVendor" placeholder="Vendor" formControlName="countBasedVendor" class="col-lg-12 p-0">
-                        <nb-option *ngFor="let vendor of vendors;" [value]="vendor.name">{{ vendor.name }}</nb-option>
-                    </nb-select>
-                </div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="nbOfLatchesOfTurnsThreshold">Latches Or Turns
-                        Threshold</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <input formControlName="nbOfLatchesOfTurnsThreshold" type="number"
-                        placeholder="Threshold (Nb of latches or turns)" class="form-control" />
-                </div>
-            </div>
-
-            <div *ngIf="alertType === timeBasedPartAlertType" class="row mb-2">
-                <div class="form-group col-lg-12 section-title">Time-based Part Alert</div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="timeBasedPart">Part</label>
-                </div>
-                <div class="col-lg-4">
-                    <nb-select placeholder="Part Type" formControlName="timeBasedPart" class="col-lg-12 p-0">
-                        <nb-option *ngFor="let partType of partTypes;" [value]="partType.name">{{ partType.name }}
-                        </nb-option>
-                    </nb-select>
-                </div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="timeBasedVendor">Vendor</label>
-                </div>
-                <div class="col-lg-4">
-                    <nb-select placeholder="Vendor" formControlName="timeBasedVendor" class="col-lg-12 p-0">
-                        <nb-option *ngFor="let vendor of vendors;" [value]="vendor.name">{{ vendor.name }}</nb-option>
-                    </nb-select>
-                </div>
-                <div class="form-group col-lg-2 text-right">
-                    <label class="control-label pt-2" for="nbOfDays">Number of Days</label>
-                </div>
-                <div class="form-group col-lg-4">
-                    <input formControlName="nbOfDays" type="number" placeholder="Period (Number of Days)"
-                        class="form-control" />
-                </div>
-            </div>
-            <!-- [disabled]="!alertSettingsForm.valid" -->
-            <!-- <div class="row">
-                <div class="form-group col-lg-12 text-right">
-                    <button (click)="onCancel()" class="btn btn-secondary mr-1" type="button">
-                        <i class="fas fa-times"></i>
-                        Cancel
-                    </button>
-                    <button class="btn btn-primary" type="submit">
-                        <i [class]="isEditMode ? 'fas fa-save' : 'fas fa-plus-circle'"></i>
-                        {{ isEditMode ? 'Update' : 'Create' }}
-                    </button>
-                </div>
-            </div> -->
         </form>
     </nb-card-body>
-    <nb-card-footer class="d-flex justify-content-end px-3 py-2">
-        <button (click)="onCancel()" class="btn btn-secondary mr-1" type="button">
-            <i class="fas fa-times"></i>
+    <nb-card-footer class="form-buttons">
+        <button (click)="onCancel()" class="secondary-button" type="button">
             Cancel
         </button>
-        <button class="btn btn-primary" type="button" (click)="onSubmit()">
-            <i [class]="isEditMode ? 'fas fa-save' : 'fas fa-plus-circle'"></i>
+        <button class="main-button" type="button" (click)="onSubmit()">
             {{ isEditMode ? 'Update' : 'Create' }}
         </button>
     </nb-card-footer>

@@ -98,4 +98,8 @@ export class UpdateSmartriseUserComponent implements OnInit {
   onRoleChanged() {
     this.rolesChanged = true;
   }
+
+  onClose() {
+    this.router.navigateByUrl('pages/settings-management/smartrise-users');
+  }
 }

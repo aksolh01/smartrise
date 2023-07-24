@@ -35,14 +35,12 @@
     display: flex;
     align-content: center;
     padding: 0px;
-
-    
   }
   nb-action {
     border-left: none !important;
   }
   nb-action:last-child {
-    border-left: var(--actions-divider-width) var(--actions-divider-style) var(--actions-divider-color)  !important;
+    border-left: var(--actions-divider-width) var(--actions-divider-style) var(--actions-divider-color) !important;
   }
 
   nb-user {
@@ -58,7 +56,7 @@
     align-items: center;
     width: auto;
     min-height: 60px;
-    background-color: #003656;
+    background-color: transparent;
 
     .sidebar-toggle {
       @include nb-ltr(margin-right, 1.25rem);
@@ -77,12 +75,12 @@
         max-height: 50px;
       }
     }
-    .notification-container{
+    .notification-container {
       font-size: 20px;
       color: white;
       padding-right: 18px;
     }
-    .toggle-container{
+    .toggle-container {
       font-size: 20px;
       color: white;
       padding-right: 18px;
@@ -106,7 +104,7 @@
         }
 
         ::ng-deep .user-name {
-          color:white;
+          color: white;
           font-size: 12.8px;
           font-size: 0.8rem;
           line-height: 17.6px;
@@ -138,7 +136,7 @@
           width: 100%;
           z-index: 992;
           background-color: white;
-          color:#7d7d7d;
+          color: #7d7d7d;
           // .divider {
           //   height: 1px;
           //   margin: 9px 0 5px;
@@ -199,4 +197,59 @@
   font-size: 26px;
   color: red;
   margin-top: 5px;
+}
+
+.form-container {
+  margin-top: 0 !important;
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+
+    .input-item.search-input-icon {
+      position: relative;
+    }
+
+    .input-item {
+      min-height: unset;
+      width: 100%;
+
+      input {
+        border: 1px solid #cccccc;
+        border: 1px solid var(--primary-color-border);
+        border-radius: 10px;
+        padding: 0px 16px;
+        width: 100%;
+        min-height: 40px;
+        outline: none;
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+
+    .input-item.search-input-icon input {
+      font-size: 14px;
+      font-weight: 600;
+      padding-left: 32px;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .search-textbox {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+  
+  .search-button {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }    
+}
+
+.small-search-icon {
+  display: contents;
 }

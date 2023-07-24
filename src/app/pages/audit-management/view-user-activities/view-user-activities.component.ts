@@ -31,6 +31,7 @@ import { AccountTableCellComponent } from '../../../_shared/components/account-t
 import { ListTitleService } from '../../../services/list-title.service';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-view-user-activities',
@@ -40,6 +41,7 @@ import { environment } from '../../../../environments/environment';
 export class ViewUserActivitiesComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   source: BaseServerDataSource;
   runGuidingTour: boolean = true;
   title: string;
@@ -216,6 +218,12 @@ export class ViewUserActivitiesComponent extends BaseComponent implements OnInit
     private multiAccountService: MultiAccountsService) {
     super(baseService);
     this.isSmartriseUser = this.miscellaneousService.isSmartriseUser();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    }, 500);
   }
 
   initializeSource() {

@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
-import { ResourceTypeConstants, TaskStatusConstants } from '../../../../../../_shared/constants';
+import { PERMISSIONS, ResourceTypeConstants, TaskStatusConstants } from '../../../../../../_shared/constants';
 import { PermissionService } from '../../../../../../services/permission.service';
+import { MiscellaneousService } from '../../../../../../services/miscellaneous.service';
 
 @Component({
   selector: 'ngx-smr-job-resources-actions',
@@ -25,8 +26,10 @@ export class JobResourcesActionsComponent implements ViewCell, OnInit {
   canDownloadFile = false;
   canGenerateFile = false;
   denyGenerateFile = false;
+  customerId: number;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef, private permissionService: PermissionService) {
+  constructor(private changeDetectorRef: ChangeDetectorRef, private permissionService: PermissionService,
+    private miscellaneousService: MiscellaneousService) {
     // this.ref.detectChanges();
   }
   
@@ -44,7 +47,13 @@ export class JobResourcesActionsComponent implements ViewCell, OnInit {
   }
 
   ngOnInit(): void {
-    this.canGenerateFile = this.permissionService.hasPermission('GenerateResourceFile');
+    if (this.miscellaneousService.isCustomerUser()) {
+      this.canGenerateFile = this.permissionService.hasPermissionInAccount(PERMISSIONS.GenerateResourceFile, 
+        this.customerId);
+    } else {
+      this.canGenerateFile = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
+    }
+
     this.enableGenerateFile();
     this.enableDownloadFile();
     this.refreshChanged.subscribe(isRefreshing => {

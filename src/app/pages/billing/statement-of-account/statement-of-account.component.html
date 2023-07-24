@@ -1,13 +1,6 @@
 <div class="page-header-container">
-    <div class="page-header-title">Statement Of Account</div>
-    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
-        <div class="input-container">
-            <div class="input-item search-input-icon">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Search">
-            </div>
-        </div>
-    </div>
+    <div *ngIf="showSelectAccount" class="page-header-title">Statement Of Account</div>
+    <div *ngIf="!showSelectAccount" class="page-header-title">Statement Of Account {{ selectedAccountName }}</div>
     <div *ngIf="isSmall">
         <button *ngIf="markedAsPay.length > 0" (click)="onPay()" class="btn btn-primary mr-2">
             <i class="fas fa-credit-card"></i>
@@ -19,7 +12,7 @@
         </button>
     </div>
 </div>
-<ngx-pager [table]="table"></ngx-pager>
+<ngx-pager [hidden]="!showList" #pager></ngx-pager>
 <ng-template [ngIf]="showList">
     <div class="table-container">
         <nb-card joyrideStep="statementFirstStep" stepPosition="center"

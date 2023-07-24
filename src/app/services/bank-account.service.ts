@@ -80,6 +80,11 @@ export class BankAccountService {
             .pipe(map(response => response.body));
     }
 
+    searchAllBankAccounts(bankAccountParams: BankAccountParams) {
+        return this.httpClient.post<Pagination<IBankAccount>>(this.baseUrl + 'customerAccounting/bankAccounts/searchAll', bankAccountParams, { observe: 'response' })
+            .pipe(map(response => response.body));
+    }
+
     getActiveBankAccounts(customerId: number) {
         return this.httpClient.get<IActiveBankAccount[]>(`${this.baseUrl}customerAccounting/bankAccounts/active/${customerId}`)
             .pipe(

@@ -1,5 +1,6 @@
 import {
   AfterContentInit,
+  AfterViewInit,
   Component,
   OnDestroy,
   OnInit,
@@ -41,14 +42,17 @@ import { AccountInfoService } from '../../../../services/account-info.service';
 import { AccountTableCellComponent } from '../../../../_shared/components/account-table-cell/account-table-cell.component';
 import { ListTitleService } from '../../../../services/list-title.service';
 import { environment } from '../../../../../environments/environment';
+import { PagerComponent } from '../../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-shipments-list',
   templateUrl: './shipments-list.component.html',
   styleUrls: ['./shipments-list.component.scss'],
 })
-export class ShipmentsListComponent extends BaseComponent implements OnInit, OnDestroy, AfterContentInit {
+export class ShipmentsListComponent extends BaseComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
+  
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
   isLoading = true;
@@ -159,7 +163,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
           };
           instance.setHeader('Job Name');
           instance.setOptions({
-            breakWord: true,
+            breakWord: false,
             tooltip: 'View Job Details',
             link: '/pages/jobs-management/jobs',
             paramExps: ['jobId'],
@@ -209,7 +213,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
             this.jobTabService.setSelectedTab(Tab.Shipments, rowData['id']);
           };
           instance.setOptions({
-            breakWord: true,
+            breakWord: false,
             link: 'pages/jobs-management/shipments',
             paramExps: [
               'jobId'
@@ -307,6 +311,7 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
   title: string;
   installedBy: string;
   maintainedBy: string;
+  selectedAccountName = this.getSelectedAccountsLabel();
 
   constructor(
     baseService: BaseComponentService,
@@ -323,6 +328,12 @@ export class ShipmentsListComponent extends BaseComponent implements OnInit, OnD
     super(baseService);
 
     this.populateLookup(this.shipmentStatuses, ShipmentStatus);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
   }
 
   onActionsInit(actions: ShipmentActionsComponent) {

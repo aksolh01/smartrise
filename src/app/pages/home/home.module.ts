@@ -21,6 +21,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { JobService } from '../../services/job.service';
 import { ImageService } from '../../services/image.service';
 import { ResourceService } from '../../services/resource.service';
+import { CreateOnlineQuoteComponent } from './create-online-quote/create-online-quote.component';
+import { LocationService } from '../../services/location.service';
+import { QuotingToolValidationService } from '../../services/quoting-tool-validation.service';
+import { QuotingToolService } from '../../services/quoting-tool.service';
+import { ContactService } from '../../services/contact.service';
+import { DashboardPasscodesComponent } from './dashboard-passcodes/dashboard-passcodes.component';
+import { ActiveJobsComponent } from './active-jobs/active-jobs.component';
 
 @NgModule({
   imports: [
@@ -45,12 +52,16 @@ import { ResourceService } from '../../services/resource.service';
   ],
   declarations: [HomeComponent, FavoriteCustomerComponent, RecentJobsComponent,
     RecentCustomersComponent, LatestUploadedFilesComponent, LatestFilesActionsComponent,
-    CustomerListItemComponent, ProfileCardV3Component, LatestUploadedFilesV2Component, LatestUploadedFilesItemComponent],
+    CustomerListItemComponent, ProfileCardV3Component, LatestUploadedFilesV2Component, LatestUploadedFilesItemComponent,CreateOnlineQuoteComponent, DashboardPasscodesComponent, ActiveJobsComponent],
   exports: [RouterModule],
   providers: [
     JobService,
     ImageService,
     ResourceService,
+    LocationService,
+    QuotingToolValidationService,
+    QuotingToolService,
+    ContactService
   ]
 })
 export class HomeModule { }

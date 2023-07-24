@@ -1,0 +1,12 @@
+.fields-information-panel-container {
+    background-color: white;
+}
+
+::ng-deep ngx-fields-information-panel ngx-smr-ng2-table-cell {
+    max-width: 10rem;    
+}
+
+.table-container {
+    max-height: 25rem;
+    overflow-y: auto;
+}

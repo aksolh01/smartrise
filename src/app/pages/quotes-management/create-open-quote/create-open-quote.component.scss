@@ -79,8 +79,9 @@ ngx-quoting-dropdown nb-select {
     color: $placeholder-color !important;
 }
 
-::ng-deep nb-select[placeholder-selected="true"] button {
-    color: $placeholder-color !important;
+::ng-deep ngx-create-open-quote nb-select[placeholder-selected="true"] button span {
+    // color: $placeholder-color !important;
+    font-weight: 500 !important;
 }
 
 ::ng-deep ngx-create-open-quote nb-select button {
@@ -252,13 +253,16 @@ label {
                 min-height: 40px ;
                 outline: none ;
                 font-size: 14px;
-                font-weight: 600;
+                font-weight: 600 !important;;
                 &::placeholder{
-                  font-size: 14px;
-                  font-weight: 500 ;
+                  font-size: 14px !important;;
+                  font-weight: 500 !important;;
                   color:rgba(0, 0, 0, 0.75) !important;
                 }
                 &:disabled{
+                    background-color: #e9ecef;
+                  }
+                  &:read-only{
                     background-color: #e9ecef;
                   }
               }
@@ -294,19 +298,24 @@ label {
                 font-size: 14px;
                 font-weight: 600;
                 button{
-                  font-size: 14px;
-                  font-weight: 600;
-                  color:rgba(0, 0, 0, 0.75) !important;
+                    font-size: 14px;
+                    font-weight: 600 ;
+                    color:rgba(0, 0, 0, 0.75) !important;
+                    .select-button{
+                      span{
+                        font-weight: 600 !important;
+                      }
+                    }
+                  }
+                  &::placeholder{
+                    font-size: 14px;
+                    font-weight: 500;
+                    color:rgba(0, 0, 0, 0.75) !important;
+                  }
                 }
-                &::placeholder{
-                  font-size: 14px;
-                  font-weight: 500;
-                  color:rgba(0, 0, 0, 0.75) !important;
+                button{
+                  border: none !important;
                 }
-              }
-              button{
-                border: none !important;
-              }
               &.hasLabel{
                 display: flex;
                 input{
@@ -354,4 +363,8 @@ label {
           }
     }
     
+}
+
+.placeholder {
+    font-weight: 500 !important;
 }

@@ -38,6 +38,7 @@ export const PERMISSIONS = {
   SmartriseUsersUpdate: 'SmartriseUsersUpdate',
   UserActivitiesListing: 'UserActivitiesListing',
   JobsListing: 'JobsListing',
+  PartsListing: 'PartsListing',
   GeneratePasscode: 'GeneratePasscode',
   ViewInvoicesList: 'ViewInvoicesList',
   ViewPaymentsList: 'ViewPaymentsList',
@@ -87,6 +88,7 @@ export const URLs = {
   JobsURL: '/pages/jobs-management/jobs',
   TrackingURL: '/pages/jobs-management/shipments',
   ViewResourcesURL: '/pages/jobs-management/job-files',
+  ViewPartsURL: '/pages/parts-management/parts',
   ViewInvoicesURL: '/pages/jobs-management/invoices',
   ViewPaymentsURL: '/pages/jobs-management/payments',
   LoginURL: '/auth/login',
@@ -116,6 +118,17 @@ export const URLs = {
 export const SmartriseValidators = {
   emailRegex: /(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
   onlyAlphabet: /^[a-zA-Z\s-]*$/,
+  phone: ((control: AbstractControl): { 'phone': boolean } => {
+    if (!control.value || control.value?.toString()?.trim() === '') {
+      return null;
+    }
+
+    const value = control?.value?.toString()?.trim();
+
+    if (!/^[0-9]+$/.test(value)) {
+      return { 'phone': true };
+    }
+  }),
   lessThanToday: ((control: AbstractControl): { 'lessThanToday': boolean } => {
     if (!control.value || control.value?.toString()?.trim() === '') {
       return null;

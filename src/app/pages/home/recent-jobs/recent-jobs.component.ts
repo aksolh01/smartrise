@@ -8,6 +8,7 @@ import { BaseComponentService } from '../../../services/base-component.service';
 import { JobTabService } from '../../../services/job-tabs.service';
 import { ResponsiveService } from '../../../services/responsive.service';
 import { BaseComponent } from '../../base.component';
+import { MiscellaneousService } from '../../../services/miscellaneous.service';
 
 @Component({
   selector: 'ngx-recent-jobs',
@@ -22,16 +23,20 @@ export class RecentJobsComponent extends BaseComponent implements OnInit {
   @Input() isLoading: boolean;
   @Input() displayCustomerName: boolean;
   @Input() data: IRecentJob[];
+  isSmartrise: boolean;
 
   constructor(
     baseService: BaseComponentService,
     private router: Router,
     private readonly jobTabService: JobTabService,
+    private readonly miscellaneousService: MiscellaneousService,
     private readonly responsiveService: ResponsiveService) {
       super(baseService);
     }
 
   ngOnInit(): void {
+
+    this.isSmartrise = this.miscellaneousService.isSmartriseUser();
 
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
       if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {

@@ -18,6 +18,9 @@ import { BaseComponentService } from '../../../../../services/base-component.ser
 import { PermissionService } from '../../../../../services/permission.service';
 import { Router } from '@angular/router';
 import { ResourceTaskStatusCellComponent } from '../../../../../_shared/components/business/status.component';
+import { MiscellaneousService } from '../../../../../services/miscellaneous.service';
+import * as guidingTourGlobal from '../../../../guiding.tour.global';
+import { JoyrideService } from 'ngx-joyride';
 
 
 @Component({
@@ -35,6 +38,9 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
   @Input() jobId: number;
   @Input() runGuidingTour: boolean;
   @Input() resourceFiles: IJobResource[] = [];
+  @Input() jobOrderDate: Date;
+  @Input() jobIsBefore2008: boolean;
+  @Input() customerId: number;
   source = new LocalDataSource();
   canGenerateFiles: boolean;
 
@@ -43,6 +49,8 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
     private resourceService: ResourceService,
     private messageService: MessageService,
     private permissionService: PermissionService,
+    private miscellaneousService: MiscellaneousService,
+    private joyrideService: JoyrideService,
     baseService: BaseComponentService,
   ) {
     super(baseService);
@@ -100,19 +108,51 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
 
   ngOnInit(): void {
 
-    this.canGenerateFiles = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
+    if (this.miscellaneousService.isCustomerUser()) {
+      this.canGenerateFiles = this.permissionService.hasPermissionInAccount(PERMISSIONS.GenerateResourceFile, 
+        this.customerId);
+    } else {
+      this.canGenerateFiles = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
+    }
 
-    this.source = new LocalDataSource(this.resourceFiles ?? []);
+    this.source = new LocalDataSource(
+      this.resourceFiles?.filter(resourceFile => resourceFile.resourceType.value !== 'ConfigFile'));
+    this.startGuidingTour();
 
     this.backgroundCall = setInterval(() => {
       if (this.source) {
         if (this.resourceFiles) {
           this.resourceFiles
-            .filter((o) => o.status === TaskStatusConstants.Pending)
+            .filter((o) => o.status === TaskStatusConstants.Pending && o.resourceType.value !== 'ConfigFile')
             .forEach((o) => this.onRefreshResourceV2(o));
         }
       }
     }, 10000);
+  }
+
+  startGuidingTour() {
+    if (localStorage.getItem('GuidingTourJobResources') === null) {
+      this.runGuidingTour = true;
+      this.openGuidingTour();
+    } else {
+      this.runGuidingTour = false;
+    }
+  }
+
+  openGuidingTour() {
+    if (this.joyrideService) {
+      this.joyrideService.startTour(
+        {
+          steps: ['jobResourceFirstStep',],
+          themeColor: guidingTourGlobal.guidingTourThemeColor,
+          customTexts: {
+            prev: guidingTourGlobal.guidingTourPrevButtonText,
+            next: guidingTourGlobal.guidingTourNextButtonText,
+            done: guidingTourGlobal.guidingTourDoneButtonText
+          }
+        }
+      );
+    }
   }
 
   onDownloadFile(
@@ -175,6 +215,7 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
   }
 
   onActionsInit(actions: JobResourcesActionsComponent) {
+    actions.customerId = this.customerId;
     actions.createNewRequest.subscribe((row: IJobResource) => {
       actions.disableGenerateFile();
       this.resourceService
@@ -217,7 +258,7 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
     if (row) {
       this.resourceService.refreshResource(row).subscribe((obj) => {
         if (obj.response.status === TaskStatusConstants.Failed) {
-          this.messageService.showErrorMessage(`Fail to generate '${obj.response.resourceType.description}' Job File`);
+          this.messageService.showErrorMessage(`Failed to generate '${obj.response.resourceType.description}' Job File`);
         } else if (obj.response.status === TaskStatusConstants.Completed) {
           this.messageService.showSuccessMessage(`'${obj.response.resourceType.description}' Job File has been generated successfully`);
         }
@@ -233,6 +274,8 @@ export class JobResourcesComponent extends BaseComponent implements OnInit, OnDe
     } else {
       this.resourceFiles.splice(index, 1);
     }
+    this.source = new LocalDataSource(
+      this.resourceFiles.filter(resourceFile => resourceFile.resourceType.value !== 'ConfigFile'));
     this.source.refresh();
   }
 

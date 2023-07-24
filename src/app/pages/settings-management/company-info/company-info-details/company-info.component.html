@@ -1,6 +1,13 @@
+<div class="page-header-container">
+  <div class="page-header-title" *ngIf="companyinfo">
+    <span (click)="onClose()" class="cursor"><i class="fa fa-arrow-left"></i>Accounts</span> / {{
+    companyinfo?.name}}
+  </div>
+</div>
+
 <div class="mb-3" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
   <nb-tabset *ngIf="companyinfo">
-    <nb-tab tabIcon="briefcase" tabTitle="Account Information">
+    <nb-tab tabTitle="Account Information">
       <nb-card size="xlarge">
         <nb-card-body>
           <div class="card-details">
@@ -62,7 +69,7 @@
         </nb-card-body>
       </nb-card>
     </nb-tab>
-    <nb-tab tabIcon="person" tabTitle="Sales Representative">
+    <nb-tab tabTitle="Sales Representative">
       <nb-card size="xlarge">
         <nb-card-body>
           <div class="card-details">
@@ -90,7 +97,7 @@
 
               <div class="displayData">
                 <label class="label">Mobile</label>
-                <div class="content">   {{ companyinfo.salesRepresentative?.mobile | value }}</div>
+                <div class="content"> {{ companyinfo.salesRepresentative?.mobile | value }}</div>
               </div>
 
               <div class="displayData">
@@ -108,15 +115,9 @@
           </div>
         </nb-card-body>
       </nb-card>
-  
+
     </nb-tab>
   </nb-tabset>
-</div>
-
-<div class="text-right mb-0 mx-3" *ngIf="!isLoading">
-  <button class="secondary-button" type="button" (click)="onClose()">
-    Close
-  </button>
 </div>
 
 <ng-template [ngIf]="isLoading">

@@ -1,15 +1,7 @@
 <div class="page-header-container">
     <div class="page-header-title" *ngIf="job">
-        <span (click)="onClose()" class="cursor">Jobs</span> / {{ job.jobName }}
+        <span (click)="onClose()" class="cursor"> <i class="fa fa-arrow-left"></i> Jobs</span> / {{ job.jobName }}
     </div>
-    <!-- <div *ngIf="!isSmall" class="form-container mx-w-400" style="width: 40%;">
-        <div class="input-container">
-            <div class="input-item">
-                <input type="text" placeholder="Search">
-            </div>
-        </div>
-    </div> -->
-
 </div>
 
 <div style="display: flex;flex-direction: column;gap: 32px;margin-top: 8px;">
@@ -20,7 +12,7 @@
                     <h2 class="card-title">Job Details</h2>
                 </nb-card-header>
                 <nb-card-body>
-                    <ngx-job-basiic-info (refresh)="onRefresh()" [job]="job" [passcode]="passcode"
+                    <ngx-job-basiic-info *ngIf="job" (refresh)="onRefresh()" [job]="job" [passcode]="passcode"
                         [displayAccountName]="displayAccountName"></ngx-job-basiic-info>
                 </nb-card-body>
 
@@ -35,23 +27,57 @@
                     <div class="job-history">
                         <div class="job-history-container">
                             <div class="job-history-label">Released to Engineering</div>
-                            <div class="job-history-content"> {{job?.releasedToEngineering | value}}</div>
+                            <div class="job-history-content"> {{job?.releasedToEngineering | usdate | value}}</div>
                         </div>
                         <div class="job-history-container">
                             <div class="job-history-label">Engineerd</div>
-                            <div class="job-history-content"> {{job?.engineered | value}}</div>
+                            <div class="job-history-content"> {{job?.engineered | usdate | value}}</div>
                         </div>
                         <div class="job-history-container">
                             <div class="job-history-label last-label">Released to Production</div>
-                            <div class="job-history-content"> {{job?.releasedToProduction | value}}</div>
+                            <div class="job-history-content"> {{job?.releasedToProduction | usdate | value}}</div>
                         </div>
+                    </div>
+                </nb-card-body>
+            </nb-card>
+            <nb-card size="xlarge" class="card-container-data pb-1 mb-3">
+                <nb-card-header class="default-card-header">
+                    <h2 class="card-title">Job Passcodes</h2>
+                </nb-card-header>
+                <nb-card-body>
+                    <div class="job-passcodes">
+                        <div class="col-12" *ngIf="passcode?.displayPasscode; else passcodeMessage">
+                            <div class="activity-history-title d-flex justify-content-between">
+                                <span>
+                                    <!-- Passcodes -->
+                                </span>
+                                <ngx-button tooltip="Refresh Passcode(s)" *ngIf="job.linkedToEpicorSalesOrder"
+                                    [isLoading]="configFile?.status === 'Pending'" nbSpinnerStatus="primary"
+                                    nbSpinnerSize="tiny" class="btn btn-primary py-0 refresh-passcodes"
+                                    (click)="onRequestPasscode()">
+                                    <i class="fas fa-redo"></i>
+                                    Refresh
+                                </ngx-button>
+                            </div>
+                            <ng2-smart-table class="default-smart-table responsive-design1"
+                                [settings]="passcodeSettings" [source]="passcodeSource">
+                            </ng2-smart-table>
+                        </div>
+
+                        <ng-template #passcodeMessage>
+                            <div class="col-12" *ngIf="passcode?.message">
+                                <div class="alert alert-info mb-0">
+                                    {{passcode.message}}
+                                </div>
+                            </div>
+                        </ng-template>
                     </div>
                 </nb-card-body>
             </nb-card>
         </div>
     </div>
 
-    <div class="main-card">
+    <div class="main-card" id="bottomContainer">
         <div class="card-container">
             <nb-card size="xlarge" class="card-container-data pb-1 mb-3">
                 <nb-card-header class="default-card-header">
@@ -75,19 +101,3 @@
         </div>
     </div>
 </div>
-
-
-
-<!-- <div class="text-right mb-0 mx-3" *ngIf="!isLoading">
-    <button class="btn btn-secondary width-100 width-md-auto" type="button" (click)="onClose()">
-        <i class="fas fa-times"></i>
-        Close
-    </button>
-</div> -->
-
-<ng-template [ngIf]="isLoading">
-    <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-        <div class="col-12 p-4">
-        </div>
-    </nb-card>
-</ng-template>

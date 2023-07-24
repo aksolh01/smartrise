@@ -1,0 +1,20 @@
+.actions button,
+.actions button:focus {
+    border: 0rem;
+    outline: 0rem;
+    background-color: transparent;
+    margin-right: 5px;
+    color: #666;
+    padding: 0;
+}
+
+.actions button:disabled {
+    color: #bbb;
+    background-color: transparent;
+    opacity: .50;
+    cursor: not-allowed;
+}
+
+.green i { 
+    color: green;
+}

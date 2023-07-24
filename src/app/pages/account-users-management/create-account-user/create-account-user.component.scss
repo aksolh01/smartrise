@@ -51,6 +51,10 @@
                 &:disabled{
                     background-color: #e9ecef;
                   }
+
+                  &:read-only{
+                    background-color: #e9ecef;
+                  }
               }
               &.check-box{
                 margin-top: 12px !important;

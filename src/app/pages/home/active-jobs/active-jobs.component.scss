@@ -1,0 +1,89 @@
+.slide-container {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    button:disabled {
+        cursor: no-drop;
+        background: transparent;
+        text-decoration: none;
+        border: none;
+    }
+
+    button {
+        cursor: pointer;
+        background: transparent;
+        text-decoration: none;
+        border: none;
+    }
+    .job-info {
+        width: 100%;
+        .job-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color-black);
+            a {
+                cursor: pointer;
+            }
+        }
+        .job-number {
+            font-size: 14px;
+            color: var(--primary-color-black);
+        }
+        .poNumber {
+            font-size: 14px;
+            color: var(--primary-color-gray);
+        }
+        .address {
+            padding-top: 6px;
+            font-size: 12px;
+            color: var(--primary-color-gray);
+        }
+    }
+}
+.data-container {
+    margin-top: 8px;
+    .data-container-item {
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 6px;
+
+        .label {
+            font-weight: bold;
+            color: var(--primary-color-black);
+        }
+        .value {
+            color: var(--primary-color-black);
+        }
+    }
+}
+
+.job-files {
+    padding-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    .job-file {
+       
+        .file {
+            background-color: var(--primary-color-border);
+            width: 100%;
+            border-radius: 8px;
+            color: black;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+    }
+}
+
+.hide {
+    opacity: 0;
+}
+
+.navigate-button {
+    font-weight: bold;
+}

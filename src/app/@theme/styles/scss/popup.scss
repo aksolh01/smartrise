@@ -40,11 +40,17 @@
 
             }
         }
+        ng2-smart-table table tr th{
+            border: none !important;
+        }
     }
 
     .popup-footer {
         display: flex;
         justify-content: center;
+        button{
+            margin-left: 0.5rem;
+        }
     }
 
 }

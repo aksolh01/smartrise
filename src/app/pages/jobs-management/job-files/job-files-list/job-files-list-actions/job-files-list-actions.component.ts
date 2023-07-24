@@ -4,6 +4,7 @@ import { PERMISSIONS, ResourceTypeConstants, TaskStatusConstants } from '../../.
 import { BaseComponentService } from '../../../../../services/base-component.service';
 import { PermissionService } from '../../../../../services/permission.service';
 import { BaseComponent } from '../../../../base.component';
+import { MiscellaneousService } from '../../../../../services/miscellaneous.service';
 
 @Component({
   selector: 'ngx-job-files-list-actions',
@@ -35,6 +36,7 @@ export class JobFilesListActionsComponent extends BaseComponent implements OnIni
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private permissionService: PermissionService,
+    private miscellaneousService: MiscellaneousService,
     baseService: BaseComponentService,
   ) {
     super(baseService);
@@ -70,7 +72,12 @@ export class JobFilesListActionsComponent extends BaseComponent implements OnIni
 
   enableGenerateFile() {
     this.changeDetectorRef.markForCheck();
-    this.canGenerateFile = this.permissionService.hasPermission('GenerateResourceFile');
+    if (this.miscellaneousService.isCustomerUser()) {
+      this.canGenerateFile = this.permissionService.hasPermissionInAccount(PERMISSIONS.GenerateResourceFile,
+        this.rowData.account.id);
+    } else {
+      this.canGenerateFile = this.permissionService.hasPermission(PERMISSIONS.GenerateResourceFile);
+    }
   }
 
   disableGenerateFile() {

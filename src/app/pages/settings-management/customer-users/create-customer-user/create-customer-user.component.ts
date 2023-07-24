@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SmartriseValidators } from '../../../../_shared/constants';
+import { SmartriseValidators, URLs } from '../../../../_shared/constants';
 import { IRole } from '../../../../_shared/models/role';
 import { MessageService } from '../../../../services/message.service';
 import { IAccountUserRoles } from '../../../../_shared/models/account-selection.model';
@@ -21,7 +21,6 @@ import { AccountRolesSelectionService } from '../../../../services/account-roles
 export class CreateCustomerUserComponent implements OnInit {
   customerUserForm: UntypedFormGroup;
   roles: IRole[] = [];
-  isLoading = false;
   isLoadingForm = true;
   formSubmitted = false;
   rolesTouched: boolean;
@@ -74,8 +73,6 @@ export class CreateCustomerUserComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-
     this.isSaving = true;
 
     const newCustomerUser = this._generateCustomerUserObjectFromForm();
@@ -90,7 +87,6 @@ export class CreateCustomerUserComponent implements OnInit {
   }
 
   private _onCreatedUserFailed(error: any): void {
-    this.isLoading = false;
     this.isSaving = false;
     if (error?.error?.failedResult && error.error.failedResult.length > 0) {
       this._showAccountsWithoutMatchingContactsOnFailedScenario(error.error.failedResult);
@@ -110,7 +106,6 @@ export class CreateCustomerUserComponent implements OnInit {
   }
 
   private _onCreateUserSuccess(response) {
-    this.isLoading = false;
     this.isSaving = false;
     if (response.accountsWithoutMatchingContacts.length > 0) {
       this._showAccountsWithoutMatchingContactsOnSuccessScenario(response.accountsWithoutMatchingContacts).subscribe(() => {
@@ -168,5 +163,9 @@ export class CreateCustomerUserComponent implements OnInit {
   private _noRoleIsSelected(): boolean {
     const accounts = this.customerUserForm.value.accounts as IAccountUserRoles[];
     return accounts.filter(account => account.isSelected).some(account => account.roles.length === 0);
+  }
+
+  onClose() {
+    this.router.navigateByUrl(URLs.CustomerUsersURL);
   }
 }

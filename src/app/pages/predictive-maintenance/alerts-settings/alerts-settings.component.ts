@@ -7758,7 +7758,7 @@ export class AlertsSettingsComponent extends BaseComponent implements OnInit {
     },
     columns: {
       name: {
-        filter: true,
+        filter: false,
         sort: true,
         title: 'Alert Name',
         type: 'custom',
@@ -7832,7 +7832,7 @@ export class AlertsSettingsComponent extends BaseComponent implements OnInit {
         }
       },
       totalAlerts: {
-        filter: true,
+        filter: false,
         sort: true,
         title: 'Total Alerts',
         type: 'custom',

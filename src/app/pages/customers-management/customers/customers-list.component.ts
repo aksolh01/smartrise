@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { EpicoreIdCellComponent } from '../../../_shared/components/epicore-id-cell/epicore-id-cell.component';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
@@ -23,15 +23,17 @@ import { HLinkTableCellComponent } from '../../../_shared/components/hlink-table
 import { IBusinessSettings } from '../../../_shared/models/settings';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-customers-list',
   templateUrl: './customers-list.component.html',
   styleUrls: ['./customers-list.component.scss'],
 })
-export class CustomersListComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CustomersListComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   hasLogin?: boolean;
   isFavorite?: boolean;
   public Math = Math;
@@ -157,6 +159,12 @@ export class CustomersListComponent extends BaseComponent implements OnInit, OnD
     baseService: BaseComponentService,
   ) {
     super(baseService);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
   }
 
   initializeSource() {

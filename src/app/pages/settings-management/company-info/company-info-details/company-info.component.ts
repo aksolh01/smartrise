@@ -56,7 +56,7 @@ export class CompanyInfoComponent extends BaseComponent implements OnInit {
   }
 
   onClose() {
-    this.router.navigateByUrl(URLs.CompanyInfoURL,);
+    this.router.navigateByUrl(URLs.CompanyInfoURL);
   }
 
   getValue(value: any) {

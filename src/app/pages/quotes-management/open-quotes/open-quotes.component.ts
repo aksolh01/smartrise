@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { JoyrideService } from 'ngx-joyride';
 import { Subscription } from 'rxjs';
@@ -32,15 +32,16 @@ import { URLs } from '../../../_shared/constants';
 import { QuotingToolService } from '../../../services/quoting-tool.service';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-open-quotes',
   templateUrl: './open-quotes.component.html',
   styleUrls: ['./open-quotes.component.scss']
 })
-export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDestroy {
-
+export class OpenQuotesComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   mRef: BsModalRef;
   source: BaseServerDataSource;
   isSmall?: boolean = null;
@@ -481,5 +482,23 @@ e.preventDefault();
     if (!allowOnlyNumbers(e)) {
       return;
     }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    }, 1000);
+  }
+
+  goToCreatedByAccount() {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('pages/quotes-management/open-quotes');
+    });
+  }
+
+  goToCreatedBySmartriseSales() {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('pages/quotes-management/open-quotes?tab=smartrise');
+    });
   }
 }

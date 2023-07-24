@@ -1,23 +1,34 @@
-p {
-    font-size: 0.85rem !important;
-}
 
-.container {
-    display: table;
-    width: 100%;
-    margin: 0;
+
+.customer-container {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 8px;
+    .customer-name {
+        a{
+            color: var(--primary-color-gray);
+            text-decoration: none;
+            cursor: pointer;
+        }
+    }
+    .actions {
+        text-align: right;
+        display: table-cell;
+    }
+    .actions button,
+    .actions button:focus {
+    border: 0rem;
+    outline: 0rem;
+    background-color: transparent;
+    margin-right: 5px;
+    color: #666;
     padding: 0;
 }
 
-.customer-name {
-    text-align: left;
-    display: table-cell;
+
 }
 
-.actions {
-    text-align: right;
-    display: table-cell;
-}
+
 
 @media (max-width: 767px) {
     .labels {
@@ -27,16 +38,8 @@ p {
         width: 35%;
     }
     .actions button {
-        text-align: right !important;        
+        text-align: right !important;
     }
 }
 
-.actions button,
-.actions button:focus {
-    border: 0rem;
-    outline: 0rem;
-    background-color: transparent;
-    margin-right: 5px;
-    color: #666;
-    padding: 0;
-}
+

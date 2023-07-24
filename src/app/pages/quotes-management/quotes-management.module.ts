@@ -13,7 +13,6 @@ import { routedComponents } from './components';
 import { QuotesManagementRoutingModule } from './quotes-management-routing.module';
 import { DetailActionsBarComponent } from './quoting-tool-list/detail-actions-bar/detail-actions-bar.component';
 import { JobLocationDetailsComponent } from './quoting-tool/custom-fields/quoting-job-location/job-location/job-location.component';
-import { JobLocationLookupComponent } from './quoting-tool/custom-fields/quoting-job-location/job-location-lookup/job-location-lookup.component';
 import { BuisnessBuilder } from './quoting-tool/business/builder/business-builder';
 import { BusinessProfileService } from './quoting-tool/business/business-profile-service';
 import { BusinessContext } from './quoting-tool/business/business-context';
@@ -21,6 +20,8 @@ import { QuotingToolValidationService } from '../../services/quoting-tool-valida
 import { QuotingInputNumberComponent } from './quoting-tool/custom-fields/quoting-input-number/quoting-input-number.component';
 import { QuotingInputTextComponent } from './quoting-tool/custom-fields/quoting-input-text/quoting-input-text.component';
 import { CloneDialogComponent } from './quoting-tool-list/clone-dialog/clone-dialog.component';
+import { FieldsInformationPanelComponent } from './quoting-tool/custom-components/fields-information-panel/fields-information-panel.component';
+import { JobStatusCellComponent } from './quoting-tool/custom-components/job-status-cell/job-status-cell.component';
 
 @NgModule({
   imports: [
@@ -34,10 +35,11 @@ import { CloneDialogComponent } from './quoting-tool-list/clone-dialog/clone-dia
     ...routedComponents,
     DetailActionsBarComponent,
     JobLocationDetailsComponent,
-    JobLocationLookupComponent,
     QuotingInputNumberComponent,
     QuotingInputTextComponent,
     CloneDialogComponent,
+    FieldsInformationPanelComponent,
+    JobStatusCellComponent,
   ],
   providers: [
     QuotingToolService,

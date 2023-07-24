@@ -1,13 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { IJob } from '../../../../../_shared/models/job';
-import { IPasscode } from '../../../../../_shared/models/passcode.model';
-import { FillPasscodeComponent } from '../../fill-passcode/fill-passcode.component';
+import { IJob, IJobResource } from '../../../../../_shared/models/job';
 import { MiscellaneousService } from '../../../../../services/miscellaneous.service';
-import { LocalDataSource } from 'ng2-smart-table';
-import { Ng2TableCellComponent } from '../../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
-import { PasscodeCellComponent } from './passcode-cell/passcode-cell.component';
+import { ResourceService } from '../../../../../services/resource.service';
+import { MessageService } from '../../../../../services/message.service';
+import { PasscodeService } from '../../../../../services/passcode.service';
 
 @Component({
   selector: 'ngx-job-basiic-info',
@@ -15,52 +13,30 @@ import { PasscodeCellComponent } from './passcode-cell/passcode-cell.component';
   styleUrls: ['./job-basiic-info.component.scss'],
 })
 export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
-  @Input() job: IJob;
-  @Input() passcode: IPasscode;
+
+  private _job: IJob;
+  isRequesting: boolean = false;
+  @Input() public set job(v: IJob) {
+    this._job = v;
+  }
+  public get job(): IJob {
+    return this._job;
+  }
+
   @Input() displayAccountName: boolean;
   @Output() refresh = new EventEmitter();
   accountTitle: string;
   isSmartrise: boolean;
-  passcodeSource: LocalDataSource;
-  passcodeSettings: any = {
-    mode: 'external',
-    hideSubHeader: true,
-    actions: {
-      position: 'right',
-      add: false,
-      edit: false,
-      delete: false,
-    },
-    columns: {
-      carName: {
-        title: 'Car',
-        type: 'custom',
-        renderComponent: Ng2TableCellComponent,
-        onComponentInitFunction: (instance: Ng2TableCellComponent) => {
-          instance.setHeader('Car');
-        },
-        show: false,
-        filter: false,
-        sort: false
-      },
-      passcode: {
-        title: 'Passcode',
-        type: 'custom',
-        renderComponent: PasscodeCellComponent,
-        onComponentInitFunction: (instance: PasscodeCellComponent) => {
-          instance.setHeader('Passcode');
-        },
-        show: false,
-        filter: false,
-        sort: false
-      },
-    }
-  };
+  backgroundResourceStatusChecking: NodeJS.Timeout;
+  status: string;
 
   constructor(
     private router: Router,
     private modelService: BsModalService,
-    private miscellaneousService: MiscellaneousService
+    private miscellaneousService: MiscellaneousService,
+    private resourceService: ResourceService,
+    private messageService: MessageService,
+    private passcodeService: PasscodeService
   ) {
 
   }
@@ -68,13 +44,6 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
   ngOnInit(): void {
     this.isSmartrise = this.miscellaneousService.isSmartriseUser();
     this._setAccountTitle();
-    this._initializePasscodeTable();
-  }
-
-  private _initializePasscodeTable() {
-    const data = this.passcode?.lines ?? [];
-    this.passcodeSource = new LocalDataSource(data);
-    this.passcodeSource.refresh();
   }
 
   private _setAccountTitle() {
@@ -82,7 +51,6 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //this.passcode = replaceAll(this.job?.tempPasscode, '\n', '</br>')?.trim();
   }
 
   ngOnDestroy(): void {
@@ -95,18 +63,5 @@ export class JobBasiicInfoComponent implements OnDestroy, OnChanges, OnInit {
 
   onClose() {
     this.router.navigateByUrl('pages/jobs-management/jobs');
-  }
-
-  onFillPasscode() {
-    const ref = this.modelService.show<FillPasscodeComponent>(FillPasscodeComponent,
-      {
-        initialState: {
-          jobId: this.job.id,
-        }
-      }
-    );
-    ref.onHide.subscribe(() => {
-      this.refresh.next(null);
-    });
   }
 }

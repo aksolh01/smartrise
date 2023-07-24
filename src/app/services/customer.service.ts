@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { IAccountLookup, ICustomerLookup, ICustomerRecord, IRecentCustomer } from '../_shared/models/customer-lookup';
-import { debounceTime, delay, map, tap } from 'rxjs/operators';
-import { of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { IPagination, Pagination } from '../_shared/models/pagination';
-import { CustomerParams, searchCompanyInfoParams } from '../_shared/models/CustomerParams';
 import { ICustomerDetails } from '../_shared/models/customer-details';
+import { CustomerParams, SearchCompanyInfoParams } from '../_shared/models/CustomerParams';
 
 @Injectable()
 export class CustomerService {
@@ -112,6 +112,14 @@ export class CustomerService {
     //   );
   }
 
+  searchAllCustomers(customerParams: CustomerParams) {
+    return this.http
+      .post<Pagination<ICustomerRecord>>(this.baseUrl + 'customer/searchAll', customerParams, { observe: 'response' })
+      .pipe(
+        map((response) => response.body)
+      );
+  }
+
   getCustomer(id: number) {
     return this.http
       .get<ICustomerDetails>(this.baseUrl + 'customer/' + id.toString(), { observe: 'response' })
@@ -124,9 +132,17 @@ export class CustomerService {
       );
   }
 
-  searchCompanyInfo(searchParams: searchCompanyInfoParams) {
+  searchCompanyInfo(searchParams: SearchCompanyInfoParams) {
     return this.http
       .post<IPagination>(this.baseUrl + 'customer/search/companyInfo', searchParams, { observe: 'response' })
+      .pipe(
+        map((response) => response.body)
+      );
+  }
+
+  searchAllCompanyInfo(searchParams: SearchCompanyInfoParams) {
+    return this.http
+      .post<IPagination>(this.baseUrl + 'customer/searchAll/companyInfo', searchParams, { observe: 'response' })
       .pipe(
         map((response) => response.body)
       );

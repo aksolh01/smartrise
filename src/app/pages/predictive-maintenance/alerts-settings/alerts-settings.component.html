@@ -1,85 +1,60 @@
-<div class="table-container">
-
-    <div class="page-header-container">
-        <div class="page-header-title">Statement Of Account</div>
+<div class="page-header-container">
+    <div class="page-header-title">Statement Of Account</div>
+</div>
+<div class="avatar-btn-container">
+    <div class="avatar-btn">
         <a>
-            <div tooltip="Create Alert Settings" class="action-tooltip-holder">
-                <button [disabled]="!canCreateAlertSetting" (click)="onCreateAlertSetting()"
-                    class="btn btn-primary">
-                    Create Alert Settings
-                </button>
-            </div>
+            <button [disabled]="!canCreateAlertSetting" (click)="onCreateAlertSetting()" tooltip="Create Alert Settings"
+                class="main-button">
+                <i class="fas fa-plus"></i>
+            </button>
         </a>
     </div>
+</div>
+<div class="table-container">
     <nb-card>
-        <!-- <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-            <div class="col-md">
-                <h2 class="card-title">Alert Settings</h2>
-            </div>
-            <div class="col-md">
-                <div class="card-actions">
-                    <a>
-                        <div tooltip="Create Alert Settings" class="action-tooltip-holder">
-                            <button [disabled]="!canCreateAlertSetting" (click)="onCreateAlertSetting()"
-                                class="btn btn-primary">
-                                Create Alert Settings
-                            </button>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </nb-card-header> -->
         <nb-card-body>
-    
-            <ng-template [ngIf]="isSmall === false">
-                <div class="table-header">
-                    <div class="col d-flex align-items-center justify-content-start">
-                        <!-- <button (click)="onReset()" class="btn btn-primary">
-                            <i class="fas fa-redo-alt"></i>
-                            Reset Filters
-                        </button> -->
-                    </div>
-                    <div class="col-auto d-flex align-items-center justify-content-start">
-                        <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                        </ngx-smr-records-per-page> -->
-                    </div>
-                </div>
-            </ng-template>
             <div class="table-content">
                 <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
-                    <div filters>
-                        <div *ngIf="isSmartriseUser" class="filter-control">
-                            <input type="text" maxlength="255" placeholder="Name" class="form-control" [(ngModel)]="name" />
-                        </div>
-                        <div class="filter-control">
-                            <nb-select [(ngModel)]="severity" class="form-control form-control-select">
-                                <nb-option value="">Severity</nb-option>
-                                <nb-option *ngFor="let c of severities" [value]="c.value">
-                                    {{ c.title }}
-                                </nb-option>
-                            </nb-select>
-                        </div>
-                        <div class="filter-control">
-                            <input type="text" maxlength="255" placeholder="Alert Type" class="form-control"
-                                [(ngModel)]="type" />
-                        </div>
-                        <div class="filter-control">
-                            <input type="date" placeholder="Created Date" class="form-control" [(ngModel)]="createdDate" />
-                        </div>
-                        <div class="filter-control">
-                            <input type="date" placeholder="Modified Date" class="form-control" [(ngModel)]="modifiedDate" />
-                        </div>
-                        <div class="filter-control">
-                            <input type="number" placeholder="Total Alerts" class="form-control" [(ngModel)]="totalAlerts" />
-                        </div>
-        
-                        <div class="filter-control">
-                            <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
+                    <div class="form-container" filters>
+                        <div class="input-container">
+                            <div *ngIf="isSmartriseUser" class="input-item">
+                                <input type="text" maxlength="255" placeholder="Name"
+                                    [(ngModel)]="name" />
+                            </div>
+                            <div class="input-item">
+                                <nb-select [(ngModel)]="severity">
+                                    <nb-option value="">Severity</nb-option>
+                                    <nb-option *ngFor="let c of severities" [value]="c.value">
+                                        {{ c.title }}
+                                    </nb-option>
+                                </nb-select>
+                            </div>
+                            <div class="input-item">
+                                <input type="text" maxlength="255" placeholder="Alert Type"
+                                    [(ngModel)]="type" />
+                            </div>
+                            <div class="input-item">
+                                <input type="date" placeholder="Created Date"
+                                    [(ngModel)]="createdDate" />
+                            </div>
+                            <div class="input-item">
+                                <input type="date" placeholder="Modified Date"
+                                    [(ngModel)]="modifiedDate" />
+                            </div>
+                            <div class="input-item">
+                                <input type="number" placeholder="Total Alerts"
+                                    [(ngModel)]="totalAlerts" />
+                            </div>
+
+                            <div class="input-item">
+                                <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
                             </ngx-smr-records-per-page> -->
+                            </div>
                         </div>
                     </div>
-                    <div actions>
-                        <button class="btn btn-block btn-primary" (click)="onSearch(); toggleFilters()">
+                    <div actions class="form-action">
+                        <button class="main-button"  (click)="onSearch(); toggleFilters()">
                             <i class="fas fa-search"></i>
                             Search
                         </button>
@@ -91,7 +66,7 @@
                 </ngx-smr-mobile-filters>
             </div>
 
-    
+
             <div class="row">
                 <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
                     <button type="button" class="btn btn-primary" (click)="toggleFilters()">
@@ -99,7 +74,7 @@
                     </button>
                 </div>
                 <div class="table-content" *ngIf="source">
-                    <ng2-smart-table  [settings]="settings" [source]="source">
+                    <ng2-smart-table [settings]="settings" [source]="source">
                     </ng2-smart-table>
                 </div>
             </div>

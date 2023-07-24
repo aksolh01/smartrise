@@ -37,6 +37,7 @@ import { IPagination } from '../../../_shared/models/pagination';
 import { IBusinessSettings } from '../../../_shared/models/settings';
 import { environment } from '../../../../environments/environment';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-customer-users',
@@ -46,9 +47,11 @@ import { Ng2SmartTableComponent } from 'ng2-smart-table';
 export class CustomerUsersComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild('search', { static: false }) searchRef: ElementRef;
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
 
   source: BaseServerDataSource;
   runGuidingTour = true;
+  selectedAccountName = this.getSelectedAccountsLabel();
 
   // set isLoading as true by default to avoid the following exception
   // Expression has changed after it was checked. Previous value: 'false'. Current value: 'true'.
@@ -167,6 +170,12 @@ export class CustomerUsersComponent extends BaseComponent implements OnInit, OnD
 
     this.source.serviceCallBack = (params) => this._getCustomerUsers(params);
     this.source.dataLoading.subscribe(isLoading => this._onDataLoading(isLoading));
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
   }
 
   private _onDataLoading(isLoading: any) {

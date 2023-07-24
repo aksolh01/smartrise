@@ -1,0 +1,23 @@
+<div class="page-header-container">
+    <div class="page-header-title">Account Users</div>
+    <ngx-pager #pager></ngx-pager>
+</div>
+<div class="table-container">
+    <nb-card>
+
+        <nb-card-body>
+            <div class="row" [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                <div class="col-12 d-flex justify-content-end" *ngIf="isSmall">
+                    <button type="button" class="btn btn-primary" (click)="toggleFilters()">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                <div class="table-content" *ngIf="source">
+                    <ng2-smart-table #table [settings]="settings"
+                        [source]="source">
+                    </ng2-smart-table>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>

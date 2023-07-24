@@ -217,4 +217,8 @@ export class CreateAccountUserComponent implements OnInit {
       accounts
     });
   }
+
+  onClose() {
+    this.router.navigateByUrl(URLs.ViewAccountUsersURL);
+  }
 }

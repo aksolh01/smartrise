@@ -6,7 +6,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { AccountService } from '../../../../../../services/account.service';
 import { CustomerService } from '../../../../../../services/customer.service';
 import { MessageService } from '../../../../../../services/message.service';
-import { SmartriseValidators } from '../../../../../../_shared/constants';
+import { SmartriseValidators, URLs } from '../../../../../../_shared/constants';
 import { ICustomerUserBySmartriseResponse } from '../../../../../../_shared/models/customer-user-by-smartrise.model';
 import { IGetCustomerUser } from '../../../../../../_shared/models/IGetCustomerUser';
 import { IRole } from '../../../../../../_shared/models/role';
@@ -17,6 +17,7 @@ import { IRole } from '../../../../../../_shared/models/role';
   styleUrls: ['./update-customer-user.component.scss']
 })
 export class UpdateCustomerUserBySmartriseComponent implements OnInit, OnDestroy {
+
   customerUserForm: UntypedFormGroup;
   customerUser: ICustomerUserBySmartriseResponse;
   roles: IRole[] = [];
@@ -74,6 +75,10 @@ export class UpdateCustomerUserBySmartriseComponent implements OnInit, OnDestroy
 
   onRoleChanged() {
     this.rolesChanged = true;
+  }
+
+  onClose() {
+    this.router.navigateByUrl('pages/customers-management/customers/');
   }
 
   createCustomerUserForm(user: IGetCustomerUser) {
@@ -142,6 +147,14 @@ export class UpdateCustomerUserBySmartriseComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
     this.manageRoute?.unsubscribe();
     sessionStorage.removeItem('customerName');
+  }
+
+  onGoToAccounts() {
+    this.router.navigateByUrl(URLs.ViewCustomersURL);
+  }
+
+  onGoToAccount() {
+    this.router.navigateByUrl(`${URLs.ViewCustomersURL}/${this.customerUser.account.id}`);
   }
 
   private _initializeRoutingManagement() {

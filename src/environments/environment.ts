@@ -17,5 +17,6 @@ export const environment = {
   socketApiUrl: 'wss://portaltestapi.smartrise.us/api/',
   toastMessageShowDuration: 5000,
   stripeKey: 'pk_test_51Kbp70AOD8pjxE7i8AuhyxhcSNJBwRwDJevj5miLdZTY0ZNt2XFiO9CaNGf3F01ixRfs5QnKVfEDkHVGDtEJf8iQ00m8tffmWE',
-  recordsPerPage: 25
+  recordsPerPage: 25,
+  zipCodeValidationApi: 'oHVZmc6AYDLSr5JqyNTETf9WB4XARAqEszAUOCMWjHXlmiK4af23IUvSlAsQS5Yn',
 };

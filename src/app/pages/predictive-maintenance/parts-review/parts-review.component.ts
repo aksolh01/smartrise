@@ -121,13 +121,16 @@ export class PartsReviewComponent extends BaseComponent implements OnInit {
         }
       },
       partType: {
-        filter: true,
         title: 'Part Type',
         type: 'custom',
         renderComponent: Ng2TableCellComponent,
         onComponentInitFunction: (instance: Ng2TableCellComponent) => {
           instance.setHeader('Part Type');
         },
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        }
       },
       alertsCount: {
         title: 'Alerts Count',

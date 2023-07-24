@@ -1,124 +1,124 @@
-<nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-  <nb-card-header class="default-card-header">
-    <h2 class="card-title">User Information</h2>
-  </nb-card-header>
-  <nb-card-body>
+<div class="page-header-container">
+  <div class="page-header-title">
+      <span (click)="onClose()" class="cursor">Smartrise Users</span> / New Smartrise User
+  </div>
+</div>
 
-    <form
-    [ngClass]="{'hide': isLoadingForm}"
-    [nbSpinner]="isLoadingForm" 
-    nbSpinnerStatus="primary"
-    nbSpinnerSize="large" 
-    nbSpinnerMessage=""
-    [formGroup]="smartriseUserForm" 
-    (ngSubmit)="onSubmit()"
-    >
-      <div class="row">
-        
-        <div class="col-12 col-lg-6">
+<form [ngClass]="{'hide': isLoadingForm}" [nbSpinner]="isLoadingForm" nbSpinnerStatus="primary" nbSpinnerSize="large"
+  nbSpinnerMessage="" [formGroup]="smartriseUserForm" (ngSubmit)="onSubmit()">
+  <div class="create-smartrise-user">
+    <div class="create-smartrise-container">
+      <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant" size="small">
+        <nb-card-header class="default-card-header">
+          <h2 class="card-title">User Information</h2>
+        </nb-card-header>
+        <nb-card-body>
 
-          <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
-            <div class="col-12 col-lg-8">
-              <input type="text" placeholder="First Name" formControlName="firstName" class="form-control"
-                id="firstName">
-              <div *ngIf="formSubmitted">
-                <div class="help-block error" *ngIf="
+          <div class="form-container">
+
+            <div class="row-container">
+              <div class="input-container">
+                <div class="input-sub-container">
+                  <label class="label-align">First Name</label>
+                  <div class="input-item">
+                    <input type="text" placeholder="First Name" formControlName="firstName" id="firstName">
+                    <div *ngIf="formSubmitted">
+                      <div class="help-block error" *ngIf="
   smartriseUserForm.get('firstName').errors != null &&
   smartriseUserForm.get('firstName').errors[
   'requiredWithTrim'
   ] &&
   smartriseUserForm.get('firstName').touched
   ">
-                  First Name is required
-                </div>
-                <div class="help-block error" *ngIf="
+                        First Name is required
+                      </div>
+                      <div class="help-block error" *ngIf="
   smartriseUserForm.get('firstName').errors != null &&
   smartriseUserForm.get('firstName').errors[
   'trimError'
   ] &&
   smartriseUserForm.get('firstName').touched
   ">
-                  This field can't start or end with a blank space
+                        This field can't start or end with a blank space
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Last Name</label>
-            <div class="col-12 col-lg-8">
-              <input type="text" placeholder="Last Name" formControlName="lastName" class="form-control" id="lastName">
-              <div *ngIf="formSubmitted">
-                <div class="help-block error" *ngIf="
+                <div class="input-sub-container">
+                  <label class="label-align">Last Name</label>
+                  <div class="input-item">
+                    <input type="text" placeholder="Last Name" formControlName="lastName" id="lastName">
+                    <div *ngIf="formSubmitted">
+                      <div class="help-block error" *ngIf="
   smartriseUserForm.get('lastName').errors != null &&
   smartriseUserForm.get('lastName').errors[
   'requiredWithTrim'
   ] &&
   smartriseUserForm.get('lastName').touched
   ">
-                  Last Name is required
-                </div>
-                <div class="help-block error" *ngIf="
+                        Last Name is required
+                      </div>
+                      <div class="help-block error" *ngIf="
   smartriseUserForm.get('lastName').errors != null &&
   smartriseUserForm.get('lastName').errors[
   'trimError'
   ] &&
   smartriseUserForm.get('lastName').touched
   ">
-                  This field can't start or end with a blank space
+                        This field can't start or end with a blank space
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
-            <div class="col-12 col-lg-8">
-              <input type="text" (keydown.space)="$event.preventDefault()" placeholder="Email" formControlName="email"
-                class="form-control" id="email">
-              <div *ngIf="formSubmitted">
-                <div class="help-block error" *ngIf="
+                <div class="input-sub-container">
+                  <label class="label-align">Email</label>
+                  <div class="input-item">
+                    <input type="text" (keydown.space)="$event.preventDefault()" placeholder="Email"
+                      formControlName="email" id="email">
+                    <div *ngIf="formSubmitted">
+                      <div class="help-block error" *ngIf="
                   smartriseUserForm.get('email').errors != null &&
                   smartriseUserForm.get('email').errors['requiredWithTrim'] &&
                   smartriseUserForm.get('email').touched">
-                  Email is required
-                </div>
-                <div class="help-block error"
-                  *ngIf="
+                        Email is required
+                      </div>
+                      <div class="help-block error"
+                        *ngIf="
                   smartriseUserForm.get('email').dirty &&
                   smartriseUserForm.get('email').errors &&
                   (smartriseUserForm.get('email').errors['smartriseEmail'] && !smartriseUserForm.get('email').errors['trimError'])">
-                  Please enter a valid email
-                </div>
-                <div *ngIf="smartriseUserForm.get('email').touched && 
+                        Please enter a valid email
+                      </div>
+                      <div *ngIf="smartriseUserForm.get('email').touched && 
                 smartriseUserForm.get('email').errors && 
                 smartriseUserForm.get('email').errors['trimError']" class="mt-1 help-block error">
-                  This field can't start or end with a blank space
+                        This field can't start or end with a blank space
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
 
-        </div>
 
-        <div class="col-12 col-lg-6">
-          <div class="form-group">
-            <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="rolesNames" [roles]="roles"></ngx-smr-roles-checklist>
-          </div>
-        </div>
-        
-      </div>
-      <div class="form-buttons">
-        <button routerLink=".." type="button" class="btn btn-secondary">
-          <i class="fas fa-times"></i>
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-plus-circle"></i>
-          Create
-        </button>
-      </div>
-    </form>
-  </nb-card-body>
-</nb-card>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <div class="roles-list">
+      <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="rolesNames"
+        [roles]="roles"></ngx-smr-roles-checklist>
+    </div>
+  </div>
+  <div class="form-buttons">
+    <ngx-button routerLink=".." type="button" class="secondary-button">
+      Cancel
+    </ngx-button>
+    <ngx-button type="submit" class="main-button">
+      Create
+    </ngx-button>
+  </div>
+</form>

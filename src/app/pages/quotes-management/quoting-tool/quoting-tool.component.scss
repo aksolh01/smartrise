@@ -28,7 +28,7 @@ $column-xxlarge-size: 18rem;
         background-color: #ecedf0;
           .bottom-actions{
               display: flex;
-              justify-content: flex-start !important;
+              justify-content: end !important;
           }
         .row {
           margin: 0 !important;
@@ -181,7 +181,7 @@ fieldset {
 
 .card-title {
     font-weight: 550;
-    color: #0088cc !important;
+    // color: #0088cc !important;
 }
 
 .card-header {

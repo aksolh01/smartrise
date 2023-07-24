@@ -1,0 +1,72 @@
+<div class="page-header-container">
+  <div class="page-header-title">Parts</div>
+  <div *ngIf="isSmall">
+    <button class="main-button" type="button" (click)="toggleFilters()">
+      <i class="fas fa-filter"></i>
+    </button>
+  </div>
+</div>
+<ngx-pager #pager></ngx-pager>
+<div class="table-container">
+  <nb-card joyrideStep="partFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Parts' : null"
+    [doneTemplate]="doneButton" [stepContent]="firstCustomContent" (done)="onFinishingTour()">
+
+    <ng-template #firstCustomContent>
+      <div class='joyride-custom-content'>
+        <div style="margin-bottom: 5px;">
+          View a list of parts.<br />
+        </div>
+        <div>
+          <i class="fas fa-eye guiding-tour-action"></i>View Part Details
+        </div>
+      </div>
+    </ng-template>
+
+    <nb-card-body>
+      <div class="table-content">
+        <ngx-smr-mobile-filters *ngIf="isSmall && showFilters" (close)="toggleFilters()">
+          <div filters class="form-container">
+            <div class="input-container">
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="Part Number" 
+                  [(ngModel)]="partNumber" />
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="Model Number" 
+                  [(ngModel)]="modelNumber" />
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="Description" 
+                  [(ngModel)]="description" />
+              </div>
+              <div class="input-item">
+                <input type="text" maxlength="255" placeholder="Price" [(ngModel)]="price" />
+              </div>
+            </div>
+            <!-- <ngx-cp-checkbox class="ml-2" [(checkStatus)]="epicorWaitingInfo"></ngx-cp-checkbox> -->
+          </div>
+          <div actions class="form-action">
+            <button class="main-button" (click)="onSearch(); toggleFilters()">
+              <i class="fas fa-search"></i>
+              Search
+            </button>
+          </div>
+        </ngx-smr-mobile-filters>
+      </div>
+      <div [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <div class="table-content" *ngIf="source">
+          <ng2-smart-table #table class="responsive-design1" [settings]="settings"
+            [source]="source">
+          </ng2-smart-table>
+        </div>
+      </div>
+    </nb-card-body>
+
+  </nb-card>
+</div>
+<ng-template #doneButton>
+  <button class="main-button">
+    <i class="clear-icon fas fa-check"></i>
+    OK
+  </button>
+</ng-template>

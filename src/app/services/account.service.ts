@@ -35,7 +35,7 @@ import { ISmartriseUser } from '../_shared/models/ISmartriseUser';
 import { ISmartriseUserLookup } from '../_shared/models/ISmartriseUserLookup';
 import { IUser } from '../_shared/models/IUser';
 import { IUserLookup } from '../_shared/models/IUserLookup';
-import { Pagination } from '../_shared/models/pagination';
+import { IPagination, Pagination } from '../_shared/models/pagination';
 import { IPermission } from '../_shared/models/permission.model';
 import { IResetPassword } from '../_shared/models/resetPassword';
 import { IRole } from '../_shared/models/role';
@@ -371,6 +371,16 @@ export class AccountService {
       .pipe(map((response) => response.body));
   }
 
+  searchAllSmartriseUsers(smartriseUsersParams: SmartriseUsersParams): Observable<IPagination> {
+    return this.http
+      .post<Pagination<ISmartriseUserLookup>>(
+        this.baseUrl + 'account/profiles/smartrise/searchAll',
+        smartriseUsersParams,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));    
+  }
+
   getAccountUsers(accountUsersParams: AccountUsersParams) {
     return this.http
       .post<Pagination<IAccountUserLookup>>(
@@ -381,11 +391,31 @@ export class AccountService {
       .pipe(map((response) => response.body));
   }
 
+  searchAllAccountUsers(sParam: AccountUsersParams) {
+    return this.http
+      .post<Pagination<IAccountUserLookup>>(
+        this.baseUrl + 'account/profiles/accountusers/searchAll',
+        sParam,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
+
   getCustomerAdminUsers(customerId: number) {
     return this.http
       .post<Pagination<ICustomerUserLookup>>(
         this.baseUrl + `account/profiles/customers/${customerId}`,
         null,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
+
+  searchAllCustomerUsersByCustomerAdmin(customerUsersParams: CustomerUsersParams): Observable<IPagination> {
+    return this.http
+      .post<Pagination<ICustomerUserLookup>>(
+        this.baseUrl + 'account/profiles/customers/searchAll',
+        customerUsersParams,
         { observe: 'response' }
       )
       .pipe(map((response) => response.body));

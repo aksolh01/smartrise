@@ -14,7 +14,6 @@ import { BaseServerDataSource } from '../../datasources/base-server.datasource';
                 #number
                 [ngClass]="inputClass"
                 [formControl]="inputControl"
-                class="form-control"
                 (paste)="onPaste($event)"
                 (keypress)="preventNonNumericalInput($event)"
                 [min]="column.filter.config.min"

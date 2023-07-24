@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Ng2TableCellComponent } from '../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
 import { BaseServerDataSource } from '../../../_shared/datasources/base-server.datasource';
@@ -20,13 +20,12 @@ import { URLs } from '../../../_shared/constants';
 import { AppComponent } from '../../../app.component';
 import { TokenService } from '../../../services/token.service';
 import { AccountsListCellComponent } from './accounts-list-cell/accounts-list-cell.component';
-import { map } from 'rxjs/operators';
-import { count } from 'console';
 import { AccountService } from '../../../services/account.service';
 import { InfoDialogData } from '../../../_shared/components/info-dialog/info-dialog-data';
 import { InfoDialogComponent } from '../../../_shared/components/info-dialog/info-dialog.component';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
 import { environment } from '../../../../environments/environment';
+import { PagerComponent } from '../../../_shared/components/pager/pager.component';
 
 @Component({
   selector: 'ngx-account-users',
@@ -34,8 +33,9 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./account-users.component.scss']
 })
 
-export class AccountUsersComponent extends BaseComponent implements OnInit {
+export class AccountUsersComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild('table') table: Ng2SmartTableComponent;
+  @ViewChild('pager') pager: PagerComponent;
   source: BaseServerDataSource;
   runGuidingTour = true;
   public Math = Math;
@@ -64,7 +64,7 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
       edit: false,
       delete: false,
     },
-   
+
     columns: {
       firstName: {
         title: 'First Name',
@@ -150,7 +150,7 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
   }
 
   initializeSource() {
-    
+
     this._initializePager();
     this.source = new BaseServerDataSource();
     this.source.convertFilterValue = (field, value) => {
@@ -169,12 +169,18 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.pager.table = this.table;
+    });
+  }
+
   private _initializePager() {
-      this.settings.pager = {
-          display: true,
-          page: 1,
-          perPage: this.recordsNumber || 25
-      };
+    this.settings.pager = {
+      display: true,
+      page: 1,
+      perPage: this.recordsNumber || 25
+    };
   }
 
   private _getAccountUsers(params: any) {
@@ -315,7 +321,7 @@ export class AccountUsersComponent extends BaseComponent implements OnInit {
   }
 
   onReset() {
-    
+
     this._resetFilterParameters();
 
     if (this.isSmall) {

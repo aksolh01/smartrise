@@ -1,91 +1,97 @@
-::ng-deep ngx-account-roles-selection ng2-smart-table-title span {
-.privileges-icon {
-    color: #0088cc;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 1.2rem;
-    transition: color 0.2s ease;
-    &:hover {
-        color: #00a1f2;
+// ::ng-deep ngx-account-roles-selection ng2-smart-table-title span {
+// .privileges-icon {
+//     color: #0088cc;
+//     cursor: pointer;
+//     display: inline-block;
+//     font-size: 1.2rem;
+//     transition: color 0.2s ease;
+//     &:hover {
+//         color: #00a1f2;
+//     }
+// }
+
+// ngx-account-roles-selection ng2-smart-table-title span {
+//     font-size: 16px !important;
+//     font-weight: 600 !important;
+// }
+
+// @media (max-width: 531px) {
+//     ::ng-deep ngx-account-roles-selection ng2-smart-table th {
+//         display: none;
+//     }
+//     ::ng-deep ngx-account-roles-selection ng2-smart-table tr {
+//         display: block;
+//         margin-bottom: 1rem;
+//     }
+//     ::ng-deep ngx-account-roles-selection ng2-smart-table tr td {
+//         display: block;
+//     }
+// }
+
+.card-container-role {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px !important;
+
+    .card-role {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        width: 32%;
+        overflow: hidden;
+        margin-top: 16px !important;
+    
+        .account-name {
+            font-family: inherit;
+            font-size: 100%;
+            line-height: 1.5;
+            color: #212529;
+            font-weight: 500;
+            overflow-y: auto;
+            margin-bottom: 0px;
+        }
+
+        .card-content-role {
+            padding: 1rem;
+            background-color: #fff;
+            display: grid;
+            grid-template-rows: 3rem 32px 7rem 3rem;
+        }
     }
 }
 
-ngx-account-roles-selection ng2-smart-table-title span {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-}
+// @media screen and (max-width: 576px) {
+//     .card-container {
+//         grid-template-columns: 1fr;
+//     }
+// }
 
-@media (max-width: 531px) {
-    ::ng-deep ngx-account-roles-selection ng2-smart-table th {
-        display: none;
-    }
-    ::ng-deep ngx-account-roles-selection ng2-smart-table tr {
-        display: block;
-        margin-bottom: 1rem;
-    }
-    ::ng-deep ngx-account-roles-selection ng2-smart-table tr td {
-        display: block;
-    }
-}
+// @media screen and (min-width: 577px) and (max-width: 768px) {
+//     .card-container {
+//         grid-template-columns: 1fr 1fr;
+//     }
+// }
 
-.card-container {
-    display: grid;
+// @media screen and (min-width: 769px) and (max-width: 992px) {
+//     .card-container {
+//         grid-template-columns: 1fr 1fr 1fr;
+//     }
+// }
 
-    grid-gap: 15px;
-}
+// @media screen and (min-width: 993px) and (max-width: 1572px) {
+//     .card-container {
+//         grid-template-columns: 1fr 1fr 1fr 1fr;
+//     }
+// }
 
-@media screen and (max-width: 576px) {
-    .card-container {
-        grid-template-columns: 1fr;
-    }
-}
+// @media screen and (min-width: 1573px) {
+//     .card-container {
+//         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+//     }
+// }
 
-@media screen and (min-width: 577px) and (max-width: 768px) {
-    .card-container {
-        grid-template-columns: 1fr 1fr;
-    }
-}
 
-@media screen and (min-width: 769px) and (max-width: 992px) {
-    .card-container {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-}
 
-@media screen and (min-width: 993px) and (max-width: 1572px) {
-    .card-container {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
-}
 
-@media screen and (min-width: 1573px) {
-    .card-container {
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    }
-}
-
-.card {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    overflow: hidden;
-
-    .account-name {
-        font-family: inherit;
-        font-size: 100%;
-        line-height: 1.5;
-        color: #212529;
-        font-weight: 500;
-        overflow-y: auto;
-        margin-bottom: 0px;
-    }
-}
-
-.card-content {
-    padding: 1rem;
-    background-color: #fff;
-    display: grid;
-    grid-template-rows: 3rem 32px 7rem 3rem;
-}
 
 .card-link {
     display: inline-block;
@@ -99,5 +105,4 @@ ngx-account-roles-selection ng2-smart-table-title span {
 
 .card-link:hover {
     background-color: #666;
-}
 }

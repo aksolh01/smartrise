@@ -55,17 +55,9 @@ export class UploadConfigFileComponent implements OnInit, OnDestroy, OnChanges {
       jobName: {
         title: 'Job Name',
         type: 'custom',
-        renderComponent: HLinkTableCellComponent,
-        onComponentInitFunction: (instance: HLinkTableCellComponent) => {
+        renderComponent: Ng2TableCellComponent,
+        onComponentInitFunction: (instance: Ng2TableCellComponent) => {
           instance.setHeader('Job Name');
-          instance.setOptions({
-            breakWord: true,
-            link: 'pages/jobs-management/jobs',
-            paramExps: [
-              'jobId'
-            ],
-            tooltip: 'View Job Details'
-          });
         },
         show: false,
         filter: false

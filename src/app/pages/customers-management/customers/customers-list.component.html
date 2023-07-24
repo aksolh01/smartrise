@@ -1,20 +1,12 @@
 <div class="page-header-container">
     <div class="page-header-title">Accounts</div>
-    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
-        <div class="input-container">
-            <div class="input-item search-input-icon">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Search">
-              </div>
-        </div>
-    </div>
     <div *ngIf="isSmall">
         <button class="main-button" type="button" (click)="toggleFilters()">
             <i class="fas fa-filter"></i>
         </button>
     </div>
 </div>
-<ngx-pager [table]="table"></ngx-pager>
+<ngx-pager #pager></ngx-pager>
 <div class="table-container">
     <nb-card joyrideStep="customerFirstStep" stepPosition="center" [title]="runGuidingTour === true ? 'Accounts' : null"
         [stepContent]="firstCustomContent" (done)="onFinishingTour()" [doneTemplate]="doneButton">

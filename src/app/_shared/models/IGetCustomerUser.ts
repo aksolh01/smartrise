@@ -9,4 +9,5 @@ export interface IGetCustomerUser {
     email: string;
     emailConfirmed: boolean;
     roles: IGetCustomerUserRole[];
+    account?: any;
 }

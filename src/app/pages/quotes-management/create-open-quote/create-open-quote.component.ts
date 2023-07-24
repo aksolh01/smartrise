@@ -232,11 +232,8 @@ export class CreateOpenQuoteComponent extends BaseComponent implements OnInit, O
         this.quotingToolService.getEnums(this.accountId),
         this.locationService.getCountries()
       ]
-    ).subscribe(([
-      contacts,
-      enums,
-      countries
-    ]) => {
+    ).subscribe(([contacts, enums, countries]) => {
+
       this.jobStatusDataSource = enums.jobStatus;
       this.buildingTypesDataSource = enums.buildingTypes;
       this.customerContacts = contacts;

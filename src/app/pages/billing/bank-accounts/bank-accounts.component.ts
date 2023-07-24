@@ -227,6 +227,7 @@ export class BankAccountsComponent extends BaseComponent implements OnInit, OnDe
     return accountId == null ? null : +accountId;
   }
 
+  selectedAccountName = this.multiAccountService.getSelectedAccountName();
 
   constructor(
     private router: Router,

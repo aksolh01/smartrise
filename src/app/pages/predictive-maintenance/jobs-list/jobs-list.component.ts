@@ -32,7 +32,7 @@ export class JobsListComponent extends BaseComponent implements OnInit {
   status?: AlertStatus;
 
   isSmall = false;
-  source = new BaseServerDataSource();
+  source: BaseServerDataSource;
   settings: any = {
     mode: 'external',
     actions: {
@@ -132,6 +132,7 @@ export class JobsListComponent extends BaseComponent implements OnInit {
     this.recordsNumber = environment.recordsPerPage;
     this.onRecordsNumberChanged(this.recordsNumber);
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => this._onScreenSizeChanged(w));
+    this.source = new BaseServerDataSource();
     this.source.serviceCallBack = (param) => {
       const predictiveJobBaseParams = param as PredictiveJobBaseParams;
       if (this.isSmall) {

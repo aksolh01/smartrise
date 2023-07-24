@@ -10,6 +10,7 @@ import { JoyrideModule } from 'ngx-joyride';
 import { MenuService } from '../services/menu.service';
 import { SharedModule } from '../_shared/shared.module';
 import { ImageService } from '../services/image.service';
+import { SearchService } from '../services/search.service';
 
 
 @NgModule({
@@ -25,7 +26,7 @@ import { ImageService } from '../services/image.service';
   declarations: [PagesComponent],
   providers: [
     MenuService,
-    ImageService
+    ImageService,
   ]
 })
 export class PagesModule {}

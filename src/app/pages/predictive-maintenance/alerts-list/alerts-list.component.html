@@ -1,47 +1,36 @@
-<nb-card class="in-dialog">
-    <nb-card-header class="default-card-header d-flex align-items-center justify-content-between">
-        <h2 class="card-title">My Alerts</h2>
-    </nb-card-header>
-    <nb-card-body>
-        
-        <ng-template [ngIf]="isSmall === false">
-            <div class="row mb-3">
-                <div class="col d-flex align-items-center justify-content-start">
-                    <!-- <button (click)="onReset()" class="btn btn-primary">
-            <i class="fas fa-redo-alt"></i>
-            Reset Filters
-                    </button> -->
+<div class="table-container">
+    <div class="page-header-container">
+        <div class="page-header-title">My Alerts</div>
+    </div>
+    <nb-card>
+        <nb-card-body>
+
+            <div class="row">
+
+                <div *ngIf="jobData" class="col-4 col-lg-2 form-group">
+                    <label class="control-label mt-2">Job Name:</label>
                 </div>
-                <div class="col-auto d-flex align-items-center justify-content-start">
-                    <!-- <ngx-smr-records-per-page [recordsNumber]="recordsNumber" (changed)="onRecordsNumberChanged($event)">
-                    </ngx-smr-records-per-page> -->
+
+                <div *ngIf="jobData" class="col-8 col-lg-4 form-group form-control-plaintext">
+                    {{ jobData.jobName }}
                 </div>
+
+                <div *ngIf="jobData" class="col-lg-6"></div>
+
+                <div *ngIf="jobData" class="col-4 col-lg-2 form-group">
+                    <label class="control-label mt-2">Job Number:</label>
+                </div>
+
+                <div *ngIf="jobData" class="col-8 col-lg-4 form-group form-control-plaintext">
+                    {{ jobData.jobNumber }}
+                </div>
+                <div *ngIf="jobData" class="col-lg-6"></div>
+
             </div>
-        </ng-template>
-
-        <div class="row">
-
-            <div *ngIf="jobData" class="col-4 col-lg-2 form-group">
-                <label class="control-label mt-2">Job Name:</label>
+            <div class="table-content">
+                <ng2-smart-table class="responsive-design1" [settings]="settings" [source]="source">
+                </ng2-smart-table>
             </div>
-
-            <div *ngIf="jobData" class="col-8 col-lg-4 form-group form-control-plaintext">
-                {{ jobData.jobName }}
-            </div>
-
-            <div *ngIf="jobData" class="col-lg-6"></div>
-
-            <div *ngIf="jobData" class="col-4 col-lg-2 form-group">
-                <label class="control-label mt-2">Job Number:</label>
-            </div>
-
-            <div *ngIf="jobData" class="col-8 col-lg-4 form-group form-control-plaintext">
-                {{ jobData.jobNumber }}
-            </div>
-            <div *ngIf="jobData" class="col-lg-6"></div>
-
-        </div>
-        <ng2-smart-table class="default-smart-table responsive-design1" [settings]="settings" [source]="source">
-        </ng2-smart-table>
-</nb-card-body>
-</nb-card>
+        </nb-card-body>
+    </nb-card>
+</div>

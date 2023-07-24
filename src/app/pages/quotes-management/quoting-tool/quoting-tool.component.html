@@ -1,5 +1,11 @@
+<div class="page-header-container">
+    <div class="page-header-title" *ngIf="quote">
+        <span (click)="onCancel()" class="cursor"><i class="fa fa-arrow-left"></i>Open Quotes</span> / {{ quote?.jobName }}
+    </div>
+</div>
+
 <nb-card *ngIf="!isLoading" [nbSpinner]="isBusy" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-    <div class="table-sub-details">
+
     <nb-card-header class="default-card-header">
         <h2 class="card-title">Quote Details - {{ quote?.customer?.name }}</h2>
     </nb-card-header>
@@ -11,12 +17,37 @@
             [ngStyle]="{'display': hasError ? 'block' : 'none'}" class="position-fixed border errors-panel"
             [(hasError)]="hasError"></ngx-errors-panel>
 
-        <div class="text-right mb-3">
-            <ngx-actions-bar [status]="quote.status" [isProccessing]="isProccessing" [isSaving]="isSaving"
-                [isGenerating]="isGenerating" (close)="onCancel()" (viewPricing)="onViewPricing()"
-                (saveQuote)="onSaveQuote()" (generateQuote)="onSaveQuote(true)">
-            </ngx-actions-bar>
+        <div class="d-md-flex justify-content-between mb-3">
+
+            <button joyrideStep="quoteSecondStep" stepPosition="bottom" [doneTemplate]="doneButton"
+                [title]="runGuidingTour === true ? 'Quote Details' : null" [stepContent]="secondCustomContent"
+                (done)="onFinishingTour()" tooltip="Show Fields Descriptions"
+                class="btn btn-primary mb-2 mb-md-0 show-fields-descriptions" type="button"
+                (click)="onShowFildsDescriptions()">
+                <i class="fas fa-sticky-note"></i>
+            </button>
+
+
+            <ng-template #secondCustomContent>
+                <div class='joyride-custom-content'>
+                    <div style="margin-bottom: 5px;">
+                        Show Fields Descriptions.
+                    </div>
+                </div>
+            </ng-template>
+
+            <div class="text-right">
+                <ngx-actions-bar [status]="quote.status" [isProccessing]="isProccessing" [isSaving]="isSaving"
+                    [isGenerating]="isGenerating" (close)="onCancel()" (viewPricing)="onViewPricing()"
+                    (saveQuote)="onSaveQuote()" (generateQuote)="onSaveQuote(true)">
+                </ngx-actions-bar>
+            </div>
+
         </div>
+
+        <ngx-errors-panel #actionsRequired [disabled]="disableActionsRequired" [collapse]="hideErrorsPanel"
+            [ngStyle]="{'display': hasError ? 'block' : 'none'}" class="position-fixed border errors-panel"
+            [(hasError)]="hasError"></ngx-errors-panel>
 
         <div *ngIf="quote.status === 'Created' && !hideTopMessage" class="alert alert-primary">
             <i class="fas fa-times float-right close-alert  top-message" tooltip="Close Alert"
@@ -25,7 +56,7 @@
         </div>
 
         <div class="row quote-level-info">
-            <div class="right-section">
+            <div class="right-section col-6">
 
                 <div *ngIf="showAccountName" class="form-group row">
                     <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Account Name</label>
@@ -74,7 +105,8 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Unknown Consultant</label>
+                    <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Unknown
+                        Consultant</label>
                     <div class="col-12 col-lg-8">
                         <ngx-quoting-checkbox [item]="quote" fieldLabel="" valueField="unknownConsultant">
                         </ngx-quoting-checkbox>
@@ -98,7 +130,7 @@
                     </div>
                 </div>
             </div>
-            <div class="left-section">
+            <div class="left-section col-6">
 
                 <div class="form-group row">
                     <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Job Name</label>
@@ -171,24 +203,24 @@
             <div class="section-header">
                 <!-- <div *ngIf="!isSmall" class="extra"></div> -->
                 <div class="header-title">General Data</div>
-                <div class="add-car-action">
-                    <button joyrideStep="quoteFirstStep" stepPosition="bottom" [doneTemplate]="doneButton"
-                        [title]="runGuidingTour === true ? 'Quote Details' : null" [stepContent]="firstCustomContent"
-                        (done)="onFinishingTour()" [disabled]="isAddingCar" (click)="onAddCar()"
-                        (keydown)="addCarKeyPress($event)" type="button" aria-label="Add Car" tooltip=""
-                        class="btn btn-primary">
-                        <i class="fas fa-plus-circle"></i>
-                        Add Car
-                    </button>
+                <div class="avatar-btn-container">
+                    <div class="avatar-btn">
+                        <button joyrideStep="quoteFirstStep" stepPosition="bottom" [doneTemplate]="doneButton"
+                            [title]="runGuidingTour === true ? 'Quote Details' : null"
+                            [stepContent]="firstCustomContent" (done)="onFinishingTour()" [disabled]="isAddingCar"
+                            (click)="onAddCar()" (keydown)="addCarKeyPress($event)" type="button" aria-label="Add Car"
+                            tooltip="Add Car" class="main-button">
+                            <i class="fa fa-plus"></i>
+                        </button>
 
-                    <ng-template #firstCustomContent>
-                        <div class='joyride-custom-content'>
-                            <div style="margin-bottom: 5px;">
-                                Add a new Car.
+                        <ng-template #firstCustomContent>
+                            <div class='joyride-custom-content'>
+                                <div style="margin-bottom: 5px;">
+                                    Add a new Car.
+                                </div>
                             </div>
-                        </div>
-                    </ng-template>
-
+                        </ng-template>
+                    </div>
                 </div>
             </div>
 
@@ -397,18 +429,21 @@
                             <td class="text-left">{{ displayGroup(car.group) }} - {{
                                 car.carLabel }}</td>
                             <td class="text-center">
-                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.v2Available" [item]="car.carHydraulicField" [carRef]="car.ref"
-                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="v2">
+                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.v2Available"
+                                    [item]="car.carHydraulicField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" valueField="v2">
                                 </ngx-quoting-checkbox>
                             </td>
                             <td class="text-center">
-                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.v3Available" [item]="car.carHydraulicField" [carRef]="car.ref"
-                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="v3">
+                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.v3Available"
+                                    [item]="car.carHydraulicField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" valueField="v3">
                                 </ngx-quoting-checkbox>
                             </td>
                             <td class="text-center">
-                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.hydroEvolvedAvailable" [item]="car.carHydraulicField" [carRef]="car.ref"
-                                    [carLabel]="car.displayName" [carIndex]="car.carIndex" valueField="hydroEvolved">
+                                <ngx-quoting-checkbox [disabled]="!car.carHydraulicField.hydroEvolvedAvailable"
+                                    [item]="car.carHydraulicField" [carRef]="car.ref" [carLabel]="car.displayName"
+                                    [carIndex]="car.carIndex" valueField="hydroEvolved">
                                 </ngx-quoting-checkbox>
                             </td>
                             <td class="text-center">
@@ -877,19 +912,19 @@
                                 <td class="text-center">
                                     <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
                                         [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
-                                        [carIndex]="car.carIndex" fieldLabel="Machine Room NEMA Rating" valueField="machineRoomNemaRating"
-                                        [dataSource]="lookup.nemaRatings" dataSourceDisplayField="description"
-                                        dataSourceValueField="value" selectOptionLabel="Machine Room NEMA Rating"
-                                        [selectOptionValue]="defaultValue">
+                                        [carIndex]="car.carIndex" fieldLabel="Machine Room NEMA Rating"
+                                        valueField="machineRoomNemaRating" [dataSource]="lookup.nemaRatings"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="Machine Room NEMA Rating" [selectOptionValue]="defaultValue">
                                     </ngx-quoting-dropdown>
                                 </td>
                                 <td class="text-center">
                                     <ngx-quoting-dropdown (dropdownopen)="collapseActionsRequired($event)"
                                         [item]="car.carSmartriseFeature" [carRef]="car.ref" [carLabel]="car.displayName"
-                                        [carIndex]="car.carIndex" fieldLabel="NEMA Location" valueField="hoistwayNemaRating"
-                                        [dataSource]="lookup.nemaRatings" dataSourceDisplayField="description"
-                                        dataSourceValueField="value" selectOptionLabel="Hoistway NEMA Location"
-                                        [selectOptionValue]="defaultValue">
+                                        [carIndex]="car.carIndex" fieldLabel="NEMA Location"
+                                        valueField="hoistwayNemaRating" [dataSource]="lookup.nemaRatings"
+                                        dataSourceDisplayField="description" dataSourceValueField="value"
+                                        selectOptionLabel="Hoistway NEMA Location" [selectOptionValue]="defaultValue">
                                     </ngx-quoting-dropdown>
                                 </td>
                                 <td class="text-center">
@@ -1280,7 +1315,6 @@
         </div>
 
     </nb-card-body>
-    </div>
 </nb-card>
 
 <ng-template [ngIf]="isLoading">

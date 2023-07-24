@@ -1,9 +1,8 @@
-<div class="pagination-info" *ngIf="table">
+<div class="pagination-info" *ngIf="table && recordsCount > pageSize">
     <div class="pagination-btn" (click)="onPagePrev()"> &lt; </div>
     {{ navigatedRecords }}
     -
     {{ min }}
     of {{ recordsCount }}
-
     <div class="pagination-btn" (click)="onPageNext()"> &gt;</div>
 </div>

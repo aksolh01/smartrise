@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { IJob, IRecentJob } from '../_shared/models/job';
 import { Observable, of } from 'rxjs';
 import { AlertStatus } from '../_shared/models/alertStatus';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable()
 export class JobService {
@@ -23,6 +24,30 @@ export class JobService {
       );
   }
 
+  getActiveJobIDs() {
+    return this.http
+      .get<number[]>(this.baseUrl + 'jobs/activeJobs', { observe: 'response' })
+      .pipe(
+        map((response) => response.body),
+      );
+  }
+
+  findJobBySmartriseUser(searchText: string) {
+    return this.http.get(this.baseUrl + 'jobs/smartrise/find/' + searchText);
+  }
+
+  findJobByCustomerUser(searchText: string) {
+    return this.http.get(this.baseUrl + 'jobs/customer/find/' + searchText);
+  }
+
+  searchAllJobsBySmartriseUser(jobParams: JobSearchParams) {
+    return this.http
+      .post<IPagination>(this.baseUrl + 'jobs/smartrise/searchAll', jobParams, { observe: 'response' })
+      .pipe(
+        map((response) => response.body),
+      );
+  }
+
   searchJobsByCustomerUser(jobParams: JobSearchByCustomerParams) {
     return this.http
       .post<IPagination>(this.baseUrl + 'jobs/customer/search', jobParams, { observe: 'response' })
@@ -31,8 +56,20 @@ export class JobService {
       );
   }
 
+  searchAllJobsByCustomerUser(jobParams: JobSearchParams) {
+    return this.http
+      .post<IPagination>(this.baseUrl + 'jobs/customer/searchAll', jobParams, { observe: 'response' })
+      .pipe(
+        map((response) => response.body),
+      );
+  }
+
   getjob(id: number) {
     return this.http.get<IJob>(this.baseUrl + 'jobs/' + id);
+  }
+
+  getActiveJob(id: number) {
+    return this.http.get<any>(this.baseUrl + 'jobs/activeJobs/' + id);
   }
 
   getRecentJobsBySmartriseUser() {
@@ -147,34 +184,34 @@ export class JobService {
     ];
 
     if (param['jobName']) {
-array = array.filter(x =>
+      array = array.filter(x =>
         x.jobName.toLowerCase().indexOf(param['jobName'].toLowerCase()) > -1
       );
-}
+    }
 
     if (param['jobNumber']) {
-array = array.filter(x =>
+      array = array.filter(x =>
         x.jobNumber.toLowerCase().indexOf(param['jobNumber'].toLowerCase()) > -1
       );
-}
+    }
 
     if (param['status']) {
-array = array.filter(x =>
+      array = array.filter(x =>
         x.status === param['status']
       );
-}
+    }
 
     if (param['alertsCount']) {
-array = array.filter(x =>
+      array = array.filter(x =>
         x.alertsCount === param['alertsCount']
       );
-}
+    }
 
     if (param['faultsCount']) {
-array = array.filter(x =>
+      array = array.filter(x =>
         x.faultsCount === param['faultsCount']
       );
-}
+    }
 
     const startIndex = (param.pageIndex - 1) * param.pageSize;
     const endIndex = startIndex + param.pageSize;

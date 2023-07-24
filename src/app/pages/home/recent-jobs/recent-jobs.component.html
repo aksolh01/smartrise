@@ -14,8 +14,11 @@
                             <p>
                                 {{job.jobName}} ({{job.jobNumber }})
                             </p>
-                            <p class="customer-name" *ngIf="displayCustomerName">
+                            <p class="customer-name" *ngIf="displayCustomerName && isSmartrise">
                                 {{job.customerName}}
+                            </p>
+                            <p class="customer-name" *ngIf="displayCustomerName && !isSmartrise">
+                                {{job.primaryCustomerName}}
                             </p>
                         </div>
 

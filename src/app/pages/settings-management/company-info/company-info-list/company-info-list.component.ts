@@ -8,7 +8,7 @@ import { ResponsiveService } from '../../../../services/responsive.service';
 import { Ng2TableCellComponent } from '../../../../_shared/components/ng2-table-cell/ng2-table-cell.component';
 import { CpFilterComponent } from '../../../../_shared/components/table-filters/cp-filter.component';
 import { BaseServerDataSource } from '../../../../_shared/datasources/base-server.datasource';
-import { searchCompanyInfoParams as SearchCompanyInfoParams } from '../../../../_shared/models/CustomerParams';
+import { SearchCompanyInfoParams as SearchCompanyInfoParams } from '../../../../_shared/models/CustomerParams';
 import { ScreenBreakpoint } from '../../../../_shared/models/screenBreakpoint';
 import { BaseComponent } from '../../../base.component';
 import { CompanyActionInfoComponent } from './company-action-info/company-action-info.component';

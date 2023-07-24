@@ -36,6 +36,7 @@ export class UpdateAccountUserComponent implements OnInit {
 
   filteredAccounts: any[];
   isSaving: boolean;
+  user: IAccountUserResponse;
 
   constructor(
     private router: Router,
@@ -60,6 +61,7 @@ export class UpdateAccountUserComponent implements OnInit {
     ]).subscribe(([roles, user]) => {
       this.oldRoles = roles;
       this.roles = roles;
+      this.user = user;
       this.createCustomerUserForm(user);
       this.isFormReady = true;
       this.bcService.set('@userName', user.firstName + ' ' + user.lastName);
@@ -211,5 +213,9 @@ export class UpdateAccountUserComponent implements OnInit {
   ngOnDestroy(): void {
     this.manageRoute?.unsubscribe();
     sessionStorage.removeItem('customerName');
+  }
+
+  onClose() {
+    this.router.navigateByUrl(URLs.ViewAccountUsersURL);
   }
 }

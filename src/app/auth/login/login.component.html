@@ -2,7 +2,7 @@
     <div class="form-container-hint">
       <div class="form-container-hint-label"  *ngIf="warnUserAboutAccountLock">Your account will be locked after continued
         incorrect login attempts</div>
-      <div class="form-container-hint-label" *ngIf="sessionExpired">Your session has been expired</div>
+      <div class="form-container-hint-label alert alert-info" *ngIf="sessionExpired">Your session has been expired</div>
     </div>
     <div class="input-container">
         <div class="input-item">

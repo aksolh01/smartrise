@@ -19,7 +19,7 @@ export class InvoiceService {
   /**
    *
    */
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   private get markedAsPay(): IInvoiceInfo[] {
     const _markedAsPayString = sessionStorage.getItem('markedAsPay');
@@ -129,7 +129,13 @@ export class InvoiceService {
 
   getAgedRecievablesBySmartriseUser(params: AgedRecievablesSearchParams): Observable<IPagination> {
     return this.httpClient
-      .post<IPagination>(environment.apiUrl + 'invoice/agedRecievables',params,{ observe: 'body' })
+      .post<IPagination>(environment.apiUrl + 'invoice/agedRecievables', params, { observe: 'body' })
+      .pipe(map((response) => response));
+  }
+
+  searchAllAgedRecievablesBySmartriseUser(params: AgedRecievablesSearchParams): Observable<IPagination> {
+    return this.httpClient
+      .post<IPagination>(environment.apiUrl + 'invoice/agedRecievables/searchAll', params, { observe: 'body' })
       .pipe(map((response) => response));
   }
 
@@ -139,6 +145,18 @@ export class InvoiceService {
     return this.httpClient
       .post<IPagination>(
         environment.apiUrl + 'invoice/customer/agedRecievables',
+        params,
+        { observe: 'body' }
+      )
+      .pipe(map((response) => response));
+  }
+
+  searchAllAgedRecievablesByCustomerUser(
+    params: AgedRecievablesByCustomerSearchParams
+  ): Observable<IPagination> {
+    return this.httpClient
+      .post<IPagination>(
+        environment.apiUrl + 'invoice/customer/agedRecievables/searchAll',
         params,
         { observe: 'body' }
       )
@@ -157,6 +175,16 @@ export class InvoiceService {
       .pipe(map((response) => response));
   }
 
+  searchAllBillingInvoices(params: BillingInvoiceSearchParams): Observable<IPagination> {
+    return this.httpClient
+      .post<IPagination>(
+        environment.apiUrl + 'invoice/billingInvoices/searchAll',
+        params,
+        { observe: 'body' }
+      )
+      .pipe(map((response) => response));
+  }
+
   getBillingInvoicesBuCustomerUser(
     params: BillingInvoiceByCustomerUserParams
   ): Observable<IPagination> {
@@ -164,6 +192,16 @@ export class InvoiceService {
       .post<IPagination>(
         environment.apiUrl + 'invoice/customer/billingInvoices',
         params,
+        { observe: 'body' }
+      )
+      .pipe(map((response) => response));
+  }
+
+  searchAllBillingInvoicesBuCustomerUser(searchParameters: BillingInvoiceByCustomerUserParams): Observable<IPagination> {
+    return this.httpClient
+      .post<IPagination>(
+        environment.apiUrl + 'invoice/customer/billingInvoices/searchAll',
+        searchParameters,
         { observe: 'body' }
       )
       .pipe(map((response) => response));

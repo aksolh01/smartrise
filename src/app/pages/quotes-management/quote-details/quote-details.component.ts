@@ -109,7 +109,7 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
   quote: IQuoteDetailsResponse;
   isLoading: boolean = true;
   displayAccountName: boolean = true;
-  
+
   constructor(
     baseService: BaseComponentService,
     private quotingToolService: QuotingToolService,
@@ -132,11 +132,10 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
 
   ngOnInit(): void {
 
-    this.canEditQuote = this.permissionService.hasPermission(PERMISSIONS.SaveOnlineQuote) && !this.miscellaneousService.isImpersonateMode();
     this.displayAccountName = this.miscellaneousService.isSmartriseUser() || this.multiAccountsService.hasMultipleAccounts();
 
     this._setAccountTitle();
-    
+
     this.bcService.set('@quoteName', { skip: true });
     const quoteId = this.route.snapshot.paramMap.get('id');
 
@@ -144,13 +143,12 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
       this.quotingToolService.getQuoteDetails(quoteId),
       this.quotingToolService.getQuoteHistory(quoteId)]
     ).subscribe(([details, hisory]) => {
-
-      this._readSaveOnlineQuotePermission(details.contactId);
+      this._readSaveOnlineQuotePermission(details.customerId);
 
       if (this.miscellaneousService.isCustomerUser()) {
         const selectedAccount = this.multiAccountsService.getSelectedAccount();
 
-        if (selectedAccount != null && selectedAccount !== details.contactId) {
+      if (selectedAccount != null && selectedAccount !== details.customerId) {
           this.router.navigateByUrl(URLs.ViewOpenQuotesURL);
           return;
         }
@@ -197,15 +195,15 @@ export class QuoteDetailsComponent extends BaseComponent implements OnInit, OnDe
 
   hasLeftPadding(i) {
     if (this.cols === 1) {
-return true;
-}
+      return true;
+    }
     return (i % this.cols) < this.cols;
   }
 
   hasRightPadding(i) {
     if (this.cols === 1) {
-return true;
-}
+      return true;
+    }
     return i % this.cols === this.cols - 1;
   }
 

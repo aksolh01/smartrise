@@ -14,6 +14,16 @@ import { ResourceByCustomerUserParams, ResourceParams } from '../_shared/models/
 
 @Injectable()
 export class ResourceService {
+    
+    searchAllConsolidateResourcesByCustomerUser(resourceParams: ResourceParams) {
+        return this.httpClient.post<Pagination<IJobFile>>(this.baseUrl + 'resourceFile/customer/consolidatedResources/searchAll', resourceParams)
+        .pipe(map((response) => response));
+    }
+
+    searchAllConsolidateResourcesBySmartriseUser(resourceParams: ResourceParams) {
+        return this.httpClient.post<Pagination<IJobFile>>(this.baseUrl + 'resourceFile/smartrise/consolidatedResources/searchAll', resourceParams)
+        .pipe(map((response) => response));
+    }
 
     baseUrl = environment.apiUrl;
     downloadResourceSub: Subscription;

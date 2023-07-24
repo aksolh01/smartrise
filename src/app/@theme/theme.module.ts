@@ -54,6 +54,7 @@ import { RouterModule } from '@angular/router';
 import { JoyrideModule } from 'ngx-joyride';
 import { PortalTitleService } from '../services/portal.title.service';
 import { SelectAccountComponent } from './components/select-account/select-account.component';
+import { SearchService } from '../services/search.service';
 
 const NB_MODULES = [
   NbLayoutModule,

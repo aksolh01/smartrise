@@ -17,6 +17,9 @@ $column-xxlarge-size: 18rem;
 .table-container{
   margin-top: 0;
 }
+nb-card {
+  margin-bottom: 0px !important;
+}
 
 .table-sub-details {
   background-color: #ecedf0;
@@ -209,9 +212,8 @@ thead tr th {
   color: var(--primary-color-gray) !important;
   text-decoration: none;
   font-weight: 600;
-  font-size: 14px !important;
   // min-width: 15rem;
-  padding: 20px;
+  padding: 8px 20px;
 }
 
 thead tr th:first-child {
@@ -328,7 +330,7 @@ table tbody tr td:first-child {
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
-    color: #bdbdbd !important;
+    color: var(--primary-color-gray);
     font-weight: 550;
     font-size: 18px;
   }
@@ -360,9 +362,9 @@ table tbody tr td:first-child {
       color: #353f4a;
       margin: 0;
       max-width: 9rem;
-      white-space: nowrap;
+      //white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
+      // text-overflow: ellipsis;
     }
 
     .size {
@@ -842,8 +844,8 @@ th {
 }
 
 td span {
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
   display: block;
   overflow: hidden;
   color: black;
@@ -879,7 +881,7 @@ td span {
     white-space: nowrap;
     border-bottom: 1px solid #d7d7d7;
     // max-width: 1rem;
-    padding: 20px;
+    padding: 8px 20px;
     color: black;
     font-weight: 700;
     max-width: unset;

@@ -1,53 +1,60 @@
-<nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-  <nb-card-header class="default-card-header">
-    <h2 class="card-title">User Information</h2>
-  </nb-card-header>
-  <nb-card-body>
-    <form [formGroup]="smartriseUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady">
-      <div class="row">
+<div class="page-header-container">
+  <div class="page-header-title" *ngIf="smartriseUser">
+      <span (click)="onClose()" class="cursor">Smartrise Users</span> / {{ smartriseUser.firstName }} {{ smartriseUser.lastName }}
+  </div>
+</div>
 
-        <div class="col-lg-6 col-12">
+<form [formGroup]="smartriseUserForm" (ngSubmit)="onSubmit()" *ngIf="isFormReady">
+  <div class="update-smartrise">
+    <div class="update-smartrise-container">
+      <nb-card [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant" size="small">
+        <nb-card-header class="default-card-header">
+          <h2 class="card-title">User Information</h2>
+        </nb-card-header>
+        <nb-card-body>
+          <div class="form-container">
+            <div class="row-container">
+              <div class="input-container">
+                <div class="input-sub-container">
+                  <label class="label-align">First Name</label>
+                  <div class="input-item">
+                    <div class="input-item-label">{{ smartriseUser.firstName }}</div>
+                  </div>
+                </div>
 
-          <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
-            <div class="col-12 col-lg-8">
-              <div class="form-control-plaintext">{{ smartriseUser.firstName }}</div>
+                <div class="input-sub-container">
+                  <label class="label-align">First Name</label>
+                  <div class="input-item">
+                    <div class="input-item-label">{{ smartriseUser.lastName }}</div>
+                  </div>
+                </div>
+
+                <div class="input-sub-container">
+                  <label class="label-align">Email</label>
+                  <div class="input-item">
+                    <div class="input-item-label">{{ smartriseUser.email }}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">First Name</label>
-            <div class="col-12 col-lg-8">
-              <div class="form-control-plaintext">{{ smartriseUser.lastName }}</div> 
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label class="px-lg-0 col-lg-4 col-form-label text-left text-lg-right">Email</label>
-            <div class="col-12 col-lg-8">
-              <div class="form-control-plaintext">{{ smartriseUser.email }}</div>  
-            </div>
-          </div>
-
-        </div>
-
-        <div class="col-lg-6 col-12">
-          <div class="form-group">
-            <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="roles" [roles]="roles"></ngx-smr-roles-checklist>
-          </div>
-        </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <div class="roles-list">
+      <div class="form-group">
+        <ngx-smr-roles-checklist [isTouched]="rolesTouched" [hideError]="!formSubmitted" formControlName="roles"
+          [roles]="roles"></ngx-smr-roles-checklist>
       </div>
+    </div>
+  </div>
 
-      <div class="form-buttons">
-        <button routerLink=".." type="button" class="mr-1 btn btn-lg btn-secondary">
-          <i class="fas fa-times"></i>
-          Cancel
-        </button>
-        <button type="submit" class="mr-1 btn btn-lg btn-primary">
-          <i class="fas fa-save"></i>
-          Update
-        </button>
-      </div>
-    </form>
-  </nb-card-body>
-</nb-card>
+  <div class="form-buttons">
+    <ngx-button routerLink=".." type="button" class="secondary-button">
+      Cancel
+    </ngx-button>
+    <ngx-button type="submit" class="main-button">
+      Update
+    </ngx-button>
+  </div>
+</form>

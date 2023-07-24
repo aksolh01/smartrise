@@ -1,15 +1,5 @@
 <div class="page-header-container">
     <div class="page-header-title">Account Users</div>
-    <div class="form-container" style="width: 25%;" *ngIf="!isSmall">
-        <div class="input-container">
-            <div class="input-item search-input-icon">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Search">
-            </div>
-        </div>
-
-    </div>
-
     <div *ngIf="isSmall">
         <button class="main-button" type="button" (click)="toggleFilters()">
             <i class="fas fa-filter"></i>
@@ -17,7 +7,7 @@
     </div>
 </div>
 <div class="actions-user-container">
-    <ngx-pager [table]="table"></ngx-pager>
+    <ngx-pager #pager></ngx-pager>
     <div class="avatar-btn-container">
         <div class="avatar-btn">
             <a>

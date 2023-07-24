@@ -18,7 +18,7 @@
                             tooltip="Show Parts Description"></i>
                             </div>
                             <div></div>
-                            <div class="status status-{{ shipment.status }}">
+                            <div *ngIf="shipment.status" class="status status-{{ shipment.status }}">
                                 {{ shipment.status }}
                             </div>
                         </div>

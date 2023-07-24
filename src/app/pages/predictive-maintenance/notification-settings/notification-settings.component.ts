@@ -21,6 +21,7 @@ import { BaseComponent } from '../../base.component';
 import { NotificationSettingComponent } from '../notification-setting/notification-setting.component';
 import { NotificationSettingsActionsComponent } from './notification-settings-actions/notification-settings-actions.component';
 import { environment } from '../../../../environments/environment';
+import { CpFilterComponent } from '../../../_shared/components/table-filters/cp-filter.component';
 
 @Component({
   selector: 'ngx-notification-settings',
@@ -41,7 +42,7 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
   responsiveSubscription: Subscription;
   canCreateNotificationSetting = true;
   canViewLogs = true;
-  source = new BaseServerDataSource();
+  source: BaseServerDataSource;
   notificationSettings: INotificationSetting[] = [];
   settings: any = {
     mode: 'external',
@@ -107,7 +108,6 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
         },
       },
       partType: {
-        filter: true,
         sort: true,
         title: 'Part Type',
         type: 'custom',
@@ -115,6 +115,10 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
         onComponentInitFunction: (instance: Ng2TableCellComponent) => {
           instance.setHeader('Part Type');
         },
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        }
       },
       alertType: {
         sort: true,
@@ -135,7 +139,6 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
         },
       },
       alert: {
-        filter: true,
         sort: true,
         title: 'Alert',
         type: 'custom',
@@ -143,6 +146,10 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
         onComponentInitFunction: (instance: Ng2TableCellComponent) => {
           instance.setHeader('Alert');
         },
+        filter: {
+          type: 'custom',
+          component: CpFilterComponent,
+        }
       },
       modifiedDate: {
         sort: true,
@@ -192,7 +199,6 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
 
   ngOnInit(): void {
     this.recordsNumber = environment.recordsPerPage;
-    this.onRecordsNumberChanged(this.recordsNumber);
     this.responsiveSubscription = this.responsiveService.currentBreakpoint$.subscribe(w => {
       if (w === ScreenBreakpoint.lg || w === ScreenBreakpoint.xl) {
         if (this.isSmall !== false) {
@@ -212,7 +218,7 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
       page: 1,
       perPage: this.recordsNumber || 25
     };
-
+    this.source = new BaseServerDataSource();
     this.source.serviceCallBack = (params) => {
       const notificationParams = params as NotificationParams;
 
@@ -230,14 +236,6 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
 
     this.source.setPaging(1, this.recordsNumber);
     this.source.refresh();
-    // this.source.serviceCallBack = (params) => {
-    //   return of({
-    //     count: 2,
-    //     data: this.notificationSettings,
-    //     pageIndex: params.pageIndex,
-    //     pageSize: params.pageSize,
-    //   });
-    // }
   }
 
   onReset() {
@@ -265,7 +263,7 @@ export class NotificationSettingsComponent extends BaseComponent implements OnIn
   }
 
   onRecordsNumberChanged(value: number) {
-    this.source.setPaging(1, value);
+   // this.source.setPaging(1, value);
   }
 
   toggleFilters(): void {

@@ -13,9 +13,27 @@ import {
 
 @Injectable()
 export class QuoteService {
+  searchAllOpenQuotesByCustomerUser(searchParams: OpenQuoteByCustomerSearchParams) {
+    return this.httpClient
+      .post<Pagination<IOpenQuote>>(
+        this.baseUrl + 'openQuotes/customer/searchAll',
+        searchParams,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
+  searchAllOpenQuotesBySmartriseUser(openQuoteParams: QuoteSearchParams) {
+    return this.httpClient
+      .post<Pagination<IOpenQuote>>(
+        this.baseUrl + 'openQuotes/smartrise/searchAll',
+        openQuoteParams,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
   baseUrl: string = environment.apiUrl;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getOpenQuotesBySmartriseUser(openQuoteParams: QuoteSearchParams) {
     return this.httpClient
@@ -33,6 +51,18 @@ export class QuoteService {
     return this.httpClient
       .post<Pagination<IOpenQuote>>(
         this.baseUrl + 'openQuotes/customer/search',
+        openQuoteParams,
+        { observe: 'response' }
+      )
+      .pipe(map((response) => response.body));
+  }
+
+  searchOpenQuotesByCustomerUser(
+    openQuoteParams: OpenQuoteByCustomerSearchParams
+  ) {
+    return this.httpClient
+      .post<Pagination<IOpenQuote>>(
+        this.baseUrl + 'openQuotes/customer/searchAll',
         openQuoteParams,
         { observe: 'response' }
       )

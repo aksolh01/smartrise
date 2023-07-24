@@ -1,6 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Mapper } from '@nartc/automapper';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { JoyrideService } from 'ngx-joyride';
 import { forkJoin } from 'rxjs';
@@ -45,6 +44,8 @@ import { CablesInfoComponent } from './custom-components/cables-info/cables-info
 import { ErrorsPanelComponent } from './custom-components/errors-panel/errors-panel.component';
 import { HoistwayCablesInfoComponent } from './custom-components/hoistway-cables-info/hoistway-cables-info.component';
 import { SearchableContactsListComponent } from './custom-components/searchable-contacts-list/searchable-contacts-list.component';
+import { IField } from '../../../_shared/models/quotes/fields.model';
+import { FieldsInformationPanelComponent } from './custom-components/fields-information-panel/fields-information-panel.component';
 
 @Component({
   selector: 'ngx-quoting-tool',
@@ -57,6 +58,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
   private _oldQuote: string;
   private _canLeave: boolean = false;
 
+  showFieldsDescriptions: boolean = false;
   showAccountName: boolean = false;
   lookup: IQuoteLookupDataView = new QuoteLookupDataView();
   jobLocation = '';
@@ -72,6 +74,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
   motorHPWarningMessage: string;
   runGuidingTour: boolean = true;
   customerId: number;
+  fields: IField[];
 
   @ViewChild('speedFPM') speedFPM: any;
   @ViewChild('capacity') capacity: any;
@@ -122,6 +125,13 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
     super(baseService);
   }
 
+  onShowFildsDescriptions() {
+    const modal = this.modalService.show<FieldsInformationPanelComponent>(FieldsInformationPanelComponent,
+      {
+        class: 'centered fields-description-modal'
+      });
+    modal.content.fields = this.fields;
+  }
 
   revalidateField(instance: any, field: string) {
     this.quotingToolValidationService.revalidateField(instance, field);
@@ -150,12 +160,154 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
   ngAfterViewInit(): void {
   }
 
+  private _addGeneralDataFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'General Data', field: 'Controller Type', description: 'Indicates the Car Controller Type (AC Traction, DC Traction or Hydraulic).' },
+      { section: 'General Data', field: 'Simplex/Group', description: "Indicates if it is a Simplex Car (only one Car), or Group of Cars (from 1 to 8)." },
+      { section: 'General Data', field: 'Car Label', description: 'Determines the Car name.' },
+      { section: 'General Data', field: 'Number Of Cars', description: 'Determines the number of identical Simplex Cars, or the number of Cars within a certain Group.' },
+      { section: 'General Data', field: 'Openings', description: 'Determines the number of Car Openings.' },
+      { section: 'General Data', field: 'Stops', description: 'Determines the number of Car Stops.' },
+      { section: 'General Data', field: 'Number Of Risers', description: 'Indicates the Car Number Of Risers.' },
+    );
+  }
+
+  private _addTractionFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Traction', field: 'C4', description: 'Indicates that it is a C4 Traction Controller.' },
+      { section: 'Traction', field: 'V2 Traction', description: 'Indicates that it is a V2 Traction Controller.' },
+      { section: 'Traction', field: 'MX', description: 'Available when Gearless and Machine Room Less (MRL).' },
+      { section: 'Traction', field: 'Drive Model', description: 'Indicates the Car Drive Model.' },
+      { section: 'Traction', field: 'Motor Type', description: 'Indicates the Car Motor Type.' },
+      { section: 'Traction', field: 'Motor Location', description: 'Indicates the Car Motor Location.' },
+      { section: 'Traction', field: 'Battery Rescue', description: 'Indicates that a Car Battery Lowering Unit is needed.' },
+      { section: 'Traction', field: 'ISO Transformer', description: 'Indicates that an Isolation Transformer is needed.' },
+      { section: 'Traction', field: 'Regen Kit', description: 'Indicates that a Motor Regen is needed.' },
+      { section: 'Traction', field: 'Governor Reset Box', description: 'Indicates that an electrical governor reset is needed. ' },
+      { section: 'Traction', field: 'Line Reactor', description: 'Indicates that a Line Reactor is needed.' },
+      { section: 'Traction', field: 'EMI/RFI Filter', description: 'Indicates that an EMI/RFI Filter is needed.' },
+      { section: 'Traction', field: 'Harmonic Filter', description: 'Indicates that a Harmonic Filter is needed.' },
+      { section: 'Traction', field: 'MAD Fixtures', description: 'Available when country is Canada.' },
+      { section: 'Traction', field: 'New Motor Provided By Smartrise', description: 'Indicates that Smartrise will be providing a Motor for this car.' },
+      { section: 'Traction', field: 'Provider', description: 'Indicates the Motor Provider option.' },
+      { section: 'Traction', field: 'Mount', description: 'Indicates the Motor Mount option.' },
+      { section: 'Traction', field: 'Motor RPM', description: 'Determines the Motor RPM Value.' },
+      { section: 'Traction', field: 'Coupler', description: 'Indicates that a Motor Coupler is needed.' },
+      { section: 'Traction', field: 'Encoder', description: 'Indicates that a Motor Encoder is needed.' },
+    );
+  }
+
+  private _addMotorParametersFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Motor Parameters', field: 'Main Line Voltage', description: 'Indicates the Motor Main Line Voltage value.' },
+      { section: 'Motor Parameters', field: 'Motor Volts', description: 'Determines the Motor Voltage value.' },
+      { section: 'Motor Parameters', field: 'Speed (FPM)', description: 'Determines the Motor Speed (FPM) value.' },
+      { section: 'Motor Parameters', field: 'Capactiy (LBS)', description: 'Determines the Motor Capactiy (LBS) value.' },
+      { section: 'Motor Parameters', field: 'Motor HP', description: 'Determines the Motor Horse Power value.' },
+      { section: 'Motor Parameters', field: 'Full Load Amps (FLA)', description: 'Determines the Motor Full Load Amps (FLA) value.' },
+    );
+  }
+
+  private _addHydraulicFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Hydraulic', field: 'V2', description: 'Available when country is other than Canada.' },
+      { section: 'Hydraulic', field: 'V3', description: 'Is auto selected when job location is Canada - Ontario.' },
+      { section: 'Hydraulic', field: 'Hydro Evolved', description: 'Available when country is other than Canada.' },
+      { section: 'Hydraulic', field: 'Starter', description: 'Indicates the Starter Type.' },
+      { section: 'Hydraulic', field: 'Motor Leads', description: 'Indicates the Motor number of Leads.' },
+      { section: 'Hydraulic', field: 'Battery Lowering Device', description: 'Indicates that a Battery Lowering Device is needed.' },
+      { section: 'Hydraulic', field: 'Load Weighing Hydro', description: 'Indicates that a Load Weighing Hydro device is needed.' },
+      { section: 'Hydraulic', field: 'Roped Hydro', description: 'Indicates that it is a Roped Hydro.' },
+      { section: 'Hydraulic', field: 'Dual Soft Starts', description: 'Indicates that it is a Dual Soft Starts.' },
+    );
+  }
+
+  private _addProvidedBySmartriseFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Provided by Smartrise', field: 'Cat-5 Kit', description: 'Indicates the number of Cat-5 Kit needed.' },
+      { section: 'Provided by Smartrise', field: 'Hall Call Security (Group Only)', description: 'Indicates that Hall Call Security (Group Only) are enabled.' },
+      { section: 'Provided by Smartrise', field: 'Controller Layout', description: 'Indicates the Controller Layout needed.' },
+      { section: 'Provided by Smartrise', field: 'Smart Connect', description: 'Indicates the Smart Connect needed.' },
+      { section: 'Provided by Smartrise', field: 'Hall Arrival Lanterns', description: 'Indicates that Hall Arrival Lanterns are enabled.' },
+      { section: 'Provided by Smartrise', field: 'Door', description: 'Indicates the Car Front Door Operator type needed.' },
+      { section: 'Provided by Smartrise', field: 'Rear Door Present', description: 'Indicates that the Car has a Rear Door (Rear Door Operator will be similar to the Front one)' },
+      { section: 'Provided by Smartrise', field: 'Load Weighing Device', description: 'Indicates that a Load Weighing Device is needed.' },
+      { section: 'Provided by Smartrise', field: 'Traveler Cable', description: 'Indicates the Traveler Cable type needed.' },
+      { section: 'Provided by Smartrise', field: 'Traveler Length', description: 'Determines the length of the Traveler cable.' },
+      { section: 'Provided by Smartrise', field: 'Hoistway Cable', description: 'Indicates the Hoistway Cable type needed.' },
+      { section: 'Provided by Smartrise', field: 'Hoistway Length', description: 'Determines the length of the Hoistway cable.' },
+      { section: 'Provided by Smartrise', field: 'Machine Room NEMA Rating', description: 'Indicates the NEMA rating that everything, located in the machine room, needs to be.' },
+      { section: 'Provided by Smartrise', field: 'Hoistway NEMA Rating', description: 'Indicates the Hoistway NEMA Rating needed.' },
+      { section: 'Provided by Smartrise', field: 'Landing System Length of Travel (in feet)', description: 'Determines the Landing System Length of Travel.' },
+      { section: 'Provided by Smartrise', field: 'Enclosure Legs', description: 'Indicates that an Enclosure Legs is needed.' },
+      { section: 'Provided by Smartrise', field: 'Cabinet Air Conditioning', description: 'Indicates that Cabinet Air Conditioning is needed.' },
+      { section: 'Provided by Smartrise', field: 'Arc Flash Protection', description: 'Indicates that Arc Flash Protection is needed.' },
+      { section: 'Provided by Smartrise', field: 'Dual COP', description: 'Indicates that it a Dual COP is needed.' },
+    );
+  }
+
+  private _addElevatorManagementSystemsFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Elevator Management Systems', field: 'Lobby Monitoring', description: 'Indicates that Lobby Monitoring is needed.' },
+      { section: 'Elevator Management Systems', field: 'Machine Room Monitoring', description: 'Indicates that Machine Room Monitoring is needed.' },
+      { section: 'Elevator Management Systems', field: 'Remote Monitoring', description: 'Indicates that Remote Monitoring is needed.' },
+      { section: 'Elevator Management Systems', field: 'Lift-Net Interface', description: 'Indicates that Lift-Net Interface is needed.' },
+      { section: 'Elevator Management Systems', field: 'BACnet Interface', description: 'Indicates that BACnet Interface is needed.' },
+      { section: 'Elevator Management Systems', field: 'V2/V3 AI Parking', description: 'Indicates that V2/V3 AI Parking is needed.' },
+    );
+  }
+
+  private _addProvisionsFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Provisions', field: 'Interface To Lobby Panel', description: 'Indicates that Interface To Lobby Panel is needed.' },
+      { section: 'Provisions', field: 'Car Call Security', description: 'Indicates that Car Call Security is enabled.' },
+      { section: 'Provisions', field: 'Patient Security', description: 'Indicates that Patient Security is needed.' },
+      { section: 'Provisions', field: 'Hospital Service', description: 'Indicates that Hospital Service is needed.' },
+      { section: 'Provisions', field: 'EMT Service', description: 'Indicates that EMT Service is needed.' },
+      { section: 'Provisions', field: 'VIP Service', description: 'Indicates that VIP Service is needed.' },
+      { section: 'Provisions', field: 'Sabbath Operation', description: 'Indicates that Sabbath Operation is needed.' },
+      { section: 'Provisions', field: 'Interface To Destination Dispatch', description: 'Indicates that Interface To Destination Dispatch is needed.' },
+    );
+  }
+
+  private _addNoCostAddOnsFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'No Cost Add-Ons', field: 'Enclosure Light', description: 'Indicates that Enclosure Light is needed.' },
+      { section: 'No Cost Add-Ons', field: 'Enclosure GFCI', description: 'Indicates that Enclosure GFCI is needed.' },
+      { section: 'No Cost Add-Ons', field: 'Fan & Filter', description: 'Indicates that a Fan & Filter needs to be added to the controller.' },
+      { section: 'No Cost Add-Ons', field: 'Interface To Emergency Power', description: 'Indicates that an Interface To Emergency Power is needed.' },
+      { section: 'No Cost Add-Ons', field: 'Interface To Earthquake Operation', description: 'Indicate that an Interface To Earthquake Operation is needed.' },
+      { section: 'No Cost Add-Ons', field: 'Interface To Voice Annunciator', description: 'Indicates that an Interface To Voice Annunciator is needed.' },
+      { section: 'No Cost Add-Ons', field: 'Brown Out Reset', description: 'Indicates that Brown Out Reset is needed.' },
+    );
+  }
+
+  private _addAdditionalC4RiserBoardsFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Additional C4 Riser Boards', field: 'Hall Call Security', description: 'Indicates that Hall Call Security is enabled.' },
+      { section: 'Additional C4 Riser Boards', field: 'Group Interconnect', description: 'Indicates that Group Interconnect is enabled.' },
+      { section: 'Additional C4 Riser Boards', field: 'Emergency Generator Powers Other Groups/Simplex', description: 'Indicates that Emergency Generator Powers Other Groups/Simplex is enabled.' },
+      { section: 'Additional C4 Riser Boards', field: 'More Than Two Hall Networks', description: 'Indicates that More Than Two Hall Networks is enabled.' },
+    );
+  }
+
+  private _addAdditionalFeaturesFieldsToDescriptionsPanel() {
+    this.fields.push(
+      { section: 'Additional Features', field: 'Group Redundancy', description: 'Indicates that Group Redundancy is needed.' },
+      { section: 'Additional Features', field: 'Cross Registration', description: 'Indicated that Cross Registration  is needed.' },
+      { section: 'Additional Features', field: 'Expansion Board', description: 'Indicates that Expansion Board is needed.' },
+    );
+  }
+
   ngOnDestroy(): void {
     this._canLeave = true;
-    this.modalService.hide();
+    if (this.modalService.getModalsCount() > 0) {
+      this.modalService.hide();
+    }
     this.leaveSubscription?.unsubscribe();
     this.joyrideService?.closeTour();
     this.joyrideService = null;
+    this.miscellaneousService.endFullscreenBusy();
   }
 
   onRemoveContact() {
@@ -294,10 +446,8 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
     forkJoin([
       this.contactService.getCustomerContacts(this.customerId),
       this.quotingToolService.getEnums(this.customerId),
-    ]).subscribe(([
-      contacts,
-      enums,
-    ]) => {
+    ]).subscribe(([contacts, enums]) => {
+
       this._canLeave = false;
       this.defaultCar = enums.defaultCar;
       this._fillLookupProperties(enums, contacts);
@@ -313,9 +463,35 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
       this._applyBusinessProfile();
       this._finalizeQuote();
       this.triggerGuidingTour();
-    }, error => {
+      this._fillDescriptionsPanel();
+    }, () => {
       this.router.navigateByUrl(URLs.ViewOpenQuotesURL);
     });
+
+
+  }
+
+  private _fillDescriptionsPanel() {
+    const hasACTraction = this.quote.cars.some(car => car.isACTraction());
+    const hasDCTraction = this.quote.cars.some(car => car.isDCTraction());
+    const hasHydraulic = this.quote.cars.some(car => car.isHydraulic());
+    this.fields = [];
+    this._addGeneralDataFieldsToDescriptionsPanel();
+    this._addMotorParametersFieldsToDescriptionsPanel();
+    if (hasACTraction || hasDCTraction) {
+      this._addTractionFieldsToDescriptionsPanel();
+      this._addAdditionalC4RiserBoardsFieldsToDescriptionsPanel();
+    }
+
+    if (hasHydraulic) {
+      this._addHydraulicFieldsToDescriptionsPanel();
+    }
+
+    this._addProvidedBySmartriseFieldsToDescriptionsPanel();
+    this._addElevatorManagementSystemsFieldsToDescriptionsPanel();
+    this._addProvisionsFieldsToDescriptionsPanel();
+    this._addNoCostAddOnsFieldsToDescriptionsPanel();
+    this._addAdditionalFeaturesFieldsToDescriptionsPanel();
   }
 
   private _fillBreadcrumbPlaceholder() {
@@ -1070,7 +1246,7 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
 
   openGuidingTour() {
     if (this.joyrideService) {
-      const steps = ['quoteFirstStep'];
+      const steps = ['quoteFirstStep', 'quoteSecondStep'];
       this.joyrideService.startTour({
         steps: steps,
         themeColor: guidingTourGlobal.guidingTourThemeColor,
@@ -1097,6 +1273,14 @@ export class QuotingToolComponent extends BaseComponent implements OnInit, OnDes
 
   onSelectLocation() {
     this.actionsRequired.collapse();
+  }
+
+  onCloseFieldsDescriptions() {
+    this.showFieldsDescriptions = false;
+  }
+
+  onControllerTypeChanged(controllerType) {
+    this._fillDescriptionsPanel();
   }
 }
 
