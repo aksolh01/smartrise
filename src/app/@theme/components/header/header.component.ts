@@ -112,6 +112,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  darkMode() {
+    var element = document.body;
+    element.classList.toggle("dark-mode");
+  }
+  
   onSearchChanged(searchValue) {
     if (searchValue?.trim()) {
       this.searchService.resetSearch();

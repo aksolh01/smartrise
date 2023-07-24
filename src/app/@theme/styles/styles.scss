@@ -1659,3 +1659,201 @@ nb-tabset nb-tab {
 .y-scrollable {
     overflow-y: auto !important;
 }
+// Dark Mode 
+.dark-mode{
+    .content-wrapper{
+        background-color: #333333;
+    }
+    nb-menu{
+        background: #111111 !important;
+        box-shadow: unset !important;
+        > ul.menu-items {
+            .menu-item {
+                &:hover{
+                    background-color: #2b77b3 !important;
+                }
+                a {
+                    &:hover,
+                    &.active {
+                        background-color: #2b77b3 !important;
+                    }
+                }
+            }
+        }
+    }
+    nb-layout-header {
+        background-color: #111111 !important;
+    }
+    nb-layout .layout {
+        background-color: #333333;
+    }
+    .pagination-info{
+        color: white;
+    }
+    nb-card{
+        background-color: #555555;
+    }
+    .main-card{
+        .card-container{
+            background-color: #555555 !important;
+            .data-container{
+                .data-container-item{
+                .label{
+                    color: white !important;
+                    }
+                    .value{
+                        color: white !important;
+                    }
+                }
+            }
+        }
+        .slide-container{
+            .navigate-button{
+                color: white !important;
+            }
+        }
+        .job-info{
+            .job-name, .job-number, .poNumber, .address{
+                color: white !important;
+            }
+        }
+        .file{
+            background-color: white !important;
+        }
+    }
+    .form-group{
+        label{
+            color: white !important;
+        }
+    }
+    .input-container{
+        .input-item{
+            input{
+                background-color: white !important;
+            }
+        }
+        label{
+            color: white !important;
+        }
+    }
+    nb-select{
+        background-color: white !important;
+        
+    }
+    .default-card-header{
+        .card-title{
+            color: white !important;
+        }
+        .view-all-jobs, .download-rfq, a{
+            color: gray !important;
+        }
+    }
+    nb-checkbox.status-basic .text{
+        color: white !important;
+    }
+    .custom-checkbox{
+        border-color: white !important;
+    }
+    .page-header-title{
+        color:  white !important;
+    }
+    nb-layout-footer{
+        nav{
+            background-color: #333333 !important;
+            color: white !important;
+            .footer-container{
+                background-color: #333333;
+            }
+            .socials{
+                a{
+                    color: white !important;
+                }
+            }
+        }
+    }
+    .table-container .table-content tbody tr{
+        background-color: #333333 !important;
+        .custom{
+            color: white !important;
+        }
+        a{
+            color: white !important;
+        }
+        .ng-star-inserted{
+            color: white !important;
+        }
+        .action-tooltip-holder.ng-star-inserted{
+            button {
+                color: white !important;
+            }
+        }
+        .action-tooltip-holder{
+            button {
+                color: white !important;
+            } 
+        }
+    }
+    ng2-smart-table thead tr{
+        background-color: #333333;
+    }
+    .table-container{
+        nb-card-body{
+            background-color: #333333 !important;
+            border: 1px solid white !important;
+        }
+    }
+   
+    .table-container .table-content .ng2-smart-th a{
+        color: white !important;
+    }
+    .table-container{
+        .ng2-smart-title{
+            color: white !important;
+            background: #555555 !important;
+        }
+    }
+    .table-sub-details{
+        background-color: #333333 !important;
+        .right-section, .left-section{
+            background-color: #555555 !important;
+            .label{
+                color: white !important;
+            }
+            .content{
+                color: white !important;
+            }
+        }
+    }   
+    .section-header{
+        .header-title{
+            color: white !important;
+        }
+    }
+    .section-container{
+        background-color: #555555 !important;
+        .table-container{
+            thead tr th {
+                color: white !important;
+                background-color: #555555;
+            }
+        }
+        span{
+            
+            color: white !important;
+        }
+        .ng-star-inserted{
+            color: white !important;
+            background-color: #555555;
+        }
+        .files-internal-container {
+            svg{
+                color: white !important;
+            }
+            p{
+                color: white !important;
+            }
+        }
+    }
+}
+
+ 
